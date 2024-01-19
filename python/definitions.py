@@ -53,15 +53,14 @@ def muonConePt(muons):
 
 
 def muonFakeSel(muons):
-    return op.select(
-        muons, lambda mu: op.AND(
-            muonConePt(muons)[mu.idx] >= 10.,
-            lepton_associatedJetLessThanMediumBtag(mu),
-            op.OR(
-                mu.mvaTTH >= 0.50,
-                op.AND(mu.jetRelIso < 0.8, muon_deepJetInterpIfMvaFailed(mu))
-            )
-        ))
+    return op.select(muons, lambda mu: op.AND(
+        muonConePt(muons)[mu.idx] >= 10.,
+        lepton_associatedJetLessThanMediumBtag(mu),
+        op.OR(
+            mu.mvaTTH >= 0.50,
+            op.AND(mu.jetRelIso < 0.8, muon_deepJetInterpIfMvaFailed(mu))
+        )
+    ))
 
 
 def muonTightSel(muons):
@@ -308,11 +307,12 @@ def defineObjects(self, tree):
 
     # Dilepton lambdas #
     def leptonOS(l1, l2): return l1.charge != l2.charge
+
     if self.isMC:
-        # def is_matched(lep): return op.OR(lep.genPartFlav == 1,  # Prompt muon or electron
-        #                                   lep.genPartFlav == 15)  # From tau decay
+        def is_matched(lep): return op.OR(lep.genPartFlav == 1,  # Prompt muon or electron
+                                          lep.genPartFlav == 15)  # From tau decay
         def is_matched(lep): return op.c_bool(
-            True)  # no gen matching in Run3 so far
+            True)
     else:
         def is_matched(lep): return op.c_bool(True)
 
@@ -324,19 +324,19 @@ def defineObjects(self, tree):
     )
 
     self.tightpair_ElEl = lambda dilep: op.AND(
-        # dilepton_matched(dilep), # no gen matching in Run3 so far
+        dilepton_matched(dilep),
         electronTightSel(dilep[0]),
         electronTightSel(dilep[1])
     )
 
     self.tightpair_MuMu = lambda dilep: op.AND(
-        # dilepton_matched(dilep),
+        dilepton_matched(dilep),
         muonTightSel(dilep[0]),
         muonTightSel(dilep[1])
     )
 
     self.tightpair_ElMu = lambda dilep: op.AND(
-        # dilepton_matched(dilep),
+        dilepton_matched(dilep),
         elTightSel(dilep[0]),
         muonTightSel(dilep[1])
     )
