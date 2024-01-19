@@ -1,6 +1,10 @@
 from copy import deepcopy
 
 
+def labeler(label):
+    return {'labels': [{'text': label, 'position': [0.235, 0.9], 'size': 24}]}
+
+
 def fillSampleTemplate(template, selEras=None):
     outTemplate = {}
 

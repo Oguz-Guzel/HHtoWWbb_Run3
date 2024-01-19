@@ -7,6 +7,8 @@ from baseAnalysis import NanoBaseHHWWbb
 from selections import makeDLSelection, makeSLSelection
 import definitions as defs
 
+from utils import labeler as label
+
 
 class controlPlotter(NanoBaseHHWWbb):
     """ Class to create control plots, cutflow reports and skims"""
@@ -41,20 +43,20 @@ class controlPlotter(NanoBaseHHWWbb):
             yields.add(DL_resolved_emu, 'DL resolved emu')
 
             # labels on plots
-            DLboostedEE_label = defs.labeler('DL boosted EE')
-            DLboostedMuMu_label = defs.labeler('DL boosted MuMu')
-            DLboostedEMU_label = defs.labeler('DL boosted EMu')
-            DLresolvedEE_label = defs.labeler('DL resolved EE')
-            DLresolvedMuMu_label = defs.labeler('DL resolved MuMu')
-            DLresolvedEMu_label = defs.labeler('DL resolved EMu')
+            DLboostedEE_label = label('DL boosted EE')
+            DLboostedMuMu_label = label('DL boosted MuMu')
+            DLboostedEMU_label = label('DL boosted EMu')
+            DLresolvedEE_label = label('DL resolved EE')
+            DLresolvedMuMu_label = label('DL resolved MuMu')
+            DLresolvedEMu_label = label('DL resolved EMu')
 
-            DLresolvedEEdnnCat1_label = defs.labeler(
+            DLresolvedEEdnnCat1_label = label(
                 'DL resolved EE DNN cat. 1')
-            DLresolvedEEdnnCat2_label = defs.labeler(
+            DLresolvedEEdnnCat2_label = label(
                 'DL resolved EE DNN cat. 2')
-            DLresolvedEEdnnCat3_label = defs.labeler(
+            DLresolvedEEdnnCat3_label = label(
                 'DL resolved EE DNN cat. 3')
-            DLresolvedEEdnnCat4_label = defs.labeler(
+            DLresolvedEEdnnCat4_label = label(
                 'DL resolved EE DNN cat. 4')
 
         if self.channel == 'SL':
@@ -70,10 +72,10 @@ class controlPlotter(NanoBaseHHWWbb):
             yields.add(SL_resolved_mu, 'SL resolved mu')
 
             # labels on plots
-            SLboostedE_label = defs.labeler('SL boosted E')
-            SLboostedMu_label = defs.labeler('SL boosted Mu')
-            SLresolvedE_label = defs.labeler('SL resolved E')
-            SLresolvedMu_label = defs.labeler('SL resolved Mu')
+            SLboostedE_label = label('SL boosted E')
+            SLboostedMu_label = label('SL boosted Mu')
+            SLresolvedE_label = label('SL resolved E')
+            SLresolvedMu_label = label('SL resolved Mu')
 
         # mva variables
         mvaVars_DL_resolved = {
