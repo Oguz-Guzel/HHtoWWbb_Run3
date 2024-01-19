@@ -133,7 +133,7 @@ def makeDLSelection(self, noSel):
         "ElElSelOSPtCutsPreMllCutOutZ", cut=outZCut)
     MuMuSel = MuMuSel.refine(
         "MuMuSelOSPtCutsPreMllCutOutZ", cut=outZCut)
-    ElMUSel = ElMuSel.refine(
+    ElMuSel = ElMuSel.refine(
         "ElMuSelOSPtCutsPreMllCutOutZ", cut=outZCut)
 
     # tight selection #
@@ -151,7 +151,7 @@ def makeDLSelection(self, noSel):
     #     self.MuMuTightPair[0][0].idx == self.MuMuFakePair[0][0].idx,
     #     self.MuMuTightPair[0][1].idx == self.MuMuFakePair[0][1].idx])
 
-    # ElMUSel = ElMuSel.refine("ElMuSelOSPtCutsPreMllCutOutZTightSelected", cut=[
+    # ElMuSel = ElMuSel.refine("ElMuSelOSPtCutsPreMllCutOutZTightSelected", cut=[
     #     self.tightpair_ElMu(self.ElMuFakePair[0]),
     #     op.rng_len(self.tightElectrons) == 1,
     #     op.rng_len(self.tightMuons) == 1,
@@ -167,7 +167,7 @@ def makeDLSelection(self, noSel):
         'DL_boosted_ee', cut=(op.rng_len(self.ak8BJets) >= 1))
     DL_boosted_mumu = MuMuSel.refine(
         'DL_boosted_mumu', cut=(op.rng_len(self.ak8BJets) >= 1))
-    DL_boosted_emu = ElMUSel.refine(
+    DL_boosted_emu = ElMuSel.refine(
         'DL_boosted_emu', cut=(op.rng_len(self.ak8BJets) >= 1))
 
     # resolved -> and at least two ak4 jets with at least one b-tagged and no ak8 jets
@@ -177,7 +177,7 @@ def makeDLSelection(self, noSel):
     DL_resolved_mumu = MuMuSel.refine('DL_resolved_mumu',
                                       cut=(op.AND(op.rng_len(self.ak4Jets) >= 2, op.rng_len(self.ak4BJets) >= 1, op.rng_len(self.ak8Jets) == 0)))
 
-    DL_resolved_emu = ElMUSel.refine('DL_resolved_emu',
+    DL_resolved_emu = ElMuSel.refine('DL_resolved_emu',
                                      cut=(op.AND(op.rng_len(self.ak4Jets) >= 2, op.rng_len(self.ak4BJets) >= 1, op.rng_len(self.ak8Jets) == 0)))
 
     DL_selections = [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
