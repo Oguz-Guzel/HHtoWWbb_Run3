@@ -144,19 +144,19 @@ def makeDLSelection(self, noSel):
         self.ElElTightPair[0][0].idx == self.ElElFakePair[0][0].idx,
         self.ElElTightPair[0][1].idx == self.ElElFakePair[0][1].idx])
 
-    # MuMuSel = MuMuSel.refine("MuMuSelOSPtCutsPreMllCutOutZTightSelected", cut=[
-    #     self.tightpair_MuMu(self.MuMuFakePair[0]),
-    #     op.rng_len(self.tightElectrons) == 0,
-    #     op.rng_len(self.tightMuons) == 2,
-    #     self.MuMuTightPair[0][0].idx == self.MuMuFakePair[0][0].idx,
-    #     self.MuMuTightPair[0][1].idx == self.MuMuFakePair[0][1].idx])
+    MuMuSel = MuMuSel.refine("MuMuSelOSPtCutsPreMllCutOutZTightSelected", cut=[
+        self.tightpair_MuMu(self.MuMuFakePair[0]),
+        op.rng_len(self.tightElectrons) == 0,
+        op.rng_len(self.tightMuons) == 2,
+        self.MuMuTightPair[0][0].idx == self.MuMuFakePair[0][0].idx,
+        self.MuMuTightPair[0][1].idx == self.MuMuFakePair[0][1].idx])
 
-    # ElMuSel = ElMuSel.refine("ElMuSelOSPtCutsPreMllCutOutZTightSelected", cut=[
-    #     self.tightpair_ElMu(self.ElMuFakePair[0]),
-    #     op.rng_len(self.tightElectrons) == 1,
-    #     op.rng_len(self.tightMuons) == 1,
-    #     self.ElMuTightPair[0][0].idx == self.ElMuFakePair[0][0].idx,
-    #     self.ElMuTightPair[0][1].idx == self.ElMuFakePair[0][1].idx])
+    ElMuSel = ElMuSel.refine("ElMuSelOSPtCutsPreMllCutOutZTightSelected", cut=[
+        self.tightpair_ElMu(self.ElMuFakePair[0]),
+        op.rng_len(self.tightElectrons) == 1,
+        op.rng_len(self.tightMuons) == 1,
+        self.ElMuTightPair[0][0].idx == self.ElMuFakePair[0][0].idx,
+        self.ElMuTightPair[0][1].idx == self.ElMuFakePair[0][1].idx])
 
     self.firstOSElEl = self.ElElTightPair[0]
     self.firstOSMuMu = self.MuMuTightPair[0]

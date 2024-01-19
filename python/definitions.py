@@ -27,8 +27,6 @@ def lepton_associatedJetLessThanTightBtag(lep): return op.OR(
     op.NOT(hasAssociatedJet(lep)), lep.jet.btagDeepFlavB <= 0.7264)  # 2018 value
 
 
-def electronTightSel(el): return el.mvaTTH >= 0.30
-
 # Object definitions
 
 
@@ -63,11 +61,15 @@ def muonFakeSel(muons):
     ))
 
 
+def lambda_muonTightSel(mu): return op.AND(
+    mu.mvaTTH >= 0.50,
+    mu.mediumId
+)
+
+
 def muonTightSel(muons):
-    return op.select(muons, lambda mu: op.AND(
-        mu.mvaTTH >= 0.50,
-        mu.mediumId
-    ))
+    return op.select(muons, lambda mu: lambda_muonTightSel(mu)
+                     )
 
 
 def elDef(electrons):
@@ -118,8 +120,11 @@ def elFakeSel(electrons):
     ))
 
 
+def lambda_elTightSel(el): return el.mvaTTH >= 0.30
+
+
 def elTightSel(electrons): return op.select(
-    electrons, lambda el: el.mvaTTH >= 0.30)
+    electrons, lambda el: lambda_elTightSel(el))
 
 
 def ak4jetDef(jets):
@@ -325,39 +330,39 @@ def defineObjects(self, tree):
 
     self.tightpair_ElEl = lambda dilep: op.AND(
         dilepton_matched(dilep),
-        electronTightSel(dilep[0]),
-        electronTightSel(dilep[1])
+        lambda_elTightSel(dilep[0]),
+        lambda_elTightSel(dilep[1])
     )
 
     self.tightpair_MuMu = lambda dilep: op.AND(
         dilepton_matched(dilep),
-        muonTightSel(dilep[0]),
-        muonTightSel(dilep[1])
+        lambda_muonTightSel(dilep[0]),
+        lambda_muonTightSel(dilep[1])
     )
 
     self.tightpair_ElMu = lambda dilep: op.AND(
         dilepton_matched(dilep),
-        elTightSel(dilep[0]),
-        muonTightSel(dilep[1])
+        lambda_elTightSel(dilep[0]),
+        lambda_muonTightSel(dilep[1])
     )
 
     # Fake Extrapolation dilepton #
     def fakepair_ElEl(dilep): return op.AND(
         dilepton_matched(dilep),
-        op.NOT(op.AND(elTightSel(dilep[0]),
-                      elTightSel(dilep[1])))
+        op.NOT(op.AND(lambda_elTightSel(dilep[0]),
+                      lambda_elTightSel(dilep[1])))
     )
 
     def fakepair_MuMu(dilep): return op.AND(
         dilepton_matched(dilep),
-        op.NOT(op.AND(muonTightSel(dilep[0]),
-                      muonTightSel(dilep[1])))
+        op.NOT(op.AND(lambda_muonTightSel(dilep[0]),
+                      lambda_muonTightSel(dilep[1])))
     )
 
     def fakepair_ElMu(dilep): return op.AND(
         dilepton_matched(dilep),
-        op.NOT(op.AND(elTightSel(dilep[0]),
-                      muonTightSel(dilep[1])))
+        op.NOT(op.AND(lambda_elTightSel(dilep[0]),
+                      lambda_muonTightSel(dilep[1])))
     )
 
     # dileptons vars for both channels #
