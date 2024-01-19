@@ -57,11 +57,10 @@ def muonFakeSel(muons):
         muons, lambda mu: op.AND(
             muonConePt(muons)[mu.idx] >= 10.,
             lepton_associatedJetLessThanMediumBtag(mu),
-            op.OR((
+            op.OR(
                 mu.mvaTTH >= 0.50,
-                op.AND(mu.jetRelIso < 0.8,
-                       muon_deepJetInterpIfMvaFailed(mu))
-            ))
+                op.AND(mu.jetRelIso < 0.8, muon_deepJetInterpIfMvaFailed(mu))
+            )
         ))
 
 
@@ -250,16 +249,16 @@ def defineObjects(self, tree):
     self.clElectrons = cleanElectrons(self.electrons, self.muons)
 
     # Fakeable leptons
-    fakeMuons = muonFakeSel(self.muons)
-    fakeElectrons = elFakeSel(self.clElectrons)
+    self.fakeMuons = muonFakeSel(self.muons)
+    self.fakeElectrons = elFakeSel(self.clElectrons)
 
     # Tight leptons
-    self.tightMuons = muonTightSel(fakeMuons)
-    self.tightElectrons = elTightSel(fakeElectrons)
+    self.tightMuons = muonTightSel(self.fakeMuons)
+    self.tightElectrons = elTightSel(self.fakeElectrons)
 
     # Taus
     taus = tauDef(tree.Tau)
-    self.cleanedTaus = cleanTaus(taus, fakeElectrons, fakeMuons)
+    self.cleanedTaus = cleanTaus(taus, self.fakeElectrons, self.fakeMuons)
 
     # AK4 Jets sorted by their pt
     ak4JetsPreSel = op.sort(ak4jetDef(tree.Jet), lambda jet: -jet.pt)
@@ -267,15 +266,15 @@ def defineObjects(self, tree):
     # clean jets wrt leptons
     if self.channel == 'DL':
         cleanAk4Jets = cleaningWithRespectToLeadingLeptons(
-            fakeElectrons, fakeMuons, 0.4)
+            self.fakeElectrons, self.fakeMuons, 0.4)
         cleanAk8Jets = cleaningWithRespectToLeadingLeptons(
-            fakeElectrons, fakeMuons, 0.8)
+            self.fakeElectrons, self.fakeMuons, 0.8)
 
     if self.channel == 'SL':
         cleanAk4Jets = cleaningWithRespectToLeadingLepton(
-            fakeElectrons, fakeMuons, 0.4)
+            self.fakeElectrons, self.fakeMuons, 0.4)
         cleanAk8Jets = cleaningWithRespectToLeadingLepton(
-            fakeElectrons, fakeMuons, 0.8)
+            self.fakeElectrons, self.fakeMuons, 0.8)
 
     self.ak4Jets = op.select(ak4JetsPreSel, cleanAk4Jets)
     self.ak4JetsByBtagScore = op.sort(self.ak4Jets, lambda j: -j.btagDeepFlavB)
@@ -306,3 +305,84 @@ def defineObjects(self, tree):
         op.deltaR(ak4j.p4, self.ak8BJets[0].p4) > 1.2)
 
     self.ak4JetsCleanedFromAk8b = op.select(self.ak4Jets, cleanAk4FromAk8b)
+
+    # Dilepton lambdas #
+    def leptonOS(l1, l2): return l1.charge != l2.charge
+    if self.isMC:
+        # def is_matched(lep): return op.OR(lep.genPartFlav == 1,  # Prompt muon or electron
+        #                                   lep.genPartFlav == 15)  # From tau decay
+        def is_matched(lep): return op.c_bool(
+            True)  # no gen matching in Run3 so far
+    else:
+        def is_matched(lep): return op.c_bool(True)
+
+    # Tight and fake selections
+    # Tight Dilepton : must also be Gen matched if MC #
+    def dilepton_matched(dilep): return op.AND(
+        is_matched(dilep[0]),
+        is_matched(dilep[1])
+    )
+
+    self.tightpair_ElEl = lambda dilep: op.AND(
+        # dilepton_matched(dilep), # no gen matching in Run3 so far
+        electronTightSel(dilep[0]),
+        electronTightSel(dilep[1])
+    )
+
+    self.tightpair_MuMu = lambda dilep: op.AND(
+        # dilepton_matched(dilep),
+        muonTightSel(dilep[0]),
+        muonTightSel(dilep[1])
+    )
+
+    self.tightpair_ElMu = lambda dilep: op.AND(
+        # dilepton_matched(dilep),
+        elTightSel(dilep[0]),
+        muonTightSel(dilep[1])
+    )
+
+    # Fake Extrapolation dilepton #
+    def fakepair_ElEl(dilep): return op.AND(
+        dilepton_matched(dilep),
+        op.NOT(op.AND(elTightSel(dilep[0]),
+                      elTightSel(dilep[1])))
+    )
+
+    def fakepair_MuMu(dilep): return op.AND(
+        dilepton_matched(dilep),
+        op.NOT(op.AND(muonTightSel(dilep[0]),
+                      muonTightSel(dilep[1])))
+    )
+
+    def fakepair_ElMu(dilep): return op.AND(
+        dilepton_matched(dilep),
+        op.NOT(op.AND(elTightSel(dilep[0]),
+                      muonTightSel(dilep[1])))
+    )
+
+    # dileptons vars for both channels #
+
+    # Preselected dilepton is used for Mll>12 cut #
+    # These are not opposite sign, used in one of the selections #
+    self.ElElDileptonPreSel = op.combine(self.electrons, N=2)
+    self.MuMuDileptonPreSel = op.combine(self.muons, N=2)
+    self.ElMuDileptonPreSel = op.combine((self.electrons, self.muons))
+
+    # Using electrons before muon cleaning since electron-muon pair that has low mass are typically close to each other
+    # OS Preselected dilepton is used for Z Veto #
+    self.OSElElDileptonPreSel = op.combine(
+        self.electrons, N=2, pred=leptonOS)
+    self.OSMuMuDileptonPreSel = op.combine(
+        self.muons, N=2, pred=leptonOS)
+    self.OSElMuDileptonPreSel = op.combine(
+        (self.electrons, self.muons), pred=leptonOS)
+
+    # Dilepton for selection #
+    if self.channel == "DL":
+        self.ElElFakePair = op.combine(self.fakeElectrons, N=2)
+        self.MuMuFakePair = op.combine(self.fakeMuons, N=2)
+        self.ElMuFakePair = op.combine((self.fakeElectrons, self.fakeMuons))
+
+        self.ElElTightPair = op.combine(self.tightElectrons, N=2)
+        self.MuMuTightPair = op.combine(self.tightMuons, N=2)
+        self.ElMuTightPair = op.combine((self.tightElectrons, self.tightMuons))
