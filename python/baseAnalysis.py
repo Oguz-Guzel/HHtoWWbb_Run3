@@ -21,6 +21,7 @@ JECTagDatabase = {
         "D": "Summer22_22Sep2023_RunCD_V2_DATA"},
     "2022EE": {
         "MC": "Summer22EE_22Sep2023_V2_MC",
+        "E": "Summer22EE_22Sep2023_RunE_V2_DATA",
         "F": "Summer22EE_22Sep2023_RunF_V2_DATA",
         "G": "Summer22EE_22Sep2023_RunG_V2_DATA"},
 }

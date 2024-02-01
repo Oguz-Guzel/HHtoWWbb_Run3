@@ -6,7 +6,7 @@ eras:
   "2022":
     luminosity: 8077. # pb^-1
   "2022EE":
-    luminosity: 21129.
+    luminosity: 27007.2
 
 dbcache: dascache
 

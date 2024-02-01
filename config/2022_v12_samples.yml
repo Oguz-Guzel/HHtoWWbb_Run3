@@ -14,7 +14,16 @@ Muon_Run2022D:
   type: data
   group: "data"
   db: das:/Muon/Run2022D-22Sep2023-v1/NANOAOD
-  run_range: &runs_22D [357487, 359021]
+  run_range: &runs_22D [357487, 357733]
+  certified_lumi_file: *lumi_cert_22
+  split: *nsplit
+
+Muon_Run2022E:
+  era: "2022EE"
+  type: data
+  group: "data"
+  db: das:/Muon/Run2022E-22Sep2023-v1/NANOAOD
+  run_range: &runs_22E [359022, 360331]
   certified_lumi_file: *lumi_cert_22
   split: *nsplit
 
@@ -54,6 +63,15 @@ EGamma_Run2022D:
   certified_lumi_file: *lumi_cert_22
   split: *nsplit
 
+EGamma_Run2022E:
+  era: "2022EE"
+  type: data
+  group: "data"
+  db: das:/EGamma/Run2022E-22Sep2023-v1/NANOAOD
+  run_range: *runs_22E
+  certified_lumi_file: *lumi_cert_22
+  split: *nsplit
+
 EGamma_Run2022F:
   era: "2022EE"
   type: data
@@ -87,6 +105,15 @@ MuonEG_Run2022D:
   group: "data"
   db: das:/MuonEG/Run2022D-22Sep2023-v1/NANOAOD
   run_range: *runs_22D
+  certified_lumi_file: *lumi_cert_22
+  split: *nsplit
+
+MuonEG_Run2022E:
+  era: "2022EE"
+  type: data
+  group: "data"
+  db: das:/MuonEG/Run2022E-22Sep2023-v1/NANOAOD
+  run_range: *runs_22E
   certified_lumi_file: *lumi_cert_22
   split: *nsplit
 
@@ -162,7 +189,7 @@ TTtoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8:
   group: "TTbar"
   cross-section: 405.74553
   generated-events: genEventSumw
-  split: -3
+  split: -2
 
 DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8:
   dbs:
