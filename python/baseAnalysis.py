@@ -33,7 +33,7 @@ JERTagDatabase = {
 
 jsonPathBase = "/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/"
 
-JSONFiles = {
+JEC_JSONFiles = {
     "2022": {
         "AK4": jsonPathBase + "JME/2022_Summer22/jet_jerc.json.gz",
         "AK8": jsonPathBase + "JME/2022_Summer22/fatJet_jerc.json.gz"},
@@ -162,7 +162,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         smearTag = JERTagDatabase[era] if isMC else None
 
         cmJMEArgs = {
-            "jsonFile": JSONFiles[era]["AK4"],
+            "jsonFile": JEC_JSONFiles[era]["AK4"],
             "jec": jecTag,
             # "smear": smearTag,
             # "splitJER": True,
@@ -177,10 +177,10 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             enableSystematics=(
                 (lambda v: not v.startswith("jer")) if isMC else None),
             **cmJMEArgs)
-        cmJMEArgs.update({"jsonFile": JSONFiles[era]["AK8"], })
+        cmJMEArgs.update({"jsonFile": JEC_JSONFiles[era]["AK8"], })
         cmJMEArgs.update({"jetAlgoSubjet": "AK4PFPuppi", })
         cmJMEArgs.update({"jecSubjet": jecTag, })
-        cmJMEArgs.update({"jsonFileSubjet": JSONFiles[era]["AK4"], })
+        cmJMEArgs.update({"jsonFileSubjet": JEC_JSONFiles[era]["AK4"], })
         configureJets(tree._FatJet, jetType="AK8PFPuppi", **cmJMEArgs)
 
         # define objects
