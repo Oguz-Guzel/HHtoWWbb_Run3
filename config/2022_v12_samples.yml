@@ -1,3 +1,13 @@
+### SIGNAL ###
+GluGlutoHHto2B2WtoLNu2Q_kl-1p00_kt-1p00_c2-0p00:
+  era: "2022"
+  type: signal
+  group: "HH"
+  db: das:/GluGlutoHHto2B2WtoLNu2Q_kl-1p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2/NANOAODSIM
+  cross-section: 0.2 # check later
+  generated-events: genEventSumw
+  split: &nsplit -1
+
 ### DATA ###
 
 Muon_Run2022C:
@@ -7,7 +17,7 @@ Muon_Run2022C:
   db: das:/Muon/Run2022C-22Sep2023-v1/NANOAOD
   run_range: &runs_22C [355794, 357486]
   certified_lumi_file: &lumi_cert_22 https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions22/Cert_Collisions2022_355100_362760_Golden.json
-  split: &nsplit -1
+  split: *nsplit
 
 Muon_Run2022D:
   era: "2022"

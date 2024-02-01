@@ -35,6 +35,9 @@ plotIt:
   legend:
     position: [0.7, 0.75, 0.91, 0.91]
   groups:
+    Signal:
+      legend: 'HH'
+      line-color: '#000000'
     Data:
       legend: 'data'
     TTbar:
