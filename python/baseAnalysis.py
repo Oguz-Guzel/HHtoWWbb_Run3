@@ -33,6 +33,11 @@ JERTagDatabase = {
 
 jsonPathBase = "/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/"
 
+puWeightsTuple = {
+    "2022": (jsonPathBase + "LUM/2022_Summer22/puWeights.json.gz", "Collisions2022_355100_357900_eraBCD_GoldenJson"),
+    "2022EE": (jsonPathBase + "LUM/2022_Summer22EE/puWeights.json.gz", "Collisions2022_359022_362760_eraEFG_GoldenJson"),
+}
+
 JEC_JSONFiles = {
     "2022": {
         "AK4": jsonPathBase + "JME/2022_Summer22/jet_jerc.json.gz",
@@ -118,9 +123,13 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 "v12", year=era[:4], isMC=isMC, systVariations=systVars),
             backend=self.args.backend or backend)
 
-        # MC weight
+        # MC weight and PU weight
         if isMC:
-            noSel = noSel.refine('genWeight', weight=tree.genWeight)
+            from bamboo.analysisutils import makePileupWeight
+            pileupWeight = makePileupWeight(puWeightsTuple[era], tree.Pileup_nTrueInt, systName="pileup", sel=noSel)
+            logger.info("Applying PU weight")
+            logger.info("Applying genWeight")
+            noSel = noSel.refine('gen_and_puW', weight=[tree.genWeight, pileupWeight])
 
         # Triggers
         self.triggersPerPrimaryDataset = {}
@@ -182,6 +191,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         cmJMEArgs.update({"jecSubjet": jecTag, })
         cmJMEArgs.update({"jsonFileSubjet": JEC_JSONFiles[era]["AK4"], })
         configureJets(tree._FatJet, jetType="AK8PFPuppi", **cmJMEArgs)
+        logger.info("Applying JEC/JER")
 
         # define objects
         defs.defineObjects(self, tree)
