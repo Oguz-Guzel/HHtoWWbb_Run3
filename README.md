@@ -5,6 +5,15 @@
 
 This repository uses the **bamboo analysis framework**, you can install it via the instructions here: https://bamboo-hep.readthedocs.io/en/latest/install.html#fresh-install
 
+Install also CMSJMECalculators with
+```sh
+pip install git+https://gitlab.cern.ch/cp3-cms/CMSJMECalculators.git
+```
+and correctionlib
+```sh
+pip install correctionlib
+```
+
 Then clone this repository in the parent directory containing the bamboo installation:
 
 ```bash
