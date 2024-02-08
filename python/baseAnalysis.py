@@ -104,7 +104,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
 
     def prepare_ondemand(self, tree, sample=None, sampleCfg=None, backend=None):
         era = sampleCfg["era"] if sampleCfg else None
-        isMC = self.isMC(sample)
+        is_MC = self.isMC(sample)
 
         # Decorate the tree
         from bamboo.treedecorators import NanoAODDescription, nanoFatJetCalc, CalcCollectionsGroups
@@ -116,15 +116,15 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             Jet=("pt", "mass"), changes={metName: (f"{metName}T1",)},
             **{metName: ("pt", "phi")})
         systVars = (([nanoFatJetCalc])
-                    + [nanoJetMETCalc_both if isMC else nanoJetMETCalc_data])
+                    + [nanoJetMETCalc_both if is_MC else nanoJetMETCalc_data])
         tree, noSel, be, lumiArgs = super().prepareTree(
             tree, sample=sample, sampleCfg=sampleCfg,
             description=NanoAODDescription.get(
-                "v12", year=era[:4], isMC=isMC, systVariations=systVars),
+                "v12", year=era[:4], isMC=is_MC, systVariations=systVars),
             backend=self.args.backend or backend)
 
         # MC weight and PU weight
-        if isMC:
+        if is_MC:
             from bamboo.analysisutils import makePileupWeight
             pileupWeight = makePileupWeight(puWeightsTuple[era], tree.Pileup_nTrueInt, systName="pileup", sel=noSel)
             logger.info("Applying PU weight")
@@ -158,7 +158,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         # DoubleMuon
         addHLTPath('DoubleMuon', 'Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8')
 
-        if isMC:
+        if is_MC:
             noSel = noSel.refine('trigger',  cut=(
                 op.OR(*chain.from_iterable(self.triggersPerPrimaryDataset.values()))))
         else:
@@ -167,16 +167,16 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
 
         # JEC/JER
         runEra = getRunEra(sample)
-        jecTag = JECTagDatabase[era]["MC" if isMC else runEra]
-        smearTag = JERTagDatabase[era] if isMC else None
+        jecTag = JECTagDatabase[era]["MC" if is_MC else runEra]
+        smearTag = JERTagDatabase[era] if is_MC else None
 
         cmJMEArgs = {
             "jsonFile": JEC_JSONFiles[era]["AK4"],
             "jec": jecTag,
             # "smear": smearTag,
             # "splitJER": True,
-            "jesUncertaintySources": (["Total"] if isMC else None),
-            "isMC": isMC,
+            "jesUncertaintySources": (["Total"] if is_MC else None),
+            "isMC": is_MC,
             "backend": be,
         }
         from bamboo.analysisutils import configureJets, configureType1MET
@@ -184,7 +184,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         configureType1MET(
             getattr(tree, f"_{metName}T1"),
             enableSystematics=(
-                (lambda v: not v.startswith("jer")) if isMC else None),
+                (lambda v: not v.startswith("jer")) if is_MC else None),
             **cmJMEArgs)
         cmJMEArgs.update({"jsonFile": JEC_JSONFiles[era]["AK8"], })
         cmJMEArgs.update({"jetAlgoSubjet": "AK4PFPuppi", })
@@ -197,7 +197,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         defs.defineObjects(self, tree)
 
         # btagging SF
-        if isMC:
+        if is_MC:
             from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
             logger.info("Applying btagging SF")
 
@@ -207,7 +207,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             noSel = noSel.refine("btag", weight=btvWeight)
 
         # top pt reweighting
-        if isMC and sample.startswith("TT"):
+        if is_MC and sample.startswith("TT"):
             def top_pt_weight(pt):
                 return 0.103 * op.exp(-0.0118 * pt) - 0.000134 * pt + 0.973
 
