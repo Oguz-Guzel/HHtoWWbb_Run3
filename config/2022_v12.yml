@@ -65,5 +65,5 @@ plotIt:
     sort-by-yields: True
     legend-columns: 4
     ratio-y-axis: '#frac{Data}{MC}'
-    ratio-y-axis-range: [0.8, 1.2]
+    ratio-y-axis-range: [0.5, 1.5] # [0.5, 1.5] is the default
     show-overflow: True
