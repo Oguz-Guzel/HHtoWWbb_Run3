@@ -2,4 +2,5 @@
 output*
 
 # ignore some others
+config/dascache/*
 __pycache__/
