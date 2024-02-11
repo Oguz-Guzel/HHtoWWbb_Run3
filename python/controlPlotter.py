@@ -229,6 +229,30 @@ class controlPlotter(NanoBaseHHWWbb):
                 Plot.make1D("DL_boosted_InvM_emu", op.invariant_mass(self.firstOSElMu[0].p4, self.firstOSElMu[1].p4), DL_boosted_emu, EqBin(
                     60, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electron-muon pair  (GeV/c^{2})", plotopts=DLboostedEMU_label),
 
+                # pt of the di-lepton
+                Plot.make1D("DL_boosted_dileptonPt_ee", op.sum(self.firstOSElEl[0].pt, self.firstOSElEl[1].pt), DL_boosted_ee, EqBin(
+                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electrons (GeV/c^{2})", plotopts=DLboostedEE_label),
+                Plot.make1D("DL_boosted_dileptonPt_mumu", op.sum(self.firstOSMuMu[0].pt, self.firstOSMuMu[1].pt), DL_boosted_mumu, EqBin(
+                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of muons  (GeV/c^{2})", plotopts=DLboostedMuMu_label),
+                Plot.make1D("DL_boosted_dileptonPt_emu", op.sum(self.firstOSElMu[0].pt, self.firstOSElMu[1].pt), DL_boosted_emu, EqBin(
+                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electron-muon pair  (GeV/c^{2})", plotopts=DLboostedEMU_label),
+
+                # MET pt
+                Plot.make1D("DL_boosted_MET_pt_ee", tree.MET.pt, DL_boosted_ee, EqBin(
+                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLboostedEE_label),
+                Plot.make1D("DL_boosted_MET_pt_mumu", tree.MET.pt, DL_boosted_mumu, EqBin(
+                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLboostedMuMu_label),
+                Plot.make1D("DL_boosted_MET_pt_emu", tree.MET.pt, DL_boosted_emu, EqBin(
+                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLboostedEMU_label),
+                
+                # MET phi
+                Plot.make1D("DL_boosted_MET_phi_ee", tree.MET.phi, DL_boosted_ee, EqBin(
+                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLboostedEE_label),
+                Plot.make1D("DL_boosted_MET_phi_mumu", tree.MET.phi, DL_boosted_mumu, EqBin(
+                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLboostedMuMu_label),
+                Plot.make1D("DL_boosted_MET_phi_emu", tree.MET.phi, DL_boosted_emu, EqBin(
+                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLboostedEMU_label),
+
                 # total charge of leptons
                 Plot.make1D("DL_boosted_totalCharge_ee", op.sum(self.firstOSElEl[0].charge, self.firstOSElEl[1].charge), DL_boosted_ee, EqBin(
                     5, -2.5, 2.5), title="total charge", xTitle="Total charge of electrons", plotopts=DLboostedEE_label),
@@ -403,6 +427,30 @@ class controlPlotter(NanoBaseHHWWbb):
                 Plot.make1D("DL_resolved_InvM_emu", op.invariant_mass(self.firstOSElMu[0].p4, self.firstOSElMu[1].p4), DL_resolved_emu, EqBin(
                     100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electron-muon pair (GeV/c^{2})", plotopts=DLresolvedEMu_label),
 
+                # pt of the di-lepton
+                Plot.make1D("DL_resolved_dileptonPt_ee", op.sum(self.firstOSElEl[0].pt, self.firstOSElEl[1].pt), DL_resolved_ee, EqBin(
+                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electrons (GeV/c^{2})", plotopts=DLresolvedEE_label),
+                Plot.make1D("DL_resolved_dileptonPt_mumu", op.sum(self.firstOSMuMu[0].pt, self.firstOSMuMu[1].pt), DL_resolved_mumu, EqBin(
+                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of muons  (GeV/c^{2})", plotopts=DLresolvedMuMu_label),
+                Plot.make1D("DL_resolved_dileptonPt_emu", op.sum(self.firstOSElMu[0].pt, self.firstOSElMu[1].pt), DL_resolved_emu, EqBin(
+                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electron-muon pair  (GeV/c^{2})", plotopts=DLresolvedEMu_label),
+                
+                # MET pt
+                Plot.make1D("DL_resolved_MET_pt_ee", tree.MET.pt, DL_resolved_ee, EqBin(
+                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolvedEE_label),
+                Plot.make1D("DL_resolved_MET_pt_mumu", tree.MET.pt, DL_resolved_mumu, EqBin(
+                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolvedMuMu_label),
+                Plot.make1D("DL_resolved_MET_pt_emu", tree.MET.pt, DL_resolved_emu, EqBin(
+                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolvedEMu_label),
+                
+                # MET phi
+                Plot.make1D("DL_resolved_MET_phi_ee", tree.MET.phi, DL_resolved_ee, EqBin(
+                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolvedEE_label),
+                Plot.make1D("DL_resolved_MET_phi_mumu", tree.MET.phi, DL_resolved_mumu, EqBin(
+                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolvedMuMu_label),
+                Plot.make1D("DL_resolved_MET_phi_emu", tree.MET.phi, DL_resolved_emu, EqBin(
+                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolvedEMu_label),
+
                 # total charge of leptons
                 Plot.make1D("DL_resolved_totalCharge_ee", op.sum(self.firstOSElEl[0].charge, self.firstOSElEl[1].charge), DL_resolved_ee, EqBin(
                     5, -2.5, 2.5), title="total charge", xTitle="Total charge of electrons", plotopts=DLresolvedEE_label),
@@ -564,6 +612,12 @@ class controlPlotter(NanoBaseHHWWbb):
                 Plot.make1D("SL_boosted_DR_leptonANDak8bjet_mu", op.deltaR(self.tightMuons[0].p4, self.ak8Jets[0].p4), SL_boosted_mu, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=SLboostedMu_label),
 
+                # MET pt
+                Plot.make1D("SL_boosted_MET_pt_e", tree.MET.pt, SL_boosted_e, EqBin(
+                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=SLboostedE_label),
+                Plot.make1D("SL_boosted_MET_pt_mu", tree.MET.pt, SL_boosted_mu, EqBin(
+                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=SLboostedMu_label),
+
 
                 #########################################
                 ######                             ######
@@ -624,6 +678,12 @@ class controlPlotter(NanoBaseHHWWbb):
                     30, -3, 3), title="lepton pT", xTitle="\eta of the lepton (GeV/c)", plotopts=SLresolvedE_label),
                 Plot.make1D("SL_resolved_lepton_eta_mu", self.tightMuons[0].eta, SL_resolved_mu, EqBin(
                     30, -3, 3), title="lepton pT", xTitle="\eta of the lepton (GeV/c)", plotopts=SLresolvedMu_label),
+
+                # MET pt
+                Plot.make1D("SL_resolved_MET_pt_e", tree.MET.pt, SL_resolved_e, EqBin(
+                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=SLresolvedE_label),
+                Plot.make1D("SL_resolved_MET_pt_mu", tree.MET.pt, SL_resolved_mu, EqBin(
+                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=SLresolvedMu_label),
             ])
 
         return plots
