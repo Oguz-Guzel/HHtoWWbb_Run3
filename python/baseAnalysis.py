@@ -80,8 +80,6 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                             required=True, help="Sample template YML file")
         parser.add_argument("--backend", type=str, default="dataframe",
                             help="Backend to use, 'dataframe' (default), 'lazy', or 'compiled'")
-        parser.add_argument("--postprocessed", action="store_true",
-                            help="Run on postprocessed NanoAOD")
 
     def customizeAnalysisCfg(self, analysisCfg):
         # fill sample template using JSON files
@@ -97,15 +95,10 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             analysisCfg["samples"] = samples
 
     def prepareTree(self, tree, sample=None, sampleCfg=None, backend=None):
-        if self.args.postprocessed:
-            return self.prepare_postprocessed(tree, sample=sample, sampleCfg=sampleCfg, backend=backend)
-        else:
-            return self.prepare_ondemand(tree, sample=sample, sampleCfg=sampleCfg, backend=backend)
-
-    def prepare_ondemand(self, tree, sample=None, sampleCfg=None, backend=None):
         era = sampleCfg["era"] if sampleCfg else None
         is_MC = self.isMC(sample)
-
+        from bamboo.plots import CutFlowReport
+        self.yields = CutFlowReport("yields", recursive=True)
         # Decorate the tree
         from bamboo.treedecorators import NanoAODDescription, nanoFatJetCalc, CalcCollectionsGroups
         metName = "PuppiMET"
@@ -130,7 +123,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             logger.info("Applying PU weight")
             logger.info("Applying genWeight")
             noSel = noSel.refine('gen_and_puW', weight=[tree.genWeight, pileupWeight])
-
+        self.yields.add(noSel, "genWeight")
         # Triggers
         self.triggersPerPrimaryDataset = {}
 
@@ -165,6 +158,8 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             noSel = noSel.refine('trigger', cut=makeMultiPrimaryDatasetTriggerSelection(
                 sample, self.triggersPerPrimaryDataset))
 
+        self.yields.add(noSel, "trigger")
+
         # JEC/JER
         runEra = getRunEra(sample)
         jecTag = JECTagDatabase[era]["MC" if is_MC else runEra]
@@ -192,6 +187,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         cmJMEArgs.update({"jsonFileSubjet": JEC_JSONFiles[era]["AK4"], })
         configureJets(tree._FatJet, jetType="AK8PFPuppi", **cmJMEArgs)
         logger.info("Applying JEC/JER")
+        self.yields.add(noSel, "JEC")
 
         # define objects
         defs.defineObjects(self, tree)
@@ -205,6 +201,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 BTV_SF_JSONFiles[era], "particleNet", "btagDeepFlavB", flav, noSel)
             btvWeight = makeBtagWeightItFit(self.ak4Jets, btvSF)
             noSel = noSel.refine("btag", weight=btvWeight)
+        self.yields.add(noSel, "btagging SF")
 
         # top pt reweighting
         if is_MC and sample.startswith("TT"):
@@ -227,6 +224,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
 
             noSel = noSel.refine("topPt", weight=op.systematic(
                 getTopPtWeight(tree), noTopPt=op.c_float(1.)))
+        self.yields.add(noSel, "topPt reweighting")
 
         return tree, noSel, be, lumiArgs
 
