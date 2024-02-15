@@ -52,6 +52,11 @@ BTV_SF_JSONFiles = {
     "2022EE": jsonPathBase + "BTV/2022_Summer22EE/btagging.json.gz",
 }
 
+MUO_SF_JSONFiles = {
+    "2022": jsonPathBase + "MUO/2022_27Jun2023/muon_Z.json.gz",
+    "2022EE": jsonPathBase + "MUO/2022EE_27Jun2023/muon_Z.json.gz",
+}
+
 
 def getRunEra(sample):
     """Return run era (A/B/...) for data sample"""
@@ -119,10 +124,12 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         # MC weight and PU weight
         if is_MC:
             from bamboo.analysisutils import makePileupWeight
-            pileupWeight = makePileupWeight(puWeightsTuple[era], tree.Pileup_nTrueInt, systName="pileup", sel=noSel)
+            pileupWeight = makePileupWeight(
+                puWeightsTuple[era], tree.Pileup_nTrueInt, systName="pileup", sel=noSel)
             logger.info("Applying PU weight")
             logger.info("Applying genWeight")
-            noSel = noSel.refine('gen_and_puW', weight=[tree.genWeight, pileupWeight])
+            noSel = noSel.refine('gen_and_puW', weight=[
+                                 tree.genWeight, pileupWeight])
         self.yields.add(noSel, "genWeight")
         # Triggers
         self.triggersPerPrimaryDataset = {}
@@ -206,7 +213,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         # top pt reweighting
         if is_MC and sample.startswith("TT"):
             def top_pt_weight(pt):
-                return 0.103 * op.exp(-0.0118 * pt) - 0.000134 * pt + 0.973
+                return op.exp(-2.02274e-01 + 1.09734e-04*pt + -1.30088e-07*pt**2 + (5.83494e+01/(pt+1.96252e+02)))
 
             def getTopPtWeight(tree):
                 lastCopy = op.select(
@@ -225,6 +232,52 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             noSel = noSel.refine("topPt", weight=op.systematic(
                 getTopPtWeight(tree), noTopPt=op.c_float(1.)))
         self.yields.add(noSel, "topPt reweighting")
+
+        # Muon SF
+        if is_MC:
+            from bamboo.scalefactors import get_correction
+            logger.info("Applying Muon SF")
+            muonIDSF = get_correction(
+                MUO_SF_JSONFiles[era],
+                "NUM_LooseID_DEN_TrackerMuons",
+                params={"pt": lambda mu: mu.pt,
+                        "abseta": lambda mu: op.abs(mu.eta)},
+                systParam="scale_factors",
+                systNomName="nominal",
+                systName="syst",
+                sel=noSel
+            )
+            # pt and eta cut here since correction are available only for pt > 15 and |eta| < 2.4
+            looseMu = op.select(tree.Muon, lambda mu: op.AND(
+                mu.looseId, mu.pt >= 15, op.abs(mu.eta) < 2.4))
+            noSel = noSel.refine("withDiMu",
+                                 cut=(op.rng_len(looseMu) >= 2),
+                                 weight=[muonIDSF(looseMu[0]),
+                                         muonIDSF(looseMu[1])]
+                                 )
+        self.yields.add(noSel, "muon SF")
+
+        # Electron SF
+        if is_MC:
+            logger.info("Applying Electron SF")
+            electronIDSF = get_correction(
+                MUO_SF_JSONFiles[era],
+                "EGamma_SF2D",
+                params={"pt": lambda ele: ele.pt,
+                        "abseta": lambda ele: op.abs(ele.eta)},
+                systParam="scale_factors",
+                systNomName="nominal",
+                systName="syst",
+                sel=noSel
+            )
+            # pt and eta cut here since correction are available only for pt > 15 and |eta| < 2.5
+            looseEle = op.select(tree.Electron, lambda ele: op.AND(
+                ele.cutBased >= 1, ele.pt >= 15, op.abs(ele.eta) < 2.5))
+            noSel = noSel.refine("withDiEle",
+                                 cut=(op.rng_len(looseEle) >= 2),
+                                 weight=[electronIDSF(looseEle[0]),
+                                         electronIDSF(looseEle[1])]
+                                 )
 
         return tree, noSel, be, lumiArgs
 
