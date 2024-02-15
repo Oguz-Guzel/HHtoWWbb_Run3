@@ -21,10 +21,8 @@ class controlPlotter(NanoBaseHHWWbb):
         plots = []
 
         # cutflow report
-        yields = CutFlowReport("yields", recursive=True)
-        plots.append(yields)
-
-        yields.add(noSel, 'no selection')
+        
+        plots.append(self.yields)
 
         if self.channel == 'DL':
             # get DL selections
@@ -34,12 +32,12 @@ class controlPlotter(NanoBaseHHWWbb):
                     self, noSel)
 
             # cutflow report for DL channel
-            yields.add(DL_boosted_ee, 'DL boosted ee')
-            yields.add(DL_boosted_mumu, 'DL boosted mumu')
-            yields.add(DL_boosted_emu, 'DL boosted emu')
-            yields.add(DL_resolved_ee, 'DL resolved ee')
-            yields.add(DL_resolved_mumu, 'DL resolved mumu')
-            yields.add(DL_resolved_emu, 'DL resolved emu')
+            self.yields.add(DL_boosted_ee, 'DL boosted ee')
+            self.yields.add(DL_boosted_mumu, 'DL boosted mumu')
+            self.yields.add(DL_boosted_emu, 'DL boosted emu')
+            self.yields.add(DL_resolved_ee, 'DL resolved ee')
+            self.yields.add(DL_resolved_mumu, 'DL resolved mumu')
+            self.yields.add(DL_resolved_emu, 'DL resolved emu')
 
             # labels on plots
             DLboostedEE_label = labeler('DL boosted EE')
@@ -65,10 +63,10 @@ class controlPlotter(NanoBaseHHWWbb):
                 SL_boosted_e, SL_boosted_mu = makeSLSelection(self, noSel)
 
             # cutflow report for SL channel
-            yields.add(SL_boosted_e, 'SL boosted e')
-            yields.add(SL_boosted_mu, 'SL boosted mu')
-            yields.add(SL_resolved_e, 'SL resolved e')
-            yields.add(SL_resolved_mu, 'SL resolved mu')
+            self.yields.add(SL_boosted_e, 'SL boosted e')
+            self.yields.add(SL_boosted_mu, 'SL boosted mu')
+            self.yields.add(SL_resolved_e, 'SL resolved e')
+            self.yields.add(SL_resolved_mu, 'SL resolved mu')
 
             # labels on plots
             SLboostedE_label = labeler('SL boosted E')
@@ -145,10 +143,10 @@ class controlPlotter(NanoBaseHHWWbb):
             DNNcat4 = DL_resolved_ee.refine(
                 "DNNcat4", cut=op.in_range(0.92, output[0], 1.0))
 
-            yields.add(DNNcat1, 'DNNcat1')
-            yields.add(DNNcat2, 'DNNcat2')
-            yields.add(DNNcat3, 'DNNcat3')
-            yields.add(DNNcat4, 'DNNcat4')
+            self.yields.add(DNNcat1, 'DNNcat1')
+            self.yields.add(DNNcat2, 'DNNcat2')
+            self.yields.add(DNNcat3, 'DNNcat3')
+            self.yields.add(DNNcat4, 'DNNcat4')
 
             plots.extend([
                 Plot.make1D("dnn_score", output[0], DL_resolved_ee, EqBin(40, 0, 1.), xTitle="DNN Score", plotopts={'labels': [
