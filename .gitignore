@@ -4,3 +4,6 @@ output*
 # ignore some others
 config/dascache/*
 __pycache__/
+*.cc
+2022Re-recoE+PromptFG/*
+2022Re-recoBCD/*
