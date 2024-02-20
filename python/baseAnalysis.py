@@ -100,8 +100,8 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             analysisCfg["samples"] = samples
 
     def prepareTree(self, tree, sample=None, sampleCfg=None, backend=None):
-        era = sampleCfg["era"] if sampleCfg else None
-        is_MC = self.isMC(sample)
+        self.era = sampleCfg["era"] if sampleCfg else None
+        self.is_MC = self.isMC(sample)
         from bamboo.plots import CutFlowReport
         self.yields = CutFlowReport("yields", recursive=True)
         # Decorate the tree
@@ -114,170 +114,42 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             Jet=("pt", "mass"), changes={metName: (f"{metName}T1",)},
             **{metName: ("pt", "phi")})
         systVars = (([nanoFatJetCalc])
-                    + [nanoJetMETCalc_both if is_MC else nanoJetMETCalc_data])
+                    + [nanoJetMETCalc_both if self.is_MC else nanoJetMETCalc_data])
         tree, noSel, be, lumiArgs = super().prepareTree(
             tree, sample=sample, sampleCfg=sampleCfg,
             description=NanoAODDescription.get(
-                "v12", year=era[:4], isMC=is_MC, systVariations=systVars),
+                "v12", year=self.era[:4], isMC=self.is_MC, systVariations=systVars),
             backend=self.args.backend or backend)
-
-        # MC weight and PU weight
-        if is_MC:
-            from bamboo.analysisutils import makePileupWeight
-            pileupWeight = makePileupWeight(
-                puWeightsTuple[era], tree.Pileup_nTrueInt, systName="pileup", sel=noSel)
-            logger.info("Applying PU weight")
-            logger.info("Applying genWeight")
-            noSel = noSel.refine('gen_and_puW', weight=[
-                                 tree.genWeight, pileupWeight])
-        self.yields.add(noSel, "genWeight")
-        # Triggers
-        self.triggersPerPrimaryDataset = {}
-
-        def addHLTPath(PD, HLT):
-            if PD not in self.triggersPerPrimaryDataset.keys():
-                self.triggersPerPrimaryDataset[PD] = []
-            try:
-                self.triggersPerPrimaryDataset[PD].append(
-                    getattr(tree.HLT, HLT))
-            except AttributeError:
-                print("Couldn't find branch tree.HLT.%s, cross check!" % HLT)
-
-        # Muon
-        addHLTPath('Muon', 'IsoMu24')
-        addHLTPath('Muon', 'IsoMu27')
-        addHLTPath('Muon', 'Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8')
-        # EGamma
-        addHLTPath('EGamma', 'Ele32_WPTight_Gsf')
-        addHLTPath('EGamma', 'Ele23_Ele12_CaloIdL_TrackIdL_IsoVL')
-        # MuonEG
-        addHLTPath('MuonEG', 'Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ')
-        # SingleMuon
-        addHLTPath('SingleMuon', 'IsoMu24')
-        addHLTPath('SingleMuon', 'IsoMu27')
-        # DoubleMuon
-        addHLTPath('DoubleMuon', 'Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8')
-
-        if is_MC:
-            noSel = noSel.refine('trigger',  cut=(
-                op.OR(*chain.from_iterable(self.triggersPerPrimaryDataset.values()))))
-        else:
-            noSel = noSel.refine('trigger', cut=makeMultiPrimaryDatasetTriggerSelection(
-                sample, self.triggersPerPrimaryDataset))
-
-        self.yields.add(noSel, "trigger")
 
         # JEC/JER
         runEra = getRunEra(sample)
-        jecTag = JECTagDatabase[era]["MC" if is_MC else runEra]
-        smearTag = JERTagDatabase[era] if is_MC else None
+        jecTag = JECTagDatabase[self.era]["MC" if self.is_MC else runEra]
+        smearTag = JERTagDatabase[self.era] if self.is_MC else None
 
         cmJMEArgs = {
-            "jsonFile": JEC_JSONFiles[era]["AK4"],
+            "jsonFile": JEC_JSONFiles[self.era]["AK4"],
             "jec": jecTag,
             # "smear": smearTag,
             # "splitJER": True,
-            "jesUncertaintySources": (["Total"] if is_MC else None),
-            "isMC": is_MC,
-            "backend": be,
+            "jesUncertaintySources": (["Total"] if self.is_MC else None),
+            "isMC": self.is_MC,
+            "backend": be
         }
         from bamboo.analysisutils import configureJets, configureType1MET
         configureJets(tree._Jet, jetType="AK4PFPuppi", **cmJMEArgs)
+        metName = "PuppiMET"
         configureType1MET(
             getattr(tree, f"_{metName}T1"),
             enableSystematics=(
-                (lambda v: not v.startswith("jer")) if is_MC else None),
+                (lambda v: not v.startswith("jer")) if self.is_MC else None),
             **cmJMEArgs)
-        cmJMEArgs.update({"jsonFile": JEC_JSONFiles[era]["AK8"], })
+        cmJMEArgs.update({"jsonFile": JEC_JSONFiles[self.era]["AK8"], })
         cmJMEArgs.update({"jetAlgoSubjet": "AK4PFPuppi", })
         cmJMEArgs.update({"jecSubjet": jecTag, })
-        cmJMEArgs.update({"jsonFileSubjet": JEC_JSONFiles[era]["AK4"], })
+        cmJMEArgs.update({"jsonFileSubjet": JEC_JSONFiles[self.era]["AK4"], })
         configureJets(tree._FatJet, jetType="AK8PFPuppi", **cmJMEArgs)
         logger.info("Applying JEC/JER")
         self.yields.add(noSel, "JEC")
-
-        # define objects
-        defs.defineObjects(self, tree)
-
-        # btagging SF
-        if is_MC:
-            from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
-            logger.info("Applying btagging SF")
-
-            def btvSF(flav): return get_bTagSF_itFit(
-                BTV_SF_JSONFiles[era], "particleNet", "btagDeepFlavB", flav, noSel)
-            btvWeight = makeBtagWeightItFit(self.ak4Jets, btvSF)
-            noSel = noSel.refine("btag", weight=btvWeight)
-        self.yields.add(noSel, "btagging SF")
-
-        # top pt reweighting
-        if is_MC and sample.startswith("TT"):
-            def top_pt_weight(pt):
-                return op.exp(-2.02274e-01 + 1.09734e-04*pt + -1.30088e-07*pt**2 + (5.83494e+01/(pt+1.96252e+02)))
-
-            def getTopPtWeight(tree):
-                lastCopy = op.select(
-                    tree.GenPart, lambda p: (op.static_cast("int", p.statusFlags) >> 13) & 1)
-                tops = op.select(lastCopy, lambda p: p.pdgId == 6)
-                antitops = op.select(lastCopy, lambda p: p.pdgId == -6)
-                weight = op.switch(op.AND(op.rng_len(tops) >= 1, op.rng_len(antitops) >= 1),
-                                   op.sqrt(top_pt_weight(
-                                       tops[0].pt) * top_pt_weight(antitops[0].pt)),
-                                   1.)
-                return weight
-
-            logger.info(
-                "Applying Top Pt reweighting (only for TTbar samples)")
-
-            noSel = noSel.refine("topPt", weight=op.systematic(
-                getTopPtWeight(tree), noTopPt=op.c_float(1.)))
-        self.yields.add(noSel, "topPt reweighting")
-
-        # Muon SF
-        if is_MC:
-            from bamboo.scalefactors import get_correction
-            logger.info("Applying Muon SF")
-            muonIDSF = get_correction(
-                MUO_SF_JSONFiles[era],
-                "NUM_LooseID_DEN_TrackerMuons",
-                params={"pt": lambda mu: mu.pt,
-                        "abseta": lambda mu: op.abs(mu.eta)},
-                systParam="scale_factors",
-                systNomName="nominal",
-                systName="syst",
-                sel=noSel
-            )
-            # pt and eta cut here since correction are available only for pt > 15 and |eta| < 2.4
-            looseMu = op.select(tree.Muon, lambda mu: op.AND(
-                mu.looseId, mu.pt >= 15, op.abs(mu.eta) < 2.4))
-            noSel = noSel.refine("withDiMu",
-                                 cut=(op.rng_len(looseMu) >= 2),
-                                 weight=[muonIDSF(looseMu[0]),
-                                         muonIDSF(looseMu[1])]
-                                 )
-        self.yields.add(noSel, "muon SF")
-
-        # Electron SF
-        if is_MC:
-            logger.info("Applying Electron SF")
-            electronIDSF = get_correction(
-                MUO_SF_JSONFiles[era],
-                "EGamma_SF2D",
-                params={"pt": lambda ele: ele.pt,
-                        "abseta": lambda ele: op.abs(ele.eta)},
-                systParam="scale_factors",
-                systNomName="nominal",
-                systName="syst",
-                sel=noSel
-            )
-            # pt and eta cut here since correction are available only for pt > 15 and |eta| < 2.5
-            looseEle = op.select(tree.Electron, lambda ele: op.AND(
-                ele.cutBased >= 1, ele.pt >= 15, op.abs(ele.eta) < 2.5))
-            noSel = noSel.refine("withDiEle",
-                                 cut=(op.rng_len(looseEle) >= 2),
-                                 weight=[electronIDSF(looseEle[0]),
-                                         electronIDSF(looseEle[1])]
-                                 )
 
         return tree, noSel, be, lumiArgs
 

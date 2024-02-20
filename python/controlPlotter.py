@@ -5,6 +5,7 @@ from bamboo import treefunctions as op
 
 from baseAnalysis import NanoBaseHHWWbb
 from selections import makeDLSelection, makeSLSelection
+from scalefactors import ScaleFactors as sf
 import definitions as defs
 from utils import labeler
 
@@ -21,8 +22,13 @@ class controlPlotter(NanoBaseHHWWbb):
         plots = []
 
         # cutflow report
-        
         plots.append(self.yields)
+
+        # define objects
+        defs.defineObjects(self, tree)
+
+        # common scale factors
+        noSel = sf.commonSF(self, tree, noSel, sample).refine("SF")
 
         if self.channel == 'DL':
             # get DL selections
@@ -30,6 +36,18 @@ class controlPlotter(NanoBaseHHWWbb):
                 DL_boosted_emu, DL_resolved_ee, \
                 DL_resolved_mumu, DL_resolved_emu = makeDLSelection(
                     self, noSel)
+            
+            # #muonSF
+            # DL_boosted_mumu = sf.muonSF(self, DL_boosted_mumu)
+            # DL_boosted_emu = sf.muonSF(self, DL_boosted_emu)
+            # DL_resolved_mumu = sf.muonSF(self, DL_resolved_mumu)
+            # DL_resolved_emu = sf.muonSF(self, DL_resolved_emu)
+
+            # electronSF
+            DL_boosted_ee = sf.electronSF(self, DL_boosted_ee).refine("DL_boosted_ee_eleSF")
+            DL_resolved_ee = sf.electronSF(self, DL_resolved_ee).refine("DL_resolved_ee_eleSF")
+            DL_boosted_emu = sf.electronSF(self, DL_boosted_emu).refine("DL_boosted_emu_eleSF")
+            DL_resolved_emu = sf.electronSF(self, DL_resolved_emu).refine("DL_resolved_emu_eleSF")
 
             # cutflow report for DL channel
             self.yields.add(DL_boosted_ee, 'DL boosted ee')
@@ -242,7 +260,7 @@ class controlPlotter(NanoBaseHHWWbb):
                     100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLboostedMuMu_label),
                 Plot.make1D("DL_boosted_MET_pt_emu", tree.MET.pt, DL_boosted_emu, EqBin(
                     100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLboostedEMU_label),
-                
+
                 # MET phi
                 Plot.make1D("DL_boosted_MET_phi_ee", tree.MET.phi, DL_boosted_ee, EqBin(
                     7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLboostedEE_label),
@@ -432,7 +450,7 @@ class controlPlotter(NanoBaseHHWWbb):
                     60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of muons  (GeV/c^{2})", plotopts=DLresolvedMuMu_label),
                 Plot.make1D("DL_resolved_dileptonPt_emu", op.sum(self.firstOSElMu[0].pt, self.firstOSElMu[1].pt), DL_resolved_emu, EqBin(
                     60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electron-muon pair  (GeV/c^{2})", plotopts=DLresolvedEMu_label),
-                
+
                 # MET pt
                 Plot.make1D("DL_resolved_MET_pt_ee", tree.MET.pt, DL_resolved_ee, EqBin(
                     100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolvedEE_label),
@@ -440,7 +458,7 @@ class controlPlotter(NanoBaseHHWWbb):
                     100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolvedMuMu_label),
                 Plot.make1D("DL_resolved_MET_pt_emu", tree.MET.pt, DL_resolved_emu, EqBin(
                     100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolvedEMu_label),
-                
+
                 # MET phi
                 Plot.make1D("DL_resolved_MET_phi_ee", tree.MET.phi, DL_resolved_ee, EqBin(
                     7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolvedEE_label),
