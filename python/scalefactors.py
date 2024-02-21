@@ -220,6 +220,7 @@ class ScaleFactors():
             else:
                 None
         self.yields.add(sel, "muon SF")
+        return sel
 
     def electronSF(self, sel):
         # Electron SF
