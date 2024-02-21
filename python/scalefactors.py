@@ -70,7 +70,6 @@ class ScaleFactors():
     """Class to handle scale factors"""
 
     def commonSF(self, tree, sel, sample):
-        sampleName = sample.name
         # MC weight
         if self.is_MC:
             logger.info("Applying genWeight")
@@ -96,41 +95,47 @@ class ScaleFactors():
                     getattr(tree.HLT, HLT))
             except AttributeError:
                 print("Couldn't find branch tree.HLT.%s, cross check!" % HLT)
-                
+
         if self.era == '2022':
-            if sampleName.startswith("SingleMuon_") or sampleName.startswith("DoubleMuon_"):
+            if sample.startswith("SingleMuon_") or sample.startswith("DoubleMuon_"):
                 addHLTPath(tree, "DoubleMuon_", "TripleMu_12_10_5")
-                addHLTPath(tree, "DoubleMuon_", "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
+                addHLTPath(tree, "DoubleMuon_",
+                           "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
                 addHLTPath(tree, "SingleMuon_", "IsoMu24")
                 addHLTPath(tree, "SingleMuon_", "IsoMu27")
             else:
                 addHLTPath(tree, "Muon_", "TripleMu_12_10_5")
-                addHLTPath(tree, "Muon_", "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
+                addHLTPath(tree, "Muon_",
+                           "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
                 addHLTPath(tree, "Muon_", "IsoMu24")
                 addHLTPath(tree, "Muon_", "IsoMu27")
             addHLTPath(tree, "EGamma_", "Ele32_WPTight_Gsf")
             addHLTPath(tree, "EGamma_", "Ele16_Ele12_Ele8_CaloIdL_TrackIdL")
             addHLTPath(tree, "EGamma_", "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL")
-            addHLTPath(tree, "MuonEG_", "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
+            addHLTPath(tree, "MuonEG_",
+                       "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
             addHLTPath(tree, "MuonEG_", "Mu8_DiEle12_CaloIdL_TrackIdL")
             addHLTPath(tree, "MuonEG_", "DiMu9_Ele9_CaloIdL_TrackIdL_DZ")
 
         if self.era == '2022EE':
-            if sampleName.startswith("SingleMuon_") or sampleName.startswith("DoubleMuon_"):
+            if sample.startswith("SingleMuon_") or sample.startswith("DoubleMuon_"):
                 addHLTPath(tree, "DoubleMuon_", "TripleMu_12_10_5")
-                addHLTPath(tree, "DoubleMuon_", "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
+                addHLTPath(tree, "DoubleMuon_",
+                           "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
                 addHLTPath(tree, "SingleMuon_", "IsoMu24")
                 addHLTPath(tree, "SingleMuon_", "IsoMu27")
             else:
                 addHLTPath(tree, "Muon_", "TripleMu_12_10_5")
-                addHLTPath(tree, "Muon_", "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
+                addHLTPath(tree, "Muon_",
+                           "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
                 addHLTPath(tree, "Muon_", "IsoMu24")
-                addHLTPath(tree, "Muon_", "IsoMu27")            
+                addHLTPath(tree, "Muon_", "IsoMu27")
             addHLTPath(tree, "EGamma_", "Ele16_Ele12_Ele8_CaloIdL_TrackIdL")
             addHLTPath(tree, "MuonEG_", "DiMu9_Ele9_CaloIdL_TrackIdL_DZ")
             addHLTPath(tree, "MuonEG_", "Mu8_DiEle12_CaloIdL_TrackIdL")
             addHLTPath(tree, "EGamma_", "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL")
-            addHLTPath(tree, "MuonEG_", "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
+            addHLTPath(tree, "MuonEG_",
+                       "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
             addHLTPath(tree, "EGamma_", "Ele32_WPTight_Gsf")
 
         if self.is_MC:
