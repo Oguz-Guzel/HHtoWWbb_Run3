@@ -38,10 +38,10 @@ class controlPlotter(NanoBaseHHWWbb):
                     self, noSel)
             
             # #muonSF
-            # DL_boosted_mumu = sf.muonSF(self, DL_boosted_mumu)
-            # DL_boosted_emu = sf.muonSF(self, DL_boosted_emu)
-            # DL_resolved_mumu = sf.muonSF(self, DL_resolved_mumu)
-            # DL_resolved_emu = sf.muonSF(self, DL_resolved_emu)
+            DL_boosted_mumu = sf.muonSF(self, DL_boosted_mumu).refine("DL_boosted_mumu_muSF")
+            DL_resolved_mumu = sf.muonSF(self, DL_resolved_mumu).refine("DL_resolved_mumu_muSF")
+            DL_boosted_emu = sf.muonSF(self, DL_boosted_emu).refine("DL_boosted_emu_muSF")
+            DL_resolved_emu = sf.muonSF(self, DL_resolved_emu).refine("DL_resolved_emu_muSF")
 
             # electronSF
             DL_boosted_ee = sf.electronSF(self, DL_boosted_ee).refine("DL_boosted_ee_eleSF")
