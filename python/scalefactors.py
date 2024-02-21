@@ -98,45 +98,45 @@ class ScaleFactors():
 
         if self.era == '2022':
             if sample.startswith("SingleMuon_") or sample.startswith("DoubleMuon_"):
-                addHLTPath(tree, "DoubleMuon_", "TripleMu_12_10_5")
-                addHLTPath(tree, "DoubleMuon_",
+                addHLTPath("DoubleMuon_", "TripleMu_12_10_5")
+                addHLTPath("DoubleMuon_",
                            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
-                addHLTPath(tree, "SingleMuon_", "IsoMu24")
-                addHLTPath(tree, "SingleMuon_", "IsoMu27")
+                addHLTPath("SingleMuon_", "IsoMu24")
+                addHLTPath("SingleMuon_", "IsoMu27")
             else:
-                addHLTPath(tree, "Muon_", "TripleMu_12_10_5")
-                addHLTPath(tree, "Muon_",
+                addHLTPath("Muon_", "TripleMu_12_10_5")
+                addHLTPath("Muon_",
                            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
-                addHLTPath(tree, "Muon_", "IsoMu24")
-                addHLTPath(tree, "Muon_", "IsoMu27")
-            addHLTPath(tree, "EGamma_", "Ele32_WPTight_Gsf")
-            addHLTPath(tree, "EGamma_", "Ele16_Ele12_Ele8_CaloIdL_TrackIdL")
-            addHLTPath(tree, "EGamma_", "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL")
-            addHLTPath(tree, "MuonEG_",
+                addHLTPath("Muon_", "IsoMu24")
+                addHLTPath("Muon_", "IsoMu27")
+            addHLTPath("EGamma_", "Ele32_WPTight_Gsf")
+            addHLTPath("EGamma_", "Ele16_Ele12_Ele8_CaloIdL_TrackIdL")
+            addHLTPath("EGamma_", "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL")
+            addHLTPath("MuonEG_",
                        "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
-            addHLTPath(tree, "MuonEG_", "Mu8_DiEle12_CaloIdL_TrackIdL")
-            addHLTPath(tree, "MuonEG_", "DiMu9_Ele9_CaloIdL_TrackIdL_DZ")
+            addHLTPath("MuonEG_", "Mu8_DiEle12_CaloIdL_TrackIdL")
+            addHLTPath("MuonEG_", "DiMu9_Ele9_CaloIdL_TrackIdL_DZ")
 
         if self.era == '2022EE':
             if sample.startswith("SingleMuon_") or sample.startswith("DoubleMuon_"):
-                addHLTPath(tree, "DoubleMuon_", "TripleMu_12_10_5")
-                addHLTPath(tree, "DoubleMuon_",
+                addHLTPath("DoubleMuon_", "TripleMu_12_10_5")
+                addHLTPath("DoubleMuon_",
                            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
-                addHLTPath(tree, "SingleMuon_", "IsoMu24")
-                addHLTPath(tree, "SingleMuon_", "IsoMu27")
+                addHLTPath("SingleMuon_", "IsoMu24")
+                addHLTPath("SingleMuon_", "IsoMu27")
             else:
-                addHLTPath(tree, "Muon_", "TripleMu_12_10_5")
-                addHLTPath(tree, "Muon_",
+                addHLTPath("Muon_", "TripleMu_12_10_5")
+                addHLTPath("Muon_",
                            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
-                addHLTPath(tree, "Muon_", "IsoMu24")
-                addHLTPath(tree, "Muon_", "IsoMu27")
-            addHLTPath(tree, "EGamma_", "Ele16_Ele12_Ele8_CaloIdL_TrackIdL")
-            addHLTPath(tree, "MuonEG_", "DiMu9_Ele9_CaloIdL_TrackIdL_DZ")
-            addHLTPath(tree, "MuonEG_", "Mu8_DiEle12_CaloIdL_TrackIdL")
-            addHLTPath(tree, "EGamma_", "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL")
-            addHLTPath(tree, "MuonEG_",
+                addHLTPath("Muon_", "IsoMu24")
+                addHLTPath("Muon_", "IsoMu27")
+            addHLTPath("EGamma_", "Ele16_Ele12_Ele8_CaloIdL_TrackIdL")
+            addHLTPath("MuonEG_", "DiMu9_Ele9_CaloIdL_TrackIdL_DZ")
+            addHLTPath("MuonEG_", "Mu8_DiEle12_CaloIdL_TrackIdL")
+            addHLTPath("EGamma_", "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL")
+            addHLTPath("MuonEG_",
                        "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
-            addHLTPath(tree, "EGamma_", "Ele32_WPTight_Gsf")
+            addHLTPath("EGamma_", "Ele32_WPTight_Gsf")
 
         if self.is_MC:
             sel = sel.refine('trigger',  cut=(
