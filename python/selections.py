@@ -52,9 +52,9 @@ def makeDLSelection(self, noSel):
     ElElLooseSel = op.combine(
         self.clElectrons, N=2, pred=lambda lep1, lep2: lep1.charge != lep2.charge)
     MuMuLooseSel = op.combine(
-        self.muons, N=2, pred=lambda lep1, lep2: lep1.charge != lep2.charge)
+        self.preMuons, N=2, pred=lambda lep1, lep2: lep1.charge != lep2.charge)
     ElMuLooseSel = op.combine(
-        (self.clElectrons, self.muons), N=2, pred=lambda el, mu: el.charge != mu.charge)
+        (self.clElectrons, self.preMuons), N=2, pred=lambda el, mu: el.charge != mu.charge)
 
     # OS tight dilepton collections
     ElElTightSel = op.combine(self.tightElectrons, N=2,
@@ -163,9 +163,9 @@ def makeSLSelection(self, noSel):
     ElElLooseSel = op.combine(
         self.clElectrons, N=2, pred=lambda lep1, lep2: lep1.charge != lep2.charge)
     MuMuLooseSel = op.combine(
-        self.muons, N=2, pred=lambda lep1, lep2: lep1.charge != lep2.charge)
+        self.preMuons, N=2, pred=lambda lep1, lep2: lep1.charge != lep2.charge)
     ElMuLooseSel = op.combine(
-        (self.clElectrons, self.muons), N=2, pred=lambda el, mu: el.charge != mu.charge)
+        (self.clElectrons, self.preMuons), N=2, pred=lambda el, mu: el.charge != mu.charge)
 
     # Z-veto : reject events with dileptons of same type with mass around Z peak
     outZCut = op.AND(outZ(ElElLooseSel), outZ(MuMuLooseSel))

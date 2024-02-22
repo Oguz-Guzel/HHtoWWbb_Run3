@@ -25,13 +25,10 @@ def lepton_associatedJetLessThanMediumBtag(lep): return op.OR(
 def lepton_associatedJetLessThanTightBtag(lep): return op.OR(
     op.NOT(hasAssociatedJet(lep)), lep.jet.btagDeepFlavB <= 0.7264)  # 2018 value
 
-
-def electronTightSel(el): return el.mvaTTH >= 0.30
-
 # Object definitions
 
 
-def muonDef(muons):
+def muonPreSel(muons):
     return op.select(muons, lambda mu: op.AND(
         mu.pt >= 5.,
         op.abs(mu.eta) <= 2.4,
@@ -59,14 +56,12 @@ def muonFakeSel(muons):
 
 
 def muonTightSel(muons): return op.select(muons, lambda mu: op.AND(
-    muonConePt(muons)[mu.idx] >= 10.,
-    lepton_associatedJetLessThanMediumBtag(mu),
-    mu.mvaTTH >= 0.50,
+    mu.mediumPromptId,  # this run3 replacement along with mediumId, for mu.mvaTTH >= 0.50
     mu.mediumId
 ))
 
 
-def elDef(electrons):
+def elePreSel(electrons):
     return op.select(electrons, lambda el: op.AND(
         el.pt >= 7.,
         op.abs(el.eta) <= 2.5,
@@ -74,7 +69,7 @@ def elDef(electrons):
         op.abs(el.dz) <= 0.1,
         el.sip3d <= 8,
         el.miniPFRelIso_all <= 0.4,
-        # el.mvaNoIso > < VALUE TO BE DETERMINED >,
+        el.mvaIso_WP90, # no mvaNoIso_WPL for run3 signal, using this instead
         el.lostHits <= 1
     ))
 
@@ -114,20 +109,9 @@ def elFakeSel(electrons):
     ))
 
 
-def elTightSel(electrons): return op.select(electrons, lambda el: op.AND(
-    elConePt(electrons)[el.idx] >= 10.,
-    op.OR(
-        op.AND(op.abs(el.eta+el.deltaEtaSC)
-               <= 1.479, el.sieie <= 0.011),
-        op.AND(op.abs(el.eta+el.deltaEtaSC) > 1.479, el.sieie <= 0.030)
-    ),
-    el.hoe <= 0.10,
-    el.eInvMinusPInv >= -0.04,
-    el.convVeto,
-    el.mvaTTH >= 0.30,
-    el.lostHits == 0,
-    lepton_associatedJetLessThanMediumBtag(el),
-))
+def elTightSel(electrons): return op.select(electrons, lambda el:
+                                            el.mvaIso_WP90
+                                            )
 
 
 def ak4jetDef(jets):
@@ -244,22 +228,22 @@ def defineObjects(self, tree):
     self.electron_conept = elConePt(tree.Electron)
 
     # lepton definitions sorted by their cone-pt
-    self.muons = op.sort(muonDef(tree.Muon), lambda mu: -
-                         self.muon_conept[mu.idx])
+    self.preMuons = op.sort(muonPreSel(tree.Muon), lambda mu: -
+                            self.muon_conept[mu.idx])
     # can be liberated from 'self' ?
-    self.electrons = op.sort(elDef(tree.Electron),
-                             lambda el: -self.electron_conept[el.idx])
+    self.preElectrons = op.sort(elePreSel(tree.Electron),
+                                lambda el: -self.electron_conept[el.idx])
 
     # cleaning electrons wrt muons
-    self.clElectrons = cleanElectrons(self.electrons, self.muons)
+    self.clElectrons = cleanElectrons(self.preElectrons, self.preMuons)
 
     # Fakeable leptons
-    self.fakeMuons = muonFakeSel(self.muons)
+    self.fakeMuons = muonFakeSel(self.preMuons)
     self.fakeElectrons = elFakeSel(self.clElectrons)
 
     # tight leptons
-    self.tightMuons = muonTightSel(self.muons)
-    self.tightElectrons = elTightSel(self.clElectrons)
+    self.tightMuons = muonTightSel(self.fakeMuons)
+    self.tightElectrons = elTightSel(self.fakeElectrons)
 
     # Taus
     taus = tauDef(tree.Tau)
