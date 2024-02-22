@@ -12,7 +12,7 @@ cd CMSJMECalculators
 git fetch "https://:@gitlab.cern.ch:8443/aguzel/CMSJMECalculators.git" 'CMSJMECalculators-correctionlib'
 git checkout -b 'CMSJMECalculators-CMSJMECalculators-correctionlib' FETCH_HEAD
 cd ..
-pip install CMSJMECalculators
+pip install ./CMSJMECalculators
 ```
 and correctionlib
 ```sh
