@@ -2,15 +2,10 @@ import os
 import re
 import yaml
 import logging
-from itertools import chain
+
+from bamboo.analysismodules import NanoAODModule, HistogramsModule
 
 import utils
-import definitions as defs
-
-from bamboo import treefunctions as op
-from bamboo import treedecorators as td
-from bamboo.analysismodules import NanoAODModule, HistogramsModule
-from bamboo.analysisutils import makeMultiPrimaryDatasetTriggerSelection
 
 logger = logging.getLogger(__name__)
 
