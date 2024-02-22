@@ -5,9 +5,14 @@
 
 This repository uses the **bamboo analysis framework**, you can install it via the instructions here: https://bamboo-hep.readthedocs.io/en/latest/install.html#fresh-install
 
-Install also CMSJMECalculators with
+Install also CMSJMECalculators with correctionlib PR until the PR is merged
 ```sh
-pip install git+https://gitlab.cern.ch/cp3-cms/CMSJMECalculators.git
+git clone https://gitlab.cern.ch/cp3-cms/CMSJMECalculators.git
+cd CMSJMECalculators
+git fetch "https://:@gitlab.cern.ch:8443/aguzel/CMSJMECalculators.git" 'CMSJMECalculators-correctionlib'
+git checkout -b 'CMSJMECalculators-CMSJMECalculators-correctionlib' FETCH_HEAD
+cd ..
+pip install CMSJMECalculators
 ```
 and correctionlib
 ```sh
