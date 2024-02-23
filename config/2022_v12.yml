@@ -32,6 +32,7 @@ plotIt:
     blinded-range-fill-style: 1001
     blinded-range-fill-color: "#29556270"
     yields-table-align: v
+    yields-table-text-align: l
   legend:
     position: [0.7, 0.75, 0.91, 0.91]
   groups:
