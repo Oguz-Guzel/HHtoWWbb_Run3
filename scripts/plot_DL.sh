@@ -1,9 +1,9 @@
 #!/bin/sh
 
-cp scripts/controlPlotter_DL.tex $1
-cd $1
+cp scripts/controlPlotter_DL.tex ${1}/plots
+cd ${1}/plots
 pdflatex controlPlotter_DL.tex
-cp controlPlotter_DL.pdf ..
-cd ../../..
+cd -
+mv ${1}/plots/controlPlotter_DL.pdf ${1}.pdf
 # pdflatex yields.tex
 # cd ../..
