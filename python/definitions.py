@@ -69,7 +69,7 @@ def elePreSel(electrons):
         op.abs(el.dz) <= 0.1,
         el.sip3d <= 8,
         el.miniPFRelIso_all <= 0.4,
-        el.mvaIso_WP90, # no mvaNoIso_WPL for run3 signal, using this instead
+        el.mvaIso_WP90,  # no mvaNoIso_WPL for run3 signal, using this instead
         el.lostHits <= 1
     ))
 
@@ -141,7 +141,7 @@ def ak8jetDef(jets):
 # bTagging for ak4 jets
 
 
-def ak4BtagSel(jet): return jet.btagDeepFlavB > 0.2770
+def ak4BtagSel(jet): return jet.btagPNetB > 0.277 # value for 2018 deep jet algo
 
 
 def tauDef(taus):

@@ -153,7 +153,7 @@ class ScaleFactors():
             logger.info("Applying btagging SF")
 
             def btvSF(flav): return get_bTagSF_itFit(
-                BTV_SF_JSONFiles[self.era], "particleNet", "btagDeepFlavB", flav, sel)
+                BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", flav, sel)
             btvWeight = makeBtagWeightItFit(self.ak4Jets, btvSF)
             sel = sel.refine("btag", weight=btvWeight)
         self.yields.add(sel, "btagging SF")
