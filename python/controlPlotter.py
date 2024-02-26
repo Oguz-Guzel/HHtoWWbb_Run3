@@ -1,5 +1,5 @@
 
-from bamboo.plots import Plot, CutFlowReport, Skim
+from bamboo.plots import Plot, Skim
 from bamboo.plots import EquidistantBinning as EqBin
 from bamboo import treefunctions as op
 

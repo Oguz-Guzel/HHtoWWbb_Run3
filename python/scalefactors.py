@@ -260,4 +260,5 @@ class ScaleFactors():
                                  cut=[self.firstOSElMu[0].pt >= 10],
                                  weight=electronIDSF(self.firstOSElMu[0])
                                  )
+        self.yields.add(sel, "electron SF")
         return sel

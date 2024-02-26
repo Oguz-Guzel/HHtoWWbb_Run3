@@ -98,7 +98,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         self.era = sampleCfg["era"] if sampleCfg else None
         self.is_MC = self.isMC(sample)
         from bamboo.plots import CutFlowReport
-        self.yields = CutFlowReport("yields", recursive=True)
+        self.yields = CutFlowReport("yields", recursive=False, printInLog=False)
         # Decorate the tree
         from bamboo.treedecorators import NanoAODDescription, nanoFatJetCalc, CalcCollectionsGroups
         metName = "PuppiMET"
