@@ -3,7 +3,7 @@ output*
 
 # ignore some others
 config/dascache/*
-config/2022_v12_samplestest.yml
+config/test.yml
 __pycache__/
 *.cc
 2022Re-recoE+PromptFG/*
