@@ -163,7 +163,7 @@ SingleMuon_Run2022C:
   certified_lumi_file: *lumi_cert_22
   split: *nsplit
 
-## MC ###
+# ## MC ###
 
 TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8:
   dbs:
@@ -181,7 +181,7 @@ TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8:
   group: "TTbar"
   cross-section: 98.036113
   generated-events: genEventSumw
-  split: *nsplit
+  split: &nsplit2 -1
 
 TTtoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8:
   dbs:
@@ -258,15 +258,34 @@ WZ_TuneCP5_13p6TeV_pythia8:
   generated-events: genEventSumw
   split: *nsplit2
 
-WtoLNu-2Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8:
+WtoLNu-2Jets_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8:
   dbs:
-    "2022": das:/WtoLNu-2Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
-    "2022EE": das:/WtoLNu-2Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM
+    "2022": das:/WtoLNu-2Jets_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v3/NANOAODSIM # 1546 files
+    "2022EE": das:/WtoLNu-2Jets_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v3/NANOAODSIM # 3432 files
   type: mc
   group: "WJets"
-  cross-section: 67710.0
+  cross-section: 5.557e+04
   generated-events: genEventSumw
   split: *nsplit2
+
+WtoLNu-2Jets_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8:
+  dbs:
+    "2022": das:/WtoLNu-2Jets_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM # 1145 files
+    "2022EE": das:/WtoLNu-2Jets_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM # 2669 files
+  type: mc
+  group: "WJets"
+  cross-section: 9.420e+03
+  generated-events: genEventSumw
+  split: *nsplit2
+
+WtoLNu-2Jets_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8:
+  dbs:
+    "2022": das:/WtoLNu-2Jets_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM # 999 files
+    "2022EE": das:/WtoLNu-2Jets_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM # 2135 files
+  type: mc
+  group: "WJets"
+  cross-section: 3.616e+03
+  generated-events: genEventSumw
 
 ZZ_TuneCP5_13p6TeV_pythia8:
   dbs:
