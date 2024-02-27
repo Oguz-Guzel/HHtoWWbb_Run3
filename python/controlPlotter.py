@@ -443,11 +443,11 @@ class controlPlotter(NanoBaseHHWWbb):
                     30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolvedEMu_label),
 
                 # btagging score of the jet
-                Plot.make1D("DL_boosted_subleadingJet_btagScore_ee", self.ak4BJets[1].btagPNetB, DL_resolved_ee, EqBin(
+                Plot.make1D("DL_resolved_subleadingJet_btagScore_ee", self.ak4BJets[1].btagPNetB, DL_resolved_ee, EqBin(
                     100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolvedEE_label),
-                Plot.make1D("DL_boosted_subleadingJet_btagScore_mumu", self.ak4BJets[1].btagPNetB, DL_resolved_mumu, EqBin(
+                Plot.make1D("DL_resolved_subleadingJet_btagScore_mumu", self.ak4BJets[1].btagPNetB, DL_resolved_mumu, EqBin(
                     100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolvedMuMu_label),
-                Plot.make1D("DL_boosted_subleadingJet_btagScore_emu", self.ak4BJets[1].btagPNetB, DL_resolved_emu, EqBin(
+                Plot.make1D("DL_resolved_subleadingJet_btagScore_emu", self.ak4BJets[1].btagPNetB, DL_resolved_emu, EqBin(
                     100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolvedEMu_label),
 
                 # DR between leading and sub-leading jet

@@ -202,31 +202,31 @@ TTtoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8:
   split: *nsplit
 
 DYto2L-2Jets_MLL-50_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8:
-    dbs:
-        "2022": das:/DYto2L-2Jets_MLL-50_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM # 173 files
-        "2022EE": das:/DYto2L-2Jets_MLL-50_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM # 452 files
-    group: "DY"
-    cross-section: 5.401e+03
-    generated-events: genEventSumw
-    split: *nsplit5
+  dbs:
+      "2022": das:/DYto2L-2Jets_MLL-50_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM # 173 files
+      "2022EE": das:/DYto2L-2Jets_MLL-50_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM # 452 files
+  group: "DY"
+  cross-section: 5.401e+03
+  generated-events: genEventSumw
+  split: *nsplit5
 
 DYto2L-2Jets_MLL-50_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8:
-    dbs:
-        "2022": das:/DYto2L-2Jets_MLL-50_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM # 196 files
-        "2022EE": das:/DYto2L-2Jets_MLL-50_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM # 454 files
-    group: "DY"
-    cross-section: 1.005e+03
-    generated-events: genEventSumw
-    split: *nsplit5
+  dbs:
+      "2022": das:/DYto2L-2Jets_MLL-50_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM # 196 files
+      "2022EE": das:/DYto2L-2Jets_MLL-50_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM # 454 files
+  group: "DY"
+  cross-section: 1.005e+03
+  generated-events: genEventSumw
+  split: *nsplit5
 
 DYto2L-2Jets_MLL-50_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8:
-    dbs:
-        "2022": das:/DYto2L-2Jets_MLL-50_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM # 177 files
-        "2022EE": das:/DYto2L-2Jets_MLL-50_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM # 386 files
-    group: "DY"
-    cross-section: 3.845e+02
-    generated-events: genEventSumw
-    split: *nsplit5
+  dbs:
+      "2022": das:/DYto2L-2Jets_MLL-50_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM # 177 files
+      "2022EE": das:/DYto2L-2Jets_MLL-50_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM # 386 files
+  group: "DY"
+  cross-section: 3.845e+02
+  generated-events: genEventSumw
+  split: *nsplit5
 
 DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8:
   dbs:
@@ -286,6 +286,7 @@ WtoLNu-2Jets_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8:
   group: "WJets"
   cross-section: 3.616e+03
   generated-events: genEventSumw
+  split: *nsplit5
 
 ZZ_TuneCP5_13p6TeV_pythia8:
   dbs:
