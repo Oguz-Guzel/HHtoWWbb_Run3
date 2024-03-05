@@ -28,11 +28,6 @@ JERTagDatabase = {
 
 jsonPathBase = "/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/"
 
-puWeightsTuple = {
-    "2022": (jsonPathBase + "LUM/2022_Summer22/puWeights.json.gz", "Collisions2022_355100_357900_eraBCD_GoldenJson"),
-    "2022EE": (jsonPathBase + "LUM/2022_Summer22EE/puWeights.json.gz", "Collisions2022_359022_362760_eraEFG_GoldenJson"),
-}
-
 JEC_JSONFiles = {
     "2022": {
         "AK4": jsonPathBase + "JME/2022_Summer22/jet_jerc.json.gz",
@@ -40,16 +35,6 @@ JEC_JSONFiles = {
     "2022EE": {
         "AK4": jsonPathBase + "JME/2022_Summer22EE/jet_jerc.json.gz",
         "AK8": jsonPathBase + "JME/2022_Summer22EE/fatJet_jerc.json.gz"},
-}
-
-BTV_SF_JSONFiles = {
-    "2022": jsonPathBase + "BTV/2022_Summer22/btagging.json.gz",
-    "2022EE": jsonPathBase + "BTV/2022_Summer22EE/btagging.json.gz",
-}
-
-MUO_SF_JSONFiles = {
-    "2022": jsonPathBase + "MUO/2022_27Jun2023/muon_Z.json.gz",
-    "2022EE": jsonPathBase + "MUO/2022EE_27Jun2023/muon_Z.json.gz",
 }
 
 
@@ -98,7 +83,8 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         self.era = sampleCfg["era"] if sampleCfg else None
         self.is_MC = self.isMC(sample)
         from bamboo.plots import CutFlowReport
-        self.yields = CutFlowReport("yields", recursive=False, printInLog=False)
+        self.yields = CutFlowReport(
+            "yields", recursive=False, printInLog=False)
         # Decorate the tree
         from bamboo.treedecorators import NanoAODDescription, nanoFatJetCalc, CalcCollectionsGroups
         metName = "PuppiMET"
@@ -143,7 +129,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         cmJMEArgs.update({"jecSubjet": jecTag, })
         cmJMEArgs.update({"jsonFileSubjet": JEC_JSONFiles[self.era]["AK4"], })
         configureJets(tree._FatJet, jetType="AK8PFPuppi", **cmJMEArgs)
-        logger.info("Applying JEC/JER")
+        logger.info("Applying Jet and MET systematics")
         self.yields.add(noSel, "JEC")
 
         return tree, noSel, be, lumiArgs
