@@ -28,7 +28,7 @@ class controlPlotter(NanoBaseHHWWbb):
         defs.defineObjects(self, tree)
 
         # common scale factors
-        noSel = sf.commonSF(self, tree, noSel, sample).refine("SF")
+        noSel = sf.commonSF(self, tree, noSel, sample)
 
         if self.channel == 'DL':
             # get DL selections
@@ -37,17 +37,22 @@ class controlPlotter(NanoBaseHHWWbb):
                 DL_resolved_mumu, DL_resolved_emu = makeDLSelection(
                     self, noSel)
             
-            # #muonSF
-            DL_boosted_mumu = sf.muonSF(self, DL_boosted_mumu).refine("DL_boosted_mumu_muSF")
-            DL_resolved_mumu = sf.muonSF(self, DL_resolved_mumu).refine("DL_resolved_mumu_muSF")
-            DL_boosted_emu = sf.muonSF(self, DL_boosted_emu).refine("DL_boosted_emu_muSF")
-            DL_resolved_emu = sf.muonSF(self, DL_resolved_emu).refine("DL_resolved_emu_muSF")
+            # muonSF
+            DL_boosted_mumu = sf.muonSF(self, DL_boosted_mumu)
+            DL_resolved_mumu = sf.muonSF(self, DL_resolved_mumu)
+            DL_boosted_emu = sf.muonSF(self, DL_boosted_emu)
+            DL_resolved_emu = sf.muonSF(self, DL_resolved_emu)
 
             # electronSF
-            DL_boosted_ee = sf.electronSF(self, DL_boosted_ee).refine("DL_boosted_ee_eleSF")
-            DL_resolved_ee = sf.electronSF(self, DL_resolved_ee).refine("DL_resolved_ee_eleSF")
-            DL_boosted_emu = sf.electronSF(self, DL_boosted_emu).refine("DL_boosted_emu_eleSF")
-            DL_resolved_emu = sf.electronSF(self, DL_resolved_emu).refine("DL_resolved_emu_eleSF")
+            DL_boosted_ee = sf.electronSF(self, DL_boosted_ee)
+            DL_resolved_ee = sf.electronSF(self, DL_resolved_ee)
+            DL_boosted_emu = sf.electronSF(self, DL_boosted_emu)
+            DL_resolved_emu = sf.electronSF(self, DL_resolved_emu)
+            
+            # btagging SF, only for resolved since the btagSF function takes only ak4 jets for now
+            DL_resolved_ee = sf.btagSF(self, DL_resolved_ee)
+            DL_resolved_mumu = sf.btagSF(self, DL_resolved_mumu)
+            DL_resolved_emu = sf.btagSF(self, DL_resolved_emu)
 
             # cutflow report for DL channel
             self.yields.add(DL_boosted_ee, 'DL boosted ee')
@@ -419,11 +424,11 @@ class controlPlotter(NanoBaseHHWWbb):
                     30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolvedEMu_label),
 
                 # btagging score of the jet
-                Plot.make1D("DL_boosted_jet_btagScore_ee", self.ak4BJets[0].btagPNetB, DL_resolved_ee, EqBin(
+                Plot.make1D("DL_resolved_jet_btagScore_ee", self.ak4BJets[0].btagPNetB, DL_resolved_ee, EqBin(
                     100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the leading jet", plotopts=DLresolvedEE_label),
-                Plot.make1D("DL_boosted_jet_btagScore_mumu", self.ak4BJets[0].btagPNetB, DL_resolved_mumu, EqBin(
+                Plot.make1D("DL_resolved_jet_btagScore_mumu", self.ak4BJets[0].btagPNetB, DL_resolved_mumu, EqBin(
                     100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the leading jet", plotopts=DLresolvedMuMu_label),
-                Plot.make1D("DL_boosted_jet_btagScore_emu", self.ak4BJets[0].btagPNetB, DL_resolved_emu, EqBin(
+                Plot.make1D("DL_resolved_jet_btagScore_emu", self.ak4BJets[0].btagPNetB, DL_resolved_emu, EqBin(
                     100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the leading jet", plotopts=DLresolvedEMu_label),
 
                 # sub-leading jet pt

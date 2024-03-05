@@ -147,17 +147,6 @@ class ScaleFactors():
 
         self.yields.add(sel, "trigger")
 
-        # btagging SF
-        if self.is_MC:
-            from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
-            logger.info("Applying btagging SF")
-
-            def btvSF(flav): return get_bTagSF_itFit(
-                BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", flav, sel)
-            btvWeight = makeBtagWeightItFit(self.ak4Jets, btvSF)
-            sel = sel.refine("btag", weight=btvWeight)
-        self.yields.add(sel, "btagging SF")
-
         # top pt reweighting
         if self.is_MC and sample.startswith("TT"):
             def top_pt_weight(pt):
@@ -180,7 +169,20 @@ class ScaleFactors():
             sel = sel.refine("topPt", weight=op.systematic(
                 getTopPtWeight(tree), noTopPt=op.c_float(1.)))
         self.yields.add(sel, "topPt reweighting")
+        return sel
 
+    def btagSF(self, sel):
+        # btagging SF
+        if self.is_MC:
+            from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
+            logger.info("Applying btagging SF for "+sel.name)
+            def btvSF(flav): return get_bTagSF_itFit(
+                BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", flav, sel)
+            btvWeight = makeBtagWeightItFit(self.ak4Jets, btvSF)
+            sel = sel.refine(sel.name+"_btagSF", weight=btvWeight)
+        else:
+            None
+        self.yields.add(sel, "btagging SF")
         return sel
 
     def muonSF(self, sel):

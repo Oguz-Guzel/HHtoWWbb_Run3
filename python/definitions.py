@@ -11,19 +11,19 @@ def muon_x(mu): return op.min(
 
 
 def muon_btagInterpolation(mu): return muon_x(
-    mu)*0.0494 + (1-muon_x(mu))*0.2770  # 2018 values
+    mu)*0.047 + (1-muon_x(mu))*0.245
 
 
-def muon_deepJetInterpIfMvaFailed(mu): return op.OR(op.NOT(
-    hasAssociatedJet(mu)), mu.jet.btagDeepFlavB < muon_btagInterpolation(mu))
+def muon_pNetInterpIfMvaFailed(mu): return op.OR(op.NOT(
+    hasAssociatedJet(mu)), mu.jet.btagPNetB < muon_btagInterpolation(mu))
 
 
 def lepton_associatedJetLessThanMediumBtag(lep): return op.OR(
-    op.NOT(hasAssociatedJet(lep)), lep.jet.btagDeepFlavB <= 0.2770)  # 2018 value
+    op.NOT(hasAssociatedJet(lep)), lep.jet.btagPNetB <= 0.245)
 
 
 def lepton_associatedJetLessThanTightBtag(lep): return op.OR(
-    op.NOT(hasAssociatedJet(lep)), lep.jet.btagDeepFlavB <= 0.7264)  # 2018 value
+    op.NOT(hasAssociatedJet(lep)), lep.jet.btagPNetB <= 0.6734)
 
 # Object definitions
 
@@ -51,7 +51,7 @@ def muonConePt(muons):
 def muonFakeSel(muons):
     return op.select(muons, lambda mu: op.AND(
         muonConePt(muons)[mu.idx] >= 10.,
-        op.OR(lepton_associatedJetLessThanMediumBtag(mu), op.AND(mu.jetRelIso < 0.8, muon_deepJetInterpIfMvaFailed(mu))))
+        op.OR(lepton_associatedJetLessThanMediumBtag(mu), op.AND(mu.jetRelIso < 0.8, muon_pNetInterpIfMvaFailed(mu))))
     )
 
 
@@ -141,7 +141,7 @@ def ak8jetDef(jets):
 # bTagging for ak4 jets
 
 
-def ak4BtagSel(jet): return jet.btagPNetB > 0.277 # value for 2018 deep jet algo
+def ak4BtagSel(jet): return jet.btagPNetB > 0.245
 
 
 def tauDef(taus):
@@ -266,7 +266,7 @@ def defineObjects(self, tree):
             self.fakeElectrons, self.fakeMuons, 0.8)
 
     self.ak4Jets = op.select(ak4JetsPreSel, self.cleanAk4Jets)
-    self.ak4JetsByBtagScore = op.sort(self.ak4Jets, lambda j: -j.btagDeepFlavB)
+    self.ak4JetsByBtagScore = op.sort(self.ak4Jets, lambda j: -j.btagPNetB)
 
     self.ak4BJets = op.select(self.ak4Jets, ak4BtagSel)
 
@@ -274,17 +274,17 @@ def defineObjects(self, tree):
     self.ak8JetsDef = ak8jetDef(tree.FatJet)
 
     if self.channel == 'SL':  # sorted by btag score
-        ak8JetsPreSel = op.sort(self.ak8JetsDef, lambda j: -j.btagDeepB)
+        ak8JetsPreSel = op.sort(self.ak8JetsDef, lambda j: -j.btagPNetB)
     if self.channel == 'DL':  # sorted by pt
         ak8JetsPreSel = op.sort(self.ak8JetsDef, lambda j: -j.pt)
 
     self.ak8Jets = op.select(ak8JetsPreSel, self.cleanAk8Jets)
 
-    # 2018 DeepJet WP
-    def subjetBtag(subjet): return subjet.btagDeepB > 0.4184
-
-    def ak8Btag(fatjet): return op.OR(op.AND(fatjet.subJet1.pt >= 30, subjetBtag(fatjet.subJet1)),
-                                      op.AND(fatjet.subJet2.pt >= 30, subjetBtag(fatjet.subJet2)))
+    def ak8Btag(fatjet): return op.AND(
+        fatjet.particleNet_XbbVsQCD > 0.4,
+        op.OR(fatjet.subJet1.pt >= 30,
+              fatjet.subJet2.pt >= 30)
+    )
 
     self.ak8BJets = op.select(self.ak8Jets, ak8Btag)
 
