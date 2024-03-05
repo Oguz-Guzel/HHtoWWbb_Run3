@@ -1,12 +1,23 @@
 ### SIGNAL ###
 GluGlutoHHto2B2WtoLNu2Q_kl-1p00_kt-1p00_c2-0p00:
-  era: "2022"
   type: signal
   group: "HH"
-  db: das:/GluGlutoHHto2B2WtoLNu2Q_kl-1p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2/NANOAODSIM
-  cross-section: 0.2 # check later
+  dbs:
+    "2022": das:/GluGlutoHHto2B2WtoLNu2Q_kl-1p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
+    "2022EE": das:/GluGlutoHHto2B2WtoLNu2Q_kl-1p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v3/NANOAODSIM
+  cross-section: 0.02964 # value from xsdb, BR may be needed
   generated-events: genEventSumw
-  split: &nsplit -1
+  split: -25
+
+GluGlutoHHto2B2Vto2L2Nu_kl-1p00_kt-1p00_c2-0p00:
+  type: signal
+  group: "HH"
+  dbs:
+    "2022": das:/GluGlutoHHto2B2Vto2L2Nu_kl-1p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v1/NANOAODSIM
+    "2022EE": das:/GluGlutoHHto2B2Vto2L2Nu_kl-1p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM
+  cross-section: 0.02964 # value from xsdb, BR may be needed
+  generated-events: genEventSumw
+  split: -25
 
 ### DATA ###
 
@@ -17,7 +28,7 @@ Muon_Run2022C:
   db: das:/Muon/Run2022C-22Sep2023-v1/NANOAOD
   run_range: &runs_22C [355794, 357486]
   certified_lumi_file: &lumi_cert_22 https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions22/Cert_Collisions2022_355100_362760_Golden.json
-  split: *nsplit
+  split: &nsplit -2
 
 Muon_Run2022D:
   era: "2022"
