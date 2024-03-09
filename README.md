@@ -61,7 +61,7 @@ then to produce plots, just execute:
 using the `parquet` output file that contains skims and the DNN.py file, you can perform machine learning applications;
 
 ```sh
-python DNN.py -s <path-to-the-skim-file> -o <path-to-an-output-directory>
+python python/DNN.py -s <path-to-the-skim-file> -o <path-to-an-output-directory>
 ```
 
 Then passing `--mvaModels=<path-to-dnn-outputs>` option, you can apply DNN score cuts on your analysis.
