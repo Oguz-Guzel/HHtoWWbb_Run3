@@ -4,9 +4,9 @@ tree: Events
 
 eras:
   "2022":
-    luminosity: 8077. # pb^-1
+    luminosity: 7875.0 # pb^-1
   "2022EE":
-    luminosity: 27007.2
+    luminosity: 26337.0
 
 dbcache: dascache
 
@@ -36,10 +36,7 @@ plotIt:
   legend:
     position: [0.7, 0.75, 0.91, 0.91]
   groups:
-    Signal:
-      legend: 'HH'
-      line-color: '#000000'
-    Data:
+    data:
       legend: 'data'
     TTbar:
       legend: 't#bar{t}'
