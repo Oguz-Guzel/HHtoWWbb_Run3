@@ -2,19 +2,33 @@
 # coding: utf-8
 
 import optparse
+print("import optparse")
 import importlib
+print("import importlib")
 import matplotlib
+print("import matplotlib")
 import matplotlib.pyplot as plt
+print("import matplotlib.pyplot  as plt")
 from matplotlib.backends.backend_pdf import PdfPages
+print("from matplotlib.backends.backend_pdf import PdfPages")
 import numpy as np
+print("import numpy as np")
 import pyarrow.parquet as pq
+print("import pyarrow.parquet as pq")
 import pandas as pd
+print("import pandas as pd")
 from sklearn.model_selection import train_test_split
+print("from sklearn.model_selection import train_test_split")
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder 
+print("from sklearn.preprocessing import LabelEncoder, OneHotEncoder ")
 import tensorflow as tf
+print("import tensorflow as tf")
 from tensorflow import keras
+print("import tensorflow import keras")
 from tensorflow.keras import layers
+print("from tensorflow.keras import layers")
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+print("from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau")
 
 
 usage = 'usage: %prog [options]'
