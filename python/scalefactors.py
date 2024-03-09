@@ -168,6 +168,8 @@ class ScaleFactors():
 
             sel = sel.refine("topPt", weight=op.systematic(
                 getTopPtWeight(tree), noTopPt=op.c_float(1.)))
+        else:
+            sel = sel.refine("topPt", weight=op.c_float(1.))
         self.yields.add(sel, "topPt reweighting")
         return sel
 
@@ -181,7 +183,7 @@ class ScaleFactors():
             btvWeight = makeBtagWeightItFit(self.ak4Jets, btvSF)
             sel = sel.refine(sel.name+"_btagSF", weight=btvWeight)
         else:
-            None
+            sel = sel.refine(sel.name+"_btagSF", weight=op.c_float(1.))
         self.yields.add(sel, "btagging SF")
         return sel
 
@@ -220,7 +222,7 @@ class ScaleFactors():
                                  weight=muonIDSF(self.firstOSElMu[1])
                                  )
             else:
-                None
+                sel = sel.refine(sel.name+"_muonSF", weight=op.c_float(1.))
         self.yields.add(sel, "muon SF")
         return sel
 
@@ -262,5 +264,7 @@ class ScaleFactors():
                                  cut=[self.firstOSElMu[0].pt >= 10],
                                  weight=electronIDSF(self.firstOSElMu[0])
                                  )
+            else:
+                sel = sel.refine(sel.name+"_electronSF", weight=op.c_float(1.))
         self.yields.add(sel, "electron SF")
         return sel
