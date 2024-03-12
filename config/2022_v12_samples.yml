@@ -20,7 +20,7 @@ GluGlutoHHto2B2Vto2L2Nu_kl-1p00_kt-1p00_c2-0p00:
   branching-ratio: 0.10614564 # BR(W->LNu)^2=(3*10.86/100)^2
   generated-events: genEventSumw
   split: -25
-  line-color: 0
+  line-color: 3
   legend: 'HH\rightarrow bbll\nu\nu'
 
 ### DATA ###
