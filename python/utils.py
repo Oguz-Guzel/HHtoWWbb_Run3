@@ -32,7 +32,7 @@ def labeler(label):
     return {'labels': [{'text': label, 'position': [0.235, 0.9], 'size': 24}]}
 
 
-def run_Plotit(cfgName, workdir, inDir, outDir, counterReader, config, plotIt, verbose):
+def custom_Plotit(cfgName, workdir, inDir, outDir, counterReader, config, plotIt, verbose):
     import collections
     import shutil
     import os
@@ -68,17 +68,16 @@ def run_Plotit(cfgName, workdir, inDir, outDir, counterReader, config, plotIt, v
         mergedHists = {}
 
         if smpCfg.get("group") in _gp:
-            # copy results file to outDir
             shutil.copyfile(os.path.join(
                 inDir, f"{smp}.root"), os.path.join(outDir, f"{smp}.root"))
             keep_cfg[smp] = smpCfg
         else:
             resultsFile = openFileAndGet(
                 os.path.join(inDir, f"{smp}.root"), mode="READ")
+            logger.info("Stacking signal sample: {0}".format(smp))
             xsc = smpCfg["cross-section"]
             gevt = counterReader(resultsFile)[smpCfg["generated-events"]]
             br = smpCfg["branching-ratio"]
-
             smpScale = (lumi * xsc * br) / gevt
 
             for hk in resultsFile.GetListOfKeys():
@@ -92,7 +91,6 @@ def run_Plotit(cfgName, workdir, inDir, outDir, counterReader, config, plotIt, v
                     mergedHists[name].SetDirectory(0)
                 else:
                     mergedHists[name].Add(hist)
-
             resultsFile.Close()
 
             normalizedFile = openFileAndGet(
@@ -149,6 +147,10 @@ def run_Plotit(cfgName, workdir, inDir, outDir, counterReader, config, plotIt, v
 
             for smp, cfg in hadd_cfg.items():
                 outf.write(f'  {smp}full.root:\n')
+                # smpFile = openFileAndGet(
+                # os.path.join(outDir, f"{smp}full.root"), mode="READ")
+                # gevt = counterReader(smpFile)[smpCfg["generated-events"]]
+                # outf.write(f"    generated-events: {gevt}\n")
                 for k, v in cfg.items():
                     if k in ['type', 'group', 'line-width', 'line-type', 'legend', 'line-color', 'branching-ratio', 'cross-section', 'era']:
                         outf.write(f"    {k}: {v}\n")
