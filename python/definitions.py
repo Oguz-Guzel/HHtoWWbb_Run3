@@ -274,7 +274,7 @@ def defineObjects(self, tree):
     self.ak8JetsDef = ak8jetDef(tree.FatJet)
 
     if self.channel == 'SL':  # sorted by btag score
-        ak8JetsPreSel = op.sort(self.ak8JetsDef, lambda j: -j.btagPNetB)
+        ak8JetsPreSel = op.sort(self.ak8JetsDef, lambda j: -j.particleNet_XbbVsQCD)
     if self.channel == 'DL':  # sorted by pt
         ak8JetsPreSel = op.sort(self.ak8JetsDef, lambda j: -j.pt)
 
