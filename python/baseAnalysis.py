@@ -84,7 +84,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         self.is_MC = self.isMC(sample)
         from bamboo.plots import CutFlowReport
         self.yields = CutFlowReport(
-            "yields", recursive=False, printInLog=False)
+            "yields", recursive=True, printInLog=False)
         # Decorate the tree
         from bamboo.treedecorators import NanoAODDescription, nanoFatJetCalc, CalcCollectionsGroups
         metName = "PuppiMET"
@@ -165,26 +165,27 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 readCounters=self.readCounters, plotDefaults=self.plotDefaults,
                 vetoFileAttributes=self.__class__.CustomSampleAttributes)
             # runPlotIt(
-                # cfgName, workdir=workdir, plotIt=self.args.plotIt, eras=(
-                #     eraMode, eras),
-                # verbose=self.args.verbose)
-        ### hadd signal files and create another plots.yml as plots_full.yml
+            # cfgName, workdir=workdir, plotIt=self.args.plotIt, eras=(
+            #     eraMode, eras),
+            # verbose=self.args.verbose)
+        # hadd signal files and create another plots.yml as plots_full.yml
         import os
         import shutil
         outDir = os.path.join(resultsdir, "normalizedSummedSignal")
-        if os.path.isdir(outDir): 
+        if os.path.isdir(outDir):
             shutil.rmtree(outDir)
         os.makedirs(outDir)
-        utils.run_Plotit(cfgName, workdir, resultsdir, outDir, self.readCounters, config, plotIt=self.args.plotIt, verbose=self.args.verbose)
-        ### end of merging signal samples
+        utils.custom_Plotit(cfgName, workdir, resultsdir, outDir, self.readCounters,
+                            config, plotIt=self.args.plotIt, verbose=self.args.verbose)
+        # end of merging signal samples
 
         def runPDF(workdir, channel=self.args.channel):
             return f"""
             cp scripts/controlPlotter_{channel}.tex {workdir}/plots_full
             cd {workdir}/plots_full
             pdflatex controlPlotter_{channel}.tex > /dev/null 2>&1
+            mv controlPlotter_{channel}.pdf ..
             cd -
-            mv {workdir}/plots_full/controlPlotter_{channel}.pdf {workdir}.pdf
             # pdflatex yields.tex
             # cd ../..
             """
@@ -194,7 +195,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             logger.info(f"PDF presentation created: {workdir}.pdf")
         except Exception as e:
             print(e)
-        
+
         # produce skims
         from bamboo.plots import Skim
         skims = [ap for ap in self.plotList if isinstance(ap, Skim)]
@@ -235,5 +236,3 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                     df.to_parquet(pqoutname)
                     print(
                         f"Saved dataframe for skim {skim.name} to {pqoutname}")
-
-
