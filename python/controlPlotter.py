@@ -36,7 +36,7 @@ class controlPlotter(NanoBaseHHWWbb):
                 DL_boosted_emu, DL_resolved_ee, \
                 DL_resolved_mumu, DL_resolved_emu = makeDLSelection(
                     self, noSel)
-            
+
             # muonSF
             DL_boosted_mumu = sf.muonSF(self, DL_boosted_mumu)
             DL_resolved_mumu = sf.muonSF(self, DL_resolved_mumu)
@@ -48,8 +48,8 @@ class controlPlotter(NanoBaseHHWWbb):
             DL_resolved_ee = sf.electronSF(self, DL_resolved_ee)
             DL_boosted_emu = sf.electronSF(self, DL_boosted_emu)
             DL_resolved_emu = sf.electronSF(self, DL_resolved_emu)
-            
-            # btagging SF, only for resolved since the btagSF function takes only ak4 jets for now
+
+            # btagging SF, only for resolved since the btagSF function takes only ak4 jets for now, will update once ak8 corrections are available
             DL_resolved_ee = sf.btagSF(self, DL_resolved_ee)
             DL_resolved_mumu = sf.btagSF(self, DL_resolved_mumu)
             DL_resolved_emu = sf.btagSF(self, DL_resolved_emu)
@@ -69,15 +69,6 @@ class controlPlotter(NanoBaseHHWWbb):
             DLresolvedEE_label = labeler('DL resolved EE')
             DLresolvedMuMu_label = labeler('DL resolved MuMu')
             DLresolvedEMu_label = labeler('DL resolved EMu')
-
-            DLresolvedEEdnnCat1_label = labeler(
-                'DL resolved EE DNN cat. 1')
-            DLresolvedEEdnnCat2_label = labeler(
-                'DL resolved EE DNN cat. 2')
-            DLresolvedEEdnnCat3_label = labeler(
-                'DL resolved EE DNN cat. 3')
-            DLresolvedEEdnnCat4_label = labeler(
-                'DL resolved EE DNN cat. 4')
 
         if self.channel == 'SL':
             # get SL selections
@@ -137,6 +128,14 @@ class controlPlotter(NanoBaseHHWWbb):
         #                            MVA evaluation                                 #
         #############################################################################
         if self.args.mvaModels and self.channel == 'DL':
+            DLresolvedEEdnnCat1_label = labeler(
+                'DL resolved EE DNN cat. 1')
+            DLresolvedEEdnnCat2_label = labeler(
+                'DL resolved EE DNN cat. 2')
+            DLresolvedEEdnnCat3_label = labeler(
+                'DL resolved EE DNN cat. 3')
+            DLresolvedEEdnnCat4_label = labeler(
+                'DL resolved EE DNN cat. 4')
             mvaVars_DL_resolved.pop("weight", None)
 
             # import random
