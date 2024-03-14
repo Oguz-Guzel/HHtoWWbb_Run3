@@ -52,12 +52,6 @@ bambooRun -m python/controlPlotter.py config/2022_v12.yml -o ./outputDir/ --dist
 ```
 Instead of passing everytime `--envConfig config/cern.ini`, you can copy the content of that file to `~/.config/bamboorc`.
 
-then to produce plots, just execute:
-
-```sh
-./scripts/plot_<SL or DL>.sh <path to output/plots>
-```
-
 using the `parquet` output file that contains skims and the DNN.py file, you can perform machine learning applications;
 
 ```sh
