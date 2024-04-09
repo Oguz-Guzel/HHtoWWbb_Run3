@@ -65,6 +65,8 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                             required=True, help="Sample template YML file")
         parser.add_argument("--backend", type=str, default="dataframe",
                             help="Backend to use, 'dataframe' (default), 'lazy', or 'compiled'")
+        parser.add_argument("--sync", action="store_true", default=False,
+                            help="Run synchronisation")
 
     def customizeAnalysisCfg(self, analysisCfg):
         # fill sample template using JSON files
@@ -194,7 +196,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             os.system(runPDF(workdir))
             logger.info(f"PDF presentation created: {workdir}.pdf")
         except Exception as e:
-            print(e)
+            logger.info(e)
 
         # produce skims
         from bamboo.plots import Skim
@@ -205,34 +207,52 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             config, [], eras=self.args.eras[1], workdir=workdir, resultsdir=resultsdir, readCounters=self.readCounters, vetoFileAttributes=self.__class__.CustomSampleAttributes)
 
         if skims and not self.args.mvaModels:
+            sync_dfs = []
+            mva_dfs = []
             for skim in skims:
                 pqoutname = os.path.join(resultsdir, f"{skim.name}.parquet")
                 if os.path.isfile(pqoutname):
-                    print(
-                        f"WARNING: dataframe for skim {skim.name} already exists in {resultsdir}")
-                    print("         skipping...")
-                    return
+                    logger.info(
+                        f"WARNING: {skim.name}.parquet already exists in {resultsdir}")
+                    logger.info("         skipping...")
+                    pass
                 else:
                     from bamboo.root import gbl
                     import pandas as pd
                     frames = []
                     for smp in samples:
+                        logger.info(f'processing {smp}') 
                         for cb in (smp.files if hasattr(smp, "files") else [smp]):
                             tree = cb.tFile.Get(skim.treeName)
                             if not tree:
-                                print("WARNING: skim tree %s not found in file %s" % (
+                                logger.info("WARNING: skim tree %s not found in file %s" % (
                                     skim.treeName, cb.tFile.GetName()))
-                                print("         skipping...")
+                                logger.info("         skipping...")
                             else:
                                 N = tree.GetEntries()
                                 cols = gbl.ROOT.RDataFrame(tree).AsNumpy()
-                                cols["weight"] *= cb.scale
-                                cols["process"] = [smp.name] * \
-                                    len(cols["weight"])
+                                if "sync" not in skim.name:
+                                    cols["weight"] *= cb.scale
+                                    cols["process"] = [smp.name] * \
+                                        len(cols["weight"])
                                 frames.append(pd.DataFrame(cols))
                     df = pd.concat(frames)
-                    df["process"] = pd.Categorical(
-                        df["process"], categories=pd.unique(df["process"]))
-                    df.to_parquet(pqoutname)
-                    print(
-                        f"Saved dataframe for skim {skim.name} to {pqoutname}")
+                    if "sync" in skim.name:
+                        df = df[self.order]
+                        sync_dfs.append(df)
+                    else:
+                        df["process"] = pd.Categorical(
+                            df["process"], categories=pd.unique(df["process"]))
+                        mva_dfs.append(df)
+            if sync_dfs:
+                df = pd.concat(sync_dfs)
+                df = df.sort_values(by='event_no')
+                syncFileName = f"{self.channel}_sync.csv"
+                df.to_csv(os.path.join(resultsdir, syncFileName))
+                logger.info(f"Saved dataframe for sync to {syncFileName}")
+            if mva_dfs:
+                df = pd.concat(mva_dfs)
+                mvaFileName = f"{self.channel}_mva.parquet"
+                df.to_parquet(os.path.join(resultsdir, mvaFileName))
+                df.to_csv(os.path.join(resultsdir, "test.csv"))
+                logger.info(f"Saved dataframe for mva to {resultsdir}/{mvaFileName}")
