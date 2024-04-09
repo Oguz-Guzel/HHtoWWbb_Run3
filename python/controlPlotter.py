@@ -72,15 +72,16 @@ class controlPlotter(NanoBaseHHWWbb):
 
         if self.channel == 'SL':
             # get SL selections
-            SL_resolved, SL_resolved_e, \
-                SL_resolved_mu, SL_boosted, \
-                SL_boosted_e, SL_boosted_mu = makeSLSelection(self, noSel)
+            SL_resolved_pre, SL_resolved_1b_e, SL_resolved_2b_e, \
+                SL_resolved_1b_mu, SL_resolved_2b_mu, SL_boosted, \
+                SL_boosted_e, SL_boosted_mu, SL_e = makeSLSelection(
+                    self, noSel)
 
             # cutflow report for SL channel
             self.yields.add(SL_boosted_e, 'SL boosted e')
             self.yields.add(SL_boosted_mu, 'SL boosted mu')
-            self.yields.add(SL_resolved_e, 'SL resolved e')
-            self.yields.add(SL_resolved_mu, 'SL resolved mu')
+            self.yields.add(SL_resolved_1b_e, 'SL resolved e')
+            self.yields.add(SL_resolved_1b_mu, 'SL resolved mu')
 
             # labels on plots
             SLboostedE_label = labeler('SL boosted E')
@@ -89,23 +90,93 @@ class controlPlotter(NanoBaseHHWWbb):
             SLresolvedMu_label = labeler('SL resolved Mu')
 
         # mva variables
-        mvaVars_DL_resolved = {
+        mvaVars_DL = {
             "weight": noSel.weight,
-            "ak4bjet1_pt": self.ak4BJets[0].pt,
-            "ak4bjet1_eta": self.ak4BJets[0].eta,
-            "ak4bjet1_phi": self.ak4BJets[0].phi,
-            'ak4jet1_pt': self.ak4Jets[0].pt,
-            'ak4jet1_eta': self.ak4Jets[0].eta,
-            'ak4jet1_phi': self.ak4Jets[0].phi,
-            'ak4jet2_pt': self.ak4Jets[1].pt,
-            'ak4jet2_eta': self.ak4Jets[1].eta,
-            'ak4jet2_phi': self.ak4Jets[1].phi,
-            "leadingLepton_pt": self.tightElectrons[0].pt,
-            "leadingLepton_eta": self.tightElectrons[0].eta,
-            "leadingLepton_phi": self.tightElectrons[0].phi,
-            "subleadingLepton_pt": self.tightElectrons[1].pt,
-            "subleadingLepton_eta": self.tightElectrons[1].eta,
-            "subleadingLepton_phi": self.tightElectrons[1].phi
+            "lepton0Cone_pt": op.multiSwitch(
+                # if there are 2 electrons
+                (op.rng_len(self.tightElectrons) == 2,
+                    self.electron_conept[self.tightElectrons[0].idx]),
+                # elif there are 2 muons
+                (op.rng_len(self.tightMuons) == 2,
+                    self.muon_conept[self.tightMuons[0].idx]),
+                # elif there is 1 electron and 1 muon
+                (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1),
+                    op.switch(
+                        # if electron pt is greater than muon pt
+                        self.tightElectrons[0].pt >= self.tightMuons[0].pt,
+                        self.electron_conept[
+                            self.tightElectrons[0].idx],
+                        # else
+                        self.muon_conept[self.tightMuons[0].idx])),
+                # else
+                op.c_float(9999.)
+            ),
+            "lepton1Conept": op.multiSwitch(
+                # if there are 2 electrons
+                (op.rng_len(self.tightElectrons) == 2,
+                    self.electron_conept[self.tightElectrons[1].idx]),
+                # elif there are 2 muons
+                (op.rng_len(self.tightMuons) == 2,
+                    self.muon_conept[self.tightMuons[0].idx]),
+                # elif there is 1 electron and 1 muon
+                (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                    # if electron pt is greater than muon pt
+                    self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.muon_conept[self.tightMuons[0].idx],
+                    # else
+                    self.electron_conept[self.tightElectrons[1].idx])),
+                op.c_float(9999.)
+            ),
+            "nAK4": op.rng_len(self.ak4Jets),
+            "nAK4bJet": op.rng_len(self.ak4BJets),
+            "nak8": op.rng_len(self.ak8Jets),
+            "nAK8bJet": op.rng_len(self.ak8BJets),
+            "ak4jet0pt": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].pt, op.c_float(0.)),
+            "ak4jet0eta": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].eta, op.c_float(0.)),
+            "ak4jet1pt": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].pt, op.c_float(0.)),
+            "ak4jet1eta": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].eta, op.c_float(0.)),
+            "ak8jetpt": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].pt, op.c_float(0.)),
+            "ak8jeteta": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].eta, op.c_float(0.)),
+            "ak8bjet_pt": op.switch(op.rng_len(self.ak8BJets) > 0, self.ak8BJets[0].pt, op.c_float(0.)),
+            "ak8bjet_eta": op.switch(op.rng_len(self.ak8BJets) > 0, self.ak8BJets[0].eta, op.c_float(0.)),
+            "InvMll": op.multiSwitch(
+                # if there are 2 electrons
+                (op.rng_len(self.tightElectrons) == 2,
+                    op.invariant_mass(self.tightElectrons[0].p4, self.tightElectrons[1].p4)),
+                # elif there are 2 muons
+                (op.rng_len(self.tightMuons) == 2,
+                    op.invariant_mass(self.tightMuons[0].p4, self.tightMuons[1].p4)),
+                # elif there is 1 electron and 1 muon
+                (op.AND(op.rng_len(self.tightMuons) == 1, op.rng_len(self.tightElectrons) == 1),
+                 op.invariant_mass(
+                    self.tightElectrons[0].p4, self.tightMuons[0].p4)),
+                op.c_float(9999.)
+            ),
+            "DRll": op.multiSwitch(
+                # if there are 2 electrons
+                (op.rng_len(self.tightElectrons) == 2,
+                    op.deltaR(self.tightElectrons[0].p4, self.tightElectrons[1].p4)),
+                # elif there are 2 muons
+                (op.rng_len(self.tightMuons) == 2,
+                    op.deltaR(self.tightMuons[0].p4, self.tightMuons[1].p4)),
+                # elif there is 1 electron and 1 muon
+                (op.AND(op.rng_len(self.tightMuons) == 1, op.rng_len(self.tightElectrons) == 1),
+                 op.deltaR(
+                    self.tightElectrons[0].p4, self.tightMuons[0].p4)),
+                op.c_float(9999.)
+            ),
+            "MET": tree.MET.pt,
+            "DRtwoAK4bjets": op.multiSwitch(
+                # if there are 2 b-tagged ak4 jets
+                (op.rng_len(self.ak4BJets) == 2,
+                    op.deltaR(self.ak4BJets[0].p4, self.ak4BJets[1].p4)),
+                op.c_float(9999.)
+            ),
+            "InvMak4bJJ": op.multiSwitch(
+                # if there are 2 b-tagged ak4 jets
+                (op.rng_len(self.ak4BJets) == 2,
+                    op.invariant_mass(op.sum(self.ak4BJets[0].p4, self.ak4BJets[1].p4))), # double check
+                op.c_float(9999.)
+            ),
         }
 
         mvaVars_SL_resolved = {
@@ -123,7 +194,53 @@ class controlPlotter(NanoBaseHHWWbb):
             "leadingLepton_eta": self.tightElectrons[0].eta,
             "leadingLepton_phi": self.tightElectrons[0].phi,
         }
-
+        ### Syncronisaton ###
+        if self.args.sync and self.channel == 'DL':
+            syncVars_DL = {
+                "event_no": tree.event,
+                "is_dl_ee": op.switch(op.rng_len(self.tightElectrons) == 2, 1, op.c_float(0.)),
+                "is_dl_mumu": op.switch(op.rng_len(self.tightMuons) == 2, 1, op.c_float(0.)),
+                "is_dl_emu": op.switch(op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons)) == 1, 1, op.c_float(0.)),
+                # "nLooseElectron": op.rng_len(self.preElectrons),
+                # "nFakeElectron": op.rng_len(self.fakeElectrons),
+                # "nTightElectron": op.rng_len(self.tightElectrons),
+                # "nLooseMuon": op.rng_len(self.preMuons),
+                # "nFakeMuon": op.rng_len(self.fakeMuons),
+                # "nTightMuon": op.rng_len(self.tightMuons),
+                # "lepton0pt": op.multiSwitch(
+                #     (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[0].pt),
+                #     (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].pt),
+                #     (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                #         self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].pt, self.tightMuons[0].pt)),
+                #  op.c_float(0.)
+                # ),
+                # "lepton1pt": op.multiSwitch(
+                #     (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[1].pt),
+                #     (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].pt),
+                #     (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                #         self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightMuons[0].pt, self.tightElectrons[0].pt)),
+                # op.c_float(0.)
+                # ),
+                # "nAK4": op.rng_len(self.ak4Jets),
+                # "nAK4bJet": op.rng_len(self.ak4BJets),
+                # "nAK8bJet": op.rng_len(self.ak8BJets),
+                # "ak4jet0pt": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].pt, op.c_float(0.)),
+                # "ak4jet0eta": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].eta, op.c_float(0.)),
+                # "ak4jet1pt": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].pt, op.c_float(0.)),
+                # "ak4jet1eta": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].eta, op.c_float(0.)),
+                # "ak8jetpt": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].pt, op.c_float(0.)),
+                # "ak8jeteta": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].eta, op.c_float(0.)),
+            }
+            # to order the columns
+            self.order = [key for key in syncVars_DL.keys()]
+            plots.extend([
+                Skim("DL_resolved_ee_sync", syncVars_DL, DL_resolved_ee),
+                Skim("DL_resolved_mumu_sync", syncVars_DL, DL_resolved_mumu),
+                Skim("DL_resolved_emu_sync", syncVars_DL, DL_resolved_emu),
+                Skim("DL_boosted_ee_sync", syncVars_DL, DL_boosted_ee),
+                Skim("DL_boosted_mumu_sync", syncVars_DL, DL_boosted_mumu),
+                Skim("DL_boosted_emu_sync", syncVars_DL, DL_boosted_emu),
+            ])
         #############################################################################
         #                            MVA evaluation                                 #
         #############################################################################
@@ -136,7 +253,7 @@ class controlPlotter(NanoBaseHHWWbb):
                 'DL resolved EE DNN cat. 3')
             DLresolvedEEdnnCat4_label = labeler(
                 'DL resolved EE DNN cat. 4')
-            mvaVars_DL_resolved.pop("weight", None)
+            mvaVars_DL.pop("weight", None)
 
             # import random
             # split_var = random.randint(0,1)
@@ -152,7 +269,7 @@ class controlPlotter(NanoBaseHHWWbb):
 
             dnn = op.mvaEvaluator(model, otherArgs=("predictions"))
             inputs = op.array('float', *[op.c_float(val)
-                              for val in mvaVars_DL_resolved.values()])
+                              for val in mvaVars_DL.values()])
             output = dnn(inputs)
 
             # DNN cuts
@@ -193,7 +310,12 @@ class controlPlotter(NanoBaseHHWWbb):
                 #                 Skims                 #
                 #########################################
 
-                Skim("DL_resolved_ee", mvaVars_DL_resolved, DL_resolved_ee),
+                Skim("DL_resolved_ee_mva", mvaVars_DL, DL_resolved_ee),
+                Skim("DL_resolved_mumu_mva", mvaVars_DL, DL_resolved_mumu),
+                Skim("DL_resolved_emu_mva", mvaVars_DL, DL_resolved_emu),
+                Skim("DL_boosted_ee_mva", mvaVars_DL, DL_boosted_ee),
+                Skim("DL_boosted_mumu_mva", mvaVars_DL, DL_boosted_mumu),
+                Skim("DL_boosted_emu_mva", mvaVars_DL, DL_boosted_emu),
 
                 #########################################
                 ######                             ######
@@ -575,13 +697,29 @@ class controlPlotter(NanoBaseHHWWbb):
                     3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolvedEMu_label),
             ])
         if self.channel == "SL":
+            # if self.args.sync:
+            #     plots.extend([Skim("SL_resolved_1b_e_sync",
+            #                        syncVars_SL, SL_resolved_1b_e),  # update sync_vars
+            #                   Skim("SL_resolved_2b_e_sync",
+            #                        syncVars_SL, SL_resolved_2b_e),
+            #                   Skim("SL_resolved_1b_mu_sync",
+            #                        syncVars_SL, SL_resolved_1b_mu),
+            #                   Skim("SL_resolved_2b_mu_sync",
+            #                        syncVars_SL, SL_resolved_2b_mu)])
             plots.extend([
 
                 #########################################
                 #                 Skims                 #
                 #########################################
 
-                Skim("SL_resolved_e", mvaVars_SL_resolved, SL_resolved_e),
+                Skim("SL_resolved_1b_e_mva",
+                     mvaVars_SL_resolved, SL_resolved_1b_e),
+                Skim("SL_resolved_2b_e_mva",
+                     mvaVars_SL_resolved, SL_resolved_2b_e),
+                Skim("SL_resolved_1b_mu_mva",
+                     mvaVars_SL_resolved, SL_resolved_1b_mu),
+                Skim("SL_resolved_2b_mu_mva",
+                     mvaVars_SL_resolved, SL_resolved_2b_mu),
 
                 #########################################
                 ######                             ######
@@ -669,63 +807,63 @@ class controlPlotter(NanoBaseHHWWbb):
                 #########################################
 
                 # number of ak4 jets
-                Plot.make1D("SL_resolved_nJets_e", op.rng_len(self.ak4BJets), SL_resolved_e, EqBin(
+                Plot.make1D("SL_resolved_nJets_e", op.rng_len(self.ak4BJets), SL_resolved_1b_e, EqBin(
                     15, 0., 15.), xTitle="Number of b-jets", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_nJets_mu", op.rng_len(self.ak4BJets), SL_resolved_mu, EqBin(
+                Plot.make1D("SL_resolved_nJets_mu", op.rng_len(self.ak4BJets), SL_resolved_1b_mu, EqBin(
                     15, 0., 15.), xTitle="Number of b-jets", plotopts=SLresolvedMu_label),
 
                 # leading jet pt
-                Plot.make1D("SL_resolved_leadingJet_pt_e", self.ak4BJets[0].pt, SL_resolved_e, EqBin(
+                Plot.make1D("SL_resolved_leadingJet_pt_e", self.ak4BJets[0].pt, SL_resolved_1b_e, EqBin(
                     100, 0, 500), title="pT(j1)", xTitle="pT(j1) (GeV/c)", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_leadingJet_pt_mu", self.ak4BJets[0].pt, SL_resolved_mu, EqBin(
+                Plot.make1D("SL_resolved_leadingJet_pt_mu", self.ak4BJets[0].pt, SL_resolved_1b_mu, EqBin(
                     100, 0, 500), title="pT(j1)", xTitle="pT(j1) (GeV/c)", plotopts=SLresolvedMu_label),
 
                 # leading jet eta
-                Plot.make1D("SL_resolved_leadingJet_eta_e", self.ak4BJets[0].eta, SL_resolved_e, EqBin(
+                Plot.make1D("SL_resolved_leadingJet_eta_e", self.ak4BJets[0].eta, SL_resolved_1b_e, EqBin(
                     30, -3, 3), title="eta(j1)", xTitle="B-jet \eta", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_leadingJet_eta_mu", self.ak4BJets[0].eta, SL_resolved_mu, EqBin(
+                Plot.make1D("SL_resolved_leadingJet_eta_mu", self.ak4BJets[0].eta, SL_resolved_1b_mu, EqBin(
                     30, -3, 3), title="eta(j1)", xTitle="eta(j1)", plotopts=SLresolvedMu_label),
 
                 # sub-leading jet pt
-                Plot.make1D("SL_resolved_subleadingJet_pt_e", self.ak4Jets[1].pt, SL_resolved_e, EqBin(
+                Plot.make1D("SL_resolved_subleadingJet_pt_e", self.ak4Jets[1].pt, SL_resolved_1b_e, EqBin(
                     100, 0, 500), title="pT(j2)", xTitle="pT(j2) (GeV/c)", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_subleadingJet_pt_mu", self.ak4Jets[1].pt, SL_resolved_mu, EqBin(
+                Plot.make1D("SL_resolved_subleadingJet_pt_mu", self.ak4Jets[1].pt, SL_resolved_1b_mu, EqBin(
                     100, 0, 500), title="pT(j2)", xTitle="pT(j2) (GeV/c)", plotopts=SLresolvedMu_label),
 
                 # sub-leading jet eta
-                Plot.make1D("SL_resolved_subleadingJet_eta_e", self.ak4Jets[1].eta, SL_resolved_e, EqBin(
+                Plot.make1D("SL_resolved_subleadingJet_eta_e", self.ak4Jets[1].eta, SL_resolved_1b_e, EqBin(
                     30, -3, 3), title="eta(j2)", xTitle="eta(j2)", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_subleadingJet_eta_mu", self.ak4Jets[1].eta, SL_resolved_mu, EqBin(
+                Plot.make1D("SL_resolved_subleadingJet_eta_mu", self.ak4Jets[1].eta, SL_resolved_1b_mu, EqBin(
                     30, -3, 3), title="eta(j2)", xTitle="eta(j2)", plotopts=SLresolvedMu_label),
 
                 # DR between leading and sub-leading jet
-                Plot.make1D("SL_resolved_DR_jets_e", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), SL_resolved_e, EqBin(
+                Plot.make1D("SL_resolved_DR_jets_e", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), SL_resolved_1b_e, EqBin(
                     100, 0, 10), title="DR(j1,j2)", xTitle="DR(j1,j2)", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_DR_jets_mu", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), SL_resolved_mu, EqBin(
+                Plot.make1D("SL_resolved_DR_jets_mu", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), SL_resolved_1b_mu, EqBin(
                     100, 0, 10), title="DR(j1,j2)", xTitle="DR(j1,j2)", plotopts=SLresolvedMu_label),
 
                 # DR between  lepton and ak4 b jet
-                Plot.make1D("SL_resolved_DR_leptonANDak4bjet_e", op.deltaR(self.tightElectrons[0].p4, self.ak4BJets[0].p4), SL_resolved_e, EqBin(
+                Plot.make1D("SL_resolved_DR_leptonANDak4bjet_e", op.deltaR(self.tightElectrons[0].p4, self.ak4BJets[0].p4), SL_resolved_1b_e, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(lepton, ak8bjet)", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_DR_leptonANDak4bjet_mu", op.deltaR(self.tightMuons[0].p4, self.ak4BJets[0].p4), SL_resolved_mu, EqBin(
+                Plot.make1D("SL_resolved_DR_leptonANDak4bjet_mu", op.deltaR(self.tightMuons[0].p4, self.ak4BJets[0].p4), SL_resolved_1b_mu, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(lepton, ak8bjet)", plotopts=SLresolvedMu_label),
 
                 # lepton pt
-                Plot.make1D("SL_resolved_lepton_pt_e", self.tightElectrons[0].pt, SL_resolved_e, EqBin(
+                Plot.make1D("SL_resolved_lepton_pt_e", self.tightElectrons[0].pt, SL_resolved_1b_e, EqBin(
                     100, 0., 300.), title="lepton pT", xTitle="p_{T} of the lepton (GeV/c)", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_lepton_pt_mu", self.tightMuons[0].pt, SL_resolved_mu, EqBin(
+                Plot.make1D("SL_resolved_lepton_pt_mu", self.tightMuons[0].pt, SL_resolved_1b_mu, EqBin(
                     100, 0., 300.), title="lepton pT", xTitle="p_{T} of the lepton (GeV/c)", plotopts=SLresolvedMu_label),
 
                 # lepton eta
-                Plot.make1D("SL_resolved_lepton_eta_e", self.tightElectrons[0].eta, SL_resolved_e, EqBin(
+                Plot.make1D("SL_resolved_lepton_eta_e", self.tightElectrons[0].eta, SL_resolved_1b_e, EqBin(
                     30, -3, 3), title="lepton pT", xTitle="\eta of the lepton (GeV/c)", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_lepton_eta_mu", self.tightMuons[0].eta, SL_resolved_mu, EqBin(
+                Plot.make1D("SL_resolved_lepton_eta_mu", self.tightMuons[0].eta, SL_resolved_1b_mu, EqBin(
                     30, -3, 3), title="lepton pT", xTitle="\eta of the lepton (GeV/c)", plotopts=SLresolvedMu_label),
 
                 # MET pt
-                Plot.make1D("SL_resolved_MET_pt_e", tree.MET.pt, SL_resolved_e, EqBin(
+                Plot.make1D("SL_resolved_MET_pt_e", tree.MET.pt, SL_resolved_1b_e, EqBin(
                     100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_MET_pt_mu", tree.MET.pt, SL_resolved_mu, EqBin(
+                Plot.make1D("SL_resolved_MET_pt_mu", tree.MET.pt, SL_resolved_1b_mu, EqBin(
                     100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=SLresolvedMu_label),
             ])
 
