@@ -1,4 +1,5 @@
 from bamboo import treefunctions as op
+from bamboo.plots import CategorizedSelection
 
 # common variables for DL and SL channels
 
@@ -177,17 +178,33 @@ def makeSLSelection(self, noSel):
     OSoutZelelSel = noSel.refine('OSoutZsel', cut=op.AND(
         mllCut, outZCut, tau_h_veto(self.cleanedTaus)))
 
-    SL_resolved = OSoutZelelSel.refine('SL_resolved', cut=[
+    SL_resolved_pre = OSoutZelelSel.refine('SL_resolved_pre', cut=[
         op.rng_len(self.ak4Jets) >= 3,
         op.rng_len(self.ak4BJets) >= 1,
         op.rng_len(self.ak8BJets) == 0])
 
-    SL_resolved_e = SL_resolved.refine('SL_resolved_e', cut=[
+    SL_resolved_1b_pre = SL_resolved_pre.refine('SL_resolved_1b_pre', cut=[
+        op.rng_len(self.ak4BJets) == 1])
+
+    SL_resolved_2b_pre = SL_resolved_pre.refine('SL_resolved_2b_pre', cut=[
+        op.rng_len(self.ak4BJets) > 1])
+
+    SL_resolved_1b_e = SL_resolved_1b_pre.refine('SL_resolved_1b_e', cut=[
         elPtCut(self.tightElectrons),
         op.rng_len(self.tightElectrons) == 1,
         op.rng_len(self.tightMuons) == 0])
 
-    SL_resolved_mu = SL_resolved.refine('SL_resolved_mu', cut=[
+    SL_resolved_2b_e = SL_resolved_2b_pre.refine('SL_resolved_2b_e', cut=[
+        elPtCut(self.tightElectrons),
+        op.rng_len(self.tightElectrons) == 1,
+        op.rng_len(self.tightMuons) == 0])
+
+    SL_resolved_1b_mu = SL_resolved_1b_pre.refine('SL_resolved_1b_mu', cut=[
+        muPtCut(self.tightMuons),
+        op.rng_len(self.tightElectrons) == 0,
+        op.rng_len(self.tightMuons) == 1])
+
+    SL_resolved_2b_mu = SL_resolved_2b_pre.refine('SL_resolved_2b_mu', cut=[
         muPtCut(self.tightMuons),
         op.rng_len(self.tightElectrons) == 0,
         op.rng_len(self.tightMuons) == 1])
@@ -205,8 +222,14 @@ def makeSLSelection(self, noSel):
         muPtCut(self.tightMuons),
         op.rng_len(self.tightMuons) == 1,
         op.rng_len(self.tightElectrons) == 0])
+    
+    SL_e = CategorizedSelection("SL_e", categories={
+        "resolved_1b": (SL_resolved_1b_e, lambda event: True),
+        "resolved_2b": (SL_resolved_2b_e, lambda event: True),
+        "boosted": (SL_boosted_e, lambda event: True)
+    })
 
-    SL_selections = [SL_resolved, SL_resolved_e,
-                     SL_resolved_mu, SL_boosted, SL_boosted_e, SL_boosted_mu]
+    SL_selections = [SL_resolved_pre, SL_resolved_1b_e, SL_resolved_2b_e,
+                     SL_resolved_1b_mu, SL_resolved_2b_mu, SL_boosted, SL_boosted_e, SL_boosted_mu, SL_e]
 
     return SL_selections
