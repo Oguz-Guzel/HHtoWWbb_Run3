@@ -1,5 +1,5 @@
 
-from bamboo.plots import Plot, Skim
+from bamboo.plots import Plot, Skim, SummedPlot
 from bamboo.plots import EquidistantBinning as EqBin
 from bamboo import treefunctions as op
 
@@ -90,112 +90,107 @@ class controlPlotter(NanoBaseHHWWbb):
             SLresolvedMu_label = labeler('SL resolved Mu')
 
         # mva variables
+        lepton0conept = op.multiSwitch(
+            # if there are 2 electrons
+            (op.rng_len(self.tightElectrons) == 2,
+             self.electron_conept[self.tightElectrons[0].idx]),
+            # elif there are 2 muons
+            (op.rng_len(self.tightMuons) == 2,
+             self.muon_conept[self.tightMuons[0].idx]),
+            # elif there is 1 electron and 1 muon
+            (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1),
+             op.switch(
+                # if electron pt is greater than muon pt
+                self.tightElectrons[0].pt >= self.tightMuons[0].pt,
+                self.electron_conept[
+                    self.tightElectrons[0].idx],
+                # else
+                self.muon_conept[self.tightMuons[0].idx])),
+            # else
+            op.c_float(0.)
+        )
+
+        lepton1conept = op.multiSwitch(
+            # if there are 2 electrons
+            (op.rng_len(self.tightElectrons) == 2,
+             self.electron_conept[self.tightElectrons[1].idx]),
+            # elif there are 2 muons
+            (op.rng_len(self.tightMuons) == 2,
+             self.muon_conept[self.tightMuons[0].idx]),
+            # elif there is 1 electron and 1 muon
+            (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                # if electron pt is greater than muon pt
+                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.muon_conept[self.tightMuons[0].idx],
+                # else
+                self.electron_conept[self.tightElectrons[1].idx])),
+            op.c_float(0.)
+        )
+
+        invmLL = op.multiSwitch(
+            # if there are 2 electrons
+            (op.rng_len(self.tightElectrons) == 2,
+             op.invariant_mass(self.tightElectrons[0].p4, self.tightElectrons[1].p4)),
+            # elif there are 2 muons
+            (op.rng_len(self.tightMuons) == 2,
+             op.invariant_mass(self.tightMuons[0].p4, self.tightMuons[1].p4)),
+            # elif there is 1 electron and 1 muon
+            (op.AND(op.rng_len(self.tightMuons) == 1, op.rng_len(self.tightElectrons) == 1),
+             op.invariant_mass(
+                self.tightElectrons[0].p4, self.tightMuons[0].p4)),
+            op.c_float(0.)
+        )
+
+        drLL = op.multiSwitch(
+            # if there are 2 electrons
+            (op.rng_len(self.tightElectrons) == 2,
+             op.deltaR(self.tightElectrons[0].p4, self.tightElectrons[1].p4)),
+            # elif there are 2 muons
+            (op.rng_len(self.tightMuons) == 2,
+             op.deltaR(self.tightMuons[0].p4, self.tightMuons[1].p4)),
+            # elif there is 1 electron and 1 muon
+            (op.AND(op.rng_len(self.tightMuons) == 1, op.rng_len(self.tightElectrons) == 1),
+             op.deltaR(
+                self.tightElectrons[0].p4, self.tightMuons[0].p4)),
+            op.c_float(0.)
+        )
+        DRTwoak4bjets = op.multiSwitch(
+            # if there are 2 b-tagged ak4 jets
+            (op.rng_len(self.ak4BJets) == 2,
+             op.deltaR(self.ak4BJets[0].p4, self.ak4BJets[1].p4)),
+            op.c_float(0.)
+        )
+        inmvAK4bJJ = op.multiSwitch(
+            # if there are 2 b-tagged ak4 jets
+            (op.rng_len(self.ak4BJets) == 2,
+             op.invariant_mass(op.sum(self.ak4BJets[0].p4, self.ak4BJets[1].p4))),  # double check
+            op.c_float(0.)
+        )
+
         mvaVars_DL = {
             "weight": noSel.weight,
-            "lepton0Cone_pt": op.multiSwitch(
-                # if there are 2 electrons
-                (op.rng_len(self.tightElectrons) == 2,
-                    self.electron_conept[self.tightElectrons[0].idx]),
-                # elif there are 2 muons
-                (op.rng_len(self.tightMuons) == 2,
-                    self.muon_conept[self.tightMuons[0].idx]),
-                # elif there is 1 electron and 1 muon
-                (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1),
-                    op.switch(
-                        # if electron pt is greater than muon pt
-                        self.tightElectrons[0].pt >= self.tightMuons[0].pt,
-                        self.electron_conept[
-                            self.tightElectrons[0].idx],
-                        # else
-                        self.muon_conept[self.tightMuons[0].idx])),
-                # else
-                op.c_float(9999.)
-            ),
-            "lepton1Conept": op.multiSwitch(
-                # if there are 2 electrons
-                (op.rng_len(self.tightElectrons) == 2,
-                    self.electron_conept[self.tightElectrons[1].idx]),
-                # elif there are 2 muons
-                (op.rng_len(self.tightMuons) == 2,
-                    self.muon_conept[self.tightMuons[0].idx]),
-                # elif there is 1 electron and 1 muon
-                (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
-                    # if electron pt is greater than muon pt
-                    self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.muon_conept[self.tightMuons[0].idx],
-                    # else
-                    self.electron_conept[self.tightElectrons[1].idx])),
-                op.c_float(9999.)
-            ),
+            "DRll": drLL,
+            "DRtwoAK4bjets": DRTwoak4bjets,
+            "InvMak4bJJ": inmvAK4bJJ,
+            "InvMll": invmLL,
+            "MET": tree.MET.pt,
+            "ak4jet0eta": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].eta, op.c_float(0.)),
+            "ak4jet0pt": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].pt, op.c_float(0.)),
+            "ak4jet1pt": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].pt, op.c_float(0.)),
+            "ak4jet1eta": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].eta, op.c_float(0.)),
+            "ak8bjetpt": op.switch(op.rng_len(self.ak8BJets) > 0, self.ak8BJets[0].pt, op.c_float(0.)),
+            "ak8bjeteta": op.switch(op.rng_len(self.ak8BJets) > 0, self.ak8BJets[0].eta, op.c_float(0.)),
+            "ak8jetpt": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].pt, op.c_float(0.)),
+            "ak8jeteta": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].eta, op.c_float(0.)),
+            "lepton0Cone_pt": lepton0conept,
+            "lepton1Conept": lepton1conept,
             "nAK4": op.rng_len(self.ak4Jets),
             "nAK4bJet": op.rng_len(self.ak4BJets),
             "nak8": op.rng_len(self.ak8Jets),
-            "nAK8bJet": op.rng_len(self.ak8BJets),
-            "ak4jet0pt": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].pt, op.c_float(0.)),
-            "ak4jet0eta": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].eta, op.c_float(0.)),
-            "ak4jet1pt": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].pt, op.c_float(0.)),
-            "ak4jet1eta": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].eta, op.c_float(0.)),
-            "ak8jetpt": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].pt, op.c_float(0.)),
-            "ak8jeteta": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].eta, op.c_float(0.)),
-            "ak8bjet_pt": op.switch(op.rng_len(self.ak8BJets) > 0, self.ak8BJets[0].pt, op.c_float(0.)),
-            "ak8bjet_eta": op.switch(op.rng_len(self.ak8BJets) > 0, self.ak8BJets[0].eta, op.c_float(0.)),
-            "InvMll": op.multiSwitch(
-                # if there are 2 electrons
-                (op.rng_len(self.tightElectrons) == 2,
-                    op.invariant_mass(self.tightElectrons[0].p4, self.tightElectrons[1].p4)),
-                # elif there are 2 muons
-                (op.rng_len(self.tightMuons) == 2,
-                    op.invariant_mass(self.tightMuons[0].p4, self.tightMuons[1].p4)),
-                # elif there is 1 electron and 1 muon
-                (op.AND(op.rng_len(self.tightMuons) == 1, op.rng_len(self.tightElectrons) == 1),
-                 op.invariant_mass(
-                    self.tightElectrons[0].p4, self.tightMuons[0].p4)),
-                op.c_float(9999.)
-            ),
-            "DRll": op.multiSwitch(
-                # if there are 2 electrons
-                (op.rng_len(self.tightElectrons) == 2,
-                    op.deltaR(self.tightElectrons[0].p4, self.tightElectrons[1].p4)),
-                # elif there are 2 muons
-                (op.rng_len(self.tightMuons) == 2,
-                    op.deltaR(self.tightMuons[0].p4, self.tightMuons[1].p4)),
-                # elif there is 1 electron and 1 muon
-                (op.AND(op.rng_len(self.tightMuons) == 1, op.rng_len(self.tightElectrons) == 1),
-                 op.deltaR(
-                    self.tightElectrons[0].p4, self.tightMuons[0].p4)),
-                op.c_float(9999.)
-            ),
-            "MET": tree.MET.pt,
-            "DRtwoAK4bjets": op.multiSwitch(
-                # if there are 2 b-tagged ak4 jets
-                (op.rng_len(self.ak4BJets) == 2,
-                    op.deltaR(self.ak4BJets[0].p4, self.ak4BJets[1].p4)),
-                op.c_float(9999.)
-            ),
-            "InvMak4bJJ": op.multiSwitch(
-                # if there are 2 b-tagged ak4 jets
-                (op.rng_len(self.ak4BJets) == 2,
-                    op.invariant_mass(op.sum(self.ak4BJets[0].p4, self.ak4BJets[1].p4))), # double check
-                op.c_float(9999.)
-            ),
+            "nAK8bJet": op.rng_len(self.ak8BJets)
         }
 
-        mvaVars_SL_resolved = {
-            "weight": noSel.weight,
-            "ak4bjet1_pt": self.ak4BJets[0].pt,
-            "ak4bjet1_eta": self.ak4BJets[0].eta,
-            "ak4bjet1_phi": self.ak4BJets[0].phi,
-            'ak4jet1_pt': self.ak4Jets[0].pt,
-            'ak4jet1_eta': self.ak4Jets[0].eta,
-            'ak4jet1_phi': self.ak4Jets[0].phi,
-            'ak4jet2_pt': self.ak4Jets[1].pt,
-            'ak4jet2_eta': self.ak4Jets[1].eta,
-            'ak4jet2_phi': self.ak4Jets[1].phi,
-            "leadingLepton_pt": self.tightElectrons[0].pt,
-            "leadingLepton_eta": self.tightElectrons[0].eta,
-            "leadingLepton_phi": self.tightElectrons[0].phi,
-        }
         ### Syncronisaton ###
-        if self.args.sync and self.channel == 'DL':
+        if self.args.sync and self.channel == 'DL' and not self.mvaModels:
             syncVars_DL = {
                 "event_no": tree.event,
                 "is_dl_ee": op.switch(op.rng_len(self.tightElectrons) == 2, 1, op.c_float(0.)),
@@ -244,67 +239,269 @@ class controlPlotter(NanoBaseHHWWbb):
         #############################################################################
         #                            MVA evaluation                                 #
         #############################################################################
-        if self.args.mvaModels and self.channel == 'DL':
-            DLresolvedEEdnnCat1_label = labeler(
-                'DL resolved EE DNN cat. 1')
-            DLresolvedEEdnnCat2_label = labeler(
-                'DL resolved EE DNN cat. 2')
-            DLresolvedEEdnnCat3_label = labeler(
-                'DL resolved EE DNN cat. 3')
-            DLresolvedEEdnnCat4_label = labeler(
-                'DL resolved EE DNN cat. 4')
+        if self.mvaModels and self.channel == 'DL':
+            DL_DNN = labeler('DL DNN')
+            DL_DNN_Cat1_label = labeler('DL DNN cat. 1')
+            DL_DNN_Cat2_label = labeler('DL DNN cat. 2')
+            DL_DNN_Cat3_label = labeler('DL DNN cat. 3')
+            DL_DNN_Cat4_label = labeler('DL DNN cat. 4')
             mvaVars_DL.pop("weight", None)
 
-            # import random
-            # split_var = random.randint(0,1)
-            split_var = 1
-
+            import random
+            split_var = random.randint(0, 1)
             if split_var == 0:
-                model = self.args.mvaModels + "/model_test1_even/model.onnx"
+                model = self.mvaModels + "/model_even/model.onnx"
             elif split_var == 1:
-                model = self.args.mvaModels + "/model_test1_odd/model.onnx"
+                model = self.mvaModels + "/model_odd/model.onnx"
             else:
                 print("ERROR: split_var is not 0 or 1")
                 exit(1)
 
             dnn = op.mvaEvaluator(model, otherArgs=("predictions"))
-            inputs = op.array('float', *[op.c_float(val)
-                              for val in mvaVars_DL.values()])
-            output = dnn(inputs)
+            input_vars = [op.static_cast('float', v)
+                          for v in mvaVars_DL.values()]
+            DNN_inputs = op.array('float', *input_vars)
+            DNN_output = dnn(DNN_inputs)
 
             # DNN cuts
-            DNNcat1 = DL_resolved_ee.refine(
-                "DNNcat1", cut=op.in_range(0.1, output[0], 0.6))
-            DNNcat2 = DL_resolved_ee.refine(
-                "DNNcat2", cut=op.in_range(0.6, output[0], 0.8))
-            DNNcat3 = DL_resolved_ee.refine(
-                "DNNcat3", cut=op.in_range(0.8, output[0], 0.92))
-            DNNcat4 = DL_resolved_ee.refine(
-                "DNNcat4", cut=op.in_range(0.92, output[0], 1.0))
+            DL_resolved_ee_DNNcat1 = DL_resolved_ee.refine(
+                "DL_resolved_eeDNNcat1", cut=op.in_range(0.1, DNN_output[0], 0.6))
+            DL_resolved_ee_DNNcat2 = DL_resolved_ee.refine(
+                "DL_resolved_eeDNNcat2", cut=op.in_range(0.6, DNN_output[0], 0.8))
+            DL_resolved_ee_DNNcat3 = DL_resolved_ee.refine(
+                "DL_resolved_eeDNNcat3", cut=op.in_range(0.8, DNN_output[0], 0.92))
+            DL_resolved_ee_DNNcat4 = DL_resolved_ee.refine(
+                "DL_resolved_eeDNNcat4", cut=op.in_range(0.92, DNN_output[0], 1.0))
 
-            self.yields.add(DNNcat1, 'DNNcat1')
-            self.yields.add(DNNcat2, 'DNNcat2')
-            self.yields.add(DNNcat3, 'DNNcat3')
-            self.yields.add(DNNcat4, 'DNNcat4')
+            DL_boosted_ee_DNNcat1 = DL_boosted_ee.refine(
+                "DL_boosted_ee_DNNcat1", cut=op.in_range(0.1, DNN_output[0], 0.6))
+            DL_boosted_ee_DNNcat2 = DL_boosted_ee.refine(
+                "DL_boosted_ee_DNNcat2", cut=op.in_range(0.6, DNN_output[0], 0.8))
+            DL_boosted_ee_DNNcat3 = DL_boosted_ee.refine(
+                "DL_boosted_ee_DNNcat3", cut=op.in_range(0.8, DNN_output[0], 0.92))
+            DL_boosted_ee_DNNcat4 = DL_boosted_ee.refine(
+                "DL_boosted_ee_DNNcat4", cut=op.in_range(0.92, DNN_output[0], 1.0))
 
+            DL_resolved_mumu_DNNcat1 = DL_resolved_mumu.refine(
+                "DL_resolved_mumu_DNNcat1", cut=op.in_range(0.1, DNN_output[0], 0.6))
+            DL_resolved_mumu_DNNcat2 = DL_resolved_mumu.refine(
+                "DL_resolved_mumu_DNNcat2", cut=op.in_range(0.6, DNN_output[0], 0.8))
+            DL_resolved_mumu_DNNcat3 = DL_resolved_mumu.refine(
+                "DL_resolved_mumu_DNNcat3", cut=op.in_range(0.8, DNN_output[0], 0.92))
+            DL_resolved_mumu_DNNcat4 = DL_resolved_mumu.refine(
+                "DL_resolved_mumu_DNNcat4", cut=op.in_range(0.92, DNN_output[0], 1.0))
+
+            DL_boosted_mumu_DNNcat1 = DL_boosted_mumu.refine(
+                "DL_boosted_mumu_DNNcat1", cut=op.in_range(0.1, DNN_output[0], 0.6))
+            DL_boosted_mumu_DNNcat2 = DL_boosted_mumu.refine(
+                "DL_boosted_mumu_DNNcat2", cut=op.in_range(0.6, DNN_output[0], 0.8))
+            DL_boosted_mumu_DNNcat3 = DL_boosted_mumu.refine(
+                "DL_boosted_mumu_DNNcat3", cut=op.in_range(0.8, DNN_output[0], 0.92))
+            DL_boosted_mumu_DNNcat4 = DL_boosted_mumu.refine(
+                "DL_boosted_mumu_DNNcat4", cut=op.in_range(0.92, DNN_output[0], 1.0))
+
+            DL_resolved_elmu_DNNcat1 = DL_resolved_emu.refine(
+                "DL_resolved_emu_DNNcat1", cut=op.in_range(0.1, DNN_output[0], 0.6))
+            DL_resolved_elmu_DNNcat2 = DL_resolved_emu.refine(
+                "DL_resolved_emu_DNNcat2", cut=op.in_range(0.6, DNN_output[0], 0.8))
+            DL_resolved_elmu_DNNcat3 = DL_resolved_emu.refine(
+                "DL_resolved_emu_DNNcat3", cut=op.in_range(0.8, DNN_output[0], 0.92))
+            DL_resolved_elmu_DNNcat4 = DL_resolved_emu.refine(
+                "DL_resolved_emu_DNNcat4", cut=op.in_range(0.92, DNN_output[0], 1.0))
+
+            DL_boosted_elmu_DNNcat1 = DL_boosted_emu.refine(
+                "DL_boosted_emu_DNNcat1", cut=op.in_range(0.1, DNN_output[0], 0.6))
+            DL_boosted_elmu_DNNcat2 = DL_boosted_emu.refine(
+                "DL_boosted_emu_DNNcat2", cut=op.in_range(0.6, DNN_output[0], 0.8))
+            DL_boosted_elmu_DNNcat3 = DL_boosted_emu.refine(
+                "DL_boosted_emu_DNNcat3", cut=op.in_range(0.8, DNN_output[0], 0.92))
+            DL_boosted_elmu_DNNcat4 = DL_boosted_emu.refine(
+                "DL_boosted_emu_DNNcat4", cut=op.in_range(0.92, DNN_output[0], 1.0))
+
+            # to make sure yields are working fine
+            self.yields.add(DL_resolved_ee_DNNcat4, 'DL_resolved_ee_DNNcat4')
+            
+            dnn_score_ee = Plot.make1D("dnn_score_ee", DNN_output[0], DL_resolved_ee, EqBin(
+                    100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts={'labels': [
+                            {'text': 'DL DNN score EE', 'position': [0.23, 0.87], 'size': 25}], 'blinded-range': [0.25, 0.999]}
+)
+            dnn_score_emu = Plot.make1D("dnn_score_emu", DNN_output[0], DL_resolved_emu, EqBin(
+                    100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts={'labels': [
+                            {'text': 'DL DNN score ElMu', 'position': [0.23, 0.87], 'size': 25}], 'blinded-range': [0.25, 0.999]}
+)
+            dnn_score_mumu = Plot.make1D("dnn_score_mumu", DNN_output[0], DL_resolved_mumu, EqBin(
+                    100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts={'labels': [
+                            {'text': 'DL DNN score MuMu', 'position': [0.23, 0.87], 'size': 25}], 'blinded-range': [0.25, 0.999]}
+)
             plots.extend([
-                Plot.make1D("dnn_score", output[0], DL_resolved_ee, EqBin(40, 0, 1.), xTitle="DNN Score", plotopts={'labels': [
-                            {'text': 'DL resolved EE', 'position': [0.23, 0.87], 'size': 25}], 'blinded-range': [0.25, 0.999]}),
-                Plot.make1D("DL_resolved_InvM_ee_DNNcat1", op.invariant_mass(self.firstOSElEl[0].p4, self.firstOSElEl[1].p4), DNNcat1, EqBin(
-                    100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DLresolvedEEdnnCat1_label),
-                Plot.make1D("DL_resolved_InvM_ee_DNNcat2", op.invariant_mass(self.firstOSElEl[0].p4, self.firstOSElEl[1].p4), DNNcat2, EqBin(
-                    100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DLresolvedEEdnnCat2_label),
-                Plot.make1D("DL_resolved_InvM_ee_DNNcat3", op.invariant_mass(self.firstOSElEl[0].p4, self.firstOSElEl[1].p4), DNNcat3, EqBin(
-                    100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DLresolvedEEdnnCat3_label),
-                Plot.make1D("DL_resolved_InvM_ee_DNNcat4", op.invariant_mass(self.firstOSElEl[0].p4, self.firstOSElEl[1].p4), DNNcat4, EqBin(
-                    100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DLresolvedEEdnnCat4_label),
+                dnn_score_ee,
+                dnn_score_emu,
+                dnn_score_mumu,
+                SummedPlot("DL_dnn_score", [
+                           dnn_score_ee, dnn_score_emu, dnn_score_mumu], title="DL DNN score", plotopts={'labels': [
+                            {'text': 'DL DNN score', 'position': [0.23, 0.87], 'size': 25}], 'blinded-range': [0.25, 0.999]}
+)
             ])
+
+            mElEl = op.invariant_mass(
+                self.firstOSElEl[0].p4, self.firstOSElEl[1].p4)
+
+            # DL ee DNN cat 1
+            DL_resolved_InvM_ee_DNNcat1 = Plot.make1D("DL_resolved_InvM_ee_DNNcat1", mElEl, DL_resolved_ee_DNNcat1, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_Cat1_label)
+            DL_boosted_InvM_ee_DNNcat1 = Plot.make1D("DL_boosted_InvM_ee_DNNcat1", mElEl, DL_boosted_ee_DNNcat1, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_Cat1_label)
+            plots.extend(
+                [DL_resolved_InvM_ee_DNNcat1,
+                 DL_boosted_InvM_ee_DNNcat1,
+                 SummedPlot("DL_InvM_ee_DNNcat1", [
+                            DL_resolved_InvM_ee_DNNcat1, DL_boosted_InvM_ee_DNNcat1], title="DL m(ee) DNN cat1")
+                 ])
+
+            # DL ee DNN cat 2
+            DL_resolved_InvM_ee_DNNcat2 = Plot.make1D("DL_resolved_InvM_ee_DNNcat2", mElEl, DL_resolved_ee_DNNcat2, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_Cat2_label)
+            DL_boosted_InvM_ee_DNNcat2 = Plot.make1D("DL_boosted_InvM_ee_DNNcat2", mElEl, DL_boosted_ee_DNNcat2, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_Cat2_label)
+            plots.extend(
+                [DL_resolved_InvM_ee_DNNcat2,
+                 DL_boosted_InvM_ee_DNNcat2,
+                 SummedPlot("DL_InvM_ee_DNNcat2", [
+                            DL_resolved_InvM_ee_DNNcat2, DL_boosted_InvM_ee_DNNcat2], title="DL m(ee) DNN cat2")
+                 ])
+
+            # DL ee DNN cat 3
+            DL_resolved_InvM_ee_DNNcat3 = Plot.make1D("DL_resolved_InvM_ee_DNNcat3", mElEl, DL_resolved_ee_DNNcat3, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_Cat3_label)
+            DL_boosted_InvM_ee_DNNcat3 = Plot.make1D("DL_boosted_InvM_ee_DNNcat3", mElEl, DL_boosted_ee_DNNcat3, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_Cat3_label)
+            plots.extend(
+                [DL_resolved_InvM_ee_DNNcat3,
+                 DL_boosted_InvM_ee_DNNcat3,
+                 SummedPlot("DL_InvM_ee_DNNcat3", [
+                            DL_resolved_InvM_ee_DNNcat3, DL_boosted_InvM_ee_DNNcat3], title="DL m(ee) DNN cat3")
+                 ])
+
+            # DL ee DNN cat 4
+            DL_resolved_InvM_ee_DNNcat4 = Plot.make1D("DL_resolved_InvM_ee_DNNcat4", mElEl, DL_resolved_ee_DNNcat4, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_Cat4_label)
+            DL_boosted_InvM_ee_DNNcat4 = Plot.make1D("DL_boosted_InvM_ee_DNNcat4", mElEl, DL_boosted_ee_DNNcat4, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_Cat4_label)
+            plots.extend(
+                [DL_resolved_InvM_ee_DNNcat4,
+                 DL_boosted_InvM_ee_DNNcat4,
+                 SummedPlot("DL_InvM_ee_DNNcat4", [
+                            DL_resolved_InvM_ee_DNNcat4, DL_boosted_InvM_ee_DNNcat4], title="DL m(ee) DNN cat4")
+                 ])
+
+            mMuMu = op.invariant_mass(
+                self.firstOSMuMu[0].p4, self.firstOSMuMu[1].p4)
+
+            # DL mumu DNN cat 1
+            DL_resolved_InvM_mumu_DNNcat1 = Plot.make1D("DL_resolved_InvM_mumu_DNNcat1", mMuMu, DL_resolved_mumu_DNNcat1, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_Cat1_label)
+            DL_boosted_InvM_mumu_DNNcat1 = Plot.make1D("DL_boosted_InvM_mumu_DNNcat1", mMuMu, DL_boosted_mumu_DNNcat1, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_Cat1_label)
+            plots.extend(
+                [DL_resolved_InvM_mumu_DNNcat1,
+                 DL_boosted_InvM_mumu_DNNcat1,
+                 SummedPlot("DL_InvM_mumu_DNNcat1", [
+                            DL_resolved_InvM_mumu_DNNcat1, DL_boosted_InvM_mumu_DNNcat1], title="DL m(mumu) DNN cat1")
+                 ])
+
+            # DL mumu DNN cat 2
+            DL_resolved_InvM_mumu_DNNcat2 = Plot.make1D("DL_resolved_InvM_mumu_DNNcat2", mMuMu, DL_resolved_mumu_DNNcat2, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_Cat2_label)
+            DL_boosted_InvM_mumu_DNNcat2 = Plot.make1D("DL_boosted_InvM_mumu_DNNcat2", mMuMu, DL_boosted_mumu_DNNcat2, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_Cat2_label)
+            plots.extend(
+                [DL_resolved_InvM_mumu_DNNcat2,
+                 DL_boosted_InvM_mumu_DNNcat2,
+                 SummedPlot("DL_InvM_mumu_DNNcat2", [
+                            DL_resolved_InvM_mumu_DNNcat2, DL_boosted_InvM_mumu_DNNcat2], title="DL m(mumu) DNN cat2")
+                 ])
+
+            # DL mumu DNN cat 3
+            DL_resolved_InvM_mumu_DNNcat3 = Plot.make1D("DL_resolved_InvM_mumu_DNNcat3", mMuMu, DL_resolved_mumu_DNNcat3, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_Cat3_label)
+            DL_boosted_InvM_mumu_DNNcat3 = Plot.make1D("DL_boosted_InvM_mumu_DNNcat3", mMuMu, DL_boosted_mumu_DNNcat3, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_Cat3_label)
+            plots.extend(
+                [DL_resolved_InvM_mumu_DNNcat3,
+                 DL_boosted_InvM_mumu_DNNcat3,
+                 SummedPlot("DL_InvM_mumu_DNNcat3", [
+                            DL_resolved_InvM_mumu_DNNcat3, DL_boosted_InvM_mumu_DNNcat3], title="DL m(mumu) DNN cat3")
+                 ])
+
+            # DL mumu DNN cat 4
+            DL_resolved_InvM_mumu_DNNcat4 = Plot.make1D("DL_resolved_InvM_mumu_DNNcat4", mMuMu, DL_resolved_mumu_DNNcat4, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_Cat4_label)
+            DL_boosted_InvM_mumu_DNNcat4 = Plot.make1D("DL_boosted_InvM_mumu_DNNcat4", mMuMu, DL_boosted_mumu_DNNcat4, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_Cat4_label)
+            plots.extend(
+                [DL_resolved_InvM_mumu_DNNcat4,
+                 DL_boosted_InvM_mumu_DNNcat4,
+                 SummedPlot("DL_InvM_mumu_DNNcat4", [
+                            DL_resolved_InvM_mumu_DNNcat4, DL_boosted_InvM_mumu_DNNcat4], title="DL m(mumu) DNN cat4")
+                 ])
+
+            mElMu = op.invariant_mass(
+                self.firstOSElMu[0].p4, self.firstOSElMu[1].p4
+            )
+
+            # DL elmu DNN cat 1
+            DL_resolved_InvM_elmu_DNNcat1 = Plot.make1D("DL_resolved_InvM_elmu_DNNcat1", mElMu, DL_resolved_elmu_DNNcat1, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_Cat1_label)
+            DL_boosted_InvM_elmu_DNNcat1 = Plot.make1D("DL_boosted_InvM_elmu_DNNcat1", mElMu, DL_boosted_elmu_DNNcat1, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_Cat1_label)
+            plots.extend(
+                [DL_resolved_InvM_elmu_DNNcat1,
+                 DL_boosted_InvM_elmu_DNNcat1,
+                 SummedPlot("DL_InvM_elmu_DNNcat1", [
+                            DL_resolved_InvM_elmu_DNNcat1, DL_boosted_InvM_elmu_DNNcat1], title="DL m(elmu) DNN cat1")
+                 ])
+
+            # DL elmu DNN cat 2
+            DL_resolved_InvM_elmu_DNNcat2 = Plot.make1D("DL_resolved_InvM_elmu_DNNcat2", mElMu, DL_resolved_elmu_DNNcat2, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_Cat2_label)
+            DL_boosted_InvM_elmu_DNNcat2 = Plot.make1D("DL_boosted_InvM_elmu_DNNcat2", mElMu, DL_boosted_elmu_DNNcat2, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_Cat2_label)
+            plots.extend(
+                [DL_resolved_InvM_elmu_DNNcat2,
+                 DL_boosted_InvM_elmu_DNNcat2,
+                 SummedPlot("DL_InvM_elmu_DNNcat2", [
+                            DL_resolved_InvM_elmu_DNNcat2, DL_boosted_InvM_elmu_DNNcat2], title="DL m(elmu) DNN cat2")
+                 ])
+
+            # DL elmu DNN cat 3
+            DL_resolved_InvM_elmu_DNNcat3 = Plot.make1D("DL_resolved_InvM_elmu_DNNcat3", mElMu, DL_resolved_elmu_DNNcat3, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_Cat3_label)
+            DL_boosted_InvM_elmu_DNNcat3 = Plot.make1D("DL_boosted_InvM_elmu_DNNcat3", mElMu, DL_boosted_elmu_DNNcat3, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_Cat3_label)
+            plots.extend(
+                [DL_resolved_InvM_elmu_DNNcat3,
+                 DL_boosted_InvM_elmu_DNNcat3,
+                 SummedPlot("DL_InvM_elmu_DNNcat3", [
+                            DL_resolved_InvM_elmu_DNNcat3, DL_boosted_InvM_elmu_DNNcat3], title="DL m(elmu) DNN cat3")
+                 ])
+
+            # DL elmu DNN cat 4
+            DL_resolved_InvM_elmu_DNNcat4 = Plot.make1D("DL_resolved_InvM_elmu_DNNcat4", mElMu, DL_resolved_elmu_DNNcat4, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_Cat4_label)
+            DL_boosted_InvM_elmu_DNNcat4 = Plot.make1D("DL_boosted_InvM_elmu_DNNcat4", mElMu, DL_boosted_elmu_DNNcat4, EqBin(
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_Cat4_label)
+            plots.extend(
+                [DL_resolved_InvM_elmu_DNNcat4,
+                 DL_boosted_InvM_elmu_DNNcat4,
+                 SummedPlot("DL_InvM_elmu_DNNcat4", [
+                            DL_resolved_InvM_elmu_DNNcat4, DL_boosted_InvM_elmu_DNNcat4], title="DL m(elmu) DNN cat4")
+                 ])
 
         #############################################################################
         #                                 Plots                                     #
         #############################################################################
 
-        if self.channel == 'DL':
+        if self.channel == 'DL' and not self.mvaModels:
             plots.extend([
                 #########################################
                 #                 Skims                 #
