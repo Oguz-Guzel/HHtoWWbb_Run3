@@ -192,11 +192,12 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             # cd ../..
             """
         # create pdf presentation
-        try:
-            os.system(runPDF(workdir))
-            logger.info(f"PDF presentation created: {workdir}.pdf")
-        except Exception as e:
-            logger.info(e)
+        if not self.mvaModels:
+            try:
+                os.system(runPDF(workdir))
+                logger.info(f"PDF presentation created: {workdir}.pdf")
+            except Exception as e:
+                logger.info(e)
 
         # produce skims
         from bamboo.plots import Skim
@@ -221,7 +222,6 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                     import pandas as pd
                     frames = []
                     for smp in samples:
-                        logger.info(f'processing {smp}') 
                         for cb in (smp.files if hasattr(smp, "files") else [smp]):
                             tree = cb.tFile.Get(skim.treeName)
                             if not tree:
