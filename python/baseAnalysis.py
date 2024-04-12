@@ -192,7 +192,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             # cd ../..
             """
         # create pdf presentation
-        if not self.mvaModels:
+        if not self.mvaModels and not self.args.sync:
             try:
                 os.system(runPDF(workdir))
                 logger.info(f"PDF presentation created: {workdir}.pdf")
