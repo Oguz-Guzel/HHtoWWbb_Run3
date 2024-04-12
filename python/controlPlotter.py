@@ -240,11 +240,14 @@ class controlPlotter(NanoBaseHHWWbb):
         #                            MVA evaluation                                 #
         #############################################################################
         if self.mvaModels and self.channel == 'DL':
-            DL_DNN = labeler('DL DNN')
-            DL_DNN_Cat1_label = labeler('DL DNN cat. 1')
-            DL_DNN_Cat2_label = labeler('DL DNN cat. 2')
-            DL_DNN_Cat3_label = labeler('DL DNN cat. 3')
-            DL_DNN_Cat4_label = labeler('DL DNN cat. 4')
+            DL_DNN = {**labeler('DL DNN score - blinded'), 'blinded-range': [0.25, 0.999]}
+            DL_DNN_EE = {**labeler('DL DNN score EE - blinded'), 'blinded-range': [0.25, 0.999]}
+            DL_DNN_MuMu = {**labeler('DL DNN score MuMu - blinded'), 'blinded-range': [0.25, 0.999]}
+            DL_DNN_EMu = {**labeler('DL DNN score EMu - blinded'), 'blinded-range': [0.25, 0.999]}
+            DL_DNN_InvM_Cat1_label = {**labeler('DL DNN cat. 1 - blinded'), 'blinded-range': [0., 299.99]}
+            DL_DNN_InvM_Cat2_label = {**labeler('DL DNN cat. 2 - blinded'), 'blinded-range': [0., 299.99]}
+            DL_DNN_InvM_Cat3_label = {**labeler('DL DNN cat. 3 - blinded'), 'blinded-range': [0., 299.99]}
+            DL_DNN_InvM_Cat4_label = {**labeler('DL DNN cat. 4 - blinded'), 'blinded-range': [0., 299.99]}
             mvaVars_DL.pop("weight", None)
 
             import random
@@ -322,24 +325,20 @@ class controlPlotter(NanoBaseHHWWbb):
             self.yields.add(DL_resolved_ee_DNNcat4, 'DL_resolved_ee_DNNcat4')
             
             dnn_score_ee = Plot.make1D("dnn_score_ee", DNN_output[0], DL_resolved_ee, EqBin(
-                    100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts={'labels': [
-                            {'text': 'DL DNN score EE', 'position': [0.23, 0.87], 'size': 25}], 'blinded-range': [0.25, 0.999]}
+                    100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN_EE
 )
             dnn_score_emu = Plot.make1D("dnn_score_emu", DNN_output[0], DL_resolved_emu, EqBin(
-                    100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts={'labels': [
-                            {'text': 'DL DNN score ElMu', 'position': [0.23, 0.87], 'size': 25}], 'blinded-range': [0.25, 0.999]}
+                    100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN_EMu
 )
             dnn_score_mumu = Plot.make1D("dnn_score_mumu", DNN_output[0], DL_resolved_mumu, EqBin(
-                    100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts={'labels': [
-                            {'text': 'DL DNN score MuMu', 'position': [0.23, 0.87], 'size': 25}], 'blinded-range': [0.25, 0.999]}
+                    100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN_MuMu
 )
             plots.extend([
                 dnn_score_ee,
                 dnn_score_emu,
                 dnn_score_mumu,
                 SummedPlot("DL_dnn_score", [
-                           dnn_score_ee, dnn_score_emu, dnn_score_mumu], title="DL DNN score", plotopts={'labels': [
-                            {'text': 'DL DNN score', 'position': [0.23, 0.87], 'size': 25}], 'blinded-range': [0.25, 0.999]}
+                           dnn_score_ee, dnn_score_emu, dnn_score_mumu], title="DL DNN score", plotopts=DL_DNN
 )
             ])
 
@@ -348,9 +347,9 @@ class controlPlotter(NanoBaseHHWWbb):
 
             # DL ee DNN cat 1
             DL_resolved_InvM_ee_DNNcat1 = Plot.make1D("DL_resolved_InvM_ee_DNNcat1", mElEl, DL_resolved_ee_DNNcat1, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_Cat1_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat1_label)
             DL_boosted_InvM_ee_DNNcat1 = Plot.make1D("DL_boosted_InvM_ee_DNNcat1", mElEl, DL_boosted_ee_DNNcat1, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_Cat1_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat1_label)
             plots.extend(
                 [DL_resolved_InvM_ee_DNNcat1,
                  DL_boosted_InvM_ee_DNNcat1,
@@ -360,9 +359,9 @@ class controlPlotter(NanoBaseHHWWbb):
 
             # DL ee DNN cat 2
             DL_resolved_InvM_ee_DNNcat2 = Plot.make1D("DL_resolved_InvM_ee_DNNcat2", mElEl, DL_resolved_ee_DNNcat2, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_Cat2_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat2_label)
             DL_boosted_InvM_ee_DNNcat2 = Plot.make1D("DL_boosted_InvM_ee_DNNcat2", mElEl, DL_boosted_ee_DNNcat2, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_Cat2_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat2_label)
             plots.extend(
                 [DL_resolved_InvM_ee_DNNcat2,
                  DL_boosted_InvM_ee_DNNcat2,
@@ -372,9 +371,9 @@ class controlPlotter(NanoBaseHHWWbb):
 
             # DL ee DNN cat 3
             DL_resolved_InvM_ee_DNNcat3 = Plot.make1D("DL_resolved_InvM_ee_DNNcat3", mElEl, DL_resolved_ee_DNNcat3, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_Cat3_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat3_label)
             DL_boosted_InvM_ee_DNNcat3 = Plot.make1D("DL_boosted_InvM_ee_DNNcat3", mElEl, DL_boosted_ee_DNNcat3, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_Cat3_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat3_label)
             plots.extend(
                 [DL_resolved_InvM_ee_DNNcat3,
                  DL_boosted_InvM_ee_DNNcat3,
@@ -384,9 +383,9 @@ class controlPlotter(NanoBaseHHWWbb):
 
             # DL ee DNN cat 4
             DL_resolved_InvM_ee_DNNcat4 = Plot.make1D("DL_resolved_InvM_ee_DNNcat4", mElEl, DL_resolved_ee_DNNcat4, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_Cat4_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat4_label)
             DL_boosted_InvM_ee_DNNcat4 = Plot.make1D("DL_boosted_InvM_ee_DNNcat4", mElEl, DL_boosted_ee_DNNcat4, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_Cat4_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat4_label)
             plots.extend(
                 [DL_resolved_InvM_ee_DNNcat4,
                  DL_boosted_InvM_ee_DNNcat4,
@@ -399,9 +398,9 @@ class controlPlotter(NanoBaseHHWWbb):
 
             # DL mumu DNN cat 1
             DL_resolved_InvM_mumu_DNNcat1 = Plot.make1D("DL_resolved_InvM_mumu_DNNcat1", mMuMu, DL_resolved_mumu_DNNcat1, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_Cat1_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat1_label)
             DL_boosted_InvM_mumu_DNNcat1 = Plot.make1D("DL_boosted_InvM_mumu_DNNcat1", mMuMu, DL_boosted_mumu_DNNcat1, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_Cat1_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat1_label)
             plots.extend(
                 [DL_resolved_InvM_mumu_DNNcat1,
                  DL_boosted_InvM_mumu_DNNcat1,
@@ -411,9 +410,9 @@ class controlPlotter(NanoBaseHHWWbb):
 
             # DL mumu DNN cat 2
             DL_resolved_InvM_mumu_DNNcat2 = Plot.make1D("DL_resolved_InvM_mumu_DNNcat2", mMuMu, DL_resolved_mumu_DNNcat2, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_Cat2_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat2_label)
             DL_boosted_InvM_mumu_DNNcat2 = Plot.make1D("DL_boosted_InvM_mumu_DNNcat2", mMuMu, DL_boosted_mumu_DNNcat2, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_Cat2_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat2_label)
             plots.extend(
                 [DL_resolved_InvM_mumu_DNNcat2,
                  DL_boosted_InvM_mumu_DNNcat2,
@@ -423,9 +422,9 @@ class controlPlotter(NanoBaseHHWWbb):
 
             # DL mumu DNN cat 3
             DL_resolved_InvM_mumu_DNNcat3 = Plot.make1D("DL_resolved_InvM_mumu_DNNcat3", mMuMu, DL_resolved_mumu_DNNcat3, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_Cat3_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat3_label)
             DL_boosted_InvM_mumu_DNNcat3 = Plot.make1D("DL_boosted_InvM_mumu_DNNcat3", mMuMu, DL_boosted_mumu_DNNcat3, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_Cat3_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat3_label)
             plots.extend(
                 [DL_resolved_InvM_mumu_DNNcat3,
                  DL_boosted_InvM_mumu_DNNcat3,
@@ -435,9 +434,9 @@ class controlPlotter(NanoBaseHHWWbb):
 
             # DL mumu DNN cat 4
             DL_resolved_InvM_mumu_DNNcat4 = Plot.make1D("DL_resolved_InvM_mumu_DNNcat4", mMuMu, DL_resolved_mumu_DNNcat4, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_Cat4_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat4_label)
             DL_boosted_InvM_mumu_DNNcat4 = Plot.make1D("DL_boosted_InvM_mumu_DNNcat4", mMuMu, DL_boosted_mumu_DNNcat4, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_Cat4_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat4_label)
             plots.extend(
                 [DL_resolved_InvM_mumu_DNNcat4,
                  DL_boosted_InvM_mumu_DNNcat4,
@@ -451,9 +450,9 @@ class controlPlotter(NanoBaseHHWWbb):
 
             # DL elmu DNN cat 1
             DL_resolved_InvM_elmu_DNNcat1 = Plot.make1D("DL_resolved_InvM_elmu_DNNcat1", mElMu, DL_resolved_elmu_DNNcat1, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_Cat1_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat1_label)
             DL_boosted_InvM_elmu_DNNcat1 = Plot.make1D("DL_boosted_InvM_elmu_DNNcat1", mElMu, DL_boosted_elmu_DNNcat1, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_Cat1_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat1_label)
             plots.extend(
                 [DL_resolved_InvM_elmu_DNNcat1,
                  DL_boosted_InvM_elmu_DNNcat1,
@@ -463,9 +462,9 @@ class controlPlotter(NanoBaseHHWWbb):
 
             # DL elmu DNN cat 2
             DL_resolved_InvM_elmu_DNNcat2 = Plot.make1D("DL_resolved_InvM_elmu_DNNcat2", mElMu, DL_resolved_elmu_DNNcat2, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_Cat2_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat2_label)
             DL_boosted_InvM_elmu_DNNcat2 = Plot.make1D("DL_boosted_InvM_elmu_DNNcat2", mElMu, DL_boosted_elmu_DNNcat2, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_Cat2_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat2_label)
             plots.extend(
                 [DL_resolved_InvM_elmu_DNNcat2,
                  DL_boosted_InvM_elmu_DNNcat2,
@@ -475,9 +474,9 @@ class controlPlotter(NanoBaseHHWWbb):
 
             # DL elmu DNN cat 3
             DL_resolved_InvM_elmu_DNNcat3 = Plot.make1D("DL_resolved_InvM_elmu_DNNcat3", mElMu, DL_resolved_elmu_DNNcat3, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_Cat3_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat3_label)
             DL_boosted_InvM_elmu_DNNcat3 = Plot.make1D("DL_boosted_InvM_elmu_DNNcat3", mElMu, DL_boosted_elmu_DNNcat3, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_Cat3_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat3_label)
             plots.extend(
                 [DL_resolved_InvM_elmu_DNNcat3,
                  DL_boosted_InvM_elmu_DNNcat3,
@@ -487,9 +486,9 @@ class controlPlotter(NanoBaseHHWWbb):
 
             # DL elmu DNN cat 4
             DL_resolved_InvM_elmu_DNNcat4 = Plot.make1D("DL_resolved_InvM_elmu_DNNcat4", mElMu, DL_resolved_elmu_DNNcat4, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_Cat4_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat4_label)
             DL_boosted_InvM_elmu_DNNcat4 = Plot.make1D("DL_boosted_InvM_elmu_DNNcat4", mElMu, DL_boosted_elmu_DNNcat4, EqBin(
-                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_Cat4_label)
+                100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of el-mu pair (GeV/c^{2})", plotopts=DL_DNN_InvM_Cat4_label)
             plots.extend(
                 [DL_resolved_InvM_elmu_DNNcat4,
                  DL_boosted_InvM_elmu_DNNcat4,
