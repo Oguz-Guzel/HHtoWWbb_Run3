@@ -17,6 +17,7 @@ class controlPlotter(NanoBaseHHWWbb):
         super(controlPlotter, self).__init__(args)
         self.channel = self.args.channel
         self.mvaModels = self.args.mvaModels
+        self.sync = self.args.sync
 
     def definePlots(self, tree, noSel, sample=None, sampleCfg=None):
         plots = []
@@ -193,38 +194,39 @@ class controlPlotter(NanoBaseHHWWbb):
         if self.args.sync and self.channel == 'DL' and not self.mvaModels:
             syncVars_DL = {
                 "event_no": tree.event,
+                "lumi_block": tree.luminosityBlock,
                 "is_dl_ee": op.switch(op.rng_len(self.tightElectrons) == 2, 1, op.c_float(0.)),
                 "is_dl_mumu": op.switch(op.rng_len(self.tightMuons) == 2, 1, op.c_float(0.)),
                 "is_dl_emu": op.switch(op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons)) == 1, 1, op.c_float(0.)),
-                # "nLooseElectron": op.rng_len(self.preElectrons),
-                # "nFakeElectron": op.rng_len(self.fakeElectrons),
-                # "nTightElectron": op.rng_len(self.tightElectrons),
-                # "nLooseMuon": op.rng_len(self.preMuons),
-                # "nFakeMuon": op.rng_len(self.fakeMuons),
-                # "nTightMuon": op.rng_len(self.tightMuons),
-                # "lepton0pt": op.multiSwitch(
-                #     (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[0].pt),
-                #     (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].pt),
-                #     (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
-                #         self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].pt, self.tightMuons[0].pt)),
-                #  op.c_float(0.)
-                # ),
-                # "lepton1pt": op.multiSwitch(
-                #     (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[1].pt),
-                #     (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].pt),
-                #     (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
-                #         self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightMuons[0].pt, self.tightElectrons[0].pt)),
-                # op.c_float(0.)
-                # ),
-                # "nAK4": op.rng_len(self.ak4Jets),
-                # "nAK4bJet": op.rng_len(self.ak4BJets),
-                # "nAK8bJet": op.rng_len(self.ak8BJets),
-                # "ak4jet0pt": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].pt, op.c_float(0.)),
-                # "ak4jet0eta": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].eta, op.c_float(0.)),
-                # "ak4jet1pt": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].pt, op.c_float(0.)),
-                # "ak4jet1eta": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].eta, op.c_float(0.)),
-                # "ak8jetpt": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].pt, op.c_float(0.)),
-                # "ak8jeteta": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].eta, op.c_float(0.)),
+                "nLooseElectron": op.rng_len(self.preElectrons),
+                "nFakeElectron": op.rng_len(self.fakeElectrons),
+                "nTightElectron": op.rng_len(self.tightElectrons),
+                "nLooseMuon": op.rng_len(self.preMuons),
+                "nFakeMuon": op.rng_len(self.fakeMuons),
+                "nTightMuon": op.rng_len(self.tightMuons),
+                "lepton0pt": op.multiSwitch(
+                    (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[0].pt),
+                    (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].pt),
+                    (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                        self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].pt, self.tightMuons[0].pt)),
+                 op.c_float(0.)
+                ),
+                "lepton1pt": op.multiSwitch(
+                    (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[1].pt),
+                    (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].pt),
+                    (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                        self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightMuons[0].pt, self.tightElectrons[0].pt)),
+                op.c_float(0.)
+                ),
+                "nAK4": op.rng_len(self.ak4Jets),
+                "nAK4bJet": op.rng_len(self.ak4BJets),
+                "nAK8bJet": op.rng_len(self.ak8BJets),
+                "ak4jet0pt": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].pt, op.c_float(0.)),
+                "ak4jet0eta": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].eta, op.c_float(0.)),
+                "ak4jet1pt": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].pt, op.c_float(0.)),
+                "ak4jet1eta": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].eta, op.c_float(0.)),
+                "ak8jetpt": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].pt, op.c_float(0.)),
+                "ak8jeteta": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].eta, op.c_float(0.)),
             }
             # to order the columns
             self.order = [key for key in syncVars_DL.keys()]
@@ -235,19 +237,29 @@ class controlPlotter(NanoBaseHHWWbb):
                 Skim("DL_boosted_ee_sync", syncVars_DL, DL_boosted_ee),
                 Skim("DL_boosted_mumu_sync", syncVars_DL, DL_boosted_mumu),
                 Skim("DL_boosted_emu_sync", syncVars_DL, DL_boosted_emu),
+                Plot.make1D("DL_boosted_nfatJet_ee", op.rng_len(self.ak8Jets), DL_boosted_ee, EqBin(
+                    10, 0, 10), title="N(ak8jet)", xTitle="Number of fatjet", plotopts=DLboostedEE_label),
             ])
         #############################################################################
         #                            MVA evaluation                                 #
         #############################################################################
         if self.mvaModels and self.channel == 'DL':
-            DL_DNN = {**labeler('DL DNN score - blinded'), 'blinded-range': [0.25, 0.999]}
-            DL_DNN_EE = {**labeler('DL DNN score EE - blinded'), 'blinded-range': [0.25, 0.999]}
-            DL_DNN_MuMu = {**labeler('DL DNN score MuMu - blinded'), 'blinded-range': [0.25, 0.999]}
-            DL_DNN_EMu = {**labeler('DL DNN score EMu - blinded'), 'blinded-range': [0.25, 0.999]}
-            DL_DNN_InvM_Cat1_label = {**labeler('DL DNN cat. 1 - blinded'), 'blinded-range': [0., 299.99]}
-            DL_DNN_InvM_Cat2_label = {**labeler('DL DNN cat. 2 - blinded'), 'blinded-range': [0., 299.99]}
-            DL_DNN_InvM_Cat3_label = {**labeler('DL DNN cat. 3 - blinded'), 'blinded-range': [0., 299.99]}
-            DL_DNN_InvM_Cat4_label = {**labeler('DL DNN cat. 4 - blinded'), 'blinded-range': [0., 299.99]}
+            DL_DNN = {**labeler('DL DNN score - blinded'),
+                      'blinded-range': [0.25, 0.999]}
+            DL_DNN_EE = {**labeler('DL DNN score EE - blinded'),
+                         'blinded-range': [0.25, 0.999]}
+            DL_DNN_MuMu = {
+                **labeler('DL DNN score MuMu - blinded'), 'blinded-range': [0.25, 0.999]}
+            DL_DNN_EMu = {
+                **labeler('DL DNN score EMu - blinded'), 'blinded-range': [0.25, 0.999]}
+            DL_DNN_InvM_Cat1_label = {
+                **labeler('DL DNN cat. 1 - blinded'), 'blinded-range': [0., 299.99]}
+            DL_DNN_InvM_Cat2_label = {
+                **labeler('DL DNN cat. 2 - blinded'), 'blinded-range': [0., 299.99]}
+            DL_DNN_InvM_Cat3_label = {
+                **labeler('DL DNN cat. 3 - blinded'), 'blinded-range': [0., 299.99]}
+            DL_DNN_InvM_Cat4_label = {
+                **labeler('DL DNN cat. 4 - blinded'), 'blinded-range': [0., 299.99]}
             mvaVars_DL.pop("weight", None)
 
             import random
@@ -323,23 +335,23 @@ class controlPlotter(NanoBaseHHWWbb):
 
             # to make sure yields are working fine
             self.yields.add(DL_resolved_ee_DNNcat4, 'DL_resolved_ee_DNNcat4')
-            
+
             dnn_score_ee = Plot.make1D("dnn_score_ee", DNN_output[0], DL_resolved_ee, EqBin(
-                    100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN_EE
-)
+                100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN_EE
+            )
             dnn_score_emu = Plot.make1D("dnn_score_emu", DNN_output[0], DL_resolved_emu, EqBin(
-                    100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN_EMu
-)
+                100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN_EMu
+            )
             dnn_score_mumu = Plot.make1D("dnn_score_mumu", DNN_output[0], DL_resolved_mumu, EqBin(
-                    100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN_MuMu
-)
+                100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN_MuMu
+            )
             plots.extend([
                 dnn_score_ee,
                 dnn_score_emu,
                 dnn_score_mumu,
                 SummedPlot("DL_dnn_score", [
                            dnn_score_ee, dnn_score_emu, dnn_score_mumu], title="DL DNN score", plotopts=DL_DNN
-)
+                           )
             ])
 
             mElEl = op.invariant_mass(
@@ -500,7 +512,7 @@ class controlPlotter(NanoBaseHHWWbb):
         #                                 Plots                                     #
         #############################################################################
 
-        if self.channel == 'DL' and not self.mvaModels:
+        if self.channel == 'DL' and not self.mvaModels and not self.sync:
             plots.extend([
                 #########################################
                 #                 Skims                 #
