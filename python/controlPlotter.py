@@ -37,12 +37,14 @@ class controlPlotter(NanoBaseHHWWbb):
                 DL_boosted_emu, DL_resolved_ee, \
                 DL_resolved_mumu, DL_resolved_emu = makeDLSelection(
                     self, noSel)
-            
+
             if self.sync:
-                DL_1_preElectron = noSel.refine("DL_1_preElectron", cut=op.rng_len(self.preElectrons) == 1)
+                DL_1_preElectron = noSel.refine(
+                    "DL_1_preElectron", cut=op.rng_len(self.preElectrons) == 1)
                 self.yields.add(DL_1_preElectron, '1 pre-Electron')
-                
-                DL_1_preMuon = noSel.refine("DL_1_preMuon", cut=op.rng_len(self.preMuons) == 1)
+
+                DL_1_preMuon = noSel.refine(
+                    "DL_1_preMuon", cut=op.rng_len(self.preMuons) == 1)
                 self.yields.add(DL_1_preMuon, '1 pre-Muon')
 
             # muonSF
@@ -57,10 +59,11 @@ class controlPlotter(NanoBaseHHWWbb):
             DL_boosted_emu = sf.electronSF(self, DL_boosted_emu)
             DL_resolved_emu = sf.electronSF(self, DL_resolved_emu)
 
-            # btagging SF, only for resolved since the btagSF function takes only ak4 jets for now, will update once ak8 corrections are available
-            DL_resolved_ee = sf.btagSF(self, DL_resolved_ee)
-            DL_resolved_mumu = sf.btagSF(self, DL_resolved_mumu)
-            DL_resolved_emu = sf.btagSF(self, DL_resolved_emu)
+            # btagging SF, only for resolved since the btagSF function takes only ak4 jets for now
+            # will update once ak8 corrections are available
+            # DL_resolved_ee = sf.btagSF(self, DL_resolved_ee)
+            # DL_resolved_mumu = sf.btagSF(self, DL_resolved_mumu)
+            # DL_resolved_emu = sf.btagSF(self, DL_resolved_emu)
 
             # cutflow report for DL channel
             self.yields.add(DL_boosted_ee, 'DL boosted ee')
@@ -212,18 +215,20 @@ class controlPlotter(NanoBaseHHWWbb):
                 "nFakeMuon": op.rng_len(self.fakeMuons),
                 "nTightMuon": op.rng_len(self.tightMuons),
                 "lepton0pt": op.multiSwitch(
-                    (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[0].pt),
+                    (op.rng_len(self.tightElectrons)
+                     == 2, self.tightElectrons[0].pt),
                     (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].pt),
                     (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
                         self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].pt, self.tightMuons[0].pt)),
-                 op.c_float(0.)
+                    op.c_float(0.)
                 ),
                 "lepton1pt": op.multiSwitch(
-                    (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[1].pt),
+                    (op.rng_len(self.tightElectrons)
+                     == 2, self.tightElectrons[1].pt),
                     (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].pt),
                     (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
                         self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightMuons[0].pt, self.tightElectrons[0].pt)),
-                op.c_float(0.)
+                    op.c_float(0.)
                 ),
                 "nAK4": op.rng_len(self.ak4Jets),
                 "nAK4bJet": op.rng_len(self.ak4BJets),
