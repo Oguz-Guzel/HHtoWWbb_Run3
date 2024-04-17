@@ -37,6 +37,13 @@ class controlPlotter(NanoBaseHHWWbb):
                 DL_boosted_emu, DL_resolved_ee, \
                 DL_resolved_mumu, DL_resolved_emu = makeDLSelection(
                     self, noSel)
+            
+            if self.sync:
+                DL_1_preElectron = noSel.refine("DL_1_preElectron", cut=op.rng_len(self.preElectrons) == 1)
+                self.yields.add(DL_1_preElectron, '1 pre-Electron')
+                
+                DL_1_preMuon = noSel.refine("DL_1_preMuon", cut=op.rng_len(self.preMuons) == 1)
+                self.yields.add(DL_1_preMuon, '1 pre-Muon')
 
             # muonSF
             DL_boosted_mumu = sf.muonSF(self, DL_boosted_mumu)
@@ -238,7 +245,7 @@ class controlPlotter(NanoBaseHHWWbb):
                 Skim("DL_boosted_mumu_sync", syncVars_DL, DL_boosted_mumu),
                 Skim("DL_boosted_emu_sync", syncVars_DL, DL_boosted_emu),
                 Plot.make1D("DL_boosted_nfatJet_ee", op.rng_len(self.ak8Jets), DL_boosted_ee, EqBin(
-                    10, 0, 10), title="N(ak8jet)", xTitle="Number of fatjet", plotopts=DLboostedEE_label),
+                    10, 0, 10), title="N(ak8jet)", xTitle="Number of fatjet", plotopts=DLboostedEE_label)
             ])
         #############################################################################
         #                            MVA evaluation                                 #
