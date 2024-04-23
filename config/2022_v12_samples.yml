@@ -23,6 +23,31 @@ GluGlutoHHto2B2Vto2L2Nu_kl-1p00_kt-1p00_c2-0p00:
   line-color: 3
   legend: 'HH\rightarrow bbll\nu\nu'
 
+# ### BSM ###
+# GluGlutoHHto2B2WtoLNu2Q_kl-2p45_kt-1p00_c2-0p00:
+#   type: signal
+#   dbs:
+#     "2022": das:/GluGluToHHTo2B2VTo2L2Nu_node_cHHH2p45_TuneCP5_PSWeights_13TeV-powheg-pythia8/RunIIFall17NanoAODv7-PU2017_12Apr2018_Nano02Apr2020_102X_mc2017_realistic_v8-v1/NANOAODSIM
+#     "2022EE": das:/GluGluToHHTo2B2VTo2L2Nu_node_cHHH2p45_TuneCUETP8M1_PSWeights_13TeV-powheg-pythia8/RunIISummer16NanoAODv7-PUMoriond17_Nano02Apr2020_102X_mcRun2_asymptotic_v8-v1/NANOAODSIM
+#   cross-section: 0.013124
+#   branching-ratio: 0.027669886574221
+#   generated-events: genEventSumw
+#   split: -10
+#   # line-color: '#FFFFFF'
+#   # legend: 'HHto2B2WtoLNu2Q'
+
+# GluGlutoHHto2B2Vto2L2Nu_kl-5p00_kt-1p00_c2-0p00:
+#   type: signal
+#   dbs:
+#     "2022": das:/GluGluToHHTo2B2VTo2L2Nu_node_cHHH5_TuneCP5_PSWeights_13TeV-powheg-pythia8/RunIIFall17NanoAODv7-PU2017_12Apr2018_Nano02Apr2020_102X_mc2017_realistic_v8-v1/NANOAODSIM
+#     "2022EE": das:/GluGluToHHTo2B2VTo2L2Nu_node_cHHH5_TuneCUETP8M1_PSWeights_13TeV-powheg-pythia8/RunIISummer16NanoAODv7-PUMoriond17_Nano02Apr2020_102X_mcRun2_asymptotic_v8-v1/NANOAODSIM
+#   cross-section: 0.091172
+#   branching-ratio: 0.027669886574221
+#   generated-events: genEventSumw
+#   split: -10
+#   line-color: 3
+#   legend: 'HH\rightarrow bbll\nu\nu'
+
 ### DATA ###
 
 Muon_Run2022C:
