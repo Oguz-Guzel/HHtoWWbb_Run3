@@ -185,7 +185,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             return f"""
             cp scripts/controlPlotter_{channel}.tex {workdir}/plots_full
             cd {workdir}/plots_full
-            pdflatex controlPlotter_{channel}.tex > /dev/null 2>&1
+            pdflatex -interaction=nonstopmode controlPlotter_{channel}.tex > /dev/null 2>&1
             mv controlPlotter_{channel}.pdf ..
             cd -
             # pdflatex yields.tex
