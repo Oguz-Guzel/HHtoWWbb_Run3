@@ -183,6 +183,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
 
         def runPDF(workdir, channel=self.args.channel):
             return f"""
+            cp scripts/empty.pdf {workdir}/plots_full
             cp scripts/controlPlotter_{channel}.tex {workdir}/plots_full
             cd {workdir}/plots_full
             pdflatex -interaction=nonstopmode controlPlotter_{channel}.tex > /dev/null 2>&1
