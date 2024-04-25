@@ -61,16 +61,16 @@ class controlPlotter(NanoBaseHHWWbb):
             DL_resolved_1b_ee = sf.electronSF(self, DL_resolved_1b_ee)
             DL_resolved_1b_emu = sf.electronSF(self, DL_resolved_1b_emu)
             DL_resolved_2b_ee = sf.electronSF(self, DL_resolved_2b_ee)
-            DL_resolved_2b_emu = sf.electronSF(self, DL_resolved_1b_emu)
+            DL_resolved_2b_emu = sf.electronSF(self, DL_resolved_2b_emu)
 
             # btagging SF, only for resolved since the btagSF function takes only ak4 jets for now
             # will update once ak8 corrections are available
-            DL_resolved_1b_ee = sf.btagSF(self, DL_resolved_1b_ee)
-            DL_resolved_1b_mumu = sf.btagSF(self, DL_resolved_1b_mumu)
-            DL_resolved_1b_emu = sf.btagSF(self, DL_resolved_1b_emu)
-            DL_resolved_2b_ee = sf.btagSF(self, DL_resolved_2b_ee)
-            DL_resolved_2b_mumu = sf.btagSF(self, DL_resolved_1b_mumu)
-            DL_resolved_2b_emu = sf.btagSF(self, DL_resolved_1b_emu)
+            # DL_resolved_1b_ee = sf.btagSF(self, DL_resolved_1b_ee)
+            # DL_resolved_1b_mumu = sf.btagSF(self, DL_resolved_1b_mumu)
+            # DL_resolved_1b_emu = sf.btagSF(self, DL_resolved_1b_emu)
+            # DL_resolved_2b_ee = sf.btagSF(self, DL_resolved_2b_ee)
+            # DL_resolved_2b_mumu = sf.btagSF(self, DL_resolved_1b_mumu)
+            # DL_resolved_2b_emu = sf.btagSF(self, DL_resolved_1b_emu)
 
             # cutflow report for DL channel
             self.yields.add(DL_boosted_ee, 'DL boosted ee')
