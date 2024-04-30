@@ -74,6 +74,8 @@ class ScaleFactors():
         if self.is_MC:
             logger.info("Applying genWeight")
             sel = sel.refine('genWeight', weight=tree.genWeight)
+        else:
+            sel = sel.refine('genWeight', weight=op.c_float(1.))
         self.yields.add(sel, "genWeight")
 
         # PU weight
@@ -83,7 +85,10 @@ class ScaleFactors():
                 puWeightsTuple[self.era], tree.Pileup_nTrueInt, systName="pileup", sel=sel)
             logger.info("Applying PU weight")
             sel = sel.refine('puWeight', weight=pileupWeight)
+        else:
+            sel = sel.refine('puWeight', weight=op.c_float(1.))
         self.yields.add(sel, "puWeight")
+        
         # Triggers
         self.triggersPerPrimaryDataset = {}
 
@@ -167,7 +172,7 @@ class ScaleFactors():
                 "Applying Top Pt reweighting (only for TTbar samples)")
 
             sel = sel.refine("topPt", weight=op.systematic(
-                getTopPtWeight(tree), noTopPt=op.c_float(1.)))
+                getTopPtWeight(tree)))
         else:
             sel = sel.refine("topPt", weight=op.c_float(1.))
         self.yields.add(sel, "topPt reweighting")
@@ -175,7 +180,7 @@ class ScaleFactors():
 
     def btagSF(self, sel):
         # btagging SF
-        if self.is_MC:
+        if self.is_MC and sel.name in ['DL_resolved_1b_ee', 'DL_resolved_2b_ee', 'DL_resolved_1b_mumu', 'DL_resolved_2b_mumu', 'DL_resolved_1b_emu', 'DL_resolved_2b_emu']:
             from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
             logger.info("Applying btagging SF for "+sel.name)
             def btvSF(flav): return get_bTagSF_itFit(
@@ -223,6 +228,8 @@ class ScaleFactors():
                                  )
             else:
                 sel = sel.refine(sel.name+"_muonSF", weight=op.c_float(1.))
+        else:
+            sel = sel.refine(sel.name+"_muonSF", weight=op.c_float(1.))
         self.yields.add(sel, "muon SF")
         return sel
 
@@ -266,5 +273,7 @@ class ScaleFactors():
                                  )
             else:
                 sel = sel.refine(sel.name+"_electronSF", weight=op.c_float(1.))
+        else:
+            sel = sel.refine(sel.name+"_electronSF", weight=op.c_float(1.))
         self.yields.add(sel, "electron SF")
         return sel
