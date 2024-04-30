@@ -55,38 +55,38 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         parser.add_argument("-c", "--channel",
                             dest="channel",
                             type=str,
-                            required=True,
+                            default="DL",
                             help='Channel to be selected between SL and DL')
         parser.add_argument("--mvaModels",
                             dest="mvaModels",
                             type=str,
                             help="Path to MVA models and Evaluate DNN")
-        parser.add_argument("--samples", nargs='*',
-                            required=True, help="Sample template YML file")
+        # parser.add_argument("--samples", nargs='*',
+        #                     required=True, help="Sample template YML file")
         parser.add_argument("--backend", type=str, default="dataframe",
                             help="Backend to use, 'dataframe' (default), 'lazy', or 'compiled'")
         parser.add_argument("--sync", action="store_true", default=False,
                             help="Run synchronisation")
 
-    def customizeAnalysisCfg(self, analysisCfg):
-        # fill sample template using JSON files
-        if self.args.samples:
-            eras = self.args.eras[1]
-            samples = {}
-            # make sure we use absolute paths as this argument will be used by the worker jobs
-            self.args.samples = [os.path.abspath(p) for p in self.args.samples]
-            for tmpPath in self.args.samples:
-                with open(tmpPath) as f_:
-                    template = yaml.load(f_, Loader=yaml.SafeLoader)
-                    samples.update(utils.fillSampleTemplate(template, eras))
-            analysisCfg["samples"] = samples
+    # def customizeAnalysisCfg(self, analysisCfg):
+    #     # fill sample template using JSON files
+    #     if self.args.samples:
+    #         eras = self.args.eras[1]
+    #         samples = {}
+    #         # make sure we use absolute paths as this argument will be used by the worker jobs
+    #         self.args.samples = [os.path.abspath(p) for p in self.args.samples]
+    #         for tmpPath in self.args.samples:
+    #             with open(tmpPath) as f_:
+    #                 template = yaml.load(f_, Loader=yaml.SafeLoader)
+    #                 samples.update(utils.fillSampleTemplate(template, eras))
+    #         analysisCfg["samples"] = samples
 
     def prepareTree(self, tree, sample=None, sampleCfg=None, backend=None):
         self.era = sampleCfg["era"] if sampleCfg else None
         self.is_MC = self.isMC(sample)
         from bamboo.plots import CutFlowReport
         self.yields = CutFlowReport(
-            "yields", recursive=True, printInLog=False)
+            "yields", recursive=True, printInLog=True)
         # Decorate the tree
         from bamboo.treedecorators import NanoAODDescription, nanoFatJetCalc, CalcCollectionsGroups
         metName = "PuppiMET"
@@ -166,20 +166,20 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 config, plotList_plotIt, cfgName, eras=eras, workdir=workdir, resultsdir=resultsdir,
                 readCounters=self.readCounters, plotDefaults=self.plotDefaults,
                 vetoFileAttributes=self.__class__.CustomSampleAttributes)
-            # runPlotIt(
-            # cfgName, workdir=workdir, plotIt=self.args.plotIt, eras=(
-            #     eraMode, eras),
-            # verbose=self.args.verbose)
-        # hadd signal files and create another plots.yml as plots_full.yml
-        import os
-        import shutil
-        outDir = os.path.join(resultsdir, "normalizedSummedSignal")
-        if os.path.isdir(outDir):
-            shutil.rmtree(outDir)
-        os.makedirs(outDir)
-        utils.custom_Plotit(cfgName, workdir, resultsdir, outDir, self.readCounters,
-                            config, plotIt=self.args.plotIt, verbose=self.args.verbose)
-        # end of merging signal samples
+            runPlotIt(
+            cfgName, workdir=workdir, plotIt=self.args.plotIt, eras=(
+                eraMode, eras),
+            verbose=self.args.verbose)
+        # # hadd signal files and create another plots.yml as plots_full.yml
+        # import os
+        # import shutil
+        # outDir = os.path.join(resultsdir, "normalizedSummedSignal")
+        # if os.path.isdir(outDir):
+        #     shutil.rmtree(outDir)
+        # os.makedirs(outDir)
+        # utils.custom_Plotit(cfgName, workdir, resultsdir, outDir, self.readCounters,
+        #                     config, plotIt=self.args.plotIt, verbose=self.args.verbose)
+        # # end of merging signal samples
 
         def runPDF(workdir, channel=self.args.channel):
             return f"""
