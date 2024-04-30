@@ -3,15 +3,15 @@
 tree: Events
 
 eras:
-  "2022":
-    luminosity: 7875.0 # pb^-1
-  "2022EE":
-    luminosity: 26337.0
+  '2022':
+    luminosity: 7875. # pb^-1
+  '2022EE':
+    luminosity: 26337.
 
 dbcache: dascache
 
-# samples:
-#   !include 2022_v12_samples.yml
+samples:
+  !include 2022_v12_samples.yml
 
 plotIt:
   configuration:
@@ -22,13 +22,16 @@ plotIt:
     margin-top: 0.05
     margin-bottom: 0.15
     luminosity-label: '%1$.2f fb^{-1} (13.6 TeV)'
-    experiment: 'CMS'
-    extra-label: 'Run 3 (2022) - Work in progress'
+    experiment: CMS
+    extra-label: Run 3 (2022) - Work in progress
+    luminosity-error: 0.025
+    show-overflow: true
     error-fill-style: 3154
     error-fill-color: "#ee556270"
     ratio-fit-error-fill-style: 1001
     ratio-fit-error-fill-color: "#aa556270"
     ratio-fit-line-color: "#0B486B"
+    y-axis-format: "%1% / %2$.2f"
     blinded-range-fill-style: 1001
     blinded-range-fill-color: "#29556270"
     yields-table-align: v
@@ -37,19 +40,19 @@ plotIt:
     position: [0.7, 0.75, 0.91, 0.91]
   groups:
     data:
-      legend: 'data'
+      legend: Data
     TTbar:
       legend: 't#bar{t}'
       fill-color: "#fff3b0"
     DY:
       legend: 'DY'
       fill-color: "#9e2a2b"
-    WJets:
-      legend: 'WJets'
-      fill-color: "#e09f3e"
-    VV:
-      legend: 'VV'
-      fill-color: "#540B0E"
+    # WJets:
+    #   legend: 'WJets'
+    #   fill-color: "#e09f3e"
+    # VV:
+    #   legend: 'VV'
+    #   fill-color: "#540B0E"
     TW:
       legend: 'TW'
       fill-color: "#335c67"
@@ -64,4 +67,3 @@ plotIt:
     legend-columns: 4
     ratio-y-axis: '#frac{Data}{MC}'
     ratio-y-axis-range: [0.5, 1.5] # [0.5, 1.5] is the default
-    show-overflow: True
