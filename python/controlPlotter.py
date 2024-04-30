@@ -27,6 +27,9 @@ class controlPlotter(NanoBaseHHWWbb):
 
         # define objects
         defs.defineObjects(self, tree)
+        
+        # Number of events before any processing
+        self.yields.add(noSel, "noSel")
 
         # common scale factors
         noSel = sf.commonSF(self, tree, noSel, sample)
@@ -47,30 +50,42 @@ class controlPlotter(NanoBaseHHWWbb):
                     "DL_1_preMuon", cut=op.rng_len(self.preMuons) == 1)
                 self.yields.add(DL_1_preMuon, '1 pre-Muon')
 
-            # muonSF
-            DL_boosted_mumu = sf.muonSF(self, DL_boosted_mumu)
-            DL_boosted_emu = sf.muonSF(self, DL_boosted_emu)
-            DL_resolved_1b_mumu = sf.muonSF(self, DL_resolved_1b_mumu)
-            DL_resolved_1b_emu = sf.muonSF(self, DL_resolved_1b_emu)
-            DL_resolved_2b_emu = sf.muonSF(self, DL_resolved_2b_emu)
-            DL_resolved_2b_mumu = sf.muonSF(self, DL_resolved_2b_mumu)
+            # # muonSF
+            # DL_boosted_mumu = sf.muonSF(self, DL_boosted_mumu)
+            # DL_boosted_emu = sf.muonSF(self, DL_boosted_emu)
+            # DL_resolved_1b_mumu = sf.muonSF(self, DL_resolved_1b_mumu)
+            # DL_resolved_1b_emu = sf.muonSF(self, DL_resolved_1b_emu)
+            # DL_resolved_2b_emu = sf.muonSF(self, DL_resolved_2b_emu)
+            # DL_resolved_2b_mumu = sf.muonSF(self, DL_resolved_2b_mumu)
+            # # 
+            # DL_boosted_ee = sf.muonSF(self, DL_boosted_ee)
+            # DL_resolved_1b_ee = sf.muonSF(self, DL_resolved_1b_ee)
+            # DL_resolved_2b_ee = sf.muonSF(self, DL_resolved_2b_ee)
 
-            # electronSF
-            DL_boosted_ee = sf.electronSF(self, DL_boosted_ee)
-            DL_boosted_emu = sf.electronSF(self, DL_boosted_emu)
-            DL_resolved_1b_ee = sf.electronSF(self, DL_resolved_1b_ee)
-            DL_resolved_1b_emu = sf.electronSF(self, DL_resolved_1b_emu)
-            DL_resolved_2b_ee = sf.electronSF(self, DL_resolved_2b_ee)
-            DL_resolved_2b_emu = sf.electronSF(self, DL_resolved_2b_emu)
+            # # electronSF
+            # DL_boosted_ee = sf.electronSF(self, DL_boosted_ee)
+            # DL_boosted_emu = sf.electronSF(self, DL_boosted_emu)
+            # DL_resolved_1b_ee = sf.electronSF(self, DL_resolved_1b_ee)
+            # DL_resolved_1b_emu = sf.electronSF(self, DL_resolved_1b_emu)
+            # DL_resolved_2b_ee = sf.electronSF(self, DL_resolved_2b_ee)
+            # DL_resolved_2b_emu = sf.electronSF(self, DL_resolved_2b_emu)
+            
+            # DL_boosted_mumu = sf.electronSF(self, DL_boosted_mumu)
+            # DL_resolved_1b_mumu = sf.electronSF(self, DL_resolved_1b_mumu)
+            # DL_resolved_2b_mumu = sf.electronSF(self, DL_resolved_2b_mumu)
 
-            # btagging SF, only for resolved since the btagSF function takes only ak4 jets for now
-            # will update once ak8 corrections are available
+            # # btagging SF, only for resolved since the btagSF function takes only ak4 jets for now
+            # # will update once ak8 corrections are available
             # DL_resolved_1b_ee = sf.btagSF(self, DL_resolved_1b_ee)
             # DL_resolved_1b_mumu = sf.btagSF(self, DL_resolved_1b_mumu)
             # DL_resolved_1b_emu = sf.btagSF(self, DL_resolved_1b_emu)
             # DL_resolved_2b_ee = sf.btagSF(self, DL_resolved_2b_ee)
             # DL_resolved_2b_mumu = sf.btagSF(self, DL_resolved_1b_mumu)
             # DL_resolved_2b_emu = sf.btagSF(self, DL_resolved_1b_emu)
+            
+            # DL_boosted_ee = sf.btagSF(self, DL_boosted_ee)
+            # DL_boosted_mumu = sf.btagSF(self, DL_boosted_mumu)
+            # DL_boosted_emu = sf.btagSF(self, DL_boosted_emu)
 
             # cutflow report for DL channel
             self.yields.add(DL_boosted_ee, 'DL boosted ee')
@@ -1184,15 +1199,6 @@ class controlPlotter(NanoBaseHHWWbb):
                     3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolvedEMu_label),
             ])
         if self.channel == "SL":
-            # if self.args.sync:
-            #     plots.extend([Skim("SL_resolved_1b_e_sync",
-            #                        syncVars_SL, SL_resolved_1b_e),  # update sync_vars
-            #                   Skim("SL_resolved_2b_e_sync",
-            #                        syncVars_SL, SL_resolved_2b_e),
-            #                   Skim("SL_resolved_1b_mu_sync",
-            #                        syncVars_SL, SL_resolved_1b_mu),
-            #                   Skim("SL_resolved_2b_mu_sync",
-            #                        syncVars_SL, SL_resolved_2b_mu)])
             plots.extend([
 
                 #########################################
