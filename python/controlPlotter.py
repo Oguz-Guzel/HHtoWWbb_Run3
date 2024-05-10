@@ -27,7 +27,7 @@ class controlPlotter(NanoBaseHHWWbb):
 
         # define objects
         defs.defineObjects(self, tree)
-        
+
         # Number of events before any processing
         self.yields.add(noSel, "noSel")
 
@@ -57,7 +57,7 @@ class controlPlotter(NanoBaseHHWWbb):
             # DL_resolved_1b_emu = sf.muonSF(self, DL_resolved_1b_emu)
             # DL_resolved_2b_emu = sf.muonSF(self, DL_resolved_2b_emu)
             # DL_resolved_2b_mumu = sf.muonSF(self, DL_resolved_2b_mumu)
-            # # 
+            # #
             # DL_boosted_ee = sf.muonSF(self, DL_boosted_ee)
             # DL_resolved_1b_ee = sf.muonSF(self, DL_resolved_1b_ee)
             # DL_resolved_2b_ee = sf.muonSF(self, DL_resolved_2b_ee)
@@ -69,23 +69,10 @@ class controlPlotter(NanoBaseHHWWbb):
             # DL_resolved_1b_emu = sf.electronSF(self, DL_resolved_1b_emu)
             # DL_resolved_2b_ee = sf.electronSF(self, DL_resolved_2b_ee)
             # DL_resolved_2b_emu = sf.electronSF(self, DL_resolved_2b_emu)
-            
+
             # DL_boosted_mumu = sf.electronSF(self, DL_boosted_mumu)
             # DL_resolved_1b_mumu = sf.electronSF(self, DL_resolved_1b_mumu)
             # DL_resolved_2b_mumu = sf.electronSF(self, DL_resolved_2b_mumu)
-
-            # # btagging SF, only for resolved since the btagSF function takes only ak4 jets for now
-            # # will update once ak8 corrections are available
-            # DL_resolved_1b_ee = sf.btagSF(self, DL_resolved_1b_ee)
-            # DL_resolved_1b_mumu = sf.btagSF(self, DL_resolved_1b_mumu)
-            # DL_resolved_1b_emu = sf.btagSF(self, DL_resolved_1b_emu)
-            # DL_resolved_2b_ee = sf.btagSF(self, DL_resolved_2b_ee)
-            # DL_resolved_2b_mumu = sf.btagSF(self, DL_resolved_1b_mumu)
-            # DL_resolved_2b_emu = sf.btagSF(self, DL_resolved_1b_emu)
-            
-            # DL_boosted_ee = sf.btagSF(self, DL_boosted_ee)
-            # DL_boosted_mumu = sf.btagSF(self, DL_boosted_mumu)
-            # DL_boosted_emu = sf.btagSF(self, DL_boosted_emu)
 
             # cutflow report for DL channel
             self.yields.add(DL_boosted_ee, 'DL boosted ee')
@@ -306,15 +293,15 @@ class controlPlotter(NanoBaseHHWWbb):
                 **labeler('DL DNN cat. 4 - blinded'), 'blinded-range': [0., 299.99]}
             mvaVars_DL.pop("weight", None)
 
-            import random
-            split_var = random.randint(0, 1)
-            if split_var == 0:
-                model = self.mvaModels + "/model_even/model.onnx"
-            elif split_var == 1:
+            # from bamboo.root import loadHeader
+            # loadHeader(self.mvaModels + "../../python/headers/split.h")
+            # split_evaluator = op.extMethod('split::MET')
+            # split_var = split_evaluator(tree.MET.pt)
+            split_var = 1
+            if split_var == 1:
                 model = self.mvaModels + "/model_odd/model.onnx"
             else:
-                print("ERROR: split_var is not 0 or 1")
-                exit(1)
+                model = self.mvaModels + "/model_even/model.onnx"
 
             dnn = op.mvaEvaluator(model, otherArgs=("predictions"))
             input_vars = [op.static_cast('float', v)
@@ -358,7 +345,7 @@ class controlPlotter(NanoBaseHHWWbb):
                 "DL_resolved_1b_mumu_DNNcat3", cut=op.in_range(0.8, DNN_output[0], 0.92))
             DL_resolved_1b_mumu_DNNcat4 = DL_resolved_1b_mumu.refine(
                 "DL_resolved_1b_mumu_DNNcat4", cut=op.in_range(0.92, DNN_output[0], 1.0))
-            
+
             DL_resolved_2b_mumu_DNNcat1 = DL_resolved_2b_mumu.refine(
                 "DL_resolved_2b_mumu_DNNcat1", cut=op.in_range(0.1, DNN_output[0], 0.6))
             DL_resolved_2b_mumu_DNNcat2 = DL_resolved_2b_mumu.refine(
@@ -385,7 +372,7 @@ class controlPlotter(NanoBaseHHWWbb):
                 "DL_resolved_1b_emu_DNNcat3", cut=op.in_range(0.8, DNN_output[0], 0.92))
             DL_resolved_1b_emu_DNNcat4 = DL_resolved_1b_emu.refine(
                 "DL_resolved_1b_emu_DNNcat4", cut=op.in_range(0.92, DNN_output[0], 1.0))
-            
+
             DL_resolved_2b_emu_DNNcat1 = DL_resolved_2b_emu.refine(
                 "DL_resolved_2b_emu_DNNcat1", cut=op.in_range(0.1, DNN_output[0], 0.6))
             DL_resolved_2b_emu_DNNcat2 = DL_resolved_2b_emu.refine(

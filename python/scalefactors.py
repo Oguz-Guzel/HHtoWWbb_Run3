@@ -88,7 +88,7 @@ class ScaleFactors():
         else:
             sel = sel.refine('puWeight', weight=op.c_float(1.))
         self.yields.add(sel, "puWeight")
-        
+
         # Triggers
         self.triggersPerPrimaryDataset = {}
 
@@ -176,19 +176,19 @@ class ScaleFactors():
         else:
             sel = sel.refine("topPt", weight=op.c_float(1.))
         self.yields.add(sel, "topPt reweighting")
-        return sel
 
-    def btagSF(self, sel):
         # btagging SF
-        if self.is_MC and sel.name in ['DL_resolved_1b_ee', 'DL_resolved_2b_ee', 'DL_resolved_1b_mumu', 'DL_resolved_2b_mumu', 'DL_resolved_1b_emu', 'DL_resolved_2b_emu']:
+        if self.is_MC:
             from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
-            logger.info("Applying btagging SF for "+sel.name)
+            logger.info("Applying btagging SF")
             def btvSF(flav): return get_bTagSF_itFit(
-                BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", flav, sel)
-            btvWeight = makeBtagWeightItFit(self.ak4Jets, btvSF)
-            sel = sel.refine(sel.name+"_btagSF", weight=btvWeight)
+                BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", 5, sel, decorr_eras=True, era=self.era)
+            jets = op.select(self.ak4Jets, lambda j: op.AND(
+                j.pt >= 20, op.abs(j.eta) < 2.5))
+            btvWeight = makeBtagWeightItFit(jets, btvSF)
+            sel = sel.refine("btagSF", weight=btvWeight)
         else:
-            sel = sel.refine(sel.name+"_btagSF", weight=op.c_float(1.))
+            sel = sel.refine("btagSF", weight=op.c_float(1.))
         self.yields.add(sel, "btagging SF")
         return sel
 
