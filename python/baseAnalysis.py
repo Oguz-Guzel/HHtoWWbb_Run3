@@ -166,20 +166,20 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 config, plotList_plotIt, cfgName, eras=eras, workdir=workdir, resultsdir=resultsdir,
                 readCounters=self.readCounters, plotDefaults=self.plotDefaults,
                 vetoFileAttributes=self.__class__.CustomSampleAttributes)
-            runPlotIt(
-            cfgName, workdir=workdir, plotIt=self.args.plotIt, eras=(
-                eraMode, eras),
-            verbose=self.args.verbose)
-        # # hadd signal files and create another plots.yml as plots_full.yml
-        # import os
-        # import shutil
-        # outDir = os.path.join(resultsdir, "normalizedSummedSignal")
-        # if os.path.isdir(outDir):
-        #     shutil.rmtree(outDir)
-        # os.makedirs(outDir)
-        # utils.custom_Plotit(cfgName, workdir, resultsdir, outDir, self.readCounters,
-        #                     config, plotIt=self.args.plotIt, verbose=self.args.verbose)
-        # # end of merging signal samples
+            # runPlotIt(
+            # cfgName, workdir=workdir, plotIt=self.args.plotIt, eras=(
+            #     eraMode, eras),
+            # verbose=self.args.verbose)
+        # hadd signal files and create another plots.yml as plots_full.yml
+        import os
+        import shutil
+        outDir = os.path.join(resultsdir, "normalizedSummedSignal")
+        if os.path.isdir(outDir):
+            shutil.rmtree(outDir)
+        os.makedirs(outDir)
+        utils.custom_Plotit(cfgName, workdir, resultsdir, outDir, self.readCounters,
+                            config, plotIt=self.args.plotIt, verbose=self.args.verbose)
+        # end of merging signal samples
 
         def runPDF(workdir, channel=self.args.channel):
             return f"""
