@@ -27,7 +27,7 @@ JERTagDatabase = {
 
 jsonPathBase = "/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/"
 
-puWeightsTuple = {
+puTuple = {
     "2022": (jsonPathBase + "LUM/2022_Summer22/puWeights.json.gz", "Collisions2022_355100_357900_eraBCD_GoldenJson"),
     "2022EE": (jsonPathBase + "LUM/2022_Summer22EE/puWeights.json.gz", "Collisions2022_359022_362760_eraEFG_GoldenJson"),
 }
@@ -47,8 +47,8 @@ BTV_SF_JSONFiles = {
 }
 
 MUO_SF_JSONFiles = {
-    "2022": jsonPathBase + "MUO/2022_27Jun2023/muon_Z.json.gz",
-    "2022EE": jsonPathBase + "MUO/2022EE_27Jun2023/muon_Z.json.gz",
+    "2022": jsonPathBase + "MUO/2022_Summer22/muon_Z.json.gz",
+    "2022EE": jsonPathBase + "MUO/2022_Summer22/muon_Z.json.gz",
 }
 
 EL_SF_JSONFileDirs = {
@@ -82,7 +82,7 @@ class ScaleFactors():
         if self.is_MC:
             from bamboo.analysisutils import makePileupWeight
             pileupWeight = makePileupWeight(
-                puWeightsTuple[self.era], tree.Pileup_nTrueInt, systName="pileup", sel=sel)
+                puTuple[self.era], tree.Pileup_nTrueInt, systName="pileup", sel=sel)
             logger.info("Applying PU weight")
             sel = sel.refine('puWeight', weight=pileupWeight)
         else:
@@ -182,7 +182,7 @@ class ScaleFactors():
             from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
             logger.info("Applying btagging SF")
             def btvSF(flav): return get_bTagSF_itFit(
-                BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", 5, sel, decorr_eras=True, era=self.era)
+                BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", flav, sel, decorr_eras=True, era=self.era)
             jets = op.select(self.ak4Jets, lambda j: op.AND(
                 j.pt >= 20, op.abs(j.eta) < 2.5))
             btvWeight = makeBtagWeightItFit(jets, btvSF)
