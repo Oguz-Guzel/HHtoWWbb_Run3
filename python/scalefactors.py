@@ -201,7 +201,7 @@ class ScaleFactors():
                 MUO_SF_JSONFiles[self.era],
                 "NUM_LooseID_DEN_TrackerMuons",
                 params={"pt": lambda mu: mu.pt,
-                        "abseta": lambda mu: op.abs(mu.eta)},
+                        "eta": lambda mu: op.abs(mu.eta)},
                 systParam="scale_factors",
                 systNomName="nominal",
                 systName="syst",
