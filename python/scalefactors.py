@@ -182,7 +182,7 @@ class ScaleFactors():
             from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
             logger.info("Applying btagging SF")
             def btvSF(flav): return get_bTagSF_itFit(
-                BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", 5, sel, decorr_eras=True, era=self.era)
+                BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", flav, sel, decorr_eras=True, era=self.era)
             jets = op.select(self.ak4Jets, lambda j: op.AND(
                 j.pt >= 20, op.abs(j.eta) < 2.5))
             btvWeight = makeBtagWeightItFit(jets, btvSF)
