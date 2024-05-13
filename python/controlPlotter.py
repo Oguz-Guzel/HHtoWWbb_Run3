@@ -652,6 +652,7 @@ class controlPlotter(NanoBaseHHWWbb):
                 Skim("DL_resolved_1b_mumu_mva", mvaVars_DL, DL_resolved_1b_mumu),
                 Skim("DL_resolved_2b_mumu_mva", mvaVars_DL, DL_resolved_1b_mumu),
                 Skim("DL_resolved_1b_emu_mva", mvaVars_DL, DL_resolved_1b_emu),
+                Skim("DL_resolved_2b_emu_mva", mvaVars_DL, DL_resolved_1b_emu),
                 Skim("DL_boosted_ee_mva", mvaVars_DL, DL_boosted_ee),
                 Skim("DL_boosted_mumu_mva", mvaVars_DL, DL_boosted_mumu),
                 Skim("DL_boosted_emu_mva", mvaVars_DL, DL_boosted_emu),
