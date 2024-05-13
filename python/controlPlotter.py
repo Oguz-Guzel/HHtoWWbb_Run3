@@ -50,29 +50,21 @@ class controlPlotter(NanoBaseHHWWbb):
                     "DL_1_preMuon", cut=op.rng_len(self.preMuons) == 1)
                 self.yields.add(DL_1_preMuon, '1 pre-Muon')
 
-            # # muonSF
-            # DL_boosted_mumu = sf.muonSF(self, DL_boosted_mumu)
-            # DL_boosted_emu = sf.muonSF(self, DL_boosted_emu)
-            # DL_resolved_1b_mumu = sf.muonSF(self, DL_resolved_1b_mumu)
-            # DL_resolved_1b_emu = sf.muonSF(self, DL_resolved_1b_emu)
-            # DL_resolved_2b_emu = sf.muonSF(self, DL_resolved_2b_emu)
-            # DL_resolved_2b_mumu = sf.muonSF(self, DL_resolved_2b_mumu)
-            # #
-            # DL_boosted_ee = sf.muonSF(self, DL_boosted_ee)
-            # DL_resolved_1b_ee = sf.muonSF(self, DL_resolved_1b_ee)
-            # DL_resolved_2b_ee = sf.muonSF(self, DL_resolved_2b_ee)
+            # muonSF
+            DL_boosted_mumu = sf.muonSF(self, DL_boosted_mumu)
+            DL_boosted_emu = sf.muonSF(self, DL_boosted_emu)
+            DL_resolved_1b_mumu = sf.muonSF(self, DL_resolved_1b_mumu)
+            DL_resolved_1b_emu = sf.muonSF(self, DL_resolved_1b_emu)
+            DL_resolved_2b_emu = sf.muonSF(self, DL_resolved_2b_emu)
+            DL_resolved_2b_mumu = sf.muonSF(self, DL_resolved_2b_mumu)
 
-            # # electronSF
-            # DL_boosted_ee = sf.electronSF(self, DL_boosted_ee)
-            # DL_boosted_emu = sf.electronSF(self, DL_boosted_emu)
-            # DL_resolved_1b_ee = sf.electronSF(self, DL_resolved_1b_ee)
-            # DL_resolved_1b_emu = sf.electronSF(self, DL_resolved_1b_emu)
-            # DL_resolved_2b_ee = sf.electronSF(self, DL_resolved_2b_ee)
-            # DL_resolved_2b_emu = sf.electronSF(self, DL_resolved_2b_emu)
-
-            # DL_boosted_mumu = sf.electronSF(self, DL_boosted_mumu)
-            # DL_resolved_1b_mumu = sf.electronSF(self, DL_resolved_1b_mumu)
-            # DL_resolved_2b_mumu = sf.electronSF(self, DL_resolved_2b_mumu)
+            # electronSF
+            DL_boosted_ee = sf.electronSF(self, DL_boosted_ee)
+            DL_boosted_emu = sf.electronSF(self, DL_boosted_emu)
+            DL_resolved_1b_ee = sf.electronSF(self, DL_resolved_1b_ee)
+            DL_resolved_1b_emu = sf.electronSF(self, DL_resolved_1b_emu)
+            DL_resolved_2b_ee = sf.electronSF(self, DL_resolved_2b_ee)
+            DL_resolved_2b_emu = sf.electronSF(self, DL_resolved_2b_emu)
 
             # cutflow report for DL channel
             self.yields.add(DL_boosted_ee, 'DL boosted ee')
@@ -113,103 +105,154 @@ class controlPlotter(NanoBaseHHWWbb):
             SLresolvedMu_label = labeler('SL resolved Mu')
 
         # mva variables
-        lepton0conept = op.multiSwitch(
-            # if there are 2 electrons
-            (op.rng_len(self.tightElectrons) == 2,
-             self.electron_conept[self.tightElectrons[0].idx]),
-            # elif there are 2 muons
-            (op.rng_len(self.tightMuons) == 2,
-             self.muon_conept[self.tightMuons[0].idx]),
-            # elif there is 1 electron and 1 muon
-            (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1),
-             op.switch(
-                # if electron pt is greater than muon pt
-                self.tightElectrons[0].pt >= self.tightMuons[0].pt,
-                self.electron_conept[
-                    self.tightElectrons[0].idx],
-                # else
-                self.muon_conept[self.tightMuons[0].idx])),
-            # else
-            op.c_float(0.)
-        )
-
-        lepton1conept = op.multiSwitch(
-            # if there are 2 electrons
-            (op.rng_len(self.tightElectrons) == 2,
-             self.electron_conept[self.tightElectrons[1].idx]),
-            # elif there are 2 muons
-            (op.rng_len(self.tightMuons) == 2,
-             self.muon_conept[self.tightMuons[0].idx]),
-            # elif there is 1 electron and 1 muon
+        
+        l1_Px = op.multiSwitch(
+            (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[0].p4.Px()),
+            (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].p4.Px()),
             (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
-                # if electron pt is greater than muon pt
-                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.muon_conept[self.tightMuons[0].idx],
-                # else
-                self.electron_conept[self.tightElectrons[1].idx])),
-            op.c_float(0.)
+                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].p4.Px(), self.tightMuons[0].p4.Px())),
+            op.c_float(-9999.)
         )
-
-        invmLL = op.multiSwitch(
-            # if there are 2 electrons
-            (op.rng_len(self.tightElectrons) == 2,
-             op.invariant_mass(self.tightElectrons[0].p4, self.tightElectrons[1].p4)),
-            # elif there are 2 muons
-            (op.rng_len(self.tightMuons) == 2,
-             op.invariant_mass(self.tightMuons[0].p4, self.tightMuons[1].p4)),
-            # elif there is 1 electron and 1 muon
-            (op.AND(op.rng_len(self.tightMuons) == 1, op.rng_len(self.tightElectrons) == 1),
-             op.invariant_mass(
-                self.tightElectrons[0].p4, self.tightMuons[0].p4)),
-            op.c_float(0.)
+        l2_Px = op.multiSwitch(
+            (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[1].p4.Px()),
+            (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].p4.Px()),
+            (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightMuons[0].p4.Px(), self.tightElectrons[0].p4.Px())),
+            op.c_float(-9999.)
         )
-
-        drLL = op.multiSwitch(
-            # if there are 2 electrons
-            (op.rng_len(self.tightElectrons) == 2,
-             op.deltaR(self.tightElectrons[0].p4, self.tightElectrons[1].p4)),
-            # elif there are 2 muons
-            (op.rng_len(self.tightMuons) == 2,
-             op.deltaR(self.tightMuons[0].p4, self.tightMuons[1].p4)),
-            # elif there is 1 electron and 1 muon
-            (op.AND(op.rng_len(self.tightMuons) == 1, op.rng_len(self.tightElectrons) == 1),
-             op.deltaR(
-                self.tightElectrons[0].p4, self.tightMuons[0].p4)),
-            op.c_float(0.)
+        l1_Py = op.multiSwitch(
+            (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[0].p4.Py()),
+            (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].p4.Py()),
+            (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].p4.Py(), self.tightMuons[0].p4.Py())),
+            op.c_float(-9999.)
         )
-        DRTwoak4bjets = op.multiSwitch(
-            # if there are 2 b-tagged ak4 jets
-            (op.rng_len(self.ak4BJets) == 2,
-             op.deltaR(self.ak4BJets[0].p4, self.ak4BJets[1].p4)),
-            op.c_float(0.)
+        l2_Py = op.multiSwitch(
+            (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[1].p4.Py()),
+            (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].p4.Py()),
+            (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightMuons[0].p4.Py(), self.tightElectrons[0].p4.Py())),
+            op.c_float(-9999.)
         )
-        inmvAK4bJJ = op.multiSwitch(
-            # if there are 2 b-tagged ak4 jets
-            (op.rng_len(self.ak4BJets) == 2,
-             op.invariant_mass(op.sum(self.ak4BJets[0].p4, self.ak4BJets[1].p4))),  # double check
-            op.c_float(0.)
+        l1_Pz = op.multiSwitch(
+            (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[0].p4.Pz()),
+            (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].p4.Pz()),
+            (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].p4.Pz(), self.tightMuons[0].p4.Pz())),
+            op.c_float(-9999.)
         )
+        l2_Pz = op.multiSwitch(
+            (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[1].p4.Pz()),
+            (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].p4.Pz()),
+            (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightMuons[0].p4.Pz(), self.tightElectrons[0].p4.Pz())),
+            op.c_float(-9999.)
+        )
+        l1_E = op.multiSwitch(
+            (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[0].p4.E()),
+            (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].p4.E()),
+            (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].p4.E(), self.tightMuons[0].p4.E())),
+            op.c_float(-9999.)
+        )
+        l2_E = op.multiSwitch(
+            (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[1].p4.E()),
+            (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].p4.E()),
+            (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].p4.E(), self.tightMuons[0].p4.E())),
+            op.c_float(-9999.)
+        )
+        l1_pdgId = op.multiSwitch(
+            (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[0].pdgId),
+            (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].pdgId),
+            (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].pdgId, self.tightMuons[0].pdgId)),
+            op.c_float(-9999.)
+        )
+        l2_pdgId = op.multiSwitch(
+            (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[1].pdgId),
+            (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].pdgId),
+            (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].pdgId, self.tightMuons[0].pdgId)),
+            op.c_float(-9999.)
+        )
+        l1_charge = op.multiSwitch(
+            (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[0].charge),
+            (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].charge),
+            (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].charge, self.tightMuons[0].charge)),
+            op.c_float(-9999.)
+        )
+        l2_charge = op.multiSwitch(
+            (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[1].charge),
+            (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].charge),
+            (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
+                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].charge, self.tightMuons[0].charge)),
+            op.c_float(-9999.)
+        )
+        j1_Px = op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].p4.Px(), op.c_float(-9999.))
+        j1_Py = op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].p4.Py(), op.c_float(-9999.))
+        j1_Pz = op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].p4.Pz(), op.c_float(-9999.))
+        j1_E = op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].p4.E(), op.c_float(-9999.))
+        j1_btag = op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].btagPNetB, op.c_float(-9999.))
+        j2_Px = op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].p4.Px(), op.c_float(-9999.))
+        j2_Py = op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].p4.Py(), op.c_float(-9999.))
+        j2_Pz = op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].p4.Pz(), op.c_float(-9999.))
+        j2_E = op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].p4.E(), op.c_float(-9999.))
+        j2_btag = op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].btagPNetB, op.c_float(-9999.))
+        j3_Px = op.switch(op.rng_len(self.ak4Jets) > 2, self.ak4Jets[2].p4.Px(), op.c_float(-9999.))
+        j3_Py = op.switch(op.rng_len(self.ak4Jets) > 2, self.ak4Jets[2].p4.Py(), op.c_float(-9999.))
+        j3_Pz = op.switch(op.rng_len(self.ak4Jets) > 2, self.ak4Jets[2].p4.Pz(), op.c_float(-9999.))
+        j3_E = op.switch(op.rng_len(self.ak4Jets) > 2, self.ak4Jets[2].p4.E(), op.c_float(-9999.))
+        j3_btag = op.switch(op.rng_len(self.ak4Jets) > 2, self.ak4Jets[2].btagPNetB, op.c_float(-9999.))
+        j4_Px = op.switch(op.rng_len(self.ak4Jets) > 3, self.ak4Jets[3].p4.Px(), op.c_float(-9999.))
+        j4_Py = op.switch(op.rng_len(self.ak4Jets) > 3, self.ak4Jets[3].p4.Py(), op.c_float(-9999.))
+        j4_Pz = op.switch(op.rng_len(self.ak4Jets) > 3, self.ak4Jets[3].p4.Pz(), op.c_float(-9999.))
+        j4_E = op.switch(op.rng_len(self.ak4Jets) > 3, self.ak4Jets[3].p4.E(), op.c_float(-9999.))
+        j4_btag = op.switch(op.rng_len(self.ak4Jets) > 3, self.ak4Jets[3].btagPNetB, op.c_float(-9999.))
+        
+        met_Px = op.product(tree.MET.pt, op.cos(tree.MET.phi))
+        met_Py = op.product(tree.MET.pt, op.sin(tree.MET.phi))
+        met_E = tree.MET.pt
 
         mvaVars_DL = {
+            "event_no": tree.event,
             "weight": noSel.weight,
-            "DRll": drLL,
-            "DRtwoAK4bjets": DRTwoak4bjets,
-            "InvMak4bJJ": inmvAK4bJJ,
-            "InvMll": invmLL,
-            "MET": tree.MET.pt,
-            "ak4jet0eta": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].eta, op.c_float(0.)),
-            "ak4jet0pt": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].pt, op.c_float(0.)),
-            "ak4jet1pt": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].pt, op.c_float(0.)),
-            "ak4jet1eta": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].eta, op.c_float(0.)),
-            "ak8bjetpt": op.switch(op.rng_len(self.ak8BJets) > 0, self.ak8BJets[0].pt, op.c_float(0.)),
-            "ak8bjeteta": op.switch(op.rng_len(self.ak8BJets) > 0, self.ak8BJets[0].eta, op.c_float(0.)),
-            "ak8jetpt": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].pt, op.c_float(0.)),
-            "ak8jeteta": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].eta, op.c_float(0.)),
-            "lepton0Cone_pt": lepton0conept,
-            "lepton1Conept": lepton1conept,
-            "nAK4": op.rng_len(self.ak4Jets),
-            "nAK4bJet": op.rng_len(self.ak4BJets),
-            "nak8": op.rng_len(self.ak8Jets),
-            "nAK8bJet": op.rng_len(self.ak8BJets)
+            "l1_Px": l1_Px,
+            "l1_Py": l1_Py,
+            "l1_Pz": l1_Pz,
+            "l1_E": l1_E,
+            "l1_pdgId": l1_pdgId,
+            "l1_charge": l1_charge,
+            "l2_Px": l2_Px,
+            "l2_Py": l2_Py,
+            "l2_Pz": l2_Pz,
+            "l2_E": l2_E,
+            "l2_pdgId": l2_pdgId,
+            "l2_charge": l2_charge,
+            "j1_Px": j1_Px,
+            "j1_Py": j1_Py,
+            "j1_Pz": j1_Pz,
+            "j1_E": j1_E,
+            "j1_btag": j1_btag,
+            "j2_Px": j2_Px,
+            "j2_Py": j2_Py,
+            "j2_Pz": j2_Pz,
+            "j2_E": j2_E,
+            "j2_btag": j2_btag,
+            "j3_Px": j3_Px,
+            "j3_Py": j3_Py,
+            "j3_Pz": j3_Pz,
+            "j3_E": j3_E,
+            "j3_btag": j3_btag,
+            "j4_Px": j4_Px,
+            "j4_Py": j4_Py,
+            "j4_Pz": j4_Pz,
+            "j4_E": j4_E,
+            "j4_btag": j4_btag,
+            "met_Px": met_Px,
+            "met_Py": met_Py,
+            "met_E": met_E,
         }
 
         ### Syncronisaton ###
@@ -217,9 +260,9 @@ class controlPlotter(NanoBaseHHWWbb):
             syncVars_DL = {
                 "event_no": tree.event,
                 "lumi_block": tree.luminosityBlock,
-                "is_dl_ee": op.switch(op.rng_len(self.tightElectrons) == 2, 1, op.c_float(0.)),
-                "is_dl_mumu": op.switch(op.rng_len(self.tightMuons) == 2, 1, op.c_float(0.)),
-                "is_dl_emu": op.switch(op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons)) == 1, 1, op.c_float(0.)),
+                "is_dl_ee": op.switch(op.rng_len(self.tightElectrons) == 2, 1, op.c_float(-9999.)),
+                "is_dl_mumu": op.switch(op.rng_len(self.tightMuons) == 2, 1, op.c_float(-9999.)),
+                "is_dl_emu": op.switch(op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons)) == 1, 1, op.c_float(-9999.)),
                 "nLooseElectron": op.rng_len(self.preElectrons),
                 "nFakeElectron": op.rng_len(self.fakeElectrons),
                 "nTightElectron": op.rng_len(self.tightElectrons),
@@ -232,7 +275,7 @@ class controlPlotter(NanoBaseHHWWbb):
                     (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].pt),
                     (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
                         self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].pt, self.tightMuons[0].pt)),
-                    op.c_float(0.)
+                    op.c_float(-9999.)
                 ),
                 "lepton1pt": op.multiSwitch(
                     (op.rng_len(self.tightElectrons)
@@ -240,17 +283,17 @@ class controlPlotter(NanoBaseHHWWbb):
                     (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].pt),
                     (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
                         self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightMuons[0].pt, self.tightElectrons[0].pt)),
-                    op.c_float(0.)
+                    op.c_float(-9999.)
                 ),
                 "nAK4": op.rng_len(self.ak4Jets),
                 "nAK4bJet": op.rng_len(self.ak4BJets),
                 "nAK8bJet": op.rng_len(self.ak8BJets),
-                "ak4jet0pt": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].pt, op.c_float(0.)),
-                "ak4jet0eta": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].eta, op.c_float(0.)),
-                "ak4jet1pt": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].pt, op.c_float(0.)),
-                "ak4jet1eta": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].eta, op.c_float(0.)),
-                "ak8jetpt": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].pt, op.c_float(0.)),
-                "ak8jeteta": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].eta, op.c_float(0.)),
+                "ak4jet0pt": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].pt, op.c_float(-9999.)),
+                "ak4jet0eta": op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].eta, op.c_float(-9999.)),
+                "ak4jet1pt": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].pt, op.c_float(-9999.)),
+                "ak4jet1eta": op.switch(op.rng_len(self.ak4Jets) > 1, self.ak4Jets[1].eta, op.c_float(-9999.)),
+                "ak8jetpt": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].pt, op.c_float(-9999.)),
+                "ak8jeteta": op.switch(op.rng_len(self.ak8Jets) > 0, self.ak8Jets[0].eta, op.c_float(-9999.)),
             }
             # to order the columns
             self.order = [key for key in syncVars_DL.keys()]
@@ -650,9 +693,9 @@ class controlPlotter(NanoBaseHHWWbb):
                 Skim("DL_resolved_1b_ee_mva", mvaVars_DL, DL_resolved_1b_ee),
                 Skim("DL_resolved_2b_ee_mva", mvaVars_DL, DL_resolved_2b_ee),
                 Skim("DL_resolved_1b_mumu_mva", mvaVars_DL, DL_resolved_1b_mumu),
-                Skim("DL_resolved_2b_mumu_mva", mvaVars_DL, DL_resolved_1b_mumu),
+                Skim("DL_resolved_2b_mumu_mva", mvaVars_DL, DL_resolved_2b_mumu),
                 Skim("DL_resolved_1b_emu_mva", mvaVars_DL, DL_resolved_1b_emu),
-                Skim("DL_resolved_2b_emu_mva", mvaVars_DL, DL_resolved_1b_emu),
+                Skim("DL_resolved_2b_emu_mva", mvaVars_DL, DL_resolved_2b_emu),
                 Skim("DL_boosted_ee_mva", mvaVars_DL, DL_boosted_ee),
                 Skim("DL_boosted_mumu_mva", mvaVars_DL, DL_boosted_mumu),
                 Skim("DL_boosted_emu_mva", mvaVars_DL, DL_boosted_emu),
