@@ -230,7 +230,7 @@ class ScaleFactors():
                 sel = sel.refine(sel.name+"_muonSF", weight=op.c_float(1.))
         else:
             sel = sel.refine(sel.name+"_muonSF", weight=op.c_float(1.))
-        self.yields.add(sel, "muon SF")
+        # self.yields.add(sel, "muon SF")
         return sel
 
     def electronSF(self, sel):
@@ -275,5 +275,5 @@ class ScaleFactors():
                 sel = sel.refine(sel.name+"_electronSF", weight=op.c_float(1.))
         else:
             sel = sel.refine(sel.name+"_electronSF", weight=op.c_float(1.))
-        self.yields.add(sel, "electron SF")
+        # self.yields.add(sel, "electron SF")
         return sel
