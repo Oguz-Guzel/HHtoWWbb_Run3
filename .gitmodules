@@ -1,0 +1,3 @@
+[submodule "DNN"]
+	path = DNN
+	url = git@github.com:Oguz-Guzel/Run3-bbWW-pytorch.git
