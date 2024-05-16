@@ -9,25 +9,28 @@ def tau_h_veto(taus) -> bool:
     "Veto events with hadronic taus."
     return op.rng_len(taus) == 0
 
-def lowMllCut(dileptons): return op.NOT(op.rng_any(
-    dileptons, lambda dilep: op.invariant_mass(dilep[0].p4, dilep[1].p4) < 12.))
+def lowMllCut(dileptons) -> bool:
+    " Minimum dilepton invariant mass cut, that's 12 GeV."
+    return op.NOT(op.rng_any(
+        dileptons, lambda dilep: op.invariant_mass(dilep[0].p4, dilep[1].p4) < 12.))
 
 
-def outZ(dileptons): return op.NOT(op.rng_any(
-    dileptons, lambda dilep: op.abs(op.invariant_mass(dilep[0].p4, dilep[1].p4) - Zmass) <= 10.))
+def outZ(dileptons) -> bool:
+    "Reject events with same-flavoured dilepton mass around Z peak."
+    return op.NOT(op.rng_any(
+        dileptons, lambda dilep: op.abs(op.invariant_mass(dilep[0].p4, dilep[1].p4) - Zmass) <= 10.))
 
 # end common variables
 
 
-def makeDLSelection(self, noSel):
-    """Selections for the DL channel
-    return the following selections:
-    - DL_boosted_ee: boosted selection for ee channel
-    - DL_boosted_mumu: boosted selection for mumu channel
-    - DL_boosted_emu: boosted selection for emu channel
-    - DL_resolved_1b_ee: resolved selection for ee channel with at least one b-tagged ak4 jet
-    - DL_resolved_1b_mumu: resolved selection for mumu channel with at least one b-tagged ak4 jet
-    - DL_resolved_1b_emu: resolved selection for emu channel with at least one b-tagged ak4 jet
+def makeDLSelection(self, sel):
+    """Creates a list of selection objects for the Dilepton final state.
+
+    Args:
+        sel: the selection to be used as a base for the Dilepton selections.
+
+    Returns:
+        A list of selection objects for the Dilepton analysis.
     """
 
     # Pt cuts : subleading above 15 GeV and leading above 25 GeV
@@ -179,15 +182,15 @@ def makeDLSelection(self, noSel):
     return DL_selections
 
 
-def makeSLSelection(self, noSel):
-    """ Selections for the SL channel
-    return the following selections:
-    - SL_resolved: resolved selection
-    - SL_resolved_e: resolved selection for e channel
-    - SL_resolved_mu: resolved selection for mu channel
-    - SL_boosted: boosted selection
-    - SL_boosted_e: boosted selection for e channel
-    - SL_boosted_mu: boosted selection for mu channel"""
+def makeSLSelection(self, sel):
+    """Creates a list of selection objects for the Single Lepton final state.
+
+    Args:
+        sel: the selection to be used as a base for the Single Lepton selections.
+
+    Returns:
+        A list of selection objects for the Single Lepton analysis.
+    """
 
     def elPtCut(lep): return self.electron_conept[lep[0].idx] > 32.0
 
