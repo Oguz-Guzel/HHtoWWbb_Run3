@@ -5,6 +5,9 @@ from bamboo.plots import CategorizedSelection
 
 Zmass = 91.1876
 
+def tau_h_veto(taus) -> bool:
+    "Veto events with hadronic taus."
+    return op.rng_len(taus) == 0
 
 def lowMllCut(dileptons): return op.NOT(op.rng_any(
     dileptons, lambda dilep: op.invariant_mass(dilep[0].p4, dilep[1].p4) < 12.))
@@ -65,14 +68,21 @@ def makeDLSelection(self, noSel):
     ElMuTightSel = op.combine((self.tightElectrons, self.tightMuons),
                               N=2, pred=lambda el, mu: el.charge != mu.charge)
 
-    self.firstOSElEl = ElElTightSel[0]
-    self.firstOSMuMu = MuMuTightSel[0]
-    self.firstOSElMu = ElMuTightSel[0]
+    # the actual leptons that will be used for the analysis
+    self.firstElTightPair = elTightPair[0]
+    self.firstMuTightPair = muTightPair[0]
+    self.firstEmuTightPair = emuTightPair[0]
+    
+    # tau veto
+    tauVetoSel = sel.refine('tauVetoSel', cut=tau_h_veto(self.cleanedTaus))
 
     # minimum pT cut : at least one lepton pair with leading lepton above 25 GeV
-    elelPtSel = noSel.refine('elelptSel', cut=[ptCutElEl(self.firstOSElEl)])
-    mumuPtSel = noSel.refine('mumuptSel', cut=[ptCutMuMu(self.firstOSMuMu)])
-    elmuPtSel = noSel.refine('elmuptSel', cut=[ptCutElMu(self.firstOSElMu)])
+    elPairMinPtSel = tauVetoSel.refine(
+        'elPairMinPtSel', cut=[ptCutSameFlavourPair(self.firstElTightPair)])
+    muPairMinPtSel = tauVetoSel.refine(
+        'muPairMinPtSel', cut=[ptCutSameFlavourPair(self.firstMuTightPair)])
+    emuPairMinPtSel = tauVetoSel.refine(
+        'emuPairMinPtSel', cut=[ptCutDifferentFlavourPair(self.firstEmuTightPair)])
 
     # low Mll cut : reject events with dilepton mass below 12 GeV
     mllCut = op.AND(lowMllCut(ElElLooseSel), lowMllCut(
