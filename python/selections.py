@@ -198,24 +198,24 @@ def makeSLSelection(self, sel):
     def muPtCut(lep): return lep[0].pt > 15.0
 
     # OS loose lepton pairs of same type to be vetoed around Z peak
-    ElElLooseSel = op.combine(
+    elLoosePair = op.combine(
         self.clElectrons, N=2, pred=lambda lep1, lep2: lep1.charge != lep2.charge)
-    MuMuLooseSel = op.combine(
+    muLoosePair = op.combine(
         self.preMuons, N=2, pred=lambda lep1, lep2: lep1.charge != lep2.charge)
-    ElMuLooseSel = op.combine(
+    emuLoosePair = op.combine(
         (self.clElectrons, self.preMuons), N=2, pred=lambda el, mu: el.charge != mu.charge)
 
     # Z-veto : reject events with dileptons of same type with mass around Z peak
-    outZCut = op.AND(outZ(ElElLooseSel), outZ(MuMuLooseSel))
+    outZCut = op.AND(outZ(elLoosePair), outZ(muLoosePair))
 
     # low Mll cut : reject events with dilepton mass below 12 GeV
-    mllCut = op.AND(lowMllCut(ElElLooseSel), lowMllCut(
-        MuMuLooseSel), lowMllCut(ElMuLooseSel))
+    mllCut = op.AND(lowMllCut(elLoosePair), lowMllCut(
+        muLoosePair), lowMllCut(emuLoosePair))
 
-    OSoutZelelSel = noSel.refine('OSoutZsel', cut=op.AND(
+    outZelPairSel = sel.refine('OSoutZsel', cut=op.AND(
         mllCut, outZCut, tau_h_veto(self.cleanedTaus)))
 
-    SL_resolved_pre = OSoutZelelSel.refine('SL_resolved_pre', cut=[
+    SL_resolved_pre = outZelPairSel.refine('SL_resolved_pre', cut=[
         op.rng_len(self.ak4Jets) >= 3,
         op.rng_len(self.ak4BJets) >= 1,
         op.rng_len(self.ak8BJets) == 0])
@@ -246,7 +246,7 @@ def makeSLSelection(self, sel):
         op.rng_len(self.tightElectrons) == 0,
         op.rng_len(self.tightMuons) == 1])
 
-    SL_boosted = OSoutZelelSel.refine('SL_boosted', cut=[
+    SL_boosted = outZelPairSel.refine('SL_boosted', cut=[
         op.rng_len(self.ak8BJets) >= 1,
         op.rng_len(self.ak4JetsCleanedFromAk8b) >= 1])
 
@@ -259,7 +259,7 @@ def makeSLSelection(self, sel):
         muPtCut(self.tightMuons),
         op.rng_len(self.tightMuons) == 1,
         op.rng_len(self.tightElectrons) == 0])
-    
+
     SL_e = CategorizedSelection("SL_e", categories={
         "resolved_1b": (SL_resolved_1b_e, lambda event: True),
         "resolved_2b": (SL_resolved_2b_e, lambda event: True),
