@@ -350,31 +350,31 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   generated-events: genEventSumw
 #   split: *nsplit4
 
-# TW cross section from: https://cms-talk.web.cern.ch/t/new-jecs-for-run3-prompt-fg-eras/26529
-TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2022:
-  era: '2022'
-  db:
-    [
-      das:/TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM,
-      # das:/TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5_ext1-v2/NANOAODSIM,
-    ]
-  type: mc
-  group: "TW"
-  cross-section: 4.6651009 # xsec(TW) / 2 (since t and tbar is included) x BR(W->l nu)^2 x 2 (since there are two W bosons) = 87.9 / 2 x 0.3259^2 x 2
-  generated-events: genEventSumw
-  split: *nsplit4
+# # TW cross section from: https://cms-talk.web.cern.ch/t/new-jecs-for-run3-prompt-fg-eras/26529
+# TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2022:
+#   era: '2022'
+#   db:
+#     [
+#       das:/TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM,
+#       # das:/TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5_ext1-v2/NANOAODSIM,
+#     ]
+#   type: mc
+#   group: "TW"
+#   cross-section: 4.6651009 # xsec(TW) / 2 (since t and tbar is included) x BR(W->l nu)^2 x 2 (since there are two W bosons) = 87.9 / 2 x 0.3259^2 x 2
+#   generated-events: genEventSumw
+#   split: *nsplit4
 
-TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2022EE:
-  era: '2022EE'
-  db: [
-      das:/TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM,
-      # das:/TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6_ext1-v2/NANOAODSIM,
-    ]
-  type: mc
-  group: "TW"
-  cross-section: 4.6651009 # xsec(TW) / 2 (since t and tbar is included) x BR(W->l nu)^2 x 2 (since there are two W bosons) = 87.9 / 2 x 0.3259^2 x 2
-  generated-events: genEventSumw
-  split: *nsplit4
+# TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2022EE:
+#   era: '2022EE'
+#   db: [
+#       das:/TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM,
+#       # das:/TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6_ext1-v2/NANOAODSIM,
+#     ]
+#   type: mc
+#   group: "TW"
+#   cross-section: 4.6651009 # xsec(TW) / 2 (since t and tbar is included) x BR(W->l nu)^2 x 2 (since there are two W bosons) = 87.9 / 2 x 0.3259^2 x 2
+#   generated-events: genEventSumw
+#   split: *nsplit4
 
 # TbarWplustoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8:
 #   era: '2022'
@@ -400,31 +400,31 @@ TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2022EE:
 #   generated-events: genEventSumw
 #   split: *nsplit4
 
-TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2022:
-  era: '2022'
-  db:
-    [
-      das:/TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM,
-      # das:/TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5_ext1-v2/NANOAODSIM,
-    ]
-  type: mc
-  group: "TW"
-  cross-section: 4.6651009
-  generated-events: genEventSumw
-  split: *nsplit4
+# TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2022:
+#   era: '2022'
+#   db:
+#     [
+#       das:/TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM,
+#       # das:/TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5_ext1-v2/NANOAODSIM,
+#     ]
+#   type: mc
+#   group: "TW"
+#   cross-section: 4.6651009
+#   generated-events: genEventSumw
+#   split: *nsplit4
 
-TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2022EE:
-  era: '2022EE'
-  db:
-    [
-      # das:/TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM,
-      das:/TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6_ext1-v2/NANOAODSIM,
-    ]
-  type: mc
-  group: "TW"
-  cross-section: 4.6651009
-  generated-events: genEventSumw
-  split: *nsplit4
+# TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2022EE:
+#   era: '2022EE'
+#   db:
+#     [
+#       # das:/TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM,
+#       das:/TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6_ext1-v2/NANOAODSIM,
+#     ]
+#   type: mc
+#   group: "TW"
+#   cross-section: 4.6651009
+#   generated-events: genEventSumw
+#   split: *nsplit4
 # TWminustoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8_2022:
 #   era: '2022'
 #   db: [
