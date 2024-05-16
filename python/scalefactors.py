@@ -210,21 +210,21 @@ class ScaleFactors():
             if sel.name in ['DL_boosted_mumu', 'DL_resolved_mumu']:
                 # pt and eta cut here since correction are available only for pt > 15 and |eta| < 2.4
                 sel = sel.refine(sel.name+"_muonSF", cut=[
-                    op.AND(self.firstOSMuMu[0].pt >= 15,
-                           self.firstOSMuMu[1].pt >= 15,
+                    op.AND(self.firstMuTightPair[0].pt >= 15,
+                           self.firstMuTightPair[1].pt >= 15,
                            op.abs(
-                        self.firstOSMuMu[0].eta) < 2.4,
+                        self.firstMuTightPair[0].eta) < 2.4,
                         op.abs(
-                        self.firstOSMuMu[1].eta) < 2.4
+                        self.firstMuTightPair[1].eta) < 2.4
                     )],
-                    weight=[muonIDSF(self.firstOSMuMu[0]),
-                            muonIDSF(self.firstOSMuMu[1])]
+                    weight=[muonIDSF(self.firstMuTightPair[0]),
+                            muonIDSF(self.firstMuTightPair[1])]
                 )
             elif sel.name in ['DL_boosted_emu', 'DL_resolved_emu']:
                 sel = sel.refine(sel.name+"_muonSF",
-                                 cut=[op.AND(self.firstOSElMu[1].pt >= 15,
-                                             op.abs(self.firstOSElMu[1].eta) < 2.4)],
-                                 weight=muonIDSF(self.firstOSElMu[1])
+                                 cut=[op.AND(self.firstEmuTightPair[1].pt >= 15,
+                                             op.abs(self.firstEmuTightPair[1].eta) < 2.4)],
+                                 weight=muonIDSF(self.firstEmuTightPair[1])
                                  )
             else:
                 sel = sel.refine(sel.name+"_muonSF", weight=op.c_float(1.))
@@ -260,16 +260,16 @@ class ScaleFactors():
             if sel.name in ['DL_boosted_ee', 'DL_resolved_ee']:
                 # pt cut here since correction are available only for pt > 10
                 sel = sel.refine(sel.name+"_electronSF", cut=[
-                    op.AND(self.firstOSElEl[0].pt >= 10,
-                           self.firstOSElEl[1].pt >= 10
+                    op.AND(self.firstElTightPair[0].pt >= 10,
+                           self.firstElTightPair[1].pt >= 10
                            )],
-                    weight=[electronIDSF(self.firstOSElEl[0]),
-                            electronIDSF(self.firstOSElEl[1])]
+                    weight=[electronIDSF(self.firstElTightPair[0]),
+                            electronIDSF(self.firstElTightPair[1])]
                 )
             elif sel.name in ['DL_boosted_emu', 'DL_resolved_emu']:
                 sel = sel.refine(sel.name+"_electronSF",
-                                 cut=[self.firstOSElMu[0].pt >= 10],
-                                 weight=electronIDSF(self.firstOSElMu[0])
+                                 cut=[self.firstEmuTightPair[0].pt >= 10],
+                                 weight=electronIDSF(self.firstEmuTightPair[0])
                                  )
             else:
                 sel = sel.refine(sel.name+"_electronSF", weight=op.c_float(1.))
