@@ -193,11 +193,9 @@ def makeSLSelection(self, sel):
         A list of selection objects for the Single Lepton analysis.
     """
 
-    def elPtCut(lep): return self.electron_conept[lep[0].idx] > 32.0
+    def elPtCut(lep): return lep[0].pt > 15.0
 
-    def muPtCut(lep): return self.muon_conept[lep[0].idx] > 25.0
-
-    def tau_h_veto(taus): return op.rng_len(taus) == 0
+    def muPtCut(lep): return lep[0].pt > 15.0
 
     # OS loose lepton pairs of same type to be vetoed around Z peak
     ElElLooseSel = op.combine(

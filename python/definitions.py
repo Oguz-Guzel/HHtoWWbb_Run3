@@ -40,17 +40,9 @@ def muonPreSel(muons):
     ))
 
 
-def muonConePt(muons):
-    return op.map(muons, lambda lep: op.multiSwitch(
-        (op.AND(op.abs(lep.pdgId) != 11, op.abs(lep.pdgId) != 13), lep.pt),
-        (op.AND(op.abs(lep.pdgId) == 13, lep.mediumId, lep.mvaTTH > 0.50), lep.pt),
-        0.9*lep.pt*(1.+lep.jetRelIso)
-    ))
-
-
 def muonFakeSel(muons):
     return op.select(muons, lambda mu: op.AND(
-        muonConePt(muons)[mu.idx] >= 10.,
+        mu.pt >= 10.,
         op.OR(lepton_associatedJetLessThanMediumBtag(mu), op.AND(mu.jetRelIso < 0.8, muon_pNetInterpIfMvaFailed(mu))))
     )
 
@@ -74,14 +66,6 @@ def elePreSel(electrons):
     ))
 
 
-def elConePt(electrons):
-    return op.map(electrons, lambda lep: op.multiSwitch(
-        (op.AND(op.abs(lep.pdgId) != 11, op.abs(lep.pdgId) != 13), lep.pt),
-        (op.AND(op.abs(lep.pdgId) == 11, lep.mvaTTH > 0.30), lep.pt),
-        0.9*lep.pt*(1.+lep.jetRelIso)
-    ))
-
-
 def cleanElectrons(electrons, muons):
     cleanedElectrons = op.select(electrons, lambda el: op.NOT(
         op.rng_any(
@@ -92,7 +76,7 @@ def cleanElectrons(electrons, muons):
 
 def elFakeSel(electrons):
     return op.select(electrons, lambda el: op.AND(
-        elConePt(electrons)[el.idx] >= 10,
+        el.pt >= 10,
         op.OR(
             op.AND(op.abs(el.eta+el.deltaEtaSC) <= 1.479, el.sieie <= 0.011),
             op.AND(op.abs(el.eta+el.deltaEtaSC) > 1.479, el.sieie <= 0.030)
@@ -180,7 +164,7 @@ def cleaningWithRespectToLeadingLepton(electrons, muons, DR):
         (op.AND(op.rng_len(electrons) == 0, op.rng_len(
             muons) >= 1), op.deltaR(jet.p4, muons[0].p4) >= DR),
         (op.AND(op.rng_len(muons) >= 1, op.rng_len(electrons) >= 1), op.switch(
-            elConePt(electrons)[0] >= muonConePt(muons)[0],
+            electrons[0].pt >= muons[0].pt,
             op.deltaR(jet.p4, electrons[0].p4) >= DR,
             op.deltaR(jet.p4, muons[0].p4) >= DR)),
         op.c_bool(True)
@@ -202,11 +186,11 @@ def cleaningWithRespectToLeadingLeptons(electrons, muons, DR):
         (op.AND(op.rng_len(electrons) >= 1, op.rng_len(muons) >= 1),
             op.switch(
             # Electron is the leading lepton
-            elConePt(electrons)[0] > muonConePt(muons)[0],
+            electrons[0].pt > muons[0].pt,
             op.switch(op.rng_len(electrons) == 1,
                       op.AND(op.deltaR(j.p4, electrons[0].p4) >= DR, op.deltaR(
                           j.p4, muons[0].p4) >= DR),
-                      op.switch(elConePt(electrons)[1] > muonConePt(muons)[0],
+                      op.switch(electrons[1].pt > muons[0].pt,
                                 op.AND(op.deltaR(j.p4, electrons[0].p4) >= DR, op.deltaR(
                                     j.p4, electrons[1].p4) >= DR),
                                 op.AND(op.deltaR(j.p4, electrons[0].p4) >= DR, op.deltaR(j.p4, muons[0].p4) >= DR))),
@@ -214,7 +198,7 @@ def cleaningWithRespectToLeadingLeptons(electrons, muons, DR):
             op.switch(op.rng_len(muons) == 1,
                       op.AND(op.deltaR(j.p4, muons[0].p4) >= DR, op.deltaR(
                           j.p4, electrons[0].p4) >= DR),
-                      op.switch(muonConePt(muons)[1] > elConePt(electrons)[0],
+                      op.switch(muons[1].pt > electrons[0].pt,
                                 op.AND(op.deltaR(j.p4, muons[0].p4) >= DR, op.deltaR(
                                     j.p4, muons[1].p4) >= DR),
                                 op.AND(op.deltaR(j.p4, muons[0].p4) >= DR, op.deltaR(j.p4, electrons[0].p4) >= DR))))),
@@ -223,16 +207,10 @@ def cleaningWithRespectToLeadingLeptons(electrons, muons, DR):
 
 
 def defineObjects(self, tree):
-    # lepton cone-pt definitions
-    self.muon_conept = muonConePt(tree.Muon)
-    self.electron_conept = elConePt(tree.Electron)
+    # lepton definitions sorted by their pt
+    self.preMuons = op.sort(muonPreSel(tree.Muon), lambda mu: -mu.pt)
 
-    # lepton definitions sorted by their cone-pt
-    self.preMuons = op.sort(muonPreSel(tree.Muon), lambda mu: -
-                            self.muon_conept[mu.idx])
-    # can be liberated from 'self' ?
-    self.preElectrons = op.sort(elePreSel(tree.Electron),
-                                lambda el: -self.electron_conept[el.idx])
+    self.preElectrons = op.sort(elePreSel(tree.Electron), lambda el: -el.pt)
 
     # cleaning electrons wrt muons
     self.clElectrons = cleanElectrons(self.preElectrons, self.preMuons)
@@ -274,7 +252,8 @@ def defineObjects(self, tree):
     self.ak8JetsDef = ak8jetDef(tree.FatJet)
 
     if self.channel == 'SL':  # sorted by btag score
-        ak8JetsPreSel = op.sort(self.ak8JetsDef, lambda j: -j.particleNet_XbbVsQCD)
+        ak8JetsPreSel = op.sort(
+            self.ak8JetsDef, lambda j: -j.particleNet_XbbVsQCD)
     if self.channel == 'DL':  # sorted by pt
         ak8JetsPreSel = op.sort(self.ak8JetsDef, lambda j: -j.pt)
 
