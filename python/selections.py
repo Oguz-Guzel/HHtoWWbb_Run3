@@ -57,19 +57,19 @@ def makeDLSelection(self, sel):
         )
 
     # OS loose lepton pairs of same type to be vetoed around Z peak
-    ElElLooseSel = op.combine(
+    elLoosePair = op.combine(
         self.clElectrons, N=2, pred=lambda lep1, lep2: lep1.charge != lep2.charge)
-    MuMuLooseSel = op.combine(
+    muLoosePair = op.combine(
         self.preMuons, N=2, pred=lambda lep1, lep2: lep1.charge != lep2.charge)
-    ElMuLooseSel = op.combine(
+    emuLoosePair = op.combine(
         (self.clElectrons, self.preMuons), N=2, pred=lambda el, mu: el.charge != mu.charge)
 
     # OS tight dilepton collections
-    ElElTightSel = op.combine(self.tightElectrons, N=2,
-                              pred=lambda lep1, lep2: lep1.charge != lep2.charge)
-    MuMuTightSel = op.combine(
-        self.tightMuons, N=2, pred=lambda lep1, lep2: lep1.charge != lep2.charge)
-    ElMuTightSel = op.combine((self.tightElectrons, self.tightMuons),
+    elTightPair = op.combine(self.tightElectrons, N=2,
+                             pred=lambda lep1, lep2: lep1.charge != lep2.charge)
+    muTightPair = op.combine(self.tightMuons, N=2,
+                             pred=lambda lep1, lep2: lep1.charge != lep2.charge)
+    emuTightPair = op.combine((self.tightElectrons, self.tightMuons),
                               N=2, pred=lambda el, mu: el.charge != mu.charge)
 
     # the actual leptons that will be used for the analysis
@@ -89,46 +89,46 @@ def makeDLSelection(self, sel):
         'emuPairMinPtSel', cut=[ptCutDifferentFlavourPair(self.firstEmuTightPair)])
 
     # low Mll cut : reject events with dilepton mass below 12 GeV
-    mllCut = op.AND(lowMllCut(ElElLooseSel), lowMllCut(
-        MuMuLooseSel), lowMllCut(ElMuLooseSel))
+    mllCut = op.AND(lowMllCut(elLoosePair), lowMllCut(
+        muLoosePair), lowMllCut(emuLoosePair))
 
-    # Z-veto : reject events with dileptons of same type with mass around Z peak
-    outZCut = op.AND(outZ(ElElLooseSel), outZ(MuMuLooseSel))
+    # Z-veto : reject events with same flavour-lepton pair with mass around Z peak.
+    outZCut = op.AND(outZ(elLoosePair), outZ(muLoosePair))
 
-    OSoutZelelSel = elelPtSel.refine(
-        'OSoutZelelSel', cut=op.AND(mllCut, outZCut))
-    OSoutZmumuSel = mumuPtSel.refine(
-        'OSoutZmumuSel', cut=op.AND(mllCut, outZCut))
-    OSoutZelmuSel = elmuPtSel.refine(
-        'OSoutZelmuSel', cut=op.AND(mllCut, outZCut))
+    outZelPairSel = elPairMinPtSel.refine(
+        'outZelPairSel', cut=op.AND(mllCut, outZCut))
+    outZmuPairSel = muPairMinPtSel.refine(
+        'outZmuPairSel', cut=op.AND(mllCut, outZCut))
+    outZemuPairSel = emuPairMinPtSel.refine(
+        'outZemuPairSel', cut=op.AND(mllCut, outZCut))
 
     # di-lepton multiplicity cut
-    leptonMultiplicityCut_ee = OSoutZelelSel.refine('dileptonCut_ee', cut=[op.AND(
-        op.rng_len(ElElTightSel) == 1,
-        op.rng_len(MuMuTightSel) == 0,
-        op.rng_len(ElMuTightSel) == 0
+    elPairMultiplicitySel = outZelPairSel.refine('elPairMultiplicitySel', cut=[op.AND(
+        op.rng_len(elTightPair) == 1,
+        op.rng_len(muTightPair) == 0,
+        op.rng_len(emuTightPair) == 0
     )])
-    leptonMultiplicityCut_mumu = OSoutZmumuSel.refine('dileptonCut_mumu', cut=[op.AND(
-        op.rng_len(ElElTightSel) == 0,
-        op.rng_len(MuMuTightSel) == 1,
-        op.rng_len(ElMuTightSel) == 0
+    mumuPairMultiplicitySel = outZmuPairSel.refine('mumuPairMultiplicitySel', cut=[op.AND(
+        op.rng_len(elTightPair) == 0,
+        op.rng_len(muTightPair) == 1,
+        op.rng_len(emuTightPair) == 0
     )])
-    leptonMultiplicityCut_emu = OSoutZelmuSel.refine('dileptonCut_emu', cut=[op.AND(
-        op.rng_len(ElElTightSel) == 0,
-        op.rng_len(MuMuTightSel) == 0,
-        op.rng_len(ElMuTightSel) == 1,
+    emuPairMultiplicitySel = outZemuPairSel.refine('emuPairMultiplicitySel', cut=[op.AND(
+        op.rng_len(elTightPair) == 0,
+        op.rng_len(muTightPair) == 0,
+        op.rng_len(emuTightPair) == 1,
     )])
 
     # boosted -> at least one b-tagged ak8 jet
-    DL_boosted_ee = leptonMultiplicityCut_ee.refine(
+    DL_boosted_ee = elPairMultiplicitySel.refine(
         'DL_boosted_ee', cut=(op.rng_len(self.ak8BJets) >= 1))
-    DL_boosted_mumu = leptonMultiplicityCut_mumu.refine(
+    DL_boosted_mumu = mumuPairMultiplicitySel.refine(
         'DL_boosted_mumu', cut=(op.rng_len(self.ak8BJets) >= 1))
-    DL_boosted_emu = leptonMultiplicityCut_emu.refine(
+    DL_boosted_emu = emuPairMultiplicitySel.refine(
         'DL_boosted_emu', cut=(op.rng_len(self.ak8BJets) >= 1))
 
-    # resolved -> and at least two ak4 jets with at least one b-tagged and no ak8 jets
-    DL_resolved_1b_ee = leptonMultiplicityCut_ee.refine(
+    # resolved -> and at least two ak4 jets with 1 or at least 2 b-tagged jets and no ak8 jets
+    DL_resolved_1b_ee = elPairMultiplicitySel.refine(
         'DL_resolved_1b_ee',
         cut=(op.AND(
             op.rng_len(self.ak4Jets) >= 2,
@@ -136,7 +136,7 @@ def makeDLSelection(self, sel):
             op.rng_len(self.ak8Jets) == 0))
     )
 
-    DL_resolved_2b_ee = leptonMultiplicityCut_ee.refine(
+    DL_resolved_2b_ee = elPairMultiplicitySel.refine(
         'DL_resolved_2b_ee',
         cut=(op.AND(
             op.rng_len(self.ak4Jets) >= 2,
@@ -144,7 +144,7 @@ def makeDLSelection(self, sel):
             op.rng_len(self.ak8Jets) == 0))
     )
 
-    DL_resolved_1b_mumu = leptonMultiplicityCut_mumu.refine(
+    DL_resolved_1b_mumu = mumuPairMultiplicitySel.refine(
         'DL_resolved_1b_mumu',
         cut=(op.AND(
             op.rng_len(self.ak4Jets) >= 2,
@@ -152,7 +152,7 @@ def makeDLSelection(self, sel):
             op.rng_len(self.ak8Jets) == 0))
     )
 
-    DL_resolved_2b_mumu = leptonMultiplicityCut_mumu.refine(
+    DL_resolved_2b_mumu = mumuPairMultiplicitySel.refine(
         'DL_resolved_2b_mumu',
         cut=(op.AND(
             op.rng_len(self.ak4Jets) >= 2,
@@ -160,7 +160,7 @@ def makeDLSelection(self, sel):
             op.rng_len(self.ak8Jets) == 0))
     )
 
-    DL_resolved_1b_emu = leptonMultiplicityCut_emu.refine(
+    DL_resolved_1b_emu = emuPairMultiplicitySel.refine(
         'DL_resolved_1b_emu',
         cut=(op.AND(
             op.rng_len(self.ak4Jets) >= 2,
@@ -168,7 +168,7 @@ def makeDLSelection(self, sel):
             op.rng_len(self.ak8Jets) == 0))
     )
 
-    DL_resolved_2b_emu = leptonMultiplicityCut_emu.refine(
+    DL_resolved_2b_emu = emuPairMultiplicitySel.refine(
         'DL_resolved_2b_emu',
         cut=(op.AND(
             op.rng_len(self.ak4Jets) >= 2,
