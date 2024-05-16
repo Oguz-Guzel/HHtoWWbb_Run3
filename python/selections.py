@@ -33,27 +33,28 @@ def makeDLSelection(self, sel):
         A list of selection objects for the Dilepton analysis.
     """
 
-    # Pt cuts : subleading above 15 GeV and leading above 25 GeV
-    def ptCutElEl(dilep): return op.AND(
-        self.electron_conept[dilep[0].idx] > 15,
-        self.electron_conept[dilep[1].idx] > 15,
-        op.OR(self.electron_conept[dilep[0].idx] >
-              25, self.electron_conept[dilep[1].idx] > 25)
-    )
+    # Pt cuts : leading above 25 GeV and sub-leading above 15 GeV
+    def ptCutSameFlavourPair(dilep) -> bool:
+        """Minimum pT cut for the same flavour leptons.
+        Leading lepton pT > 25 GeV and sub-leading lepton pT > 15 GeV.
+        There is no need to check for the opposite order since we're taking
+        the objects from the same collection that is already sorted by pt.
+        """
+        return op.AND(
+            dilep[0].pt > 25,
+            dilep[1].pt > 15,
+        )
 
-    def ptCutMuMu(dilep): return op.AND(
-        self.muon_conept[dilep[0].idx] > 15,
-        self.muon_conept[dilep[1].idx] > 15,
-        op.OR(self.muon_conept[dilep[0].idx] > 25,
-              self.muon_conept[dilep[1].idx] > 25)
-    )
-
-    def ptCutElMu(dilep): return op.AND(
-        self.electron_conept[dilep[0].idx] > 15,
-        self.muon_conept[dilep[1].idx] > 15,
-        op.OR(self.electron_conept[dilep[0].idx] >
-              25, self.muon_conept[dilep[1].idx] > 25)
-    )
+    def ptCutDifferentFlavourPair(dilep) -> bool:
+        """Minimum pT cut for the different flavour leptons.
+        Leading lepton pT > 25 GeV and sub-leading lepton pT > 15 GeV.
+        Here is necessary to check for the opposite order since we're taking
+        the objects from different collections hence we don't know which one has a higher pT."""
+        return op.AND(
+            dilep[0].pt > 15,
+            dilep[1].pt > 15,
+            op.OR(dilep[0].pt > 25, dilep[1].pt > 25)
+        )
 
     # OS loose lepton pairs of same type to be vetoed around Z peak
     ElElLooseSel = op.combine(
