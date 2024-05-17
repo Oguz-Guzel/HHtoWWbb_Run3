@@ -103,45 +103,29 @@ class ScaleFactors():
 
         if self.era == '2022':
             if sample.startswith("SingleMuon_") or sample.startswith("DoubleMuon_"):
-                addHLTPath("DoubleMuon_", "TripleMu_12_10_5")
                 addHLTPath("DoubleMuon_",
                            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
                 addHLTPath("SingleMuon_", "IsoMu24")
                 addHLTPath("SingleMuon_", "IsoMu27")
             else:
-                addHLTPath("Muon_", "TripleMu_12_10_5")
                 addHLTPath("Muon_",
                            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
                 addHLTPath("Muon_", "IsoMu24")
-                addHLTPath("Muon_", "IsoMu27")
-            addHLTPath("EGamma_", "Ele32_WPTight_Gsf")
-            addHLTPath("EGamma_", "Ele16_Ele12_Ele8_CaloIdL_TrackIdL")
-            addHLTPath("EGamma_", "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL")
-            addHLTPath("MuonEG_",
-                       "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
-            addHLTPath("MuonEG_", "Mu8_DiEle12_CaloIdL_TrackIdL")
-            addHLTPath("MuonEG_", "DiMu9_Ele9_CaloIdL_TrackIdL_DZ")
+                addHLTPath("Muon_", "Mu15_IsoVVVL_PFHT450")
 
         if self.era == '2022EE':
-            if sample.startswith("SingleMuon_") or sample.startswith("DoubleMuon_"):
-                addHLTPath("DoubleMuon_", "TripleMu_12_10_5")
-                addHLTPath("DoubleMuon_",
-                           "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
-                addHLTPath("SingleMuon_", "IsoMu24")
-                addHLTPath("SingleMuon_", "IsoMu27")
-            else:
-                addHLTPath("Muon_", "TripleMu_12_10_5")
-                addHLTPath("Muon_",
-                           "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
-                addHLTPath("Muon_", "IsoMu24")
-                addHLTPath("Muon_", "IsoMu27")
-            addHLTPath("EGamma_", "Ele16_Ele12_Ele8_CaloIdL_TrackIdL")
-            addHLTPath("MuonEG_", "DiMu9_Ele9_CaloIdL_TrackIdL_DZ")
-            addHLTPath("MuonEG_", "Mu8_DiEle12_CaloIdL_TrackIdL")
-            addHLTPath("EGamma_", "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL")
-            addHLTPath("MuonEG_",
-                       "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
-            addHLTPath("EGamma_", "Ele32_WPTight_Gsf")
+            addHLTPath("Muon_",
+                       "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
+            addHLTPath("Muon_", "IsoMu24")
+            addHLTPath("Muon_", "Mu15_IsoVVVL_PFHT450")
+
+        addHLTPath("EGamma_", "Ele30_WPTight_Gsf")
+        addHLTPath("EGamma_", "Ele28_eta2p1_WPTight_Gsf_HT150")
+        addHLTPath("EGamma_", "Ele15_IsoVVVL_PFHT450")
+        addHLTPath("EGamma_", "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL")
+        addHLTPath("MuonEG_",
+                   "Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
+        addHLTPath("MuonEG_", "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ")
 
         if self.is_MC:
             sel = sel.refine('trigger',  cut=(
