@@ -166,7 +166,7 @@ TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2022:
   group: "TTbar"
   cross-section: 98.036113
   generated-events: genEventSumw
-  split: &nsplit4 -3
+  split: *nsplit
 
 TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2022EE:
   era: '2022EE'
@@ -179,7 +179,7 @@ TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2022EE:
   group: "TTbar"
   cross-section: 98.036113
   generated-events: genEventSumw
-  split: *nsplit4
+  split: *nsplit
 
 # TTtoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8:
 #   dbs:
@@ -206,7 +206,7 @@ DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022:
   group: "DY"
   cross-section: 6.735e+03
   generated-events: genEventSumw
-  split: *nsplit4
+  split: *nsplit
 
 DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
   era: '2022EE'
@@ -215,7 +215,7 @@ DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
   group: "DY"
   cross-section: 6.735e+03
   generated-events: genEventSumw
-  split: *nsplit4
+  split: *nsplit
 
 # DYto2L-2Jets_MLL-50_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022:
 #   era: '2022'
@@ -224,7 +224,7 @@ DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "DY"
 #   cross-section: 5.401e+03
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # DYto2L-2Jets_MLL-50_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   era: '2022EE'
@@ -233,7 +233,7 @@ DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "DY"
 #   cross-section: 5.401e+03
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # DYto2L-2Jets_MLL-50_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022:
 #   era: '2022'
@@ -242,7 +242,7 @@ DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "DY"
 #   cross-section: 1.005e+03
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # DYto2L-2Jets_MLL-50_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   era: '2022EE'
@@ -251,7 +251,7 @@ DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "DY"
 #   cross-section: 1.005e+03
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # DYto2L-2Jets_MLL-50_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022:
 #   era: '2022'
@@ -260,7 +260,7 @@ DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "DY"
 #   cross-section: 3.845e+02
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # DYto2L-2Jets_MLL-50_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   era: '2022EE'
@@ -269,7 +269,7 @@ DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "DY"
 #   cross-section: 3.845e+02
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022:
   era: '2022'
@@ -278,7 +278,7 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022:
   group: "DY"
   cross-section: 19982.5
   generated-events: genEventSumw
-  split: *nsplit4
+  split: *nsplit
 
 DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
   era: '2022EE'
@@ -287,7 +287,7 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
   group: "DY"
   cross-section: 19982.5
   generated-events: genEventSumw
-  split: *nsplit4
+  split: *nsplit
 
 # VV and Wjets have small contribution, exclude now for the sake of faster analysis
 # WW_TuneCP5_13p6TeV_pythia8:
@@ -298,7 +298,7 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "VV"
 #   cross-section: 80.18
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # WZ_TuneCP5_13p6TeV_pythia8:
 #   dbs:
@@ -308,7 +308,7 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "VV"
 #   cross-section: 29.1
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # WtoLNu-2Jets_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8:
 #   dbs:
@@ -318,7 +318,7 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "WJets"
 #   cross-section: 5.557e+04
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # WtoLNu-2Jets_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8:
 #   dbs:
@@ -328,7 +328,7 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "WJets"
 #   cross-section: 9.420e+03
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # WtoLNu-2Jets_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8:
 #   dbs:
@@ -338,7 +338,7 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "WJets"
 #   cross-section: 3.616e+03
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # ZZ_TuneCP5_13p6TeV_pythia8:
 #   dbs:
@@ -348,7 +348,7 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "VV"
 #   cross-section: 12.75
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # # TW cross section from: https://cms-talk.web.cern.ch/t/new-jecs-for-run3-prompt-fg-eras/26529
 # TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2022:
@@ -362,7 +362,7 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "TW"
 #   cross-section: 4.6651009 # xsec(TW) / 2 (since t and tbar is included) x BR(W->l nu)^2 x 2 (since there are two W bosons) = 87.9 / 2 x 0.3259^2 x 2
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2022EE:
 #   era: '2022EE'
@@ -374,7 +374,7 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "TW"
 #   cross-section: 4.6651009 # xsec(TW) / 2 (since t and tbar is included) x BR(W->l nu)^2 x 2 (since there are two W bosons) = 87.9 / 2 x 0.3259^2 x 2
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # TbarWplustoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8:
 #   era: '2022'
@@ -386,7 +386,7 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "TW"
 #   cross-section: 19.307618 # xsec(TW) / 2 (since t and tbar is included) x BR(W->l nu) x BR(W->qq) x 2 (since there are two W bosons) = 87.9 / 2 x 0.3259 x 0.6741
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # TbarWplustoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8EE:
 #   era: '2022EE'
@@ -398,7 +398,7 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "TW"
 #   cross-section: 19.307618 # xsec(TW) / 2 (since t and tbar is included) x BR(W->l nu) x BR(W->qq) x 2 (since there are two W bosons) = 87.9 / 2 x 0.3259 x 0.6741
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2022:
 #   era: '2022'
@@ -411,7 +411,7 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "TW"
 #   cross-section: 4.6651009
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2022EE:
 #   era: '2022EE'
@@ -424,7 +424,7 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "TW"
 #   cross-section: 4.6651009
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 # TWminustoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8_2022:
 #   era: '2022'
 #   db: [
@@ -435,7 +435,7 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "TW"
 #   cross-section: 19.307618
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 # TWminustoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8_2022EE:
 #   era: '2022'
@@ -447,7 +447,7 @@ DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_2022EE:
 #   group: "TW"
 #   cross-section: 19.307618
 #   generated-events: genEventSumw
-#   split: *nsplit4
+#   split: *nsplit
 
 ### SIGNAL ###
 # GluGlutoHHto2B2WtoLNu2Q_kl-1p00_kt-1p00_c2-0p00:
