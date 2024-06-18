@@ -5,17 +5,10 @@
 
 This repository uses the **bamboo analysis framework**, you can install it via the instructions here: https://bamboo-hep.readthedocs.io/en/latest/install.html#fresh-install
 
-Install also CMSJMECalculators with correctionlib PR until the PR is merged
+Install also CMSJMECalculators with correctionlib
 ```sh
 git clone https://gitlab.cern.ch/cp3-cms/CMSJMECalculators.git
-cd CMSJMECalculators
-git fetch "https://:@gitlab.cern.ch:8443/aguzel/CMSJMECalculators.git" 'CMSJMECalculators-correctionlib'
-git checkout -b 'CMSJMECalculators-CMSJMECalculators-correctionlib' FETCH_HEAD
-cd ..
 pip install ./CMSJMECalculators
-```
-and correctionlib
-```sh
 pip install correctionlib
 ```
 
@@ -27,7 +20,7 @@ git clone https://github.com/cp3-llbb/HHtoWWbb_Run3.git && cd HHtoWWbb_Run3
 
 Execute these each time you start from a clean shell on lxplus or any other machine with an cvmfs:
 ```bash
-source /cvmfs/sft.cern.ch/lcg/views/LCG_102/x86_64-centos7-gcc11-opt/setup.sh
+source /cvmfs/sft.cern.ch/lcg/views/LCG_105/x86_64-el9-gcc11-opt/setup.sh
 source (path to your bamboo installation)/bamboovenv/bin/activate
 export PYTHONPATH="${PYTHONPATH}:${PWD}/python/"
 ```
