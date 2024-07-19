@@ -112,8 +112,8 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         cmJMEArgs = {
             "jsonFile": JEC_JSONFiles[self.era]["AK4"],
             "jec": jecTag,
-            # "smear": smearTag,
-            # "splitJER": True,
+            "smear": smearTag,
+            "splitJER": True,
             "jesUncertaintySources": (["Total"] if self.is_MC else None),
             "isMC": self.is_MC,
             "backend": be
