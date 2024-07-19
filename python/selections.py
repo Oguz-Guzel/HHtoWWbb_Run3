@@ -133,7 +133,7 @@ def makeDLSelection(self, sel):
         cut=(op.AND(
             op.rng_len(self.ak4Jets) >= 2,
             op.rng_len(self.ak4BJets) == 1,
-            op.rng_len(self.ak8Jets) == 0))
+            op.rng_len(self.ak8BJets) == 0))
     )
 
     DL_resolved_2b_ee = elPairMultiplicitySel.refine(
@@ -141,7 +141,7 @@ def makeDLSelection(self, sel):
         cut=(op.AND(
             op.rng_len(self.ak4Jets) >= 2,
             op.rng_len(self.ak4BJets) >= 2,
-            op.rng_len(self.ak8Jets) == 0))
+            op.rng_len(self.ak8BJets) == 0))
     )
 
     DL_resolved_1b_mumu = mumuPairMultiplicitySel.refine(
@@ -149,7 +149,7 @@ def makeDLSelection(self, sel):
         cut=(op.AND(
             op.rng_len(self.ak4Jets) >= 2,
             op.rng_len(self.ak4BJets) == 1,
-            op.rng_len(self.ak8Jets) == 0))
+            op.rng_len(self.ak8BJets) == 0))
     )
 
     DL_resolved_2b_mumu = mumuPairMultiplicitySel.refine(
@@ -157,7 +157,7 @@ def makeDLSelection(self, sel):
         cut=(op.AND(
             op.rng_len(self.ak4Jets) >= 2,
             op.rng_len(self.ak4BJets) >= 2,
-            op.rng_len(self.ak8Jets) == 0))
+            op.rng_len(self.ak8BJets) == 0))
     )
 
     DL_resolved_1b_emu = emuPairMultiplicitySel.refine(
@@ -165,7 +165,7 @@ def makeDLSelection(self, sel):
         cut=(op.AND(
             op.rng_len(self.ak4Jets) >= 2,
             op.rng_len(self.ak4BJets) == 1,
-            op.rng_len(self.ak8Jets) == 0))
+            op.rng_len(self.ak8BJets) == 0))
     )
 
     DL_resolved_2b_emu = emuPairMultiplicitySel.refine(
@@ -173,7 +173,7 @@ def makeDLSelection(self, sel):
         cut=(op.AND(
             op.rng_len(self.ak4Jets) >= 2,
             op.rng_len(self.ak4BJets) >= 2,
-            op.rng_len(self.ak8Jets) == 0))
+            op.rng_len(self.ak8BJets) == 0))
     )
 
     DL_selections = [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
