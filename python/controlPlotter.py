@@ -166,30 +166,31 @@ class controlPlotter(NanoBaseHHWWbb):
             (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[0].pdgId),
             (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].pdgId),
             (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
-                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].pdgId, self.tightMuons[0].pdgId)),
-            op.c_float(-9999.)
+                self.tightElectrons[0].pt > self.tightMuons[0].pt, self.tightElectrons[0].pdgId, self.tightMuons[0].pdgId)),
+            op.c_int(-9999)
         )
         l2_pdgId = op.multiSwitch(
             (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[1].pdgId),
             (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].pdgId),
             (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
-                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].pdgId, self.tightMuons[0].pdgId)),
-            op.c_float(-9999.)
+                self.tightElectrons[0].pt > self.tightMuons[0].pt, self.tightElectrons[0].pdgId, self.tightMuons[0].pdgId)),
+            op.c_int(-9999)
         )
         l1_charge = op.multiSwitch(
             (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[0].charge),
             (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].charge),
             (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
-                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].charge, self.tightMuons[0].charge)),
-            op.c_float(-9999.)
+                self.tightElectrons[0].pt > self.tightMuons[0].pt, self.tightElectrons[0].charge, self.tightMuons[0].charge)),
+            op.c_int(-9999)
         )
         l2_charge = op.multiSwitch(
             (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[1].charge),
             (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].charge),
             (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
-                self.tightElectrons[0].pt >= self.tightMuons[0].pt, self.tightElectrons[0].charge, self.tightMuons[0].charge)),
-            op.c_float(-9999.)
+                self.tightElectrons[0].pt > self.tightMuons[0].pt, self.tightElectrons[0].charge, self.tightMuons[0].charge)),
+            op.c_int(-9999)
         )
+
         j1_Px = op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].p4.Px(), op.c_float(-9999.))
         j1_Py = op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].p4.Py(), op.c_float(-9999.))
         j1_Pz = op.switch(op.rng_len(self.ak4Jets) > 0, self.ak4Jets[0].p4.Pz(), op.c_float(-9999.))
