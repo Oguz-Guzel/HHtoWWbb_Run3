@@ -718,13 +718,6 @@ class controlPlotter(NanoBaseHHWWbb):
                 # ######       DL boosted plots      ######
                 # ######                             ######
                 # #########################################
-                
-                Plot.make1D("elTightPair", self.firstElTightPair[0].pt, DL_boosted_ee, EqBin(
-                    10, 0, 10), title="N(ak8jet)", xTitle="elTightPair pt", plotopts=DLboostedEE_label),
-                
-                Skim("test_skim1", test_vars_ee, DL_boosted_ee),
-                Skim("test_skim3", test_vars_mumu, DL_boosted_mumu),
-                Skim("test_skim5", test_vars_emu, DL_boosted_emu),
 
                 # number of ak8 b-jets
                 Plot.make1D("DL_boosted_nfatJet_ee", op.rng_len(self.ak8Jets), DL_boosted_ee, EqBin(
