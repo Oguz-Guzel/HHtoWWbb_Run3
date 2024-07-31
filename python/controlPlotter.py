@@ -686,18 +686,6 @@ class controlPlotter(NanoBaseHHWWbb):
         #############################################################################
 
         if self.channel == 'DL' and not self.mvaModels and not self.sync:
-            test_vars_ee = {
-                "el_tight_pair_0_pt": self.firstElTightPair[0].pt,
-                "el_tight_pair_1_pt": self.firstElTightPair[1].pt,
-            }
-            test_vars_emu = {
-                "el_tight_pair_pt": self.firstEmuTightPair[0].pt,
-                "mu_tight_pair_pt": self.firstEmuTightPair[1].pt,
-            }
-            test_vars_mumu = {
-                "mu_tight_pair_0_pt": self.firstMuTightPair[0].pt,
-                "mu_tight_pair_1_pt": self.firstMuTightPair[1].pt,
-            }
             plots.extend([
                 #########################################
                 #                 Skims                 #
