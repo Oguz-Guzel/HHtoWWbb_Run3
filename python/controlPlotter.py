@@ -261,9 +261,9 @@ class controlPlotter(NanoBaseHHWWbb):
             syncVars_DL = {
                 "event_no": tree.event,
                 "lumi_block": tree.luminosityBlock,
-                "is_dl_ee": op.switch(op.rng_len(self.tightElectrons) == 2, 1, op.c_float(-9999.)),
-                "is_dl_mumu": op.switch(op.rng_len(self.tightMuons) == 2, 1, op.c_float(-9999.)),
-                "is_dl_emu": op.switch(op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons)) == 1, 1, op.c_float(-9999.)),
+                "is_dl_ee": op.switch(op.rng_len(self.tightElectrons) == 2, 1, 0),
+                "is_dl_mumu": op.switch(op.rng_len(self.tightMuons) == 2, 1, 0),
+                "is_dl_emu": op.switch(op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons)) == 1, 1, 0),
                 "nLooseElectron": op.rng_len(self.preElectrons),
                 "nFakeElectron": op.rng_len(self.fakeElectrons),
                 "nTightElectron": op.rng_len(self.tightElectrons),

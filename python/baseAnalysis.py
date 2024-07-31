@@ -159,7 +159,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 config, plotList_cutflowreport, workdir=workdir, resultsdir=resultsdir,
                 readCounters=self.readCounters, eras=(eraMode, eras), verbose=self.args.verbose)
         if plotList_plotIt:
-            from bamboo.analysisutils import writePlotIt, runPlotIt
+            from bamboo.analysisutils import writePlotIt#, runPlotIt
             import os
             cfgName = os.path.join(workdir, "plots.yml")
             writePlotIt(
@@ -170,7 +170,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             # cfgName, workdir=workdir, plotIt=self.args.plotIt, eras=(
             #     eraMode, eras),
             # verbose=self.args.verbose)
-        # hadd signal files and create another plots.yml as plots_full.yml
+        # hadd signal files and create another plots.yml called plots_full.yml
         import os
         import shutil
         outDir = os.path.join(resultsdir, "normalizedSummedSignal")
