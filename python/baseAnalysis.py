@@ -22,8 +22,8 @@ JECTagDatabase = {
 }
 
 JERTagDatabase = {
-    "2022": "Summer22EEPrompt22_JRV1_MC",
-    "2022EE": "Summer22EEPrompt22_JRV1_MC",
+    "2022": "Summer22_22Sep2023_JRV1_MC",
+    "2022EE": "Summer22EE_22Sep2023_JRV1_MC",
 }
 
 jsonPathBase = "/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/"
@@ -113,6 +113,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             "jsonFile": JEC_JSONFiles[self.era]["AK4"],
             "jec": jecTag,
             "smear": smearTag,
+            "jsonFileSmearingTool": jsonPathBase+'JME/jer_smear.json.gz',
             "splitJER": True,
             "jesUncertaintySources": (["Total"] if self.is_MC else None),
             "isMC": self.is_MC,
