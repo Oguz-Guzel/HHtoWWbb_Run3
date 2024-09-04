@@ -19,11 +19,21 @@ JECTagDatabase = {
         "E": "Summer22EE_22Sep2023_RunE_V2_DATA",
         "F": "Summer22EE_22Sep2023_RunF_V2_DATA",
         "G": "Summer22EE_22Sep2023_RunG_V2_DATA"},
+    "2023": {
+        "MC": "Summer23Prompt23_V1_MC",
+        "C": "Summer23Prompt23_RunCv4_V1_DATA"
+    },
+    "2023BPix": {
+        "MC": "Summer23BPixPrompt23_V1_MC",
+        "D": "Summer23BPixPrompt23_RunD_V1_DATA"
+    }
 }
 
 JERTagDatabase = {
     "2022": "Summer22_22Sep2023_JRV1_MC",
     "2022EE": "Summer22EE_22Sep2023_JRV1_MC",
+    "2023": "Summer23Prompt23_RunCv4_JRV1_MC",
+    "2023BPix": "Summer23BPixPrompt23_RunD_JRV1_MC"
 }
 
 jsonPathBase = "/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/"
