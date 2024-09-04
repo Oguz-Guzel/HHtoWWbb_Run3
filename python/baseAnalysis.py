@@ -109,10 +109,10 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         jecTag = JECTagDatabase[self.era]["MC" if self.is_MC else runEra]
         smearTag = JERTagDatabase[self.era] if self.is_MC else None
 
-        cmJMEArgs = {
+        JMEArgs = {
             "jsonFile": JEC_JSONFiles[self.era]["AK4"],
             "jec": jecTag,
-            "smear": smearTag,
+            # "smear": smearTag, causes runtime_error: Index below bounds in Binning for input argument 4 value: -1.000000
             "jsonFileSmearingTool": jsonPathBase+'JME/jer_smear.json.gz',
             "splitJER": True,
             "jesUncertaintySources": (["Total"] if self.is_MC else None),
@@ -120,18 +120,18 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             "backend": be
         }
         from bamboo.analysisutils import configureJets, configureType1MET
-        configureJets(tree._Jet, jetType="AK4PFPuppi", **cmJMEArgs)
+        configureJets(tree._Jet, jetType="AK4PFPuppi", **JMEArgs)
         metName = "PuppiMET"
         configureType1MET(
             getattr(tree, f"_{metName}T1"),
             enableSystematics=(
                 (lambda v: not v.startswith("jer")) if self.is_MC else None),
-            **cmJMEArgs)
-        cmJMEArgs.update({"jsonFile": JEC_JSONFiles[self.era]["AK8"], })
-        cmJMEArgs.update({"jetAlgoSubjet": "AK4PFPuppi", })
-        cmJMEArgs.update({"jecSubjet": jecTag, })
-        cmJMEArgs.update({"jsonFileSubjet": JEC_JSONFiles[self.era]["AK4"], })
-        configureJets(tree._FatJet, jetType="AK8PFPuppi", **cmJMEArgs)
+            **JMEArgs)
+        JMEArgs.update({"jsonFile": JEC_JSONFiles[self.era]["AK8"], })
+        JMEArgs.update({"jetAlgoSubjet": "AK4PFPuppi", })
+        JMEArgs.update({"jecSubjet": jecTag, })
+        JMEArgs.update({"jsonFileSubjet": JEC_JSONFiles[self.era]["AK4"], })
+        configureJets(tree._FatJet, jetType="AK8PFPuppi", **JMEArgs)
         logger.info("Applying Jet and MET systematics")
         return tree, noSel, be, lumiArgs
 
