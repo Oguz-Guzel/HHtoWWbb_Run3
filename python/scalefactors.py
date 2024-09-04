@@ -13,30 +13,39 @@ jsonPathBase = "/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/"
 puTuple = {
     "2022": (jsonPathBase + "LUM/2022_Summer22/puWeights.json.gz", "Collisions2022_355100_357900_eraBCD_GoldenJson"),
     "2022EE": (jsonPathBase + "LUM/2022_Summer22EE/puWeights.json.gz", "Collisions2022_359022_362760_eraEFG_GoldenJson"),
-}
-
-JEC_JSONFiles = {
-    "2022": {
-        "AK4": jsonPathBase + "JME/2022_Summer22/jet_jerc.json.gz",
-        "AK8": jsonPathBase + "JME/2022_Summer22/fatJet_jerc.json.gz"},
-    "2022EE": {
-        "AK4": jsonPathBase + "JME/2022_Summer22EE/jet_jerc.json.gz",
-        "AK8": jsonPathBase + "JME/2022_Summer22EE/fatJet_jerc.json.gz"},
+    "2023": (jsonPathBase + "LUM/2023_Summer23/puWeights.json.gz", "Collisions2023_366403_369802_eraBC_GoldenJson"),
+    "2023BPix": (jsonPathBase + "LUM/2023_Summer23BPix/puWeights.json.gz", "Collisions2023_369803_370790_eraD_GoldenJson"),
 }
 
 BTV_SF_JSONFiles = {
     "2022": jsonPathBase + "BTV/2022_Summer22/btagging.json.gz",
     "2022EE": jsonPathBase + "BTV/2022_Summer22EE/btagging.json.gz",
+    "2023": jsonPathBase + "BTV/2023_Summer23/btagging.json.gz",
+    "2023BPix": jsonPathBase + "BTV/2023_Summer23BPix/btagging.json.gz",
 }
 
 MUO_SF_JSONFiles = {
     "2022": jsonPathBase + "MUO/2022_Summer22/muon_Z.json.gz",
-    "2022EE": jsonPathBase + "MUO/2022_Summer22/muon_Z.json.gz",
+    "2022EE": jsonPathBase + "MUO/2022_Summer22EE/muon_Z.json.gz",
+    "2023": jsonPathBase + "MUO/2023_Summer23/muon_Z.json.gz",
+    "2023BPix": jsonPathBase + "MUO/2023_Summer23BPix/muon_Z.json.gz",
 }
 
 EL_SF_JSONFileDirs = {
     "2022": "2022Re-recoBCD",
     "2022EE": "2022Re-recoE+PromptFG",
+    "2023": "2022Re-recoBCD",
+    "2022EE": "2022Re-recoE+PromptFG",
+}
+
+jetVeto_JSONFiles = {
+    "2022": jsonPathBase + "JME/2022_Summer22/jetvetomaps.json.gz",
+    "2022EE": jsonPathBase + "JME/2022_Summer22EE/jetvetomaps.json.gz",
+}
+
+jetVetoTags = {
+    "2022": "Summer22_23Sep2023_RunCD_V1",
+    "2022EE": "Summer22EE_23Sep2023_RunEFG_V1",
 }
 
 
@@ -96,7 +105,7 @@ class ScaleFactors():
                 addHLTPath("Muon_", "IsoMu24")
                 addHLTPath("Muon_", "Mu15_IsoVVVL_PFHT450")
 
-        if self.era == '2022EE':
+        else:
             addHLTPath("Muon_",
                        "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
             addHLTPath("Muon_", "IsoMu24")
@@ -150,13 +159,28 @@ class ScaleFactors():
             logger.info("Applying btagging SF")
             def btvSF(flav): return get_bTagSF_itFit(
                 BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", flav, sel, decorr_eras=True, era=self.era)
-            jets = op.select(self.ak4Jets, lambda j: op.AND(
-                j.pt >= 20, op.abs(j.eta) < 2.5))
-            btvWeight = makeBtagWeightItFit(jets, btvSF)
+            btvWeight = makeBtagWeightItFit(self.ak4Jets, btvSF)
             sel = sel.refine("btagSF", weight=btvWeight)
         else:
             sel = sel.refine("btagSF", weight=op.c_float(1.))
         self.yields.add(sel, "btagging SF")
+
+        # # jet veto maps
+        # from bamboo.scalefactors import get_correction
+
+        # logger.info("Applying jet veto maps")
+        # jetVetoWeight = get_correction(
+        #     jetVeto_JSONFiles[self.era],
+        #     jetVetoTags[self.era],
+        #     params={"type": "jetvetomap",
+        #             "eta": lambda j: j.eta, "phi": lambda j: j.phi},
+        #     systNomName="jetpullsummap_nom",
+        #     systName="jetVetoMap",
+        #     sel=sel,
+        # )
+        # jets = op.select(self.ak4Jets, lambda j: op.abs(j.phi) < 3.141592653589793)
+        # sel = sel.refine("jetVetoMap", cut=[jetVetoWeight(jets[0]) == 0])
+
         return sel
 
     def muonSF(self, sel):
@@ -210,10 +234,14 @@ class ScaleFactors():
                 "2022Re-recoBCD") if not os.path.exists("2022Re-recoBCD") else None
             os.mkdir(
                 "2022Re-recoE+PromptFG") if not os.path.exists("2022Re-recoE+PromptFG") else None
+            os.mkdir("2023PromptC") if not os.path.exists("2023PromptC") else None
+            os.mkdir("2023PromptD") if not os.path.exists("2023PromptD") else None
             os.system("xrdcp root://cms-xrd-global.cern.ch///store/group/phys_egamma/correctionlibJSONs/Run3_2022_recoBCDE_PromptFG/2022Re-recoBCD/electron.json.gz 2022Re-recoBCD/") if not os.path.exists(
                 "2022Re-recoBCD/electron.json.gz") else None
             os.system("xrdcp root://cms-xrd-global.cern.ch///store/group/phys_egamma/correctionlibJSONs/Run3_2022_recoBCDE_PromptFG/2022Re-recoE+PromptFG/electron.json.gz 2022Re-recoE+PromptFG/") if not os.path.exists(
                 "2022Re-recoE+PromptFG/electron.json.gz") else None
+            os.system("xrdcp root://cms-xrd-global.cern.ch///store/group/phys_egamma/correctionlibJSONs/Run3_2023_PromptCD/2023PromptC/electron.json.gz 2023PromptC/") if not os.path.exists("2023PromptC/electron.json.gz") else None
+            os.system("xrdcp root://cms-xrd-global.cern.ch///store/group/phys_egamma/correctionlibJSONs/Run3_2023_PromptCD/2023PromptD/electron.json.gz 2023PromptD/") if not os.path.exists("2023PromptD/electron.json.gz") else None
 
             electronIDSF = get_correction(
                 EL_SF_JSONFileDirs[self.era]+"/electron.json.gz",
