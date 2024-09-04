@@ -8,23 +8,6 @@ from bamboo.analysisutils import makeMultiPrimaryDatasetTriggerSelection
 
 logger = logging.getLogger(__name__)
 
-JECTagDatabase = {
-    "2022": {
-        "MC": "Summer22_22Sep2023_V2_MC",
-        "C": "Summer22_22Sep2023_RunCD_V2_DATA",
-        "D": "Summer22_22Sep2023_RunCD_V2_DATA"},
-    "2022EE": {
-        "MC": "Summer22EE_22Sep2023_V2_MC",
-        "E": "Summer22EE_22Sep2023_RunE_V2_DATA",
-        "F": "Summer22EE_22Sep2023_RunF_V2_DATA",
-        "G": "Summer22EE_22Sep2023_RunG_V2_DATA"},
-}
-
-JERTagDatabase = {
-    "2022": "Summer22EEPrompt22_JRV1_MC",
-    "2022EE": "Summer22EEPrompt22_JRV1_MC",
-}
-
 jsonPathBase = "/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/"
 
 puTuple = {
