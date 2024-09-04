@@ -45,6 +45,12 @@ JEC_JSONFiles = {
     "2022EE": {
         "AK4": jsonPathBase + "JME/2022_Summer22EE/jet_jerc.json.gz",
         "AK8": jsonPathBase + "JME/2022_Summer22EE/fatJet_jerc.json.gz"},
+    "2023": {
+        "AK4": jsonPathBase + "JME/2023_Summer23/jet_jerc.json.gz",
+        "AK8": jsonPathBase + "JME/2023_Summer23/fatJet_jerc.json.gz"},
+    "2023BPix": {
+        "AK4": jsonPathBase + "JME/2023_Summer23BPix/jet_jerc.json.gz",
+        "AK8": jsonPathBase + "JME/2023_Summer23BPix/fatJet_jerc.json.gz"},
 }
 
 
