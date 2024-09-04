@@ -34,8 +34,8 @@ MUO_SF_JSONFiles = {
 EL_SF_JSONFileDirs = {
     "2022": "2022Re-recoBCD",
     "2022EE": "2022Re-recoE+PromptFG",
-    "2023": "2022Re-recoBCD",
-    "2022EE": "2022Re-recoE+PromptFG",
+    "2023": "2023PromptC",
+    "2023BPix": "2023PromptD",
 }
 
 jetVeto_JSONFiles = {
