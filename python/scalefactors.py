@@ -39,13 +39,10 @@ EL_SF_JSONFiles = {
 }
 
 jetVeto_JSONFiles = {
-    "2022": jsonPathBase + "JME/2022_Summer22/jetvetomaps.json.gz",
-    "2022EE": jsonPathBase + "JME/2022_Summer22EE/jetvetomaps.json.gz",
-}
-
-jetVetoTags = {
-    "2022": "Summer22_23Sep2023_RunCD_V1",
-    "2022EE": "Summer22EE_23Sep2023_RunEFG_V1",
+    "2022": (jsonPathBase + "JME/2022_Summer22/jetvetomaps.json.gz", "Summer22_23Sep2023_RunCD_V1"),
+    "2022EE": (jsonPathBase + "JME/2022_Summer22EE/jetvetomaps.json.gz", "Summer22EE_23Sep2023_RunEFG_V1",),
+    "2023": (jsonPathBase + "JME/2023_Summer23/jetvetomaps.json.gz", "Summer23Prompt23_RunC_V1"),
+    "2023BPix": (jsonPathBase + "JME/2023_Summer23BPix/jetvetomaps.json.gz", "Summer23BPixPrompt23_RunD_V1"),
 }
 
 
@@ -164,23 +161,6 @@ class ScaleFactors():
         else:
             sel = sel.refine("btagSF", weight=op.c_float(1.))
         self.yields.add(sel, "btagging SF")
-
-        # # jet veto maps
-        # from bamboo.scalefactors import get_correction
-
-        # logger.info("Applying jet veto maps")
-        # jetVetoWeight = get_correction(
-        #     jetVeto_JSONFiles[self.era],
-        #     jetVetoTags[self.era],
-        #     params={"type": "jetvetomap",
-        #             "eta": lambda j: j.eta, "phi": lambda j: j.phi},
-        #     systNomName="jetpullsummap_nom",
-        #     systName="jetVetoMap",
-        #     sel=sel,
-        # )
-        # jets = op.select(self.ak4Jets, lambda j: op.abs(j.phi) < 3.141592653589793)
-        # sel = sel.refine("jetVetoMap", cut=[jetVetoWeight(jets[0]) == 0])
-
         return sel
 
     def muonSF(self, sel):
