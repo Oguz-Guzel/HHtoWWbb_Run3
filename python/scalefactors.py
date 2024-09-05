@@ -31,11 +31,11 @@ MUO_SF_JSONFiles = {
     "2023BPix": jsonPathBase + "MUO/2023_Summer23BPix/muon_Z.json.gz",
 }
 
-EL_SF_JSONFileDirs = {
-    "2022": "2022Re-recoBCD",
-    "2022EE": "2022Re-recoE+PromptFG",
-    "2023": "2023PromptC",
-    "2023BPix": "2023PromptD",
+EL_SF_JSONFiles = {
+    "2022": (jsonPathBase + "EGM/2022_Summer22/electron.json.gz", "2022Re-recoBCD"),
+    "2022EE": (jsonPathBase + "EGM/2022_Summer22EE/electron.json.gz", "2022Re-recoE+PromptFG"),
+    "2023": (jsonPathBase + "EGM/2023_Summer23/electron.json.gz", "2023PromptC"),
+    "2023BPix": (jsonPathBase + "EGM/2023_Summer23BPix/electron.json.gz", "2023PromptD"),
 }
 
 jetVeto_JSONFiles = {
@@ -199,7 +199,7 @@ class ScaleFactors():
                 sel=sel
             )
             if sel.name in ['DL_boosted_mumu', 'DL_resolved_mumu']:
-                # pt and eta cut here since correction are available only for pt > 15 and |eta| < 2.4
+                # pt and eta cut here since correction are available only when pt >= 15 and |eta| < 2.4
                 sel = sel.refine(sel.name+"_muonSF", cut=[
                     op.AND(self.firstMuTightPair[0].pt >= 15,
                            self.firstMuTightPair[1].pt >= 15,
@@ -230,30 +230,17 @@ class ScaleFactors():
             from bamboo.scalefactors import get_correction
             logger.info("Applying Electron SF for "+sel.name)
 
-            os.mkdir(
-                "2022Re-recoBCD") if not os.path.exists("2022Re-recoBCD") else None
-            os.mkdir(
-                "2022Re-recoE+PromptFG") if not os.path.exists("2022Re-recoE+PromptFG") else None
-            os.mkdir("2023PromptC") if not os.path.exists("2023PromptC") else None
-            os.mkdir("2023PromptD") if not os.path.exists("2023PromptD") else None
-            os.system("xrdcp root://cms-xrd-global.cern.ch///store/group/phys_egamma/correctionlibJSONs/Run3_2022_recoBCDE_PromptFG/2022Re-recoBCD/electron.json.gz 2022Re-recoBCD/") if not os.path.exists(
-                "2022Re-recoBCD/electron.json.gz") else None
-            os.system("xrdcp root://cms-xrd-global.cern.ch///store/group/phys_egamma/correctionlibJSONs/Run3_2022_recoBCDE_PromptFG/2022Re-recoE+PromptFG/electron.json.gz 2022Re-recoE+PromptFG/") if not os.path.exists(
-                "2022Re-recoE+PromptFG/electron.json.gz") else None
-            os.system("xrdcp root://cms-xrd-global.cern.ch///store/group/phys_egamma/correctionlibJSONs/Run3_2023_PromptCD/2023PromptC/electron.json.gz 2023PromptC/") if not os.path.exists("2023PromptC/electron.json.gz") else None
-            os.system("xrdcp root://cms-xrd-global.cern.ch///store/group/phys_egamma/correctionlibJSONs/Run3_2023_PromptCD/2023PromptD/electron.json.gz 2023PromptD/") if not os.path.exists("2023PromptD/electron.json.gz") else None
-
             electronIDSF = get_correction(
-                EL_SF_JSONFileDirs[self.era]+"/electron.json.gz",
+                EL_SF_JSONFiles[self.era][0],
                 "Electron-ID-SF",
-                params={"pt": lambda ele: ele.pt, "eta": lambda ele: ele.eta,
-                        "year": EL_SF_JSONFileDirs[self.era], "WorkingPoint": "Loose"},
+                params={"pt": lambda e: e.pt, "eta": lambda e: e.eta, "phi": lambda e: e.phi,
+                        "year": EL_SF_JSONFiles[self.era][1], "WorkingPoint": "Loose"},
                 systParam="ValType",
                 systNomName="sf",
                 sel=sel
             )
             if sel.name in ['DL_boosted_ee', 'DL_resolved_ee']:
-                # pt cut here since correction are available only for pt > 10
+                # pt cut here since correction's available only when pt >= 10
                 sel = sel.refine(sel.name+"_electronSF", cut=[
                     op.AND(self.firstElTightPair[0].pt >= 10,
                            self.firstElTightPair[1].pt >= 10
