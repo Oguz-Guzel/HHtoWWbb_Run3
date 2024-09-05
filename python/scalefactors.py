@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 jsonPathBase = "/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/"
 
-puTuple = {
+PU_JSONFiles = {
     "2022": (jsonPathBase + "LUM/2022_Summer22/puWeights.json.gz", "Collisions2022_355100_357900_eraBCD_GoldenJson"),
     "2022EE": (jsonPathBase + "LUM/2022_Summer22EE/puWeights.json.gz", "Collisions2022_359022_362760_eraEFG_GoldenJson"),
     "2023": (jsonPathBase + "LUM/2023_Summer23/puWeights.json.gz", "Collisions2023_366403_369802_eraBC_GoldenJson"),
@@ -74,7 +74,7 @@ class ScaleFactors():
         if self.is_MC:
             from bamboo.analysisutils import makePileupWeight
             pileupWeight = makePileupWeight(
-                puTuple[self.era], tree.Pileup_nTrueInt, systName="pileup", sel=sel)
+                PU_JSONFiles[self.era], tree.Pileup_nTrueInt, systName="pileup", sel=sel)
             logger.info("Applying PU weight")
             sel = sel.refine('puWeight', weight=pileupWeight)
         else:
