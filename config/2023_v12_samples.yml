@@ -1,58 +1,58 @@
 # ### DATA ###
 
-# Muon_Run2023C:
-#   era: '2023'
-#   type: data
-#   group: data
-#   db: [das:/Muon0/Run2023C-22Sep2023_v4-v1/NANOAOD, das:/Muon1/Run2023C-22Sep2023_v4-v2/NANOAOD]
-#   run_range: &runs_23C [367765, 369802]
-#   certified_lumi_file: &lumi_cert_23 https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions23/Cert_Collisions2023_eraC_367095_368823_Golden.json
-#   split: &nsplit -1
+Muon_Run2023C:
+  era: '2023'
+  type: data
+  group: data
+  db: [das:/Muon0/Run2023C-22Sep2023_v4-v1/NANOAOD, das:/Muon1/Run2023C-22Sep2023_v4-v2/NANOAOD]
+  run_range: &runs_23C [367765, 369802]
+  certified_lumi_file: &lumi_cert_23 https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions23/Cert_Collisions2023_eraC_367095_368823_Golden.json
+  split: &nsplit -1
 
-# Muon_Run2023D:
-#   era: '2023BPix'
-#   type: data
-#   group: data
-#   db: [das:/Muon0/Run2023D-22Sep2023_v2-v1/NANOAOD, das:/Muon1/Run2023D-22Sep2023_v2-v1/NANOAOD]
-#   run_range: &runs_23D [370603, 372415]
-#   certified_lumi_file: *lumi_cert_23
-#   split: *nsplit
+Muon_Run2023D:
+  era: '2023BPix'
+  type: data
+  group: data
+  db: [das:/Muon0/Run2023D-22Sep2023_v2-v1/NANOAOD, das:/Muon1/Run2023D-22Sep2023_v2-v1/NANOAOD]
+  run_range: &runs_23D [370603, 372415]
+  certified_lumi_file: *lumi_cert_23
+  split: *nsplit
 
-# EGamma_Run2023C:
-#   era: '2023'
-#   type: data
-#   group: data
-#   db: [das:/EGamma0/Run2023C-22Sep2023_v4-v1/NANOAOD, das:/EGamma1/Run2023C-22Sep2023_v4-v1/NANOAOD]
-#   run_range: *runs_23C
-#   certified_lumi_file: *lumi_cert_23
-#   split: *nsplit
+EGamma_Run2023C:
+  era: '2023'
+  type: data
+  group: data
+  db: [das:/EGamma0/Run2023C-22Sep2023_v4-v1/NANOAOD, das:/EGamma1/Run2023C-22Sep2023_v4-v1/NANOAOD]
+  run_range: *runs_23C
+  certified_lumi_file: *lumi_cert_23
+  split: *nsplit
 
-# EGamma_Run2023D:
-#   era: '2023BPix'
-#   type: data
-#   group: data
-#   db: [das:/EGamma0/Run2023D-22Sep2023_v2-v1/NANOAOD, das:/EGamma1/Run2023D-22Sep2023_v2-v1/NANOAOD]
-#   run_range: *runs_23D
-#   certified_lumi_file: *lumi_cert_23
-#   split: *nsplit
+EGamma_Run2023D:
+  era: '2023BPix'
+  type: data
+  group: data
+  db: [das:/EGamma0/Run2023D-22Sep2023_v2-v1/NANOAOD, das:/EGamma1/Run2023D-22Sep2023_v2-v1/NANOAOD]
+  run_range: *runs_23D
+  certified_lumi_file: *lumi_cert_23
+  split: *nsplit
 
-# MuonEG_Run2023C:
-#   era: '2023'
-#   type: data
-#   group: data
-#   db: das:/MuonEG/Run2023C-22Sep2023_v4-v1/NANOAOD
-#   run_range: *runs_23C
-#   certified_lumi_file: *lumi_cert_23
-#   split: *nsplit
+MuonEG_Run2023C:
+  era: '2023'
+  type: data
+  group: data
+  db: das:/MuonEG/Run2023C-22Sep2023_v4-v1/NANOAOD
+  run_range: *runs_23C
+  certified_lumi_file: *lumi_cert_23
+  split: *nsplit
 
-# MuonEG_Run2023D:
-#   era: '2023BPix'
-#   type: data
-#   group: data
-#   db: das:/MuonEG/Run2023D-22Sep2023_v2-v1/NANOAOD
-#   run_range: *runs_23D
-#   certified_lumi_file: *lumi_cert_23
-#   split: *nsplit
+MuonEG_Run2023D:
+  era: '2023BPix'
+  type: data
+  group: data
+  db: das:/MuonEG/Run2023D-22Sep2023_v2-v1/NANOAOD
+  run_range: *runs_23D
+  certified_lumi_file: *lumi_cert_23
+  split: *nsplit
 
 # ## MC ###
 
@@ -63,7 +63,7 @@ TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2023:
   group: "TTbar"
   cross-section: 98.036113
   generated-events: genEventSumw
-  split: &nsplit -1
+  split: *nsplit
 
 TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_2023BPix:
   era: '2023BPix'
