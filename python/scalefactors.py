@@ -47,7 +47,7 @@ def getRunEra(sample):
 
 
 class ScaleFactors():
-    """Class to handle scale factors"""
+    """Class to define scale factors"""
 
     def commonSF(self, tree, sel, sample):
 
