@@ -48,8 +48,6 @@ JERTagDatabase = {
     "2023BPix": "Summer23BPixPrompt23_RunD_JRV1_MC"
 }
 
-jsonPathBase = "/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/"
-
 JEC_JSONFiles = {
     "2022": {
         "AK4": jsonPathBase + "JME/2022_Summer22/jet_jerc.json.gz",
