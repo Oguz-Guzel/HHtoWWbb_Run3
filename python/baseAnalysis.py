@@ -1,11 +1,23 @@
 import re
 import logging
+from itertools import chain
 
+from bamboo import treefunctions as op
+from bamboo.analysisutils import makeMultiPrimaryDatasetTriggerSelection
 from bamboo.analysismodules import NanoAODModule, HistogramsModule
 
 import utils
 
 logger = logging.getLogger(__name__)
+
+jsonPathBase = "/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/"
+
+PU_JSONFiles = {
+    "2022": (jsonPathBase + "LUM/2022_Summer22/puWeights.json.gz", "Collisions2022_355100_357900_eraBCD_GoldenJson"),
+    "2022EE": (jsonPathBase + "LUM/2022_Summer22EE/puWeights.json.gz", "Collisions2022_359022_362760_eraEFG_GoldenJson"),
+    "2023": (jsonPathBase + "LUM/2023_Summer23/puWeights.json.gz", "Collisions2023_366403_369802_eraBC_GoldenJson"),
+    "2023BPix": (jsonPathBase + "LUM/2023_Summer23BPix/puWeights.json.gz", "Collisions2023_369803_370790_eraD_GoldenJson"),
+}
 
 JECTagDatabase = {
     "2022": {
@@ -117,6 +129,72 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             description=NanoAODDescription.get(
                 "v12", year=self.era[:4], isMC=self.is_MC, systVariations=systVars),
             backend=self.args.backend or backend)
+
+        # MC weight
+        if self.is_MC:
+            logger.info("Applying genWeight")
+            noSel = noSel.refine('genWeight', weight=tree.genWeight)
+        else:
+            noSel = noSel.refine('genWeight', weight=op.c_float(1.))
+        self.yields.add(noSel, "genWeight")
+
+        # PU weight
+        if self.is_MC:
+            from bamboo.analysisutils import makePileupWeight
+            pileupWeight = makePileupWeight(
+                PU_JSONFiles[self.era], tree.Pileup_nTrueInt, systName="pileup", sel=noSel)
+            logger.info("Applying PU weight")
+            noSel = noSel.refine('puWeight', weight=pileupWeight)
+        else:
+            noSel = noSel.refine('puWeight', weight=op.c_float(1.))
+        self.yields.add(noSel, "puWeight")
+
+        # Triggers
+        self.triggersPerPrimaryDataset = {}
+
+        def addHLTPath(PD, HLT):
+            if PD not in self.triggersPerPrimaryDataset.keys():
+                self.triggersPerPrimaryDataset[PD] = []
+            try:
+                self.triggersPerPrimaryDataset[PD].append(
+                    getattr(tree.HLT, HLT))
+            except AttributeError:
+                print("Couldn't find branch tree.HLT.%s, cross check!" % HLT)
+
+        if self.era == '2022':
+            if sample.startswith("SingleMuon_") or sample.startswith("DoubleMuon_"):
+                addHLTPath("DoubleMuon_",
+                           "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
+                addHLTPath("SingleMuon_", "IsoMu24")
+                addHLTPath("SingleMuon_", "IsoMu27")
+            else:
+                addHLTPath("Muon_",
+                           "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
+                addHLTPath("Muon_", "IsoMu24")
+                addHLTPath("Muon_", "Mu15_IsoVVVL_PFHT450")
+
+        else:
+            addHLTPath("Muon_",
+                       "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
+            addHLTPath("Muon_", "IsoMu24")
+            addHLTPath("Muon_", "Mu15_IsoVVVL_PFHT450")
+
+        addHLTPath("EGamma_", "Ele30_WPTight_Gsf")
+        addHLTPath("EGamma_", "Ele28_eta2p1_WPTight_Gsf_HT150")
+        addHLTPath("EGamma_", "Ele15_IsoVVVL_PFHT450")
+        addHLTPath("EGamma_", "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL")
+        addHLTPath("MuonEG_",
+                   "Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
+        addHLTPath("MuonEG_", "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ")
+
+        if self.is_MC:
+            noSel = noSel.refine('trigger',  cut=(
+                op.OR(*chain.from_iterable(self.triggersPerPrimaryDataset.values()))))
+        else:
+            noSel = noSel.refine('trigger', cut=makeMultiPrimaryDatasetTriggerSelection(
+                sample, self.triggersPerPrimaryDataset))
+
+        self.yields.add(noSel, "trigger")
 
         # JEC/JER
         runEra = getRunEra(sample)
