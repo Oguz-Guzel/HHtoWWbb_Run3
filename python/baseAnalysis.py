@@ -108,11 +108,14 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
     #         analysisCfg["samples"] = samples
 
     def prepareTree(self, tree, sample=None, sampleCfg=None, backend=None):
+
         self.era = sampleCfg["era"] if sampleCfg else None
         self.is_MC = self.isMC(sample)
+
         from bamboo.plots import CutFlowReport
         self.yields = CutFlowReport(
-            "yields", recursive=True, printInLog=True)
+            "yields", recursive=False, printInLog=True)
+
         # Decorate the tree
         from bamboo.treedecorators import NanoAODDescription, nanoFatJetCalc, CalcCollectionsGroups
         metName = "PuppiMET"
@@ -129,6 +132,9 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             description=NanoAODDescription.get(
                 "v12", year=self.era[:4], isMC=self.is_MC, systVariations=systVars),
             backend=self.args.backend or backend)
+
+        # Number of events before any processing
+        self.yields.add(noSel, "noSel")
 
         # MC weight
         if self.is_MC:
@@ -252,33 +258,34 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 config, plotList_cutflowreport, workdir=workdir, resultsdir=resultsdir,
                 readCounters=self.readCounters, eras=(eraMode, eras), verbose=self.args.verbose)
         if plotList_plotIt:
-            from bamboo.analysisutils import writePlotIt  # , runPlotIt
+            from bamboo.analysisutils import writePlotIt, runPlotIt
             import os
             cfgName = os.path.join(workdir, "plots.yml")
             writePlotIt(
                 config, plotList_plotIt, cfgName, eras=eras, workdir=workdir, resultsdir=resultsdir,
                 readCounters=self.readCounters, plotDefaults=self.plotDefaults,
                 vetoFileAttributes=self.__class__.CustomSampleAttributes)
-            # runPlotIt(
-            # cfgName, workdir=workdir, plotIt=self.args.plotIt, eras=(
-            #     eraMode, eras),
-            # verbose=self.args.verbose)
-        # hadd signal files and create another plots.yml called plots_full.yml
-        import os
-        import shutil
-        outDir = os.path.join(resultsdir, "normalizedSummedSignal")
-        if os.path.isdir(outDir):
-            shutil.rmtree(outDir)
-        os.makedirs(outDir)
-        utils.custom_Plotit(cfgName, workdir, resultsdir, outDir, self.readCounters,
-                            config, plotIt=self.args.plotIt, verbose=self.args.verbose)
-        # end of merging signal samples
+            runPlotIt(
+            cfgName, workdir=workdir, plotIt=self.args.plotIt, eras=(
+                eraMode, eras),
+            verbose=self.args.verbose)
+        # add _full to the plots dir below in the runPDF function when activating the following code
+        # # hadd signal files and create another plots.yml called plots_full.yml
+        # import os
+        # import shutil
+        # outDir = os.path.join(resultsdir, "normalizedSummedSignal")
+        # if os.path.isdir(outDir):
+        #     shutil.rmtree(outDir)
+        # os.makedirs(outDir)
+        # utils.custom_Plotit(cfgName, workdir, resultsdir, outDir, self.readCounters,
+        #                     config, plotIt=self.args.plotIt, verbose=self.args.verbose)
+        # # end of merging signal samples
 
         def runPDF(workdir, channel=self.args.channel):
             return f"""
-            cp scripts/empty.pdf {workdir}/plots_full
-            cp scripts/controlPlotter_{channel}.tex {workdir}/plots_full
-            cd {workdir}/plots_full
+            cp scripts/empty.pdf {workdir}/plots
+            cp scripts/controlPlotter_{channel}.tex {workdir}/plots
+            cd {workdir}/plots
             pdflatex -interaction=nonstopmode controlPlotter_{channel}.tex > /dev/null 2>&1
             mv controlPlotter_{channel}.pdf ..
             cd -
