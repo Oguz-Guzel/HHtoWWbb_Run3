@@ -28,9 +28,6 @@ class controlPlotter(NanoBaseHHWWbb):
         # define objects
         defs.defineObjects(self, tree)
 
-        # Number of events before any processing
-        self.yields.add(noSel, "noSel")
-
         # common scale factors
         noSel = sf.commonSF(self, tree, noSel, sample)
 
