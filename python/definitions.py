@@ -228,7 +228,7 @@ def defineObjects(self, tree):
     self.cleanedTaus = cleanTaus(taus, self.fakeElectrons, self.fakeMuons)
 
     # AK4 Jets sorted by their pt
-    ak4JetsPreSel = op.sort(ak4jetDef(tree.Jet), lambda jet: -jet.pt)
+    self.ak4JetsPreSel = op.sort(ak4jetDef(tree.Jet), lambda jet: -jet.pt)
 
     # clean jets wrt leptons
     if self.channel == 'DL':
@@ -243,7 +243,7 @@ def defineObjects(self, tree):
         self.cleanAk8Jets = cleaningWithRespectToLeadingLepton(
             self.fakeElectrons, self.fakeMuons, 0.8)
 
-    self.ak4Jets = op.select(ak4JetsPreSel, self.cleanAk4Jets)
+    self.ak4Jets = op.select(self.ak4JetsPreSel, self.cleanAk4Jets)
     self.ak4JetsByBtagScore = op.sort(self.ak4Jets, lambda j: -j.btagPNetB)
 
     self.ak4BJets = op.select(self.ak4Jets, ak4BtagSel)
