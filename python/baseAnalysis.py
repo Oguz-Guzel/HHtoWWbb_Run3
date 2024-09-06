@@ -1,6 +1,4 @@
-import os
 import re
-import yaml
 import logging
 
 from bamboo.analysismodules import NanoAODModule, HistogramsModule
