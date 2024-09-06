@@ -136,11 +136,17 @@ class ScaleFactors():
             from bamboo.scalefactors import get_correction
             logger.info("Applying Electron SF for "+sel.name)
 
+            params = {"pt": lambda e: e.pt,
+                      "eta": lambda e: e.eta,
+                      "year": EL_SF_JSONFiles[self.era][1],
+                      "WorkingPoint": "Loose"}
+            if self.era in ['2023', '2023BPix']:
+                params["phi"] = lambda e: e.phi
+
             electronIDSF = get_correction(
                 EL_SF_JSONFiles[self.era][0],
                 "Electron-ID-SF",
-                params={"pt": lambda e: e.pt, "eta": lambda e: e.eta, "phi": lambda e: e.phi,
-                        "year": EL_SF_JSONFiles[self.era][1], "WorkingPoint": "Loose"},
+                params=params,
                 systParam="ValType",
                 systNomName="sf",
                 sel=sel
