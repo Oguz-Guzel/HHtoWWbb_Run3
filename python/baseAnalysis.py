@@ -156,13 +156,13 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         self.yields.add(noSel, "puWeight")
 
         # Triggers
-        self.triggersPerPrimaryDataset = {}
+        self.triggers_per_PD = {}
 
         def addHLTPath(PD, HLT):
-            if PD not in self.triggersPerPrimaryDataset.keys():
-                self.triggersPerPrimaryDataset[PD] = []
+            if PD not in self.triggers_per_PD.keys():
+                self.triggers_per_PD[PD] = []
             try:
-                self.triggersPerPrimaryDataset[PD].append(
+                self.triggers_per_PD[PD].append(
                     getattr(tree.HLT, HLT))
             except AttributeError:
                 print("Couldn't find branch tree.HLT.%s, cross check!" % HLT)
@@ -177,30 +177,30 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 addHLTPath("Muon_",
                            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
                 addHLTPath("Muon_", "IsoMu24")
-                addHLTPath("Muon_", "Mu15_IsoVVVL_PFHT450")
+                addHLTPath("Muon_", "IsoMu27")
 
         else:
             addHLTPath("Muon_",
                        "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
             addHLTPath("Muon_", "IsoMu24")
-            addHLTPath("Muon_", "Mu15_IsoVVVL_PFHT450")
+            addHLTPath("Muon_", "IsoMu27")
 
-        addHLTPath("EGamma_", "Ele30_WPTight_Gsf")
-        addHLTPath("EGamma_", "Ele28_eta2p1_WPTight_Gsf_HT150")
-        addHLTPath("EGamma_", "Ele15_IsoVVVL_PFHT450")
+        addHLTPath("EGamma_", "Ele32_WPTight_Gsf")
         addHLTPath("EGamma_", "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL")
         addHLTPath("MuonEG_",
                    "Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
-        addHLTPath("MuonEG_", "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ")
+        addHLTPath("MuonEG_", "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
+        addHLTPath("MuonEG_", "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL")
 
         if self.is_MC:
-            noSel = noSel.refine('trigger',  cut=(
-                op.OR(*chain.from_iterable(self.triggersPerPrimaryDataset.values()))))
+            noSel = noSel.refine('triggers',  cut=(
+                op.OR(*chain.from_iterable(self.triggers_per_PD.values()))))
+            print(chain.from_iterable(self.triggers_per_PD.values()))
         else:
-            noSel = noSel.refine('trigger', cut=makeMultiPrimaryDatasetTriggerSelection(
-                sample, self.triggersPerPrimaryDataset))
+            noSel = noSel.refine('triggers', cut=makeMultiPrimaryDatasetTriggerSelection(
+                sample, self.triggers_per_PD))
 
-        self.yields.add(noSel, "trigger")
+        self.yields.add(noSel, "triggers")
 
         # JEC/JER
         runEra = getRunEra(sample)
