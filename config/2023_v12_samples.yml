@@ -6,7 +6,7 @@ Muon_Run2023C:
   group: data
   db: [das:/Muon0/Run2023C-22Sep2023_v4-v1/NANOAOD, das:/Muon1/Run2023C-22Sep2023_v4-v2/NANOAOD]
   run_range: &runs_23C [367765, 369802]
-  certified_lumi_file: &lumi_cert_23 https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions23/Cert_Collisions2023_eraC_367095_368823_Golden.json
+  certified_lumi_file: &lumi_cert_23 https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions23/Cert_Collisions2023_366442_370790_Golden.json
   split: &nsplit -1
 
 Muon_Run2023D:
