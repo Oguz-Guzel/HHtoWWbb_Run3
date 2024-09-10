@@ -195,7 +195,6 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         if self.is_MC:
             noSel = noSel.refine('triggers',  cut=(
                 op.OR(*chain.from_iterable(self.triggers_per_PD.values()))))
-            print(chain.from_iterable(self.triggers_per_PD.values()))
         else:
             noSel = noSel.refine('triggers', cut=makeMultiPrimaryDatasetTriggerSelection(
                 sample, self.triggers_per_PD))
