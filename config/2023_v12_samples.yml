@@ -189,7 +189,7 @@ WW_TuneCP5_13p6TeV_pythia8_2023:
   group: "VV"
   cross-section: 80.18
   generated-events: genEventSumw
-  split: &nsplit -1
+  split: *nsplit
 
 WW_TuneCP5_13p6TeV_pythia8_2023BPix:
   era: '2023BPix'
