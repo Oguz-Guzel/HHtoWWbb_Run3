@@ -180,15 +180,13 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 addHLTPath("Muon_", "IsoMu27")
 
         else:
-            addHLTPath("Muon_",
-                       "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
+            addHLTPath("Muon_", "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
             addHLTPath("Muon_", "IsoMu24")
             addHLTPath("Muon_", "IsoMu27")
 
         addHLTPath("EGamma_", "Ele32_WPTight_Gsf")
         addHLTPath("EGamma_", "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL")
-        addHLTPath("MuonEG_",
-                   "Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
+        addHLTPath("MuonEG_", "Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
         addHLTPath("MuonEG_", "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
         addHLTPath("MuonEG_", "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL")
 
@@ -200,6 +198,8 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 sample, self.triggers_per_PD))
 
         self.yields.add(noSel, "triggers")
+        
+        logger.info(f"Triggers for {sample}: {self.triggers_per_PD}")
 
         # JEC/JER
         runEra = getRunEra(sample)
@@ -265,9 +265,9 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 readCounters=self.readCounters, plotDefaults=self.plotDefaults,
                 vetoFileAttributes=self.__class__.CustomSampleAttributes)
             runPlotIt(
-            cfgName, workdir=workdir, plotIt=self.args.plotIt, eras=(
-                eraMode, eras),
-            verbose=self.args.verbose)
+                cfgName, workdir=workdir, plotIt=self.args.plotIt, eras=(
+                    eraMode, eras),
+                verbose=self.args.verbose)
         # add _full to the plots dir below in the runPDF function when activating the following code
         # # hadd signal files and create another plots.yml called plots_full.yml
         # import os
