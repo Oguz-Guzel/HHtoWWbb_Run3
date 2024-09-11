@@ -198,7 +198,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 sample, self.triggers_per_PD))
 
         self.yields.add(noSel, "triggers")
-        
+
         logger.info(f"Triggers for {sample}: {self.triggers_per_PD}")
 
         # JEC/JER
@@ -280,22 +280,31 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         #                     config, plotIt=self.args.plotIt, verbose=self.args.verbose)
         # # end of merging signal samples
 
-        def runPDF(workdir, channel=self.args.channel):
+        def runPDF(era=None, workdir=workdir, channel=self.args.channel):
+            plots_dir = os.path.join(workdir, "plots")
+            if era:
+                plots_dir += f"_{era}"
+
             return f"""
-            cp scripts/empty.pdf {workdir}/plots
-            cp scripts/controlPlotter_{channel}.tex {workdir}/plots
-            cd {workdir}/plots
+            cp scripts/empty.pdf {plots_dir}
+            cp scripts/controlPlotter_{channel}.tex {plots_dir}
+            cd {plots_dir}
             pdflatex -interaction=nonstopmode controlPlotter_{channel}.tex > /dev/null 2>&1
-            mv controlPlotter_{channel}.pdf ..
-            cd -
+            mv controlPlotter_{channel}.pdf ../controlPlotter_{channel}_{era}.pdf
+            cd - > /dev/null
             # pdflatex yields.tex
             # cd ../..
             """
+
         # create pdf presentation
         if not self.mvaModels and not self.args.sync:
             try:
-                os.system(runPDF(workdir))
-                logger.info(f"PDF presentation created: {workdir}.pdf")
+                for era in eras:
+                    os.system(runPDF(era))
+                    logger.info(f"PDF presentation created for era {era}.\n")
+                os.system(runPDF(era))
+                logger.info(
+                    f"PDF presentation created for all eras combined.\n")
             except Exception as e:
                 logger.info(e)
 
