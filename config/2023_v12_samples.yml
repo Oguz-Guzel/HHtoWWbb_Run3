@@ -5,7 +5,7 @@ Muon_Run2023C:
   type: data
   group: data
   db: [das:/Muon0/Run2023C-22Sep2023_v1-v1/NANOAOD, das:/Muon0/Run2023C-22Sep2023_v2-v1/NANOAOD, das:/Muon0/Run2023C-22Sep2023_v3-v1/NANOAOD, das:/Muon0/Run2023C-22Sep2023_v4-v1/NANOAOD, das:/Muon1/Run2023C-22Sep2023_v1-v1/NANOAOD, das:/Muon1/Run2023C-22Sep2023_v2-v1/NANOAOD, das:/Muon1/Run2023C-22Sep2023_v3-v1/NANOAOD, das:/Muon1/Run2023C-22Sep2023_v4-v2/NANOAOD]
-  run_range: &runs_23C [367765, 369802]
+  run_range: &runs_23C [367080, 369802]
   certified_lumi_file: &lumi_cert_23 https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions23/Cert_Collisions2023_366442_370790_Golden.json
   split: &nsplit -1
 
@@ -14,7 +14,7 @@ Muon_Run2023D:
   type: data
   group: data
   db: [das:/Muon0/Run2023D-22Sep2023_v1-v1/NANOAOD, das:/Muon0/Run2023D-22Sep2023_v2-v1/NANOAOD, das:/Muon1/Run2023D-22Sep2023_v1-v1/NANOAOD, das:/Muon1/Run2023D-22Sep2023_v2-v1/NANOAOD]
-  run_range: &runs_23D [370603, 372415]
+  run_range: &runs_23D [369803, 372415]
   certified_lumi_file: *lumi_cert_23
   split: *nsplit
 
