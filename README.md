@@ -5,7 +5,7 @@
 
 This repository uses the **bamboo analysis framework**, you can install it via the instructions here: https://bamboo-hep.readthedocs.io/en/latest/install.html#fresh-install
 
-Install also CMSJMECalculators with correctionlib
+and install CMSJMECalculators with correctionlib
 ```sh
 git clone https://gitlab.cern.ch/cp3-cms/CMSJMECalculators.git
 pip install ./CMSJMECalculators
@@ -14,12 +14,12 @@ pip install correctionlib
 
 Then clone this repository in the parent directory containing the bamboo installation:
 
-```bash
+```sh
 git clone https://github.com/cp3-llbb/HHtoWWbb_Run3.git && cd HHtoWWbb_Run3
 ```
 
 Execute these each time you start from a clean shell on lxplus or any other machine with an cvmfs:
-```bash
+```sh
 source /cvmfs/sft.cern.ch/lcg/views/LCG_105/x86_64-el9-gcc11-opt/setup.sh
 source (path to your bamboo installation)/bamboovenv/bin/activate
 export PYTHONPATH="${PYTHONPATH}:${PWD}/python/"
@@ -27,23 +27,23 @@ export PYTHONPATH="${PYTHONPATH}:${PWD}/python/"
 
 and the followings before submitting jobs to the batch system (HTCondor, Slurm, Dask and Spark are supported):
 
-```bash
+```sh
 voms-proxy-init --voms cms -rfc --valid 192:00 
 export X509_USER_PROXY=$(voms-proxy-info -path)
 ```
 if you encounter problems with accessing files when using batch, the following lines may solve your problem
 
-```bash
+```sh
 voms-proxy-init --voms cms -rfc --valid 192:00  --out ~/private/gridproxy/x509
 export X509_USER_PROXY=$HOME/private/gridproxy/x509
 ```
 
-Then plot various control regions via the following command line using batch (you can pass `--maxFiles 1` to use only 1 file from each sample for a quick test):
+Then cutflow study of the analysis is executed via the following command line using batch (you can pass `--maxFiles 1` to use only 1 file from each sample for a quick test):
 
-```bash
-bambooRun -m python/controlPlotter.py config/2022_v12.yml -o ./outputDir/ --distributed driver --envConfig config/cern.ini --eras combined -c <DL or SL> --samples config/2022_v12_samples.yml
+```sh
+bambooRun -m python/cutflowAnalysis.py config/<2022 or 2023>_v12.yml -o ./outputDir/ --envConfig config/cern.ini -c <DL(default) or SL> --distributed driver
 ```
-Instead of passing everytime `--envConfig config/cern.ini`, you can copy the content of that file to `~/.config/bamboorc`.
+Instead of passing `--envConfig config/cern.ini` everytime, you can copy the content of that file to `~/.config/bamboorc`.
 
 using the `parquet` output file that contains skims and the DNN.py file, you can perform machine learning applications;
 
@@ -51,4 +51,8 @@ using the `parquet` output file that contains skims and the DNN.py file, you can
 python python/DNN.py -s <path-to-the-skim-file> -o <path-to-an-output-directory>
 ```
 
-Then passing `--mvaModels=<path-to-dnn-outputs>` option, you can apply DNN score cuts on your analysis.
+Then,
+```sh
+bambooRun -m python/mvaEvaluator.py config/<2022 or 2023>_v12.yml -o ./outputDir/ --envConfig config/cern.ini -c <DL(default) or SL> --distributed driver
+```
+DNN score cut is applied on the analysis.
