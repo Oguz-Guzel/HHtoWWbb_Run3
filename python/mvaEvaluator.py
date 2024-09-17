@@ -259,17 +259,15 @@ class mvaEvaluator(NanoBaseHHWWbb):
                 **labeler('DL DNN cat. 4 - blinded'), 'blinded-range': [0., 299.99]}
             mvaVars_DL.pop("weight", None)
 
-            # from bamboo.root import loadHeader
-            # loadHeader(self.mvaModels + "../../python/headers/split.h")
-            # split_evaluator = op.extMethod('split::MET')
-            # split_var = split_evaluator(tree.MET.pt)
-            split_var = 1
-            if split_var == 1:
-                model = self.mvaModels + "/model_odd/model.onnx"
+            split_var = 'even' if tree.event % 2 == 0 else 'odd'
+            if split_var == 'odd':
+                model = self.mvaModels + "/even_model.pth"
+            elif split_var == 'even':
+                model = self.mvaModels + "/odd_model.pth"
             else:
-                model = self.mvaModels + "/model_even/model.onnx"
+                print("Please provide a valid split variable")
 
-            dnn = op.mvaEvaluator(model, otherArgs=("predictions"))
+            dnn = op.mvaEvaluator(model, otherArgs=("predictions"), mvaType="Torch")
             input_vars = [op.static_cast('float', v)
                           for v in mvaVars_DL.values()]
             DNN_inputs = op.array('float', *input_vars)
