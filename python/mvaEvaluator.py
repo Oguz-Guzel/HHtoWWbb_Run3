@@ -265,13 +265,13 @@ class mvaEvaluator(NanoBaseHHWWbb):
             elif split_var == 'even':
                 model = self.mvaModels + "/odd_model.pth"
             else:
-                print("Please provide a valid split variable")
+                print("Please provide a valid split variable !")
 
-            dnn = op.mvaEvaluator(model, otherArgs=("predictions"), mvaType="Torch")
+            dnn = op.mvaEvaluator(model, mvaType="Torch", nameHint="DL_DNN_nameHint")
             input_vars = [op.static_cast('float', v)
                           for v in mvaVars_DL.values()]
             DNN_inputs = op.array('float', *input_vars)
-            DNN_output = dnn(DNN_inputs)
+            DNN_output = dnn(DNN_inputs, defineOnFirstUse=False)
 
             # DNN cuts
             DL_resolved_1b_ee_DNNcat1 = DL_resolved_1b_ee.refine(
