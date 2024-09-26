@@ -125,7 +125,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].pdgId),
             (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
                 self.tightElectrons[0].pt > self.tightMuons[0].pt, self.tightElectrons[0].pdgId, self.tightMuons[0].pdgId)),
-            op.c_int(-9999)
+            op.c_int(-9999.)
         )
         l2_pdgId = op.multiSwitch(
             (op.rng_len(self.tightElectrons) ==
@@ -133,7 +133,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].pdgId),
             (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
                 self.tightElectrons[0].pt > self.tightMuons[0].pt, self.tightElectrons[0].pdgId, self.tightMuons[0].pdgId)),
-            op.c_int(-9999)
+            op.c_int(-9999.)
         )
         l1_charge = op.multiSwitch(
             (op.rng_len(self.tightElectrons) ==
@@ -141,7 +141,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].charge),
             (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
                 self.tightElectrons[0].pt > self.tightMuons[0].pt, self.tightElectrons[0].charge, self.tightMuons[0].charge)),
-            op.c_int(-9999)
+            op.c_int(-9999.)
         )
         l2_charge = op.multiSwitch(
             (op.rng_len(self.tightElectrons) ==
@@ -149,7 +149,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].charge),
             (op.AND(op.rng_len(self.tightElectrons) == 1, op.rng_len(self.tightMuons) == 1), op.switch(
                 self.tightElectrons[0].pt > self.tightMuons[0].pt, self.tightElectrons[0].charge, self.tightMuons[0].charge)),
-            op.c_int(-9999)
+            op.c_int(-9999.)
         )
 
         j1_Px = op.switch(op.rng_len(self.ak4Jets) > 0,
