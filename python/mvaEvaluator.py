@@ -229,23 +229,43 @@ class mvaEvaluator(NanoBaseHHWWbb):
                 **labeler('DL DNN cat. 3 - blinded'), 'blinded-range': [0., 299.99]}
             DL_DNN_InvM_cat4_label = {
                 **labeler('DL DNN cat. 4 - blinded'), 'blinded-range': [0., 299.99]}
+            
+            # remove vars that are not present in the model
+            mvaVars_DL.pop("event_no", None)
             mvaVars_DL.pop("weight", None)
-
+            
+            # prepare the input for the model
+            # check variable_sets in pytorch_training.py for reference
+            # import torch
+            input_sets = []
+            input_mask = []
+            for particle in ['l1', 'l2', 'j1', 'j2', 'j3', 'j4', 'met']:
+                input_sets.append([0.0 for v in mvaVars_DL.keys() if v.startswith(particle)])
+                
+            # convert input sets to tensor
+            # input_sets = torch.tensor(input_sets, dtype=torch.float64)
+            
+            # mask for the variables that are not present
+            for set in input_sets:
+                input_mask.append(all(var != -9999.0 for var in set))
+            
+            # convert input mask to tensor
+            # input_mask = torch.tensor(input_mask, dtype=bool)
+            
+            # load the model
             split_var = 'even' if tree.event % 2 == 0 else 'odd'
             if split_var == 'odd':
-                model = self.mvaModels + "/even_model.pth"
+                model = self.mvaModels + "/even_model.pt"
             elif split_var == 'even':
-                model = self.mvaModels + "/odd_model.pth"
-            else:
-                print("Please provide a valid split variable !")
+                model = self.mvaModels + "/odd_model.pt"
+            
+            DNN_inputs = (input_sets, input_mask)
+            
+            # evaluate the model
+            dnn = op.mvaEvaluator(model)
+            DNN_output = dnn(DNN_inputs)
 
-            dnn = op.mvaEvaluator(model, mvaType="Torch", nameHint="DL_DNN_nameHint")
-            input_vars = [op.static_cast('float', v)
-                          for v in mvaVars_DL.values()]
-            DNN_inputs = op.array('float', *input_vars)
-            DNN_output = dnn(DNN_inputs, defineOnFirstUse=False)
-
-            # DNN cuts
+            # set the DNN categories
             DL_resolved_1b_ee_DNNcat1 = DL_resolved_1b_ee.refine(
                 "DL_resolved_1b_eeDNNcat1", cut=op.in_range(0.1, DNN_output[0], 0.6))
             DL_resolved_1b_ee_DNNcat2 = DL_resolved_1b_ee.refine(
