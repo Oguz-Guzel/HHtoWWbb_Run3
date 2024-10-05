@@ -200,11 +200,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
                 **labeler('DL DNN cat. 3 - blinded'), 'blinded-range': [0., 299.99]}
             DL_DNN_InvM_cat4_label = {
                 **labeler('DL DNN cat. 4 - blinded'), 'blinded-range': [0., 299.99]}
-            
-            # remove vars that are not present in the model
-            mvaVars_DL.pop("event_no", None)
-            mvaVars_DL.pop("weight", None)
-            
+
             # prepare the input for the model
             # check variable_sets in pytorch_training.py for reference
             # import torch
