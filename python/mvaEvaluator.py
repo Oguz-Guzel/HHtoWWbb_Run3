@@ -1,3 +1,4 @@
+import os
 
 from bamboo.plots import Plot, SummedPlot
 from bamboo.plots import EquidistantBinning as EqBin
@@ -202,35 +203,23 @@ class mvaEvaluator(NanoBaseHHWWbb):
                 **labeler('DL DNN cat. 4 - blinded'), 'blinded-range': [0., 299.99]}
 
             # prepare the input for the model
-            # check variable_sets in pytorch_training.py for reference
-            # import torch
-            input_sets = []
-            input_mask = []
-            for particle in ['l1', 'l2', 'j1', 'j2', 'j3', 'j4', 'met']:
-                input_sets.append([0.0 for v in mvaVars_DL.keys() if v.startswith(particle)])
-                
-            # convert input sets to tensor
-            # input_sets = torch.tensor(input_sets, dtype=torch.float64)
-            
-            # mask for the variables that are not present
-            for set in input_sets:
-                input_mask.append(all(var != -9999.0 for var in set))
-            
-            # convert input mask to tensor
-            # input_mask = torch.tensor(input_mask, dtype=bool)
+            l1 = op.array('float', *[l1_Px, l1_Py, l1_Pz, l1_E, l1_pdgId, l1_charge,])
+            l2 = op.array('float', *[l2_Px, l2_Py, l2_Pz, l2_E, l2_pdgId, l2_charge,])
+            j1 = op.array('float', *[j1_Px, j1_Py, j1_Pz, j1_E, j1_btag])
+            j2 = op.array('float', *[j2_Px, j2_Py, j2_Pz, j2_E, j2_btag])
+            met = op.array('float', *[met_Px, met_Py, met_E])
             
             # load the model
-            split_var = 'even' if tree.event % 2 == 0 else 'odd'
-            if split_var == 'odd':
-                model = self.mvaModels + "/even_model.pt"
-            elif split_var == 'even':
-                model = self.mvaModels + "/odd_model.pt"
-            
-            DNN_inputs = (input_sets, input_mask)
-            
+            split_var = 'even' if tree.event % 2 == 1 else 'odd'
+            model = os.path.join(self.mvaModels, f"{split_var}_model.onnx")
             # evaluate the model
-            dnn = op.mvaEvaluator(model)
-            DNN_output = dnn(DNN_inputs)
+            dnn = op.mvaEvaluator(model, otherArgs='196')
+            DNN_output = dnn(l1, l2, j1, j2, met)
+
+            # plot the DNN score distribution
+            plots.append(Plot.make1D("DNN_score", DNN_output[0], noSel, EqBin(
+                100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN
+            ))
 
             # set the DNN categories
             DL_resolved_1b_ee_DNNcat1 = DL_resolved_1b_ee.refine(
