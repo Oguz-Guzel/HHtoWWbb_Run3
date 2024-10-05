@@ -199,7 +199,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
 
         self.yields.add(noSel, "triggers")
 
-        logger.info(f"Triggers for {sample}: {self.triggers_per_PD}")
+        # logger.info(f"Triggers for {sample}: {self.triggers_per_PD}")
 
         # JEC/JER
         runEra = getRunEra(sample)
