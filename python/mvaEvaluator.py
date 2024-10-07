@@ -211,7 +211,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             
             # load the model
             split_var = 'even' if tree.event % 2 == 1 else 'odd'
-            model = os.path.join(self.mvaModels, f"{split_var}_model.onnx")
+            model = os.path.join(self.mvaModels, f"{split_var}_model/model.onnx")
             # evaluate the model
             dnn = op.mvaEvaluator(model, otherArgs='256')
             DNN_output = dnn(l1, l2, j1, j2, met)
