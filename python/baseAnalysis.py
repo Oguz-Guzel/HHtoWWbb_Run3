@@ -1,3 +1,4 @@
+import os
 import re
 import logging
 from itertools import chain
@@ -85,6 +86,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                             help='Channel to be selected between SL and DL')
         parser.add_argument("--mvaModels",
                             dest="mvaModels",
+                            default=f"{os.getcwd()}/DNN/",
                             type=str,
                             help="Path to MVA models and Evaluate DNN")
         # parser.add_argument("--samples", nargs='*',
