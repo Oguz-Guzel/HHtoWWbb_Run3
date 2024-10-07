@@ -156,26 +156,6 @@ class mvaEvaluator(NanoBaseHHWWbb):
         j2_Pz = self.ak4Jets[1].p4.Pz()
         j2_E = self.ak4Jets[1].p4.E()
         j2_btag = self.ak4Jets[1].btagPNetB
-        j3_Px = op.switch(op.rng_len(self.ak4Jets) > 2,
-                          self.ak4Jets[2].p4.Px(), -1.)
-        j3_Py = op.switch(op.rng_len(self.ak4Jets) > 2,
-                          self.ak4Jets[2].p4.Py(), -1.)
-        j3_Pz = op.switch(op.rng_len(self.ak4Jets) > 2,
-                          self.ak4Jets[2].p4.Pz(), -1.)
-        j3_E = op.switch(op.rng_len(self.ak4Jets) > 2,
-                         self.ak4Jets[2].p4.E(), -1.)
-        j3_btag = op.switch(op.rng_len(self.ak4Jets) > 2,
-                            self.ak4Jets[2].btagPNetB, -1.)
-        j4_Px = op.switch(op.rng_len(self.ak4Jets) > 3,
-                          self.ak4Jets[3].p4.Px(), -1.)
-        j4_Py = op.switch(op.rng_len(self.ak4Jets) > 3,
-                          self.ak4Jets[3].p4.Py(), -1.)
-        j4_Pz = op.switch(op.rng_len(self.ak4Jets) > 3,
-                          self.ak4Jets[3].p4.Pz(), -1.)
-        j4_E = op.switch(op.rng_len(self.ak4Jets) > 3,
-                         self.ak4Jets[3].p4.E(), -1.)
-        j4_btag = op.switch(op.rng_len(self.ak4Jets) > 3,
-                            self.ak4Jets[3].btagPNetB, -1.)
 
         met_Px = op.product(tree.MET.pt, op.cos(tree.MET.phi))
         met_Py = op.product(tree.MET.pt, op.sin(tree.MET.phi))
@@ -193,14 +173,6 @@ class mvaEvaluator(NanoBaseHHWWbb):
                 **labeler('DL DNN score MuMu - blinded'), 'blinded-range': [0.25, 0.999]}
             DL_DNN_EMu = {
                 **labeler('DL DNN score EMu - blinded'), 'blinded-range': [0.25, 0.999]}
-            DL_DNN_InvM_cat1_label = {
-                **labeler('DL DNN cat. 1 - blinded'), 'blinded-range': [0., 299.99]}
-            DL_DNN_InvM_cat2_label = {
-                **labeler('DL DNN cat. 2 - blinded'), 'blinded-range': [0., 299.99]}
-            DL_DNN_InvM_cat3_label = {
-                **labeler('DL DNN cat. 3 - blinded'), 'blinded-range': [0., 299.99]}
-            DL_DNN_InvM_cat4_label = {
-                **labeler('DL DNN cat. 4 - blinded'), 'blinded-range': [0., 299.99]}
 
             # prepare the input for the model
             l1 = op.array('float', *[l1_Px, l1_Py, l1_Pz, l1_E, l1_pdgId, l1_charge,])
