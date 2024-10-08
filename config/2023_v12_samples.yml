@@ -294,7 +294,7 @@ GluGlutoHHto2B2Vto2L2Nu_kl-1p00_kt-1p00_c2-0p00_2023:
   cross-section: 0.03413
   branching-ratio: 0.10614564 # BR(W->LNu)^2=(3*10.86/100)^2
   generated-events: genEventSumw
-  split: *nsplit
+  split: -25
   line-color: 3
   legend: 'HH\rightarrow bbll\nu\nu'
 
@@ -305,7 +305,7 @@ GluGlutoHHto2B2Vto2L2Nu_kl-1p00_kt-1p00_c2-0p00_2023BPix:
   cross-section: 0.03413
   branching-ratio: 0.10614564 # BR(W->LNu)^2=(3*10.86/100)^2
   generated-events: genEventSumw
-  split: *nsplit
+  split: -25
   line-color: 3
   legend: 'HH\rightarrow bbll\nu\nu'
 
@@ -317,7 +317,7 @@ GluGlutoHHto2B2Vto2L2Nu_kl-2p45_kt-1p00_c2-0p00_2023:
   cross-section: 0.013124
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *nsplit
+  split: -25
   line-color: 4
   legend: 'HH\rightarrow bbll\nu\nu kl 2p45'
 
@@ -328,7 +328,7 @@ GluGlutoHHto2B2Vto2L2Nu_kl-2p45_kt-1p00_c2-0p00_2023BPix:
   cross-section: 0.013124
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *nsplit
+  split: -25
   line-color: 5
   legend: 'HH\rightarrow bbll\nu\nu kl 2p45'
 
@@ -339,7 +339,7 @@ GluGlutoHHto2B2Vto2L2Nu_kl-5p00_kt-1p00_c2-0p00_2023:
   cross-section: 0.091172
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *nsplit
+  split: -25
   line-color: 6
   legend: 'HH\rightarrow bbll\nu\nu kl 5p00'
 
@@ -350,6 +350,6 @@ GluGlutoHHto2B2Vto2L2Nu_kl-5p00_kt-1p00_c2-0p00_2023BPix:
   cross-section: 0.091172
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *nsplit
+  split: -25
   line-color: 6
   legend: 'HH\rightarrow bbll\nu\nu kl 5p00'
