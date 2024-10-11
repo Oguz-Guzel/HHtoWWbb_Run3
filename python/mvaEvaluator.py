@@ -54,113 +54,6 @@ class mvaEvaluator(NanoBaseHHWWbb):
             DL_resolved_2b_ee = sf.electronSF(self, DL_resolved_2b_ee)
             DL_resolved_2b_emu = sf.electronSF(self, DL_resolved_2b_emu)
 
-        # mva variables
-
-        l1_Px = op.multiSwitch(
-            (op.rng_len(self.tightElectrons) == 2,
-             self.tightElectrons[0].p4.Px()),  # if nElectrons = 2
-            (op.rng_len(self.tightMuons) == 2,
-             self.tightMuons[0].p4.Px()),  # elif nMuons = 2
-            (op.switch(  # else meaning nElectrons = nMuons = 1 since no other case in the DL channel
-                self.tightElectrons[0].pt > self.tightMuons[0].pt, self.tightElectrons[0].p4.Px(), self.tightMuons[0].p4.Px()))
-        )
-        l2_Px = op.multiSwitch(
-            (op.rng_len(self.tightElectrons) ==
-             2, self.tightElectrons[1].p4.Px()),
-            (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].p4.Px()),
-            (op.switch(
-                self.tightElectrons[0].pt > self.tightMuons[0].pt, self.tightElectrons[0].p4.Px(), self.tightMuons[0].p4.Px()))
-        )
-        l1_Py = op.multiSwitch(
-            (op.rng_len(self.tightElectrons) ==
-             2, self.tightElectrons[0].p4.Py()),
-            (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].p4.Py()),
-            (op.switch(
-                self.tightElectrons[0].pt > self.tightMuons[0].pt, self.tightElectrons[0].p4.Py(), self.tightMuons[0].p4.Py()))
-        )
-        l2_Py = op.multiSwitch(
-            (op.rng_len(self.tightElectrons) ==
-             2, self.tightElectrons[1].p4.Py()),
-            (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].p4.Py()),
-            (op.switch(
-                self.tightElectrons[0].pt > self.tightMuons[0].pt, self.tightElectrons[0].p4.Py(), self.tightMuons[0].p4.Py()))
-        )
-        l1_Pz = op.multiSwitch(
-            (op.rng_len(self.tightElectrons) ==
-             2, self.tightElectrons[0].p4.Pz()),
-            (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].p4.Pz()),
-            (op.switch(
-                self.tightElectrons[0].pt > self.tightMuons[0].pt, self.tightElectrons[0].p4.Pz(), self.tightMuons[0].p4.Pz()))
-        )
-        l2_Pz = op.multiSwitch(
-            (op.rng_len(self.tightElectrons) ==
-             2, self.tightElectrons[1].p4.Pz()),
-            (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].p4.Pz()),
-            (op.switch(
-                self.tightElectrons[0].pt > self.tightMuons[0].pt, self.tightElectrons[0].p4.Pz(), self.tightMuons[0].p4.Pz()))
-        )
-        l1_E = op.multiSwitch(
-            (op.rng_len(self.tightElectrons) ==
-             2, self.tightElectrons[0].p4.E()),
-            (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].p4.E()),
-            (op.switch(
-                self.tightElectrons[0].pt > self.tightMuons[0].pt, self.tightElectrons[0].p4.E(), self.tightMuons[0].p4.E()))
-        )
-        l2_E = op.multiSwitch(
-            (op.rng_len(self.tightElectrons) ==
-             2, self.tightElectrons[1].p4.E()),
-            (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].p4.E()),
-            (op.switch(
-                self.tightElectrons[0].pt > self.tightMuons[0].pt, self.tightElectrons[0].p4.E(), self.tightMuons[0].p4.E()))
-        )
-        l1_pdgId = op.multiSwitch(  # static_cast is used to convert the pdgId to float
-            (op.rng_len(self.tightElectrons) == 2, op.static_cast(
-                'float', self.tightElectrons[0].pdgId)),
-            (op.rng_len(self.tightMuons) == 2, op.static_cast(
-                'float', self.tightMuons[0].pdgId)),
-            (op.switch(
-                self.tightElectrons[0].pt > self.tightMuons[0].pt, op.static_cast('float', self.tightElectrons[0].pdgId), op.static_cast('float', self.tightMuons[0].pdgId)))
-        )
-        l2_pdgId = op.multiSwitch(
-            (op.rng_len(self.tightElectrons) == 2, op.static_cast(
-                'float', self.tightElectrons[1].pdgId)),
-            (op.rng_len(self.tightMuons) == 2, op.static_cast(
-                'float', self.tightMuons[1].pdgId)),
-            (op.switch(
-                self.tightElectrons[0].pt > self.tightMuons[0].pt, op.static_cast('float', self.tightElectrons[0].pdgId), op.static_cast('float', self.tightMuons[0].pdgId)))
-        )
-        l1_charge = op.multiSwitch(
-            (op.rng_len(self.tightElectrons) == 2, op.static_cast(
-                'float', self.tightElectrons[0].charge)),
-            (op.rng_len(self.tightMuons) == 2, op.static_cast(
-                'float', self.tightMuons[0].charge)),
-            (op.switch(
-                self.tightElectrons[0].pt > self.tightMuons[0].pt, op.static_cast('float', self.tightElectrons[0].charge), op.static_cast('float', self.tightMuons[0].charge)))
-        )
-        l2_charge = op.multiSwitch(
-            (op.rng_len(self.tightElectrons) == 2, op.static_cast(
-                'float', self.tightElectrons[1].charge)),
-            (op.rng_len(self.tightMuons) == 2, op.static_cast(
-                'float', self.tightMuons[1].charge)),
-            (op.switch(
-                self.tightElectrons[0].pt > self.tightMuons[0].pt, op.static_cast('float', self.tightElectrons[0].charge), op.static_cast('float', self.tightMuons[0].charge)))
-        )
-
-        j1_Px = self.ak4Jets[0].p4.Px()
-        j1_Py = self.ak4Jets[0].p4.Py()
-        j1_Pz = self.ak4Jets[0].p4.Pz()
-        j1_E = self.ak4Jets[0].p4.E()
-        j1_btag = self.ak4Jets[0].btagPNetB
-        j2_Px = self.ak4Jets[1].p4.Px()
-        j2_Py = self.ak4Jets[1].p4.Py()
-        j2_Pz = self.ak4Jets[1].p4.Pz()
-        j2_E = self.ak4Jets[1].p4.E()
-        j2_btag = self.ak4Jets[1].btagPNetB
-
-        met_Px = op.product(tree.MET.pt, op.cos(tree.MET.phi))
-        met_Py = op.product(tree.MET.pt, op.sin(tree.MET.phi))
-        met_E = tree.MET.pt
-
         #############################################################################
         #                            MVA evaluation                                 #
         #############################################################################
@@ -174,16 +67,18 @@ class mvaEvaluator(NanoBaseHHWWbb):
             DL_DNN_EMu = {
                 **labeler('DL DNN score EMu - blinded'), 'blinded-range': [0.25, 0.999]}
 
+            l1, l2, j1, j2, met = defs.DNN_variables(self, tree)
             # prepare the input for the model
-            l1 = op.array('float', *[l1_Px, l1_Py, l1_Pz, l1_E, l1_pdgId, l1_charge,])
-            l2 = op.array('float', *[l2_Px, l2_Py, l2_Pz, l2_E, l2_pdgId, l2_charge,])
-            j1 = op.array('float', *[j1_Px, j1_Py, j1_Pz, j1_E, j1_btag])
-            j2 = op.array('float', *[j2_Px, j2_Py, j2_Pz, j2_E, j2_btag])
-            met = op.array('float', *[met_Px, met_Py, met_E])
-            
+            l1 = op.array('float', *l1.values())
+            l2 = op.array('float', *l2.values())
+            j1 = op.array('float', *j1.values())
+            j2 = op.array('float', *j2.values())
+            met = op.array('float', *met.values())
+
             # load the model
             split_var = 'even' if tree.event % 2 == 1 else 'odd'
-            model = os.path.join(self.mvaModels, f"{split_var}_model/model.onnx")
+            model = os.path.join(
+                self.mvaModels, f"{split_var}_model/model.onnx")
             # evaluate the model
             dnn = op.mvaEvaluator(model, otherArgs='output')
             DNN_output = dnn(l1, l2, j1, j2, met)
