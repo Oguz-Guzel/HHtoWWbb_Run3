@@ -16,6 +16,7 @@ class cutflowAnalysis(NanoBaseHHWWbb):
     def __init__(self, args):
         super(cutflowAnalysis, self).__init__(args)
         self.channel = self.args.channel
+        self.mvaModels = None
 
     def definePlots(self, tree, noSel, sample=None, sampleCfg=None):
         plots = []
