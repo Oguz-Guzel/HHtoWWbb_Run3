@@ -91,15 +91,15 @@ class cutflowAnalysis(NanoBaseHHWWbb):
             SLresolvedE_label = labeler('SL resolved E')
             SLresolvedMu_label = labeler('SL resolved Mu')
 
-        mvaVars_DL = {
+        dnn_vars = {
             "event_no": tree.event,
             "weight": noSel.weight,
         }
         l1, l2, j1, j2, met = defs.DNN_variables(self, tree)
 
-        mvaVars_DL = mvaVars_DL | l1 | l2 | j1 | j2 | met
+        dnn_vars = dnn_vars | l1 | l2 | j1 | j2 | met
         # line above is equivalent to the following (concetanation of dictionaries)
-        # mvaVars =  {**mvaVars_DL, **l1, **l2, **j1, **j2, **met}
+        # mvaVars =  {**dnn_vars, **l1, **l2, **j1, **j2, **met}
 
         #############################################################################
         #                                 Plots                                     #
@@ -111,17 +111,17 @@ class cutflowAnalysis(NanoBaseHHWWbb):
                 #                 Skims                 #
                 #########################################
 
-                Skim("DL_resolved_1b_ee_mva", mvaVars_DL, DL_resolved_1b_ee),
-                Skim("DL_resolved_2b_ee_mva", mvaVars_DL, DL_resolved_2b_ee),
+                Skim("DL_resolved_1b_ee_mva", dnn_vars, DL_resolved_1b_ee),
+                Skim("DL_resolved_2b_ee_mva", dnn_vars, DL_resolved_2b_ee),
                 Skim("DL_resolved_1b_mumu_mva",
-                     mvaVars_DL, DL_resolved_1b_mumu),
+                     dnn_vars, DL_resolved_1b_mumu),
                 Skim("DL_resolved_2b_mumu_mva",
-                     mvaVars_DL, DL_resolved_2b_mumu),
-                Skim("DL_resolved_1b_emu_mva", mvaVars_DL, DL_resolved_1b_emu),
-                Skim("DL_resolved_2b_emu_mva", mvaVars_DL, DL_resolved_2b_emu),
-                Skim("DL_boosted_ee_mva", mvaVars_DL, DL_boosted_ee),
-                Skim("DL_boosted_mumu_mva", mvaVars_DL, DL_boosted_mumu),
-                Skim("DL_boosted_emu_mva", mvaVars_DL, DL_boosted_emu),
+                     dnn_vars, DL_resolved_2b_mumu),
+                Skim("DL_resolved_1b_emu_mva", dnn_vars, DL_resolved_1b_emu),
+                Skim("DL_resolved_2b_emu_mva", dnn_vars, DL_resolved_2b_emu),
+                Skim("DL_boosted_ee_mva", dnn_vars, DL_boosted_ee),
+                Skim("DL_boosted_mumu_mva", dnn_vars, DL_boosted_mumu),
+                Skim("DL_boosted_emu_mva", dnn_vars, DL_boosted_emu),
 
                 # #########################################
                 # ######                             ######
