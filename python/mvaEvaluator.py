@@ -83,31 +83,34 @@ class mvaEvaluator(NanoBaseHHWWbb):
             dnn = op.mvaEvaluator(model, otherArgs='output')
             DNN_output = dnn(l1, l2, j1, j2, met)
 
-            dnn_score_1b_ee = Plot.make1D("dnn_score_1b_ee", DNN_output[0], DL_resolved_1b_ee, EqBin(
+            # the signal is maxed at 0 in the model, and here we change that to 1.
+            signal_node = 1-DNN_output[0]
+
+            dnn_score_1b_ee = Plot.make1D("dnn_score_1b_ee", signal_node, DL_resolved_1b_ee, EqBin(
                 100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN_EE
             )
-            dnn_score_2b_ee = Plot.make1D("dnn_score_2b_ee", DNN_output[0], DL_resolved_2b_ee, EqBin(
+            dnn_score_2b_ee = Plot.make1D("dnn_score_2b_ee", signal_node, DL_resolved_2b_ee, EqBin(
                 100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN_EE
             )
-            dnn_score_1b_emu = Plot.make1D("dnn_score_1b_emu", DNN_output[0], DL_resolved_1b_emu, EqBin(
+            dnn_score_1b_emu = Plot.make1D("dnn_score_1b_emu", signal_node, DL_resolved_1b_emu, EqBin(
                 100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN_EMu
             )
-            dnn_score_2b_emu = Plot.make1D("dnn_score_2b_emu", DNN_output[0], DL_resolved_2b_emu, EqBin(
+            dnn_score_2b_emu = Plot.make1D("dnn_score_2b_emu", signal_node, DL_resolved_2b_emu, EqBin(
                 100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN_EMu
             )
-            dnn_score_1b_mumu = Plot.make1D("dnn_score_1b_mumu", DNN_output[0], DL_resolved_1b_mumu, EqBin(
+            dnn_score_1b_mumu = Plot.make1D("dnn_score_1b_mumu", signal_node, DL_resolved_1b_mumu, EqBin(
                 100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN_MuMu
             )
-            dnn_score_2b_mumu = Plot.make1D("dnn_score_2b_mumu", DNN_output[0], DL_resolved_2b_mumu, EqBin(
+            dnn_score_2b_mumu = Plot.make1D("dnn_score_2b_mumu", signal_node, DL_resolved_2b_mumu, EqBin(
                 100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN_MuMu
             )
-            dnn_score_boosted_ee = Plot.make1D("dnn_score_boosted_ee", DNN_output[0], DL_boosted_ee, EqBin(
+            dnn_score_boosted_ee = Plot.make1D("dnn_score_boosted_ee", signal_node, DL_boosted_ee, EqBin(
                 100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN
             )
-            dnn_score_boosted_emu = Plot.make1D("dnn_score_boosted_emu", DNN_output[0], DL_boosted_emu, EqBin(
+            dnn_score_boosted_emu = Plot.make1D("dnn_score_boosted_emu", signal_node, DL_boosted_emu, EqBin(
                 100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN
             )
-            dnn_score_boosted_mumu = Plot.make1D("dnn_score_boosted_mumu", DNN_output[0], DL_boosted_mumu, EqBin(
+            dnn_score_boosted_mumu = Plot.make1D("dnn_score_boosted_mumu", signal_node, DL_boosted_mumu, EqBin(
                 100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN
             )
             plots.extend([
