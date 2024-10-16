@@ -83,8 +83,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             dnn = op.mvaEvaluator(model, otherArgs='output')
             DNN_output = dnn(l1, l2, j1, j2, met)
 
-            # the signal is maxed at 0 in the model, and here we change that to 1.
-            signal_node = 1-DNN_output[0]
+            signal_node = DNN_output[0]
 
             dnn_score_1b_ee = Plot.make1D("dnn_score_1b_ee", signal_node, DL_resolved_1b_ee, EqBin(
                 100, 0, 1.), title='DNN', xTitle="DNN Score", plotopts=DL_DNN_EE
