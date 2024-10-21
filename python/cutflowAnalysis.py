@@ -115,6 +115,8 @@ class cutflowAnalysis(NanoBaseHHWWbb):
                 N, mn, mx = 200, -1000, 1000
             elif "_Pz" in var_name:
                 N, mn, mx = 200, -4000, 4000
+            elif "_E" in var_name:
+                N, mn, mx = 250, 0, 2500
             elif "_charge" in var_name:
                 N, mn, mx = 5, -2.5, 2.5
             elif "_btag" in var_name:
