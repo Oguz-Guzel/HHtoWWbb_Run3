@@ -99,7 +99,7 @@ class cutflowAnalysis(NanoBaseHHWWbb):
 
         dnn_vars = dnn_vars | l1 | l2 | j1 | j2 | met
         # line above is equivalent to the following (concetanation of dictionaries)
-        # mvaVars =  {**dnn_vars, **l1, **l2, **j1, **j2, **met}
+        # dnn_vars =  {**dnn_vars, **l1, **l2, **j1, **j2, **met}
 
         #############################################################################
         #                                 Plots                                     #
