@@ -1,5 +1,5 @@
+import os
 from copy import deepcopy
-
 
 def fillSampleTemplate(template, selEras=None):
     outTemplate = {}
@@ -189,3 +189,20 @@ def custom_Plotit(cfgName, workdir, inDir, outDir, counterReader, config, plotIt
     except subprocess.CalledProcessError:
         logger.error("Failed to run {0}".format(" ".join(plotitCmd)))
 
+def runPDF(workdir, channel, era=None):
+    plots_dir = [os.path.join(workdir, "plots")]
+    if era:
+        plots_dir.append(os.path.join(workdir, f"plots_{era}"))
+    else:
+        era = "all"
+    for plots_dir in plots_dir:
+        return f"""
+        cp scripts/empty.pdf {plots_dir}
+        cp scripts/controlPlotter_{channel}.tex {plots_dir}
+        cd {plots_dir}
+        pdflatex -interaction=nonstopmode controlPlotter_{channel}.tex > /dev/null 2>&1
+        mv controlPlotter_{channel}.pdf ../controlPlotter_{channel}_{era}.pdf
+        cd - > /dev/null
+        # pdflatex yields.tex
+        # cd ../..
+        """

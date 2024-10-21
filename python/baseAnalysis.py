@@ -270,7 +270,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 cfgName, workdir=workdir, plotIt=self.args.plotIt, eras=(
                     eraMode, eras),
                 verbose=self.args.verbose)
-        # add _full to the plots dir below in the runPDF function when activating the following code
+        # # add _full to the plots dir below in the runPDF function when activating the following code
         # # hadd signal files and create another plots.yml called plots_full.yml
         # import os
         # import shutil
@@ -282,31 +282,13 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         #                     config, plotIt=self.args.plotIt, verbose=self.args.verbose)
         # # end of merging signal samples
 
-        def runPDF(era=None, workdir=workdir, channel=self.args.channel):
-            plots_dir = [os.path.join(workdir, "plots")]
-            if era:
-                plots_dir.append(os.path.join(workdir, f"plots_{era}"))
-            else:
-                era = "all"
-            for plots_dir in plots_dir:
-                return f"""
-                cp scripts/empty.pdf {plots_dir}
-                cp scripts/controlPlotter_{channel}.tex {plots_dir}
-                cd {plots_dir}
-                pdflatex -interaction=nonstopmode controlPlotter_{channel}.tex > /dev/null 2>&1
-                mv controlPlotter_{channel}.pdf ../controlPlotter_{channel}_{era}.pdf
-                cd - > /dev/null
-                # pdflatex yields.tex
-                # cd ../..
-                """
-
         # create pdf presentation
         if not self.mvaModels and not self.args.sync:
             try:
                 for era in eras:
-                    os.system(runPDF(era))
+                    os.system(utils.runPDF(workdir=workdir, channel=self.args.channel, era=era))
                     logger.info(f"PDF presentation created for era {era}.\n")
-                os.system(runPDF())
+                os.system(utils.runPDF(workdir=workdir, channel=self.args.channel))
                 logger.info(
                     f"PDF presentation created for all eras combined.\n")
             except Exception as e:
