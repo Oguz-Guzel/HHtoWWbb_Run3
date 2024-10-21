@@ -45,11 +45,7 @@ bambooRun -m python/cutflowAnalysis.py config/<2022 or 2023>_v12.yml -o ./output
 ```
 Instead of passing `--envConfig config/cern.ini` everytime, you can copy the content of that file to `~/.config/bamboorc`.
 
-using the `parquet` output file that contains skims and the DNN.py file, you can perform machine learning applications;
-
-```sh
-python python/DNN.py -s <path-to-the-skim-file> -o <path-to-an-output-directory>
-```
+using the `parquet` output file that contains skims and the DNN.py file, you can perform machine learning applications.
 
 Then,
 ```sh
