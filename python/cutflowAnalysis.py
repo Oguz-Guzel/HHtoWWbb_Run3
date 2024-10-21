@@ -110,19 +110,25 @@ class cutflowAnalysis(NanoBaseHHWWbb):
                             DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu]
 
         def nn_input_var_binning(var_name):
+            "Function to return binning, min and max values for the NN input feature plots."
             if "_Px" in var_name or "_Py" in var_name:
-                N,mn,mx=200,-1000,1000
+                N, mn, mx = 200, -1000, 1000
             elif "_Pz" in var_name:
-                N,mn,mx=200,-4000,4000
+                N, mn, mx = 200, -4000, 4000
             elif "_charge" in var_name:
-                N,mn,mx=5,-2.5,2.5
+                N, mn, mx = 5, -2.5, 2.5
             elif "_btag" in var_name:
-                N,mn,mx=100,0,1
+                N, mn, mx = 100, 0, 1
             elif "_pdgId" in var_name:
-                N,mn,mx=30,-15,15
-            return EqBin(N,mn,mx)
+                N, mn, mx = 30, -15, 15
+
+            return EqBin(N, mn, mx)
+
+        # We're not interested in the following two variables' match between data and MC.
+        # Hence they're not included in the input feature plots.
         dnn_vars.pop('event_no')
         dnn_vars.pop('weight')
+
         for selection in event_selections:
             for name, var in dnn_vars.items():
                 plots.append(
