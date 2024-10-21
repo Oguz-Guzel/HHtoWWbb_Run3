@@ -1,5 +1,5 @@
 
-from bamboo.plots import Plot, Skim, SummedPlot
+from bamboo.plots import Plot, Skim
 from bamboo.plots import EquidistantBinning as EqBin
 from bamboo import treefunctions as op
 
@@ -110,18 +110,19 @@ class cutflowAnalysis(NanoBaseHHWWbb):
                             DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu]
 
         def nn_input_var_binning(var_name):
-            if "_Px" in var_name or "_Py" in var_name or "_Pz" in var_name or "_E" in var_name:
-                N,mn,mx=100,0,100
+            if "_Px" in var_name or "_Py" in var_name:
+                N,mn,mx=200,-1000,1000
+            elif "_Pz" in var_name:
+                N,mn,mx=200,-4000,4000
             elif "_charge" in var_name:
                 N,mn,mx=5,-2.5,2.5
             elif "_btag" in var_name:
                 N,mn,mx=100,0,1
             elif "_pdgId" in var_name:
                 N,mn,mx=30,-15,15
-            elif "weight" in var_name:
-                N,mn,mx=200,-100,100
             return EqBin(N,mn,mx)
         dnn_vars.pop('event_no')
+        dnn_vars.pop('weight')
         for selection in event_selections:
             for name, var in dnn_vars.items():
                 plots.append(

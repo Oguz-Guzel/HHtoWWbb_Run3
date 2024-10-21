@@ -3,7 +3,8 @@ from bamboo.plots import CategorizedSelection
 
 # common variables for DL and SL channels
 
-Zmass = 91.1876
+Zmass = 91.1876 # GeV
+
 
 def tau_h_veto(taus) -> bool:
     "Veto events with hadronic taus."
