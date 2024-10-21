@@ -105,6 +105,30 @@ class cutflowAnalysis(NanoBaseHHWWbb):
         #                                 Plots                                     #
         #############################################################################
 
+        event_selections = [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
+                            DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
+                            DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu]
+
+        def nn_input_var_binning(var_name):
+            if "_Px" in var_name or "_Py" in var_name or "_Pz" in var_name or "_E" in var_name:
+                N,mn,mx=100,0,100
+            elif "_charge" in var_name:
+                N,mn,mx=5,-2.5,2.5
+            elif "_btag" in var_name:
+                N,mn,mx=100,0,1
+            elif "_pdgId" in var_name:
+                N,mn,mx=30,-15,15
+            elif "weight" in var_name:
+                N,mn,mx=200,-100,100
+            return EqBin(N,mn,mx)
+        dnn_vars.pop('event_no')
+        for selection in event_selections:
+            for name, var in dnn_vars.items():
+                plots.append(
+                    Plot.make1D(name+"_"+selection.name, var, selection,
+                                nn_input_var_binning(name), title=name, xTitle=name)
+                )
+
         if self.channel == 'DL':
             plots.extend([
                 #########################################
