@@ -109,6 +109,12 @@ class cutflowAnalysis(NanoBaseHHWWbb):
                             DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
                             DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu]
 
+        # add skims that hold variables for the TNN
+        for sel in event_selections:
+            plots.append(
+                Skim(sel.name+"_tnn_vars", tnn_vars, sel)
+            )
+
         def nn_input_var_binning(var_name):
             "Function to return binning, min and max values for the NN input feature plots."
             if "_Px" in var_name or "_Py" in var_name:
@@ -141,26 +147,10 @@ class cutflowAnalysis(NanoBaseHHWWbb):
         if self.channel == 'DL':
             plots.extend([
                 #########################################
-                #                 Skims                 #
+                ######                             ######
+                ######       DL boosted plots      ######
+                ######                             ######
                 #########################################
-
-                Skim("DL_resolved_1b_ee_mva", dnn_vars, DL_resolved_1b_ee),
-                Skim("DL_resolved_2b_ee_mva", dnn_vars, DL_resolved_2b_ee),
-                Skim("DL_resolved_1b_mumu_mva",
-                     dnn_vars, DL_resolved_1b_mumu),
-                Skim("DL_resolved_2b_mumu_mva",
-                     dnn_vars, DL_resolved_2b_mumu),
-                Skim("DL_resolved_1b_emu_mva", dnn_vars, DL_resolved_1b_emu),
-                Skim("DL_resolved_2b_emu_mva", dnn_vars, DL_resolved_2b_emu),
-                Skim("DL_boosted_ee_mva", dnn_vars, DL_boosted_ee),
-                Skim("DL_boosted_mumu_mva", dnn_vars, DL_boosted_mumu),
-                Skim("DL_boosted_emu_mva", dnn_vars, DL_boosted_emu),
-
-                # #########################################
-                # ######                             ######
-                # ######       DL boosted plots      ######
-                # ######                             ######
-                # #########################################
 
                 # number of ak8 b-jets
                 Plot.make1D("DL_boosted_nfatJet_ee", op.rng_len(self.ak8Jets), DL_boosted_ee, EqBin(
