@@ -112,15 +112,15 @@ class cutflowAnalysis(NanoBaseHHWWbb):
         def nn_input_var_binning(var_name):
             "Function to return binning, min and max values for the NN input feature plots."
             if "_Px" in var_name or "_Py" in var_name:
-                N, mn, mx = 200, -1000, 1000
+                N, mn, mx = 100, -1000, 1000
             elif "_Pz" in var_name:
                 N, mn, mx = 200, -4000, 4000
             elif "_E" in var_name:
-                N, mn, mx = 250, 0, 2500
+                N, mn, mx = 100, 0, 2500
             elif "_charge" in var_name:
                 N, mn, mx = 5, -2.5, 2.5
             elif "_btag" in var_name:
-                N, mn, mx = 100, 0, 1
+                N, mn, mx = 50, 0, 1
             elif "_pdgId" in var_name:
                 N, mn, mx = 30, -15, 15
 
