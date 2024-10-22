@@ -16,12 +16,11 @@ class cutflowAnalysis(NanoBaseHHWWbb):
     def __init__(self, args):
         super(cutflowAnalysis, self).__init__(args)
         self.channel = self.args.channel
-        self.mvaModels = None
 
     def definePlots(self, tree, noSel, sample=None, sampleCfg=None):
         plots = []
 
-        # cutflow report
+        # add cutflow report
         plots.append(self.yields)
 
         # define objects
@@ -30,76 +29,45 @@ class cutflowAnalysis(NanoBaseHHWWbb):
         # common scale factors
         noSel = sf.commonSF(self, tree, noSel, sample)
 
-        if self.channel == 'DL':
-            # get DL selections
-            DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu, \
-                DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu, \
-                DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu = makeDLSelection(
-                    self, noSel)
+        # get DL selections
+        DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu, \
+            DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu, \
+            DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu = makeDLSelection(
+                self, noSel)
 
-            # muonSF
-            DL_boosted_mumu = sf.muonSF(self, DL_boosted_mumu)
-            DL_boosted_emu = sf.muonSF(self, DL_boosted_emu)
-            DL_resolved_1b_mumu = sf.muonSF(self, DL_resolved_1b_mumu)
-            DL_resolved_1b_emu = sf.muonSF(self, DL_resolved_1b_emu)
-            DL_resolved_2b_emu = sf.muonSF(self, DL_resolved_2b_emu)
-            DL_resolved_2b_mumu = sf.muonSF(self, DL_resolved_2b_mumu)
+        # muonSF
+        DL_boosted_mumu = sf.muonSF(self, DL_boosted_mumu)
+        DL_boosted_emu = sf.muonSF(self, DL_boosted_emu)
+        DL_resolved_1b_mumu = sf.muonSF(self, DL_resolved_1b_mumu)
+        DL_resolved_1b_emu = sf.muonSF(self, DL_resolved_1b_emu)
+        DL_resolved_2b_emu = sf.muonSF(self, DL_resolved_2b_emu)
+        DL_resolved_2b_mumu = sf.muonSF(self, DL_resolved_2b_mumu)
 
-            # electronSF
-            DL_boosted_ee = sf.electronSF(self, DL_boosted_ee)
-            DL_boosted_emu = sf.electronSF(self, DL_boosted_emu)
-            DL_resolved_1b_ee = sf.electronSF(self, DL_resolved_1b_ee)
-            DL_resolved_1b_emu = sf.electronSF(self, DL_resolved_1b_emu)
-            DL_resolved_2b_ee = sf.electronSF(self, DL_resolved_2b_ee)
-            DL_resolved_2b_emu = sf.electronSF(self, DL_resolved_2b_emu)
+        # electronSF
+        DL_boosted_ee = sf.electronSF(self, DL_boosted_ee)
+        DL_boosted_emu = sf.electronSF(self, DL_boosted_emu)
+        DL_resolved_1b_ee = sf.electronSF(self, DL_resolved_1b_ee)
+        DL_resolved_1b_emu = sf.electronSF(self, DL_resolved_1b_emu)
+        DL_resolved_2b_ee = sf.electronSF(self, DL_resolved_2b_ee)
+        DL_resolved_2b_emu = sf.electronSF(self, DL_resolved_2b_emu)
 
-            # cutflow report for DL channel
-            self.yields.add(DL_boosted_ee, 'DL boosted ee')
-            self.yields.add(DL_boosted_mumu, 'DL boosted mumu')
-            self.yields.add(DL_boosted_emu, 'DL boosted emu')
-            self.yields.add(DL_resolved_1b_ee, 'DL resolved 1b ee')
-            self.yields.add(DL_resolved_2b_ee, 'DL resolved 2b ee')
-            self.yields.add(DL_resolved_1b_mumu, 'DL resolved 1b mumu')
-            self.yields.add(DL_resolved_2b_mumu, 'DL resolved 2b mumu')
-            self.yields.add(DL_resolved_1b_emu, 'DL resolved 1b emu')
-            self.yields.add(DL_resolved_2b_emu, 'DL resolved 2b emu')
+        # cutflow report for DL channel
+        for sel in event_selections:
+            self.yields.add(sel, sel.name)
 
-            # labels on plots
-            DLboostedEE_label = labeler('DL boosted EE')
-            DLboostedMuMu_label = labeler('DL boosted MuMu')
-            DLboostedEMU_label = labeler('DL boosted EMu')
-            DLresolvedEE_label = labeler('DL resolved EE')
-            DLresolvedMuMu_label = labeler('DL resolved MuMu')
-            DLresolvedEMu_label = labeler('DL resolved EMu')
-
-        if self.channel == 'SL':
-            # get SL selections
-            SL_resolved_pre, SL_resolved_1b_e, SL_resolved_2b_e, \
-                SL_resolved_1b_mu, SL_resolved_2b_mu, SL_boosted, \
-                SL_boosted_e, SL_boosted_mu, SL_e = makeSLSelection(
-                    self, noSel)
-
-            # cutflow report for SL channel
-            self.yields.add(SL_boosted_e, 'SL boosted e')
-            self.yields.add(SL_boosted_mu, 'SL boosted mu')
-            self.yields.add(SL_resolved_1b_e, 'SL resolved e')
-            self.yields.add(SL_resolved_1b_mu, 'SL resolved mu')
-
-            # labels on plots
-            SLboostedE_label = labeler('SL boosted E')
-            SLboostedMu_label = labeler('SL boosted Mu')
-            SLresolvedE_label = labeler('SL resolved E')
-            SLresolvedMu_label = labeler('SL resolved Mu')
-
-        dnn_vars = {
+        # initiate TNN input features' dictionary
+        tnn_input_vars = {
             "event_no": tree.event,
             "weight": noSel.weight,
         }
+
+        # get the input features
         l1, l2, j1, j2, met = defs.DNN_variables(self, tree)
 
-        dnn_vars = dnn_vars | l1 | l2 | j1 | j2 | met
+        # concatenate with the initial dictionary
+        tnn_input_vars = tnn_input_vars | l1 | l2 | j1 | j2 | met
         # line above is equivalent to the following (concetanation of dictionaries)
-        # dnn_vars =  {**dnn_vars, **l1, **l2, **j1, **j2, **met}
+        # tnn_input_vars =  {**tnn_input_vars, **l1, **l2, **j1, **j2, **met}
 
         #############################################################################
         #                                 Plots                                     #
