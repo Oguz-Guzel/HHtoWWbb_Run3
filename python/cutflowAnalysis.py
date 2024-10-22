@@ -91,15 +91,15 @@ class cutflowAnalysis(NanoBaseHHWWbb):
             SLresolvedE_label = labeler('SL resolved E')
             SLresolvedMu_label = labeler('SL resolved Mu')
 
-        dnn_vars = {
+        tnn_vars = {
             "event_no": tree.event,
             "weight": noSel.weight,
         }
         l1, l2, j1, j2, met = defs.DNN_variables(self, tree)
 
-        dnn_vars = dnn_vars | l1 | l2 | j1 | j2 | met
+        tnn_vars = tnn_vars | l1 | l2 | j1 | j2 | met
         # line above is equivalent to the following (concetanation of dictionaries)
-        # dnn_vars =  {**dnn_vars, **l1, **l2, **j1, **j2, **met}
+        # tnn_vars =  {**tnn_vars, **l1, **l2, **j1, **j2, **met}
 
         #############################################################################
         #                                 Plots                                     #
@@ -128,11 +128,11 @@ class cutflowAnalysis(NanoBaseHHWWbb):
 
         # We're not interested in the following two variables' match between data and MC.
         # Hence they're not included in the input feature plots.
-        dnn_vars.pop('event_no')
-        dnn_vars.pop('weight')
+        tnn_vars.pop('event_no')
+        tnn_vars.pop('weight')
 
         for selection in event_selections:
-            for name, var in dnn_vars.items():
+            for name, var in tnn_vars.items():
                 plots.append(
                     Plot.make1D(name+"_"+selection.name, var, selection,
                                 nn_input_var_binning(name), title=name, xTitle=name)
