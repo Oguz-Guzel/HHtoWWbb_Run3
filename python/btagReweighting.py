@@ -198,23 +198,14 @@ class btagReweighting(_base):
             self.plotList = self.getPlotList(
                 resultsdir=resultsdir, config=config)
 
-        from bamboo.plots import CutFlowReport, DerivedPlot, Plot, Skim
+        from bamboo.plots import CutFlowReport, Skim
 
-        plotList_plotIt = [ap for ap in self.plotList if (
-            isinstance(ap, Plot) or isinstance(ap, DerivedPlot))]
-        for plots in plotList_plotIt:
-            logger.info("plots in plotList_plotIt: {0}".format(
-                plots.name))
         plotList_cutFlow = [
             ap for ap in self.plotList if isinstance(ap, CutFlowReport)]
-
-        for cutflow in plotList_cutFlow:
-            logger.info("cutflow in plotList_cutFlow: {0}".format(cutflow))
 
         skim_list = [ap for ap in self.plotList if isinstance(ap, Skim)]
 
         eraMode, eras = self.args.eras
-        logger.info("EraMode: {0} and eras: {1}".format(eraMode, eras))
         if eras is None:
             eras = list(config["eras"].keys())
 
@@ -223,7 +214,6 @@ class btagReweighting(_base):
             printCutFlowReports(config, plotList_cutFlow, workdir=workdir, resultsdir=resultsdir,
                                 readCounters=self.readCounters, eras=(eraMode, eras), verbose=self.args.verbose)
 
-        dic_weights = {}
         if skim_list:
 
             mc_sumWeigth_before = 0
@@ -327,10 +317,7 @@ class btagReweighting(_base):
                     mc_sumWeigth_before += smpScale * beforeweight_sum
                     mc_sumWeigth_after += smpScale * afterweight_sum
 
-                    logger.info("---------------------")
-
                     sample_rootfile.Close()
-                    # output_rootfile.Close()
 
             mc_weights_dic = {}
             weights_jet_multiplicity = {}
@@ -352,9 +339,6 @@ class btagReweighting(_base):
 
             weights_jet_multiplicity["2022"] = weights_jet_multiplicity_2022
             weights_jet_multiplicity["2022EE"] = weights_jet_multiplicity_2022EE
-
-            dic_weights["MC"] = mc_weights_dic
-            dic_weights["JetMulti"] = weights_jet_multiplicity
 
         dict_MC = weights_jet_multiplicity.copy()
 
@@ -379,28 +363,22 @@ class btagReweighting(_base):
                               description="Ratio to correct the b-tag SF shape")
 
             def _get_DataContent(ratio_dict):
-
                 data_content = Category.parse_obj({
                     "nodetype": "category",
                     "input": "year",
                     "content": [
-                        {
-                            "key": year,
-                            "value": Category.parse_obj({
+                        {"key": year,
+                         "value": Category.parse_obj({
                                 "nodetype": "category",
                                 "input": "jet_multiplicity",
-                                "content": [
-                                    {
-                                        "key": multiplicity,
-                                        "value": ratio,
-                                    } for multiplicity, ratio, in multiplicity_ratio_dic.items()
-                                ]
-                            }),
-
-                        } for year, multiplicity_ratio_dic in ratio_dict.items()
+                             "content": [
+                                 {"key": multiplicity,
+                                  "value": ratio,
+                                  } for multiplicity, ratio, in multiplicity_ratio_dict.items()]
+                         }),
+                         } for year, multiplicity_ratio_dict in ratio_dict.items()
                     ]
                 })
-
                 return data_content
 
             corr = Correction.parse_obj({
