@@ -128,7 +128,9 @@ class _base(NanoAODModule, HistogramsModule):
 
 
 class btagReweighting(_base):
-    """ Class to apply reweighting that should be done before applying btag SF."""
+    """ Class to create the ratio that sould be applied to as a weight 
+        before making any btagged jet selection, see
+        https://btv-wiki.docs.cern.ch/PerformanceCalibration/shapeCorrectionSFRecommendations/#effect-on-event-yields"""
 
     def __init__(self, args):
         super(btagReweighting, self).__init__(args)
