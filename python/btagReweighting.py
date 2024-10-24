@@ -290,7 +290,7 @@ class btagReweighting(_base):
 
                                     for i in range(11):
                                         if entry.jetMultiplicity_after == i:
-                                            jet_multiplicity_after[i] = entry.Sel_weight_after
+                                            jet_multiplicity_after[i] += entry.Sel_weight_after
 
                             elif "Sel_weight_before" in [branch.GetName() for branch in branches]:
                                 beforeweight_sum = 0
@@ -356,7 +356,7 @@ class btagReweighting(_base):
 
         dict_MC = weights_jet_multiplicity.copy()
 
-        def _convert_DictToJSON(self, leptontau_btag_rescale_weights_shape):
+        def _convert_DictToJSON(self, ratio_dict):
             import os.path
             from correctionlib.schemav2 import VERSION, Correction, Variable, Category, CorrectionSet
             from correctionlib.JSONEncoder import write
@@ -376,7 +376,7 @@ class btagReweighting(_base):
             output = Variable(name="ratio", type="real",
                               description="Ratio to correct the b-tag SF shape")
 
-            def _get_DataContent(leptontau_btag_rescale_weights_shape):
+            def _get_DataContent(ratio_dict):
 
                 data_content = Category.parse_obj({
                     "nodetype": "category",
@@ -395,7 +395,7 @@ class btagReweighting(_base):
                                 ]
                             }),
 
-                        } for year, multiplicity_ratio_dic in leptontau_btag_rescale_weights_shape.items()
+                        } for year, multiplicity_ratio_dic in ratio_dict.items()
                     ]
                 })
 
@@ -407,12 +407,12 @@ class btagReweighting(_base):
                 "description": "Ratio correction for the b-tag SF shape",
                 "inputs": inputs,
                 "output": output,
-                "data": _get_DataContent(leptontau_btag_rescale_weights_shape)
+                "data": _get_DataContent(ratio_dict)
             })
 
             correction_set = CorrectionSet(
                 schema_version=VERSION, corrections=[corr])
-            write(correction_set, f"{ratio_correction_btagg_path}/RatioCorr_btagShapeSF_{self.channel}.json.gz",
+            write(correction_set, f"{ratio_correction_btagg_path}/unbulky.json.gz",
                   sort_keys=True, indent=2, maxlistlen=25, maxdictlen=3, breakbrackets=False)
 
-        _convert_DictToJSON(self, dic_MC)
+        _convert_DictToJSON(self, dict_MC)
