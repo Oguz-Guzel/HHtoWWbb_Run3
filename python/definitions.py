@@ -274,7 +274,7 @@ def defineObjects(self, tree):
     self.ak4JetsCleanedFromAk8b = op.select(self.ak4Jets, cleanAk4FromAk8b)
 
 
-def DNN_variables(self, tree):
+def ml_input_features(self, tree):
     """Define variables to be used to create the skims containing them, also to give them later on in the DNN evaluation."""
     l1_Px = op.multiSwitch(
         (op.rng_len(self.tightElectrons) == 2,
