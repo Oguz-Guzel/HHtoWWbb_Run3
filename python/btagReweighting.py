@@ -279,21 +279,22 @@ class btagReweighting(_base):
 
                                 for entry in tree:
                                     afterweight_sum += entry.Sel_weight_after
-
-                                    for i in range(11):
-                                        if entry.jetMultiplicity_after == i:
-                                            jet_multiplicity_after[i] += entry.Sel_weight_after
+                                    jm = entry.jetMultiplicity_after
+                                    if jm < 10:
+                                        jet_multiplicity_after[jm] += entry.Sel_weight_after
+                                    else:
+                                        jet_multiplicity_after[10] += entry.Sel_weight_after
 
                             elif "Sel_weight_before" in [branch.GetName() for branch in branches]:
                                 beforeweight_sum = 0
 
                                 for entry in tree:
-
                                     beforeweight_sum += entry.Sel_weight_before
-
-                                    for i in range(11):
-                                        if entry.jetMultiplicity_before == i:
-                                            jet_multiplicity_before[i] += entry.Sel_weight_before
+                                    jm = entry.jetMultiplicity_before
+                                    if jm < 10:
+                                        jet_multiplicity_before[jm] += entry.Sel_weight_before
+                                    else:
+                                        jet_multiplicity_before[10] += entry.Sel_weight_before
 
                     logger.info("Sum of the Weights, Before {0} and After {1}".format(
                         beforeweight_sum, afterweight_sum))
@@ -355,7 +356,7 @@ class btagReweighting(_base):
             inputs = [
                 Variable(name="year", type="string",
                          description="Year: 2022(preEE),2022EE(posEE)"),
-                Variable(name="jet_multiplicity", type="string",
+                Variable(name="jet_multiplicity", type="int",
                          description="Jet Mulitplicity")
             ]
 
@@ -392,7 +393,9 @@ class btagReweighting(_base):
 
             correction_set = CorrectionSet(
                 schema_version=VERSION, corrections=[corr])
-            write(correction_set, f"{ratio_correction_btagg_path}/unbulky.json.gz",
+            output_file_name = f"{ratio_correction_btagg_path}/2022_Btag_rescaling.json.gz"
+            write(correction_set, output_file_name,
                   sort_keys=True, indent=2, maxlistlen=25, maxdictlen=3, breakbrackets=False)
+            logger.info(f'written to: {output_file_name}')
 
         _convert_DictToJSON(self, dict_MC)
