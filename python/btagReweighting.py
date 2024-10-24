@@ -233,53 +233,13 @@ class btagReweighting(_base):
             mc_sumWeigth_2022EE_before = 0
             mc_sumWeigth_2022EE_after = 0
 
-            sumWeight_jet_multiplicity_0_2022_before = 0
-            sumWeight_jet_multiplicity_1_2022_before = 0
-            sumWeight_jet_multiplicity_2_2022_before = 0
-            sumWeight_jet_multiplicity_3_2022_before = 0
-            sumWeight_jet_multiplicity_4_2022_before = 0
-            sumWeight_jet_multiplicity_5_2022_before = 0
-            sumWeight_jet_multiplicity_6_2022_before = 0
-            sumWeight_jet_multiplicity_7_2022_before = 0
-            sumWeight_jet_multiplicity_8_2022_before = 0
-            sumWeight_jet_multiplicity_9_2022_before = 0
-            sumWeight_jet_multiplicity_10_2022_before = 0
+            sumWeight_jet_multiplicity_2022_before = [0]*11
 
-            sumWeight_jet_multiplicity_0_2022_after = 0
-            sumWeight_jet_multiplicity_1_2022_after = 0
-            sumWeight_jet_multiplicity_2_2022_after = 0
-            sumWeight_jet_multiplicity_3_2022_after = 0
-            sumWeight_jet_multiplicity_4_2022_after = 0
-            sumWeight_jet_multiplicity_5_2022_after = 0
-            sumWeight_jet_multiplicity_6_2022_after = 0
-            sumWeight_jet_multiplicity_7_2022_after = 0
-            sumWeight_jet_multiplicity_8_2022_after = 0
-            sumWeight_jet_multiplicity_9_2022_after = 0
-            sumWeight_jet_multiplicity_10_2022_after = 0
+            sumWeight_jet_multiplicity_2022_after = [0]*11
 
-            sumWeight_jet_multiplicity_0_2022EE_before = 0
-            sumWeight_jet_multiplicity_1_2022EE_before = 0
-            sumWeight_jet_multiplicity_2_2022EE_before = 0
-            sumWeight_jet_multiplicity_3_2022EE_before = 0
-            sumWeight_jet_multiplicity_4_2022EE_before = 0
-            sumWeight_jet_multiplicity_5_2022EE_before = 0
-            sumWeight_jet_multiplicity_6_2022EE_before = 0
-            sumWeight_jet_multiplicity_7_2022EE_before = 0
-            sumWeight_jet_multiplicity_8_2022EE_before = 0
-            sumWeight_jet_multiplicity_9_2022EE_before = 0
-            sumWeight_jet_multiplicity_10_2022EE_before = 0
+            sumWeight_jet_multiplicity_2022EE_before = [0]*11
 
-            sumWeight_jet_multiplicity_0_2022EE_after = 0
-            sumWeight_jet_multiplicity_1_2022EE_after = 0
-            sumWeight_jet_multiplicity_2_2022EE_after = 0
-            sumWeight_jet_multiplicity_3_2022EE_after = 0
-            sumWeight_jet_multiplicity_4_2022EE_after = 0
-            sumWeight_jet_multiplicity_5_2022EE_after = 0
-            sumWeight_jet_multiplicity_6_2022EE_after = 0
-            sumWeight_jet_multiplicity_7_2022EE_after = 0
-            sumWeight_jet_multiplicity_8_2022EE_after = 0
-            sumWeight_jet_multiplicity_9_2022EE_after = 0
-            sumWeight_jet_multiplicity_10_2022EE_after = 0
+            sumWeight_jet_multiplicity_2022EE_after = [0]*11
 
             for proc, smpCfg in config["samples"].items():
 
@@ -288,7 +248,7 @@ class btagReweighting(_base):
                     mc_sumWeigth_before += 0.0
                     mc_sumWeigth_after += 0.0
                 else:
-                    logger.info("Sample name to be process: {}".format(proc))
+                    logger.info("Sample being processed is: {}".format(proc))
 
                     def _openFileAndGet(path, mode="read"):
                         """Open ROOT file in a mode, check if open properly, and return TFile handle"""
@@ -308,29 +268,8 @@ class btagReweighting(_base):
                     smpScale = lumi*Xsection/genEvents
                     era = smpCfg["era"]
 
-                    jet_multiplicity_0_before = 0
-                    jet_multiplicity_1_before = 0
-                    jet_multiplicity_2_before = 0
-                    jet_multiplicity_3_before = 0
-                    jet_multiplicity_4_before = 0
-                    jet_multiplicity_5_before = 0
-                    jet_multiplicity_6_before = 0
-                    jet_multiplicity_7_before = 0
-                    jet_multiplicity_8_before = 0
-                    jet_multiplicity_9_before = 0
-                    jet_multiplicity_10_before = 0
-
-                    jet_multiplicity_0_after = 0
-                    jet_multiplicity_1_after = 0
-                    jet_multiplicity_2_after = 0
-                    jet_multiplicity_3_after = 0
-                    jet_multiplicity_4_after = 0
-                    jet_multiplicity_5_after = 0
-                    jet_multiplicity_6_after = 0
-                    jet_multiplicity_7_after = 0
-                    jet_multiplicity_8_after = 0
-                    jet_multiplicity_9_after = 0
-                    jet_multiplicity_10_after = 0
+                    jet_multiplicity_before = [0]*11
+                    jet_multiplicity_after = [0]*11
 
                     for skim in skim_list:
                         tree = sample_rootfile.Get(skim.treeName)
@@ -349,38 +288,9 @@ class btagReweighting(_base):
                                 for entry in tree:
                                     afterweight_sum += entry.Sel_weight_after
 
-                                    if entry.jetMultiplicity_after == 0:
-                                        jet_multiplicity_0_after += entry.Sel_weight_after
-
-                                    elif entry.jetMultiplicity_after == 1:
-                                        jet_multiplicity_1_after += entry.Sel_weight_after
-
-                                    elif entry.jetMultiplicity_after == 2:
-                                        jet_multiplicity_2_after += entry.Sel_weight_after
-
-                                    elif entry.jetMultiplicity_after == 3:
-                                        jet_multiplicity_3_after += entry.Sel_weight_after
-
-                                    elif entry.jetMultiplicity_after == 4:
-                                        jet_multiplicity_4_after += entry.Sel_weight_after
-
-                                    elif entry.jetMultiplicity_after == 5:
-                                        jet_multiplicity_5_after += entry.Sel_weight_after
-
-                                    elif entry.jetMultiplicity_after == 6:
-                                        jet_multiplicity_6_after += entry.Sel_weight_after
-
-                                    elif entry.jetMultiplicity_after == 7:
-                                        jet_multiplicity_7_after += entry.Sel_weight_after
-
-                                    elif entry.jetMultiplicity_after == 8:
-                                        jet_multiplicity_8_after += entry.Sel_weight_after
-
-                                    elif entry.jetMultiplicity_after == 9:
-                                        jet_multiplicity_9_after += entry.Sel_weight_after
-
-                                    else:
-                                        jet_multiplicity_10_after += entry.Sel_weight_after
+                                    for i in range(11):
+                                        if entry.jetMultiplicity_after == i:
+                                            jet_multiplicity_after[i] = entry.Sel_weight_after
 
                             elif "Sel_weight_before" in [branch.GetName() for branch in branches]:
                                 beforeweight_sum = 0
@@ -389,99 +299,28 @@ class btagReweighting(_base):
 
                                     beforeweight_sum += entry.Sel_weight_before
 
-                                    if entry.jetMultiplicity_before == 0:
-                                        jet_multiplicity_0_before += entry.Sel_weight_before
-
-                                    elif entry.jetMultiplicity_before == 1:
-                                        jet_multiplicity_1_before += entry.Sel_weight_before
-
-                                    elif entry.jetMultiplicity_before == 2:
-                                        jet_multiplicity_2_before += entry.Sel_weight_before
-
-                                    elif entry.jetMultiplicity_before == 3:
-                                        jet_multiplicity_3_before += entry.Sel_weight_before
-
-                                    elif entry.jetMultiplicity_before == 4:
-                                        jet_multiplicity_4_before += entry.Sel_weight_before
-
-                                    elif entry.jetMultiplicity_before == 5:
-                                        jet_multiplicity_5_before += entry.Sel_weight_before
-
-                                    elif entry.jetMultiplicity_before == 6:
-                                        jet_multiplicity_6_before += entry.Sel_weight_before
-
-                                    elif entry.jetMultiplicity_before == 7:
-                                        jet_multiplicity_7_before += entry.Sel_weight_before
-
-                                    elif entry.jetMultiplicity_before == 8:
-                                        jet_multiplicity_8_before += entry.Sel_weight_before
-
-                                    elif entry.jetMultiplicity_before == 9:
-                                        jet_multiplicity_9_before += entry.Sel_weight_before
-
-                                    else:
-                                        jet_multiplicity_10_before += entry.Sel_weight_before
+                                    for i in range(11):
+                                        if entry.jetMultiplicity_before == i:
+                                            jet_multiplicity_before[i] += entry.Sel_weight_before
 
                     logger.info("Sum of the Weights, Before {0} and After {1}".format(
                         beforeweight_sum, afterweight_sum))
-
                     if era == "2022":
                         # sum of the weights before and after applying the b-tag SF: Total weight
                         mc_sumWeigth_2022_before += beforeweight_sum * smpScale
                         mc_sumWeigth_2022_after += afterweight_sum * smpScale
-                        # sum of the weights before and after applying the b-tag SF: split by multiplicity
-                        sumWeight_jet_multiplicity_0_2022_before += smpScale * jet_multiplicity_0_before
-                        sumWeight_jet_multiplicity_1_2022_before += smpScale * jet_multiplicity_1_before
-                        sumWeight_jet_multiplicity_2_2022_before += smpScale * jet_multiplicity_2_before
-                        sumWeight_jet_multiplicity_3_2022_before += smpScale * jet_multiplicity_3_before
-                        sumWeight_jet_multiplicity_4_2022_before += smpScale * jet_multiplicity_4_before
-                        sumWeight_jet_multiplicity_5_2022_before += smpScale * jet_multiplicity_5_before
-                        sumWeight_jet_multiplicity_6_2022_before += smpScale * jet_multiplicity_6_before
-                        sumWeight_jet_multiplicity_7_2022_before += smpScale * jet_multiplicity_7_before
-                        sumWeight_jet_multiplicity_8_2022_before += smpScale * jet_multiplicity_8_before
-                        sumWeight_jet_multiplicity_9_2022_before += smpScale * jet_multiplicity_9_before
-                        sumWeight_jet_multiplicity_10_2022_before += smpScale * jet_multiplicity_10_before
-
-                        sumWeight_jet_multiplicity_0_2022_after += smpScale * jet_multiplicity_0_after
-                        sumWeight_jet_multiplicity_1_2022_after += smpScale * jet_multiplicity_1_after
-                        sumWeight_jet_multiplicity_2_2022_after += smpScale * jet_multiplicity_2_after
-                        sumWeight_jet_multiplicity_3_2022_after += smpScale * jet_multiplicity_3_after
-                        sumWeight_jet_multiplicity_4_2022_after += smpScale * jet_multiplicity_4_after
-                        sumWeight_jet_multiplicity_5_2022_after += smpScale * jet_multiplicity_5_after
-                        sumWeight_jet_multiplicity_6_2022_after += smpScale * jet_multiplicity_6_after
-                        sumWeight_jet_multiplicity_7_2022_after += smpScale * jet_multiplicity_7_after
-                        sumWeight_jet_multiplicity_8_2022_after += smpScale * jet_multiplicity_8_after
-                        sumWeight_jet_multiplicity_9_2022_after += smpScale * jet_multiplicity_9_after
-                        sumWeight_jet_multiplicity_10_2022_after += smpScale * jet_multiplicity_10_after
+                        # sum of the weights before and after applying the b-tag SF: split by multiplicity up to 10
+                        for i in range(11):
+                            sumWeight_jet_multiplicity_2022_before[i] += jet_multiplicity_before[i] * smpScale
+                            sumWeight_jet_multiplicity_2022_after[i] += jet_multiplicity_after[i] * smpScale
 
                     elif era == "2022EE":
                         mc_sumWeigth_2022EE_before += beforeweight_sum * smpScale
                         mc_sumWeigth_2022EE_after += afterweight_sum * smpScale
-
                         # sum of the weights before and after applying the b-tag SF: split by multiplicity 2022 EE
-                        sumWeight_jet_multiplicity_0_2022EE_before += smpScale * jet_multiplicity_0_before
-                        sumWeight_jet_multiplicity_1_2022EE_before += smpScale * jet_multiplicity_1_before
-                        sumWeight_jet_multiplicity_2_2022EE_before += smpScale * jet_multiplicity_2_before
-                        sumWeight_jet_multiplicity_3_2022EE_before += smpScale * jet_multiplicity_3_before
-                        sumWeight_jet_multiplicity_4_2022EE_before += smpScale * jet_multiplicity_4_before
-                        sumWeight_jet_multiplicity_5_2022EE_before += smpScale * jet_multiplicity_5_before
-                        sumWeight_jet_multiplicity_6_2022EE_before += smpScale * jet_multiplicity_6_before
-                        sumWeight_jet_multiplicity_7_2022EE_before += smpScale * jet_multiplicity_7_before
-                        sumWeight_jet_multiplicity_8_2022EE_before += smpScale * jet_multiplicity_8_before
-                        sumWeight_jet_multiplicity_9_2022EE_before += smpScale * jet_multiplicity_9_before
-                        sumWeight_jet_multiplicity_10_2022EE_before += smpScale * jet_multiplicity_10_before
-
-                        sumWeight_jet_multiplicity_0_2022EE_after += smpScale * jet_multiplicity_0_after
-                        sumWeight_jet_multiplicity_1_2022EE_after += smpScale * jet_multiplicity_1_after
-                        sumWeight_jet_multiplicity_2_2022EE_after += smpScale * jet_multiplicity_2_after
-                        sumWeight_jet_multiplicity_3_2022EE_after += smpScale * jet_multiplicity_3_after
-                        sumWeight_jet_multiplicity_4_2022EE_after += smpScale * jet_multiplicity_4_after
-                        sumWeight_jet_multiplicity_5_2022EE_after += smpScale * jet_multiplicity_5_after
-                        sumWeight_jet_multiplicity_6_2022EE_after += smpScale * jet_multiplicity_6_after
-                        sumWeight_jet_multiplicity_7_2022EE_after += smpScale * jet_multiplicity_7_after
-                        sumWeight_jet_multiplicity_8_2022EE_after += smpScale * jet_multiplicity_8_after
-                        sumWeight_jet_multiplicity_9_2022EE_after += smpScale * jet_multiplicity_9_after
-                        sumWeight_jet_multiplicity_10_2022EE_after += smpScale * jet_multiplicity_10_after
+                        for i in range(11):
+                            sumWeight_jet_multiplicity_2022EE_before[i] += jet_multiplicity_before[i] * smpScale
+                            sumWeight_jet_multiplicity_2022EE_after[i] += jet_multiplicity_after[i] * smpScale
 
                     mc_sumWeigth_before += smpScale * beforeweight_sum
                     mc_sumWeigth_after += smpScale * afterweight_sum
@@ -503,51 +342,11 @@ class btagReweighting(_base):
             mc_weights_dic["CombEras"] = mc_sumWeigth_before / \
                 mc_sumWeigth_after
 
-            weights_jet_multiplicity_2022["0"] = 1 if sumWeight_jet_multiplicity_0_2022_after == 0 else sumWeight_jet_multiplicity_0_2022_before / \
-                sumWeight_jet_multiplicity_0_2022_after
-            weights_jet_multiplicity_2022["1"] = 1 if sumWeight_jet_multiplicity_1_2022_after == 0 else sumWeight_jet_multiplicity_1_2022_before / \
-                sumWeight_jet_multiplicity_1_2022_after
-            weights_jet_multiplicity_2022["2"] = 1 if sumWeight_jet_multiplicity_2_2022_after == 0 else sumWeight_jet_multiplicity_2_2022_before / \
-                sumWeight_jet_multiplicity_2_2022_after
-            weights_jet_multiplicity_2022["3"] = 1 if sumWeight_jet_multiplicity_3_2022_after == 0 else sumWeight_jet_multiplicity_3_2022_before / \
-                sumWeight_jet_multiplicity_3_2022_after
-            weights_jet_multiplicity_2022["4"] = 1 if sumWeight_jet_multiplicity_4_2022_after == 0 else sumWeight_jet_multiplicity_4_2022_before / \
-                sumWeight_jet_multiplicity_4_2022_after
-            weights_jet_multiplicity_2022["5"] = 1 if sumWeight_jet_multiplicity_5_2022_after == 0 else sumWeight_jet_multiplicity_5_2022_before / \
-                sumWeight_jet_multiplicity_5_2022_after
-            weights_jet_multiplicity_2022["6"] = 1 if sumWeight_jet_multiplicity_6_2022_after == 0 else sumWeight_jet_multiplicity_6_2022_before / \
-                sumWeight_jet_multiplicity_6_2022_after
-            weights_jet_multiplicity_2022["7"] = 1 if sumWeight_jet_multiplicity_7_2022_after == 0 else sumWeight_jet_multiplicity_7_2022_before / \
-                sumWeight_jet_multiplicity_7_2022_after
-            weights_jet_multiplicity_2022["8"] = 1 if sumWeight_jet_multiplicity_8_2022_after == 0 else sumWeight_jet_multiplicity_8_2022_before / \
-                sumWeight_jet_multiplicity_8_2022_after
-            weights_jet_multiplicity_2022["9"] = 1 if sumWeight_jet_multiplicity_9_2022_after == 0 else sumWeight_jet_multiplicity_9_2022_before / \
-                sumWeight_jet_multiplicity_9_2022_after
-            weights_jet_multiplicity_2022["10"] = 1 if sumWeight_jet_multiplicity_10_2022_after == 0 else sumWeight_jet_multiplicity_10_2022_before / \
-                sumWeight_jet_multiplicity_10_2022_after
-
-            weights_jet_multiplicity_2022EE["0"] = 1 if sumWeight_jet_multiplicity_0_2022EE_after == 0 else sumWeight_jet_multiplicity_0_2022EE_before / \
-                sumWeight_jet_multiplicity_0_2022EE_after
-            weights_jet_multiplicity_2022EE["1"] = 1 if sumWeight_jet_multiplicity_1_2022EE_after == 0 else sumWeight_jet_multiplicity_1_2022EE_before / \
-                sumWeight_jet_multiplicity_1_2022EE_after
-            weights_jet_multiplicity_2022EE["2"] = 1 if sumWeight_jet_multiplicity_2_2022EE_after == 0 else sumWeight_jet_multiplicity_2_2022EE_before / \
-                sumWeight_jet_multiplicity_2_2022EE_after
-            weights_jet_multiplicity_2022EE["3"] = 1 if sumWeight_jet_multiplicity_3_2022EE_after == 0 else sumWeight_jet_multiplicity_3_2022EE_before / \
-                sumWeight_jet_multiplicity_3_2022EE_after
-            weights_jet_multiplicity_2022EE["4"] = 1 if sumWeight_jet_multiplicity_4_2022EE_after == 0 else sumWeight_jet_multiplicity_4_2022EE_before / \
-                sumWeight_jet_multiplicity_4_2022EE_after
-            weights_jet_multiplicity_2022EE["5"] = 1 if sumWeight_jet_multiplicity_5_2022EE_after == 0 else sumWeight_jet_multiplicity_5_2022EE_before / \
-                sumWeight_jet_multiplicity_5_2022EE_after
-            weights_jet_multiplicity_2022EE["6"] = 1 if sumWeight_jet_multiplicity_6_2022EE_after == 0 else sumWeight_jet_multiplicity_6_2022EE_before / \
-                sumWeight_jet_multiplicity_6_2022EE_after
-            weights_jet_multiplicity_2022EE["7"] = 1 if sumWeight_jet_multiplicity_7_2022EE_after == 0 else sumWeight_jet_multiplicity_7_2022EE_before / \
-                sumWeight_jet_multiplicity_7_2022EE_after
-            weights_jet_multiplicity_2022EE["8"] = 1 if sumWeight_jet_multiplicity_8_2022EE_after == 0 else sumWeight_jet_multiplicity_8_2022EE_before / \
-                sumWeight_jet_multiplicity_8_2022EE_after
-            weights_jet_multiplicity_2022EE["9"] = 1 if sumWeight_jet_multiplicity_9_2022EE_after == 0 else sumWeight_jet_multiplicity_9_2022EE_before / \
-                sumWeight_jet_multiplicity_9_2022EE_after
-            weights_jet_multiplicity_2022EE["10"] = 1 if sumWeight_jet_multiplicity_10_2022EE_after == 0 else sumWeight_jet_multiplicity_10_2022EE_before / \
-                sumWeight_jet_multiplicity_10_2022EE_after
+            for i in range(11):
+                weights_jet_multiplicity_2022[i] = 1 if sumWeight_jet_multiplicity_2022_after[i] == 0 else sumWeight_jet_multiplicity_2022_before[i] / \
+                    sumWeight_jet_multiplicity_2022_after[i]
+                weights_jet_multiplicity_2022EE[i] = 1 if sumWeight_jet_multiplicity_2022EE_after[i] == 0 else sumWeight_jet_multiplicity_2022EE_before[i] / \
+                    sumWeight_jet_multiplicity_2022EE_after[i]
 
             weights_jet_multiplicity["2022"] = weights_jet_multiplicity_2022
             weights_jet_multiplicity["2022EE"] = weights_jet_multiplicity_2022EE
@@ -555,7 +354,7 @@ class btagReweighting(_base):
             dic_weights["MC"] = mc_weights_dic
             dic_weights["JetMulti"] = weights_jet_multiplicity
 
-        dic_MC = weights_jet_multiplicity.copy()
+        dict_MC = weights_jet_multiplicity.copy()
 
         def _convert_DictToJSON(self, leptontau_btag_rescale_weights_shape):
             import os.path
@@ -613,7 +412,7 @@ class btagReweighting(_base):
 
             correction_set = CorrectionSet(
                 schema_version=VERSION, corrections=[corr])
-            write(correction_set, f"{ratio_correction_btagg_path}/RatioCorr_btagShapeSF_{self.channel}ch.json.gz",
+            write(correction_set, f"{ratio_correction_btagg_path}/RatioCorr_btagShapeSF_{self.channel}.json.gz",
                   sort_keys=True, indent=2, maxlistlen=25, maxdictlen=3, breakbrackets=False)
 
         _convert_DictToJSON(self, dic_MC)
