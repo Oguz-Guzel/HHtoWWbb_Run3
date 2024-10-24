@@ -95,15 +95,11 @@ class cutflowAnalysis(NanoBaseHHWWbb):
             "event_no": tree.event,
             "weight": noSel.weight,
         }
-        l1, l2, j1, j2, met = defs.DNN_variables(self, tree)
+        l1, l2, j1, j2, met = defs.ml_input_features(self, tree)
 
         tnn_vars = tnn_vars | l1 | l2 | j1 | j2 | met
-        # line above is equivalent to the following (concetanation of dictionaries)
+        # line above is equivalent to the following (concetanation of dictionaries in dim=0)
         # tnn_vars =  {**tnn_vars, **l1, **l2, **j1, **j2, **met}
-
-        #############################################################################
-        #                                 Plots                                     #
-        #############################################################################
 
         event_selections = [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
                             DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
@@ -116,7 +112,7 @@ class cutflowAnalysis(NanoBaseHHWWbb):
             )
 
         def nn_input_var_binning(var_name):
-            "Function to return binning, min and max values for the NN input feature plots."
+            "Function to return binning, min and max values for the TNN input feature plots."
             if "_Px" in var_name or "_Py" in var_name:
                 N, mn, mx = 100, -1000, 1000
             elif "_Pz" in var_name:
