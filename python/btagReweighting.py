@@ -48,10 +48,6 @@ class _base(NanoAODModule, HistogramsModule):
         self.era = sampleCfg["era"] if sampleCfg else None
         self.is_MC = self.isMC(sample)
 
-        from bamboo.plots import CutFlowReport
-        self.yields = CutFlowReport(
-            "yields", recursive=False, printInLog=True)
-
         # Decorate the tree
         from bamboo.treedecorators import NanoAODDescription, nanoFatJetCalc, CalcCollectionsGroups
         metName = "PuppiMET"
@@ -69,16 +65,11 @@ class _base(NanoAODModule, HistogramsModule):
                 "v12", year=self.era[:4], isMC=self.is_MC, systVariations=systVars),
             backend=self.args.backend or backend)
 
-        # Number of events before any processing
-        self.yields.add(noSel, "noSel")
-
         # MC weight
         if self.is_MC:
-            logger.info("Applying genWeight")
             noSel = noSel.refine('genWeight', weight=tree.genWeight)
         else:
             noSel = noSel.refine('genWeight', weight=op.c_float(1.))
-        self.yields.add(noSel, "genWeight")
 
         # Triggers
         self.triggers_per_PD = {}
@@ -122,8 +113,6 @@ class _base(NanoAODModule, HistogramsModule):
             noSel = noSel.refine('triggers', cut=makeMultiPrimaryDatasetTriggerSelection(
                 sample, self.triggers_per_PD))
 
-        self.yields.add(noSel, "triggers")
-
         return tree, noSel, be, lumiArgs
 
 
@@ -139,9 +128,6 @@ class btagReweighting(_base):
     def definePlots(self, tree, noSel, sample=None, sampleCfg=None):
         plots = []
 
-        # cutflow report
-        plots.append(self.yields)
-
         # define objects
         defs.defineObjects(self, tree)
 
@@ -150,8 +136,6 @@ class btagReweighting(_base):
         plots.append(
             Skim("WeightsBeforeBtagSF",
                  {
-                     "jet_pt" + preprend: self.ak4Jets[0].p4.Pt(),
-                     "jet_eta" + preprend: self.ak4Jets[0].p4.Eta(),
                      "jetMultiplicity" + preprend: op.rng_len(self.ak4Jets),
                      "Sel_weight" + preprend: noSel.weight,
                  },
@@ -163,7 +147,6 @@ class btagReweighting(_base):
         # btagging SF
         if self.is_MC:
             from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
-            logger.info("Applying btagging SF")
             def btvSF(flav): return get_bTagSF_itFit(
                 BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", flav, sel=noSel, decorr_eras=True, era=self.era)
             btvWeight = makeBtagWeightItFit(self.ak4Jets, btvSF)
@@ -174,31 +157,19 @@ class btagReweighting(_base):
         plots.append(
             Skim("WeightsAfterBtagSF",
                  {
-                     "jet_pt" + preprend: self.ak4Jets[0].p4.Pt(),
-                     "jet_eta" + preprend: self.ak4Jets[0].p4.Eta(),
                      "jetMultiplicity" + preprend: op.rng_len(self.ak4Jets),
                      "Sel_weight" + preprend: btagSF.weight,
                  },
-                 noSel
+                 btagSF
                  ))
-
-        plots.extend([
-            Plot.make1D("noSel_n_ak8", op.rng_len(self.ak8Jets), noSel, EqBin(
-                10, 0, 10), title="N(ak8jet)", xTitle="Number of fatjet"),
-        ])
 
         return plots
 
     def postProcess(self, taskList, config=None, workdir=None, resultsdir=None):
-        """PostProcessing step."""
-        super().postProcess(taskList, config=config, workdir=workdir,
-                            resultsdir=resultsdir)
+        super().postProcess(taskList, config=config, workdir=workdir, resultsdir=resultsdir)
 
         if not self.plotList:
-            self.plotList = self.getPlotList(
-                resultsdir=resultsdir, config=config)
-
-        from bamboo.plots import Skim
+            self.plotList = self.getPlotList(resultsdir=resultsdir, config=config)
 
         skim_list = [ap for ap in self.plotList if isinstance(ap, Skim)]
 
