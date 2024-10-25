@@ -173,190 +173,112 @@ class btagReweighting(_base):
 
         skim_list = [ap for ap in self.plotList if isinstance(ap, Skim)]
 
+        # Fallback if no eras are specified
         _, eras = self.args.eras
         if eras is None:
             eras = list(config["eras"].keys())
 
-        if skim_list:
+        # Initialize dictionaries for each era
+        sumW_perEra = {era: {"before": [0]*11, "after": [0]*11} for era in eras}
 
-            mc_sumWeigth_before = 0
-            mc_sumWeigth_after = 0
+        for proc, smpCfg in config["samples"].items():
+            if smpCfg.get("group") == "data":
+                continue
 
-            mc_sumWeigth_2022_before = 0
-            mc_sumWeigth_2022_after = 0
+            def _openFileAndGet(path, mode="read"):
+                tf = TFile.Open(path, mode)
+                if not tf or not tf.IsOpen():
+                    raise Exception(f"Could not open file {path}")
+                return tf
 
-            mc_sumWeigth_2022EE_before = 0
-            mc_sumWeigth_2022EE_after = 0
+            sample_rootfile = _openFileAndGet(os.path.join(resultsdir, f"{proc}.root"), "read")
+            genEvents = self.readCounters(sample_rootfile)[smpCfg["generated-events"]]
+            lumi = config["eras"][smpCfg["era"]]["luminosity"]
+            Xsection = smpCfg["cross-section"]
+            smpScale = lumi * Xsection / genEvents
+            era = smpCfg["era"]
 
-            sumWeight_jet_multiplicity_2022_before = [0]*11
+            nJet_before = [0]*11
+            nJet_after = [0]*11
 
-            sumWeight_jet_multiplicity_2022_after = [0]*11
+            for skim in skim_list:
+                tree = sample_rootfile.Get(skim.treeName)
+                if not tree:
+                    logger.info(f"Warning: skim tree {skim.treeName} not found in file {sample_rootfile.GetName()}")
+                    continue
 
-            sumWeight_jet_multiplicity_2022EE_before = [0]*11
+                branch_names = [branch.GetName() for branch in tree.GetListOfBranches()]
 
-            sumWeight_jet_multiplicity_2022EE_after = [0]*11
+                def accumulate_weights(tree, weight_branch, multiplicity_branch, accumulator):
+                    for entry in tree:
+                        jm = min(getattr(entry, multiplicity_branch), 10)
+                        accumulator[jm] += getattr(entry, weight_branch)
 
-            for proc, smpCfg in config["samples"].items():
-
-                if smpCfg.get("group") == "data":
-
-                    mc_sumWeigth_before += 0.0
-                    mc_sumWeigth_after += 0.0
-                else:
-                    def _openFileAndGet(path, mode="read"):
-                        """Open ROOT file in a mode, check if open properly, and return TFile handle"""
-                        tf = TFile.Open(path, mode)
-                        if not tf or not tf.IsOpen():
-                            raise Exception(
-                                "Could not open file {}".format(path))
-                        return tf
-
-                    sample_rootfile = _openFileAndGet(os.path.join(
-                        resultsdir, proc + ".root"), "read")  # already the TFile
-
-                    genEvents = self.readCounters(sample_rootfile)[
-                        smpCfg["generated-events"]]
-                    lumi = config["eras"][smpCfg["era"]]["luminosity"]
-                    Xsection = smpCfg["cross-section"]
-                    smpScale = lumi*Xsection/genEvents
-                    era = smpCfg["era"]
-
-                    jet_multiplicity_before = [0]*11
-                    jet_multiplicity_after = [0]*11
-
-                    for skim in skim_list:
-                        tree = sample_rootfile.Get(skim.treeName)
-
-                        if not tree:
-                            logger.info("Warning: skim tree %s not found in file %s" % (
-                                skim.treeName, sample_rootfile.GetName()))
-                            continue
-
-                        else:
-                            branches = tree.GetListOfBranches()
-
-                            if "Sel_weight_after" in [branch.GetName() for branch in branches]:
-                                afterweight_sum = 0
-
-                                for entry in tree:
-                                    afterweight_sum += entry.Sel_weight_after
-                                    jm = entry.jetMultiplicity_after
-                                    if jm < 10:
-                                        jet_multiplicity_after[jm] += entry.Sel_weight_after
-                                    else:
-                                        jet_multiplicity_after[10] += entry.Sel_weight_after
-
-                            elif "Sel_weight_before" in [branch.GetName() for branch in branches]:
-                                beforeweight_sum = 0
-
-                                for entry in tree:
-                                    beforeweight_sum += entry.Sel_weight_before
-                                    jm = entry.jetMultiplicity_before
-                                    if jm < 10:
-                                        jet_multiplicity_before[jm] += entry.Sel_weight_before
-                                    else:
-                                        jet_multiplicity_before[10] += entry.Sel_weight_before
-
-                    logger.info("Sum of the Weights, Before {0} and After {1}".format(
-                        beforeweight_sum, afterweight_sum))
-                    if era == "2022":
-                        # sum of the weights before and after applying the b-tag SF: Total weight
-                        mc_sumWeigth_2022_before += beforeweight_sum * smpScale
-                        mc_sumWeigth_2022_after += afterweight_sum * smpScale
-                        # sum of the weights before and after applying the b-tag SF: split by multiplicity up to 10
-                        for i in range(11):
-                            sumWeight_jet_multiplicity_2022_before[i] += jet_multiplicity_before[i] * smpScale
-                            sumWeight_jet_multiplicity_2022_after[i] += jet_multiplicity_after[i] * smpScale
-
-                    elif era == "2022EE":
-                        mc_sumWeigth_2022EE_before += beforeweight_sum * smpScale
-                        mc_sumWeigth_2022EE_after += afterweight_sum * smpScale
-                        # sum of the weights before and after applying the b-tag SF: split by multiplicity 2022 EE
-                        for i in range(11):
-                            sumWeight_jet_multiplicity_2022EE_before[i] += jet_multiplicity_before[i] * smpScale
-                            sumWeight_jet_multiplicity_2022EE_after[i] += jet_multiplicity_after[i] * smpScale
-
-                    mc_sumWeigth_before += smpScale * beforeweight_sum
-                    mc_sumWeigth_after += smpScale * afterweight_sum
-
-                    sample_rootfile.Close()
-
-            mc_weights_dic = {}
-            weights_jet_multiplicity = {}
-            weights_jet_multiplicity_2022 = {}
-            weights_jet_multiplicity_2022EE = {}
-
-            mc_weights_dic["2022"] = mc_sumWeigth_2022_before / \
-                mc_sumWeigth_2022_after
-            mc_weights_dic["2022EE"] = mc_sumWeigth_2022EE_before / \
-                mc_sumWeigth_2022EE_after
-            mc_weights_dic["CombEras"] = mc_sumWeigth_before / \
-                mc_sumWeigth_after
+                if "Sel_weight_after" in branch_names:
+                    accumulate_weights(tree, "Sel_weight_after", "jetMultiplicity_after", nJet_after)
+                elif "Sel_weight_before" in branch_names:
+                    accumulate_weights(tree, "Sel_weight_before", "jetMultiplicity_before", nJet_before)
 
             for i in range(11):
-                weights_jet_multiplicity_2022[i] = 1 if sumWeight_jet_multiplicity_2022_after[i] == 0 else sumWeight_jet_multiplicity_2022_before[i] / \
-                    sumWeight_jet_multiplicity_2022_after[i]
-                weights_jet_multiplicity_2022EE[i] = 1 if sumWeight_jet_multiplicity_2022EE_after[i] == 0 else sumWeight_jet_multiplicity_2022EE_before[i] / \
-                    sumWeight_jet_multiplicity_2022EE_after[i]
+                sumW_perEra[era]["before"][i] += nJet_before[i] * smpScale
+                sumW_perEra[era]["after"][i] += nJet_after[i] * smpScale
 
-            weights_jet_multiplicity["2022"] = weights_jet_multiplicity_2022
-            weights_jet_multiplicity["2022EE"] = weights_jet_multiplicity_2022EE
+            sample_rootfile.Close()
 
-        dict_MC = weights_jet_multiplicity.copy()
+        weights_per_nJet = {
+            era: {
+                i: 1 if sumW_perEra[era]["after"][i] == 0 else sumW_perEra[era]["before"][i] / sumW_perEra[era]["after"][i]
+                for i in range(11)
+            }
+            for era in eras
+        }
 
-        def _convert_DictToJSON(self, ratio_dict):
-            import os.path
-            from correctionlib.schemav2 import VERSION, Correction, Variable, Category, CorrectionSet
-            from correctionlib.JSONEncoder import write
+        dict_MC = weights_per_nJet.copy()
+        self._convert_DictToJSON(dict_MC, workdir)
 
-            if not os.path.isdir(os.path.join(workdir, 'data')):
-                os.makedirs(os.path.join(workdir, 'data'))
+    def _convert_DictToJSON(self, ratio_dict, workdir):
+        from correctionlib.schemav2 import VERSION, Correction, Variable, Category, CorrectionSet
+        from correctionlib.JSONEncoder import write
 
-            ratio_correction_btagg_path = os.path.join(workdir, 'data')
+        data_dir = os.path.join(workdir, 'data')
+        if not os.path.isdir(data_dir):
+            os.makedirs(data_dir)
 
-            inputs = [
-                Variable(name="year", type="string",
-                         description="Year: 2022(preEE),2022EE(posEE)"),
-                Variable(name="jet_multiplicity", type="int",
-                         description="Jet Mulitplicity")
-            ]
+        inputs = [
+            Variable(name="year", type="string", description="Year-based era"),
+            Variable(name="jet_multiplicity", type="int", description="Jet Multiplicity")
+        ]
+        output = Variable(name="ratio", type="real", description="Ratio to correct the b-tag SF shape")
 
-            output = Variable(name="ratio", type="real",
-                              description="Ratio to correct the b-tag SF shape")
-
-            def _get_DataContent(ratio_dict):
-                data_content = Category.parse_obj({
-                    "nodetype": "category",
-                    "input": "year",
-                    "content": [
-                        {"key": year,
-                         "value": Category.parse_obj({
-                                "nodetype": "category",
-                                "input": "jet_multiplicity",
-                             "content": [
-                                 {"key": multiplicity,
-                                  "value": ratio,
-                                  } for multiplicity, ratio, in multiplicity_ratio_dict.items()]
-                         }),
-                         } for year, multiplicity_ratio_dict in ratio_dict.items()
-                    ]
-                })
-                return data_content
-
-            corr = Correction.parse_obj({
-                "version": 1,
-                "name": "Ratio_btagSF_shape",
-                "description": "Ratio correction for the b-tag SF shape",
-                "inputs": inputs,
-                "output": output,
-                "data": _get_DataContent(ratio_dict)
+        def _get_DataContent(ratio_dict):
+            return Category.parse_obj({
+                "nodetype": "category",
+                "input": "year",
+                "content": [
+                    {
+                        "key": year,
+                        "value": Category.parse_obj({
+                            "nodetype": "category",
+                            "input": "jet_multiplicity",
+                            "content": [
+                                {"key": multiplicity, "value": ratio}
+                                for multiplicity, ratio in multiplicity_ratio_dict.items()
+                            ]
+                        })
+                    } for year, multiplicity_ratio_dict in ratio_dict.items()
+                ]
             })
 
-            correction_set = CorrectionSet(
-                schema_version=VERSION, corrections=[corr])
-            output_file_name = f"{ratio_correction_btagg_path}/2022_Btag_rescaling.json.gz"
-            write(correction_set, output_file_name,
-                  sort_keys=True, indent=2, maxlistlen=25, maxdictlen=3, breakbrackets=False)
-            logger.info(f'written to: {output_file_name}')
+        corr = Correction.parse_obj({
+            "version": 1,
+            "name": "Ratio_btagSF_shape",
+            "description": "Ratio correction for the b-tag SF shape",
+            "inputs": inputs,
+            "output": output,
+            "data": _get_DataContent(ratio_dict)
+        })
 
-        _convert_DictToJSON(self, dict_MC)
+        correction_set = CorrectionSet(schema_version=VERSION, corrections=[corr])
+        output_file = os.path.join(data_dir, f"btagSF_rescaling.json.gz")
+        write(correction_set, output_file, sort_keys=True, indent=2, maxlistlen=25, maxdictlen=3, breakbrackets=False)
+        logger.info(f'written to: {output_file}')
