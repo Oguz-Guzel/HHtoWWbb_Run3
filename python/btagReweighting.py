@@ -198,21 +198,13 @@ class btagReweighting(_base):
             self.plotList = self.getPlotList(
                 resultsdir=resultsdir, config=config)
 
-        from bamboo.plots import CutFlowReport, Skim
-
-        plotList_cutFlow = [
-            ap for ap in self.plotList if isinstance(ap, CutFlowReport)]
+        from bamboo.plots import Skim
 
         skim_list = [ap for ap in self.plotList if isinstance(ap, Skim)]
 
-        eraMode, eras = self.args.eras
+        _, eras = self.args.eras
         if eras is None:
             eras = list(config["eras"].keys())
-
-        if plotList_cutFlow:
-            from bamboo.analysisutils import printCutFlowReports
-            printCutFlowReports(config, plotList_cutFlow, workdir=workdir, resultsdir=resultsdir,
-                                readCounters=self.readCounters, eras=(eraMode, eras), verbose=self.args.verbose)
 
         if skim_list:
 
@@ -240,8 +232,6 @@ class btagReweighting(_base):
                     mc_sumWeigth_before += 0.0
                     mc_sumWeigth_after += 0.0
                 else:
-                    logger.info("Sample being processed is: {}".format(proc))
-
                     def _openFileAndGet(path, mode="read"):
                         """Open ROOT file in a mode, check if open properly, and return TFile handle"""
                         tf = TFile.Open(path, mode)
