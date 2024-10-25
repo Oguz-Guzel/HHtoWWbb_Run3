@@ -1,6 +1,5 @@
 
-from bamboo.plots import Plot, Skim
-from bamboo.plots import EquidistantBinning as EqBin
+from bamboo.plots import Skim
 from bamboo import treefunctions as op
 
 from bamboo.analysismodules import NanoAODModule, HistogramsModule
@@ -49,27 +48,16 @@ class _base(NanoAODModule, HistogramsModule):
         self.is_MC = self.isMC(sample)
 
         # Decorate the tree
-        from bamboo.treedecorators import NanoAODDescription, nanoFatJetCalc, CalcCollectionsGroups
-        metName = "PuppiMET"
-        nanoJetMETCalc_both = CalcCollectionsGroups(
-            Jet=("pt", "mass"), changes={metName: (f"{metName}T1", f"{metName}T1Smear")},
-            **{metName: ("pt", "phi")})
-        nanoJetMETCalc_data = CalcCollectionsGroups(
-            Jet=("pt", "mass"), changes={metName: (f"{metName}T1",)},
-            **{metName: ("pt", "phi")})
-        systVars = (([nanoFatJetCalc])
-                    + [nanoJetMETCalc_both if self.is_MC else nanoJetMETCalc_data])
+        from bamboo.treedecorators import NanoAODDescription
         tree, noSel, be, lumiArgs = super().prepareTree(
             tree, sample=sample, sampleCfg=sampleCfg,
             description=NanoAODDescription.get(
-                "v12", year=self.era[:4], isMC=self.is_MC, systVariations=systVars),
+                "v12", year=self.era[:4], isMC=self.is_MC),
             backend=self.args.backend or backend)
 
         # MC weight
-        if self.is_MC:
-            noSel = noSel.refine('genWeight', weight=tree.genWeight)
-        else:
-            noSel = noSel.refine('genWeight', weight=op.c_float(1.))
+        genWeight = tree.genWeight if self.is_MC else op.c_float(1.)
+        noSel = noSel.refine('genWeight', weight=genWeight)
 
         # Triggers
         self.triggers_per_PD = {}
@@ -131,45 +119,34 @@ class btagReweighting(_base):
         # define objects
         defs.defineObjects(self, tree)
 
-        preprend = '_before'
-
-        plots.append(
-            Skim("WeightsBeforeBtagSF",
-                 {
-                     "jetMultiplicity" + preprend: op.rng_len(self.ak4Jets),
-                     "Sel_weight" + preprend: noSel.weight,
-                 },
-                 noSel
-                 ))
-
-        preprend = '_after'
-
         # btagging SF
-        if self.is_MC:
-            from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
-            def btvSF(flav): return get_bTagSF_itFit(
-                BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", flav, sel=noSel, decorr_eras=True, era=self.era)
-            btvWeight = makeBtagWeightItFit(self.ak4Jets, btvSF)
-            btagSF = noSel.refine("btagSF", weight=btvWeight)
-        else:
-            btagSF = noSel.refine("btagSF", weight=op.c_float(1.))
+        from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
+        def btvSF(flav): return get_bTagSF_itFit(
+            BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", flav, sel=noSel, decorr_eras=True, era=self.era)
+        btvWeight = makeBtagWeightItFit(
+            self.ak4Jets, btvSF) if self.is_MC else op.c_float(1.)
+        btagSF = noSel.refine("btagSF", weight=btvWeight)
 
-        plots.append(
+        plots.extend([
+            Skim("WeightsBeforeBtagSF",
+                 {"jetMultiplicity_before": op.rng_len(self.ak4Jets),
+                     "Sel_weight_before": noSel.weight},
+                 noSel
+                 ),
             Skim("WeightsAfterBtagSF",
-                 {
-                     "jetMultiplicity" + preprend: op.rng_len(self.ak4Jets),
-                     "Sel_weight" + preprend: btagSF.weight,
-                 },
+                 {"jetMultiplicity_after": op.rng_len(self.ak4Jets),
+                     "Sel_weight_after": btagSF.weight},
                  btagSF
-                 ))
-
+                 )]
+        )
         return plots
 
     def postProcess(self, taskList, config=None, workdir=None, resultsdir=None):
         super().postProcess(taskList, config=config, workdir=workdir, resultsdir=resultsdir)
 
         if not self.plotList:
-            self.plotList = self.getPlotList(resultsdir=resultsdir, config=config)
+            self.plotList = self.getPlotList(
+                resultsdir=resultsdir, config=config)
 
         skim_list = [ap for ap in self.plotList if isinstance(ap, Skim)]
 
@@ -179,7 +156,8 @@ class btagReweighting(_base):
             eras = list(config["eras"].keys())
 
         # Initialize dictionaries for each era
-        sumW_perEra = {era: {"before": [0]*11, "after": [0]*11} for era in eras}
+        sumW_perEra = {era: {"before": [0]*11,
+                             "after": [0]*11} for era in eras}
 
         for proc, smpCfg in config["samples"].items():
             if smpCfg.get("group") == "data":
@@ -191,8 +169,10 @@ class btagReweighting(_base):
                     raise Exception(f"Could not open file {path}")
                 return tf
 
-            sample_rootfile = _openFileAndGet(os.path.join(resultsdir, f"{proc}.root"), "read")
-            genEvents = self.readCounters(sample_rootfile)[smpCfg["generated-events"]]
+            sample_rootfile = _openFileAndGet(
+                os.path.join(resultsdir, f"{proc}.root"), "read")
+            genEvents = self.readCounters(sample_rootfile)[
+                smpCfg["generated-events"]]
             lumi = config["eras"][smpCfg["era"]]["luminosity"]
             Xsection = smpCfg["cross-section"]
             smpScale = lumi * Xsection / genEvents
@@ -204,10 +184,12 @@ class btagReweighting(_base):
             for skim in skim_list:
                 tree = sample_rootfile.Get(skim.treeName)
                 if not tree:
-                    logger.info(f"Warning: skim tree {skim.treeName} not found in file {sample_rootfile.GetName()}")
+                    logger.info(
+                        f"Warning: skim tree {skim.treeName} not found in file {sample_rootfile.GetName()}")
                     continue
 
-                branch_names = [branch.GetName() for branch in tree.GetListOfBranches()]
+                branch_names = [branch.GetName()
+                                for branch in tree.GetListOfBranches()]
 
                 def accumulate_weights(tree, weight_branch, multiplicity_branch, accumulator):
                     for entry in tree:
@@ -215,9 +197,11 @@ class btagReweighting(_base):
                         accumulator[jm] += getattr(entry, weight_branch)
 
                 if "Sel_weight_after" in branch_names:
-                    accumulate_weights(tree, "Sel_weight_after", "jetMultiplicity_after", nJet_after)
+                    accumulate_weights(
+                        tree, "Sel_weight_after", "jetMultiplicity_after", nJet_after)
                 elif "Sel_weight_before" in branch_names:
-                    accumulate_weights(tree, "Sel_weight_before", "jetMultiplicity_before", nJet_before)
+                    accumulate_weights(
+                        tree, "Sel_weight_before", "jetMultiplicity_before", nJet_before)
 
             for i in range(11):
                 sumW_perEra[era]["before"][i] += nJet_before[i] * smpScale
@@ -227,7 +211,8 @@ class btagReweighting(_base):
 
         weights_per_nJet = {
             era: {
-                i: 1 if sumW_perEra[era]["after"][i] == 0 else sumW_perEra[era]["before"][i] / sumW_perEra[era]["after"][i]
+                i: 1 if sumW_perEra[era]["after"][i] == 0 else sumW_perEra[era]["before"][i] /
+                sumW_perEra[era]["after"][i]
                 for i in range(11)
             }
             for era in eras
@@ -246,9 +231,11 @@ class btagReweighting(_base):
 
         inputs = [
             Variable(name="year", type="string", description="Year-based era"),
-            Variable(name="jet_multiplicity", type="int", description="Jet Multiplicity")
+            Variable(name="jet_multiplicity", type="int",
+                     description="Jet Multiplicity")
         ]
-        output = Variable(name="ratio", type="real", description="Ratio to correct the b-tag SF shape")
+        output = Variable(name="ratio", type="real",
+                          description="Ratio to correct the b-tag SF shape")
 
         def _get_DataContent(ratio_dict):
             return Category.parse_obj({
@@ -278,7 +265,9 @@ class btagReweighting(_base):
             "data": _get_DataContent(ratio_dict)
         })
 
-        correction_set = CorrectionSet(schema_version=VERSION, corrections=[corr])
+        correction_set = CorrectionSet(
+            schema_version=VERSION, corrections=[corr])
         output_file = os.path.join(data_dir, f"btagSF_rescaling.json.gz")
-        write(correction_set, output_file, sort_keys=True, indent=2, maxlistlen=25, maxdictlen=3, breakbrackets=False)
+        write(correction_set, output_file, sort_keys=True, indent=2,
+              maxlistlen=25, maxdictlen=3, breakbrackets=False)
         logger.info(f'written to: {output_file}')
