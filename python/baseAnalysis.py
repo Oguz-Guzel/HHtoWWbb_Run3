@@ -111,6 +111,8 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
 
     def prepareTree(self, tree, sample=None, sampleCfg=None, backend=None):
 
+        # Define the git project's directory
+        self.git_project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
         self.era = sampleCfg["era"] if sampleCfg else None
         self.is_MC = self.isMC(sample)
 
