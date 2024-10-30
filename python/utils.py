@@ -125,7 +125,9 @@ def custom_Plotit(cfgName, workdir, inDir, outDir, counterReader, config, plotIt
             outf.write("  error-fill-color: '#ee556270'\n")
             outf.write('  error-fill-style: 3154\n')
             outf.write('  experiment: CMS\n')
-            outf.write('  extra-label: Run 3 (2022) - Work in progress\n')
+            for era in lumiCFG.keys():
+                outf.write(f'  extra-label: Run 3 ({era[:4]}) - Work in progress\n')
+                break
             outf.write('  height: 600\n')
             outf.write('  luminosity:\n')
             for era, lumi in lumiCFG.items():
