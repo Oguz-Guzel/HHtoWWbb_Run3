@@ -67,7 +67,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             DL_DNN_EMu = {
                 **labeler('DL DNN score EMu - blinded'), 'blinded-range': [0.25, 0.999]}
 
-            l1, l2, j1, j2, met = defs.DNN_variables(self, tree)
+            l1, l2, j1, j2, met = defs.ml_input_features(self, tree)
             # prepare the input for the model
             l1 = op.array('float', *l1.values())
             l2 = op.array('float', *l2.values())
