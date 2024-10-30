@@ -263,9 +263,9 @@ class cutflowAnalysis(NanoBaseHHWWbb):
                 Plot.make1D("DL_boosted_leadingLepton_eta_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[0].eta, self.firstEmuTightPair[1].eta), DL_boosted_emu, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLboostedEMU_label),
                 Plot.make1D("DL_boosted_electron_eta_emu", self.firstEmuTightPair[0].eta, DL_boosted_emu, EqBin(
-                    30, -3, 3), title="leadingLeptonEta", xTitle="eta of the electron (GeV/c)", plotopts=DLboostedMuMu_label),
+                    30, -3, 3), title="leadingLeptonEta", xTitle="eta of the electron (GeV/c)", plotopts=DLboostedEMU_label),
                 Plot.make1D("DL_boosted_muon_eta_emu", self.firstEmuTightPair[1].eta, DL_boosted_emu, EqBin(
-                    30, -3, 3), title="leadingLeptonEta", xTitle="eta of the muon (GeV/c)", plotopts=DLboostedMuMu_label),
+                    30, -3, 3), title="leadingLeptonEta", xTitle="eta of the muon (GeV/c)", plotopts=DLboostedEMU_label),
 
                 # sub-leading lepton eta
                 Plot.make1D("DL_boosted_subleadingLepton_eta_ee", self.firstElTightPair[1].eta, DL_boosted_ee, EqBin(
