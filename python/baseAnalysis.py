@@ -283,7 +283,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         # # end of merging signal samples
 
         # create pdf presentation
-        if not self.mvaModels and not self.args.sync:
+        if not self.args.sync:
             try:
                 for era in eras:
                     os.system(utils.runPDF(workdir=workdir, channel=self.args.channel, era=era))
