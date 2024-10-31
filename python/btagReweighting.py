@@ -222,7 +222,7 @@ class btagReweighting(_base):
         self._convert_DictToJSON(dict_MC, workdir)
 
     def _convert_DictToJSON(self, ratio_dict, workdir):
-        from correctionlib.schemav2 import VERSION, Correction, Variable, Category, CorrectionSet
+        from correctionlib.schemav2 import VERSION, Correction, Variable, Category, CorrectionSet, Binning
         from correctionlib.JSONEncoder import write
 
         data_dir = os.path.join(workdir, 'data')
@@ -231,26 +231,34 @@ class btagReweighting(_base):
 
         inputs = [
             Variable(name="year", type="string", description="Year-based era"),
-            Variable(name="jet_multiplicity", type="int",
+            Variable(name="jet_multiplicity", type="real",
                      description="Jet Multiplicity")
         ]
         output = Variable(name="ratio", type="real",
                           description="Ratio to correct the b-tag SF shape")
 
         def _get_DataContent(ratio_dict):
+            def dict_to_list(dict_):
+                lm = []
+                lr = []
+                for m, r in dict_.items():
+                    lm.append(m-0.5)
+                    lr.append(r)
+                lm.append(list(dict_)[-1]+0.5)
+                return [lm, lr]
+
             return Category.parse_obj({
                 "nodetype": "category",
                 "input": "year",
                 "content": [
                     {
                         "key": year,
-                        "value": Category.parse_obj({
-                            "nodetype": "category",
+                        "value": Binning.parse_obj({
+                            "nodetype": "binning",
                             "input": "jet_multiplicity",
-                            "content": [
-                                {"key": multiplicity, "value": ratio}
-                                for multiplicity, ratio in multiplicity_ratio_dict.items()
-                            ]
+                            "edges": dict_to_list(multiplicity_ratio_dict)[0],
+                            "content": dict_to_list(multiplicity_ratio_dict)[1],
+                            "flow": "clamp"
                         })
                     } for year, multiplicity_ratio_dict in ratio_dict.items()
                 ]
@@ -262,7 +270,7 @@ class btagReweighting(_base):
             "description": "Ratio correction for the b-tag SF shape",
             "inputs": inputs,
             "output": output,
-            "data": _get_DataContent(ratio_dict)
+            "data": _get_DataContent(ratio_dict=ratio_dict)
         })
 
         correction_set = CorrectionSet(

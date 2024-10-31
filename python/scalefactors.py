@@ -1,8 +1,8 @@
-import os
 import re
 import logging
 
 from bamboo import treefunctions as op
+from bamboo.scalefactors import get_correction
 
 logger = logging.getLogger(__name__)
 
@@ -50,9 +50,9 @@ class ScaleFactors():
     """Class to define scale factors"""
 
     def commonSF(self, tree, sel, sample):
-
+        isMC = self.is_MC
         # top pt reweighting
-        if self.is_MC and sample.startswith("TT"):
+        if isMC and sample.startswith("TT"):
             def top_pt_weight(pt):
                 return op.exp(-2.02274e-01 + 1.09734e-04*pt + -1.30088e-07*pt**2 + (5.83494e+01/(pt+1.96252e+02)))
 
@@ -77,16 +77,41 @@ class ScaleFactors():
         self.yields.add(sel, "topPt reweighting")
 
         # btagging SF
-        if self.is_MC:
+        if isMC:
             from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
             logger.info("Applying btagging SF")
+
             def btvSF(flav): return get_bTagSF_itFit(
                 BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", flav, sel, decorr_eras=True, era=self.era)
             btvWeight = makeBtagWeightItFit(self.ak4Jets, btvSF)
-            sel = sel.refine("btagSF", weight=btvWeight)
         else:
-            sel = sel.refine("btagSF", weight=op.c_float(1.))
+            btvWeight = op.c_float(1.)
+
+        sel = sel.refine("btagSF", weight=btvWeight)
+
         self.yields.add(sel, "btagging SF")
+
+        # btag reweighting
+
+        if isMC:
+            logger.info("Applying btag reweighting")
+            btag_corr = get_correction(
+                f"{self.git_project_dir}/data/{self.era[:4]}_btagSF_reweight.json.gz",
+                "Ratio_btagSF_shape",
+                params={
+                    "year": self.era,
+                    # 1. to make it a float
+                    "jet_multiplicity": 1.*op.rng_len(self.ak4Jets)
+                },
+                sel=sel
+            )
+        # None since the object is already in the btag_corr i.e. self.ak4Jets
+        btag_rescale = btag_corr(None) if isMC else op.c_float(1.)
+
+        sel = sel.refine("btagReweight", weight=btag_rescale)
+
+        self.yields.add(sel, "btag reweight")
+
         return sel
 
     def muonSF(self, sel):
