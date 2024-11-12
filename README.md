@@ -45,10 +45,9 @@ bambooRun -m python/cutflowAnalysis.py config/<2022 or 2023>_v12.yml -o ./output
 ```
 Instead of passing `--envConfig config/cern.ini` everytime, you can copy the content of that file to `~/.config/bamboorc`.
 
-using the `parquet` output file that contains skims and the DNN.py file, you can perform machine learning applications.
+using the `parquet` output file that contains skims, you can perform machine learning applications. Once you get the output from your machine learning (preferably in onnx format), you can evaluate that on the datasets by
 
-Then,
 ```sh
 bambooRun -m python/mvaEvaluator.py config/<2022 or 2023>_v12.yml -o ./outputDir/ --envConfig config/cern.ini -c <DL(default) or SL> --distributed driver
 ```
-DNN score cut is applied on the analysis.
+where you get the ML score applied on the analysis.
