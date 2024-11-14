@@ -96,7 +96,7 @@ class ScaleFactors():
         if isMC:
             logger.info("Applying btag reweighting")
             btag_corr = get_correction(
-                f"{self.git_project_dir}/data/{self.era[:4]}_btagSF_reweight.json.gz",
+                f"{self.git_project_dir}/data/{self.era[:4]}_btagSF_rescaling.json.gz",
                 "Ratio_btagSF_shape",
                 params={
                     "year": self.era,
