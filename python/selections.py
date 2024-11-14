@@ -141,67 +141,67 @@ def makeDLSelection(self, sel):
     DL_boosted_pre_emu = emuPairMultiplicitySel.refine('DL_boosted_pre_emu', cut=op.c_bool(1))
 
     # boosted -> at least one b-tagged ak8 jet
-    DL_boosted_ee = elPairMultiplicitySel.refine(
+    DL_boosted_ee = DL_boosted_pre_ee.refine(
         'DL_boosted_ee', cut=(op.rng_len(self.ak8BJets) >= 1))
-    DL_boosted_mumu = mumuPairMultiplicitySel.refine(
+    DL_boosted_mumu = DL_boosted_pre_mumu.refine(
         'DL_boosted_mumu', cut=(op.rng_len(self.ak8BJets) >= 1))
-    DL_boosted_emu = emuPairMultiplicitySel.refine(
+    DL_boosted_emu = DL_boosted_pre_emu.refine(
         'DL_boosted_emu', cut=(op.rng_len(self.ak8BJets) >= 1))
 
+    DL_resolved_pre_ee = elPairMultiplicitySel.refine('DL_resolved_pre_ee', cut=[op.rng_len(self.ak4Jets) >= 2])
+    DL_resolved_pre_mumu = muPairMultiplicitySel.refine('DL_resolved_pre_mumu', cut=[op.rng_len(self.ak4Jets) >= 2])
+    DL_resolved_pre_emu = emuPairMultiplicitySel.refine('DL_resolved_pre_emu', cut=[op.rng_len(self.ak4Jets) >= 2])
+
     # resolved -> and at least two ak4 jets with 1 or at least 2 b-tagged jets and no ak8 jets
-    DL_resolved_1b_ee = elPairMultiplicitySel.refine(
+    DL_resolved_1b_ee = DL_resolved_pre_ee.refine(
         'DL_resolved_1b_ee',
         cut=(op.AND(
-            op.rng_len(self.ak4Jets) >= 2,
             op.rng_len(self.ak4BJets) == 1,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_2b_ee = elPairMultiplicitySel.refine(
+    DL_resolved_2b_ee = DL_resolved_pre_ee.refine(
         'DL_resolved_2b_ee',
         cut=(op.AND(
-            op.rng_len(self.ak4Jets) >= 2,
             op.rng_len(self.ak4BJets) >= 2,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_1b_mumu = mumuPairMultiplicitySel.refine(
+    DL_resolved_1b_mumu = DL_resolved_pre_mumu.refine(
         'DL_resolved_1b_mumu',
         cut=(op.AND(
-            op.rng_len(self.ak4Jets) >= 2,
             op.rng_len(self.ak4BJets) == 1,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_2b_mumu = mumuPairMultiplicitySel.refine(
+    DL_resolved_2b_mumu = DL_resolved_pre_mumu.refine(
         'DL_resolved_2b_mumu',
         cut=(op.AND(
-            op.rng_len(self.ak4Jets) >= 2,
             op.rng_len(self.ak4BJets) >= 2,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_1b_emu = emuPairMultiplicitySel.refine(
+    DL_resolved_1b_emu = DL_resolved_pre_emu.refine(
         'DL_resolved_1b_emu',
         cut=(op.AND(
-            op.rng_len(self.ak4Jets) >= 2,
             op.rng_len(self.ak4BJets) == 1,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_2b_emu = emuPairMultiplicitySel.refine(
+    DL_resolved_2b_emu = DL_resolved_pre_emu.refine(
         'DL_resolved_2b_emu',
         cut=(op.AND(
-            op.rng_len(self.ak4Jets) >= 2,
             op.rng_len(self.ak4BJets) >= 2,
             op.rng_len(self.ak8BJets) == 0))
     )
+
+    pre_final_state_sels = [DL_boosted_pre_ee, DL_boosted_pre_mumu, DL_boosted_pre_emu, DL_resolved_pre_ee, DL_resolved_pre_mumu, DL_resolved_pre_emu]
 
     DL_selections = [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
                      DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
                      DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu]
 
-    return DL_selections
+    return DL_selections, pre_final_state_sels
 
 
 def makeSLSelection(self, sel):
