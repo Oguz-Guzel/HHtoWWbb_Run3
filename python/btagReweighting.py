@@ -6,6 +6,8 @@ from bamboo.analysismodules import NanoAODModule, HistogramsModule
 from bamboo.analysisutils import makeMultiPrimaryDatasetTriggerSelection
 
 import definitions as defs
+from selections import makeDLSelection
+from scalefactors import ScaleFactors as sf
 
 import os
 from ROOT import TFile
@@ -126,26 +128,36 @@ class btagReweighting(_base):
         # define objects
         defs.defineObjects(self, tree)
 
-        # btagging SF
-        from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
-        def btvSF(flav): return get_bTagSF_itFit(
-            BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", flav, sel=noSel, decorr_eras=True, era=self.era)
-        btvWeight = makeBtagWeightItFit(
-            self.ak4Jets, btvSF) if self.is_MC else op.c_float(1.)
-        btagSF = noSel.refine("btagSF", weight=btvWeight)
+        # common scalefactors
+        noSel = sf.top_pT_reweight(self, tree, noSel, sample)
 
-        plots.extend([
-            Skim("WeightsBeforeBtagSF",
-                 {"jetMultiplicity_before": op.rng_len(self.ak4Jets),
-                     "Sel_weight_before": noSel.weight},
-                 noSel
-                 ),
-            Skim("WeightsAfterBtagSF",
-                 {"jetMultiplicity_after": op.rng_len(self.ak4Jets),
-                     "Sel_weight_after": btagSF.weight},
-                 btagSF
-                 )]
-        )
+        _, pre_sels = makeDLSelection(
+            self, noSel)
+
+        # pre_sels is [DL_boosted_pre_ee, DL_boosted_pre_mumu, DL_boosted_pre_emu, DL_resolved_pre_ee, DL_resolved_pre_mumu, DL_resolved_pre_emu]
+
+        for ps in pre_sels:
+            # add weights before btagSF
+            plots.append(
+                Skim("WeightsBeforeBtagSF_"+ps.name,
+                     {"jetMultiplicity_before": op.rng_len(self.ak4Jets),
+                         "Sel_weight_before": ps.weight},
+                     ps
+                     )
+            )
+
+            # apply btagSF
+            ps = sf.btagSF(self, ps)
+
+            # add weights after btagSF
+            plots.append(
+                Skim("WeightsAfterBtagSF_"+ps.name,
+                     {"jetMultiplicity_after": op.rng_len(self.ak4Jets),
+                      "Sel_weight_after": ps.weight},
+                     ps
+                     )
+            )
+        
         return plots
 
     def postProcess(self, taskList, config=None, workdir=None, resultsdir=None):
