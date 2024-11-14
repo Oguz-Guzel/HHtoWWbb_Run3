@@ -196,7 +196,7 @@ class btagReweighting(_base):
         for proc, smpCfg in config["samples"].items():
             if smpCfg.get("group") == "data":
                 continue
-            logger.info(f"Processing sample: {proc}")
+            logger.info(f"Post-processing sample: {proc}")
             sample_rootfile = _openFileAndGet(
                 os.path.join(resultsdir, f"{proc}.root"), "read")
             genEvents = self.readCounters(sample_rootfile)[
