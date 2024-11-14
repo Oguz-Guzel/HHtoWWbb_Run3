@@ -196,7 +196,7 @@ class btagReweighting(_base):
         for proc, smpCfg in config["samples"].items():
             if smpCfg.get("group") == "data":
                 continue
-
+            logger.info(f"Processing sample: {proc}")
             sample_rootfile = _openFileAndGet(
                 os.path.join(resultsdir, f"{proc}.root"), "read")
             genEvents = self.readCounters(sample_rootfile)[
@@ -298,7 +298,7 @@ class btagReweighting(_base):
 
         correction_set = CorrectionSet(
             schema_version=VERSION, corrections=[corr])
-        output_file = os.path.join(data_dir, f"btagSF_rescaling.json.gz")
+        output_file = os.path.join(data_dir, f"btagSF_reweight.json.gz")
         write(correction_set, output_file, sort_keys=True, indent=2,
               maxlistlen=25, maxdictlen=3, breakbrackets=False)
         logger.info(f'written to: {output_file}')
