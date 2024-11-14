@@ -1,6 +1,8 @@
 from bamboo import treefunctions as op
 from bamboo.plots import CategorizedSelection
 
+from scalefactors import ScaleFactors as sf
+
 # common variables for DL and SL channels
 
 Zmass = 91.1876 # GeV
@@ -109,7 +111,7 @@ def makeDLSelection(self, sel):
         op.rng_len(muTightPair) == 0,
         op.rng_len(emuTightPair) == 0
     )])
-    mumuPairMultiplicitySel = outZmuPairSel.refine('mumuPairMultiplicitySel', cut=[op.AND(
+    muPairMultiplicitySel = outZmuPairSel.refine('muPairMultiplicitySel', cut=[op.AND(
         op.rng_len(elTightPair) == 0,
         op.rng_len(muTightPair) == 1,
         op.rng_len(emuTightPair) == 0
@@ -119,6 +121,24 @@ def makeDLSelection(self, sel):
         op.rng_len(muTightPair) == 0,
         op.rng_len(emuTightPair) == 1,
     )])
+
+    # try applying lepton sf here 
+    # add muoniso sf
+    # add trigger sf 
+
+    # muonSF
+    muPairMultiplicitySel = sf.muonSF(self, muPairMultiplicitySel)
+
+    # electronSF
+    elPairMultiplicitySel = sf.electronSF(self, elPairMultiplicitySel)
+
+    # e-mu SF
+    emuPairMultiplicitySel = sf.muonSF(self, emuPairMultiplicitySel)
+    emuPairMultiplicitySel = sf.electronSF(self, emuPairMultiplicitySel)
+
+    DL_boosted_pre_ee = elPairMultiplicitySel.refine('DL_boosted_pre_ee', cut=op.c_bool(1))
+    DL_boosted_pre_mumu = muPairMultiplicitySel.refine('DL_boosted_pre_mumu', cut=op.c_bool(1))
+    DL_boosted_pre_emu = emuPairMultiplicitySel.refine('DL_boosted_pre_emu', cut=op.c_bool(1))
 
     # boosted -> at least one b-tagged ak8 jet
     DL_boosted_ee = elPairMultiplicitySel.refine(

@@ -49,7 +49,7 @@ def getRunEra(sample):
 class ScaleFactors():
     """Class to define scale factors"""
 
-    def commonSF(self, tree, sel, sample):
+    def top_pT_reweight(self, tree, sel, sample):
         isMC = self.is_MC
         # top pt reweighting
         if isMC and sample.startswith("TT"):
@@ -76,10 +76,13 @@ class ScaleFactors():
             sel = sel.refine("topPt", weight=op.c_float(1.))
         self.yields.add(sel, "topPt reweighting")
 
+        return sel
+    
+    def btagSF(self, sel):
         # btagging SF
-        if isMC:
+        if self.is_MC:
             from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
-            logger.info("Applying btagging SF")
+            logger.info("Applying btagging SF for "+sel.name)
 
             def btvSF(flav): return get_bTagSF_itFit(
                 BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", flav, sel, decorr_eras=True, era=self.era)
@@ -87,13 +90,15 @@ class ScaleFactors():
         else:
             btvWeight = op.c_float(1.)
 
-        sel = sel.refine("btagSF", weight=btvWeight)
+        sel = sel.refine(sel.name+"_btagSF", weight=btvWeight)
 
         self.yields.add(sel, "btagging SF")
 
-        # btag reweighting
-
-        if isMC:
+        return sel
+    
+    def btagRescale(self, sel):
+        # btag rewscaling based on sum of event weights
+        if self.is_MC:
             logger.info("Applying btag reweighting")
             btag_corr = get_correction(
                 f"{self.git_project_dir}/data/{self.era[:4]}_btagSF_rescaling.json.gz",
@@ -106,7 +111,7 @@ class ScaleFactors():
                 sel=sel
             )
         # None since the object is already in the btag_corr i.e. self.ak4Jets
-        btag_rescale = btag_corr(None) if isMC else op.c_float(1.)
+        btag_rescale = btag_corr(None) if self.is_MC else op.c_float(1.)
 
         sel = sel.refine("btagReweight", weight=btag_rescale)
 
@@ -129,7 +134,7 @@ class ScaleFactors():
                 systName="syst",
                 sel=sel
             )
-            if sel.name in ['DL_boosted_mumu', 'DL_resolved_mumu']:
+            if sel.name == 'muPairMultiplicitySel':
                 # pt and eta cut here since correction are available only when pt >= 15 and |eta| < 2.4
                 sel = sel.refine(sel.name+"_muonSF", cut=[
                     op.AND(self.firstMuTightPair[0].pt >= 15,
@@ -142,7 +147,7 @@ class ScaleFactors():
                     weight=[muonIDSF(self.firstMuTightPair[0]),
                             muonIDSF(self.firstMuTightPair[1])]
                 )
-            elif sel.name in ['DL_boosted_emu', 'DL_resolved_emu']:
+            elif sel.name == 'emuPairMultiplicitySel':
                 sel = sel.refine(sel.name+"_muonSF",
                                  cut=[op.AND(self.firstEmuTightPair[1].pt >= 15,
                                              op.abs(self.firstEmuTightPair[1].eta) < 2.4)],
@@ -176,7 +181,7 @@ class ScaleFactors():
                 systNomName="sf",
                 sel=sel
             )
-            if sel.name in ['DL_boosted_ee', 'DL_resolved_ee']:
+            if sel.name == 'elPairMultiplicitySel':
                 # pt cut here since correction's available only when pt >= 10
                 sel = sel.refine(sel.name+"_electronSF", cut=[
                     op.AND(self.firstElTightPair[0].pt >= 10,
@@ -185,7 +190,7 @@ class ScaleFactors():
                     weight=[electronIDSF(self.firstElTightPair[0]),
                             electronIDSF(self.firstElTightPair[1])]
                 )
-            elif sel.name in ['DL_boosted_emu', 'DL_resolved_emu']:
+            elif sel.name == 'emuPairMultiplicitySel':
                 sel = sel.refine(sel.name+"_electronSF",
                                  cut=[self.firstEmuTightPair[0].pt >= 10],
                                  weight=electronIDSF(self.firstEmuTightPair[0])
