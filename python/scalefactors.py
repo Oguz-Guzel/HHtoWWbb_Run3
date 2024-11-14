@@ -15,14 +15,14 @@ BTV_SF_JSONFiles = {
     "2023BPix": jsonPathBase + "BTV/2023_Summer23BPix/btagging.json.gz",
 }
 
-MUO_SF_JSONFiles = {
+MUON_SF_JSONFiles = {
     "2022": jsonPathBase + "MUO/2022_Summer22/muon_Z.json.gz",
     "2022EE": jsonPathBase + "MUO/2022_Summer22EE/muon_Z.json.gz",
     "2023": jsonPathBase + "MUO/2023_Summer23/muon_Z.json.gz",
     "2023BPix": jsonPathBase + "MUO/2023_Summer23BPix/muon_Z.json.gz",
 }
 
-EL_SF_JSONFiles = {
+EGamma_SF_JSONFiles = {
     "2022": (jsonPathBase + "EGM/2022_Summer22/electron.json.gz", "2022Re-recoBCD"),
     "2022EE": (jsonPathBase + "EGM/2022_Summer22EE/electron.json.gz", "2022Re-recoE+PromptFG"),
     "2023": (jsonPathBase + "EGM/2023_Summer23/electron.json.gz", "2023PromptC"),
@@ -77,7 +77,7 @@ class ScaleFactors():
         self.yields.add(sel, "topPt reweighting")
 
         return sel
-    
+
     def btagSF(self, sel):
         # btagging SF
         if self.is_MC:
@@ -95,9 +95,9 @@ class ScaleFactors():
         self.yields.add(sel, "btagging SF")
 
         return sel
-    
+
     def btagRescale(self, sel):
-        # btag rewscaling based on sum of event weights
+        # btag reweighting based on sum of event weights
         if self.is_MC:
             logger.info("Applying btag reweighting")
             btag_corr = get_correction(
@@ -124,8 +124,10 @@ class ScaleFactors():
         if self.is_MC:
             from bamboo.scalefactors import get_correction
             logger.info("Applying Muon SF for "+sel.name)
-            muonIDSF = get_correction(
-                MUO_SF_JSONFiles[self.era],
+
+            # Muon SF
+            muon_ID_sf = get_correction(
+                MUON_SF_JSONFiles[self.era],
                 "NUM_LooseID_DEN_TrackerMuons",
                 params={"pt": lambda mu: mu.pt,
                         "eta": lambda mu: op.abs(mu.eta)},
@@ -134,6 +136,34 @@ class ScaleFactors():
                 systName="syst",
                 sel=sel
             )
+
+            # Muon Isolation SF
+            muon_ISO_sf = get_correction(
+                MUON_SF_JSONFiles[self.era],
+                "NUM_TightPFIso_DEN_TightID",
+                params={"pt": lambda mu: mu.pt,
+                        "eta": lambda mu: op.abs(mu.eta),
+                        },
+                systParam="scale_factors",
+                systNomName="nominal",
+                systName="syst",
+                sel=sel
+            )
+
+            # Muon Trigger SF
+            muon_trigger_sf = get_correction(
+                MUON_SF_JSONFiles[self.era],
+                "NUM_IsoMu24_or_Mu50_or_CascadeMu100_or_HighPtTkMu100_DEN_CutBasedIdTight_and_PFIsoTight",
+                params={
+                    "pt": lambda mu: op.max(mu.pt, 26.0),
+                    "eta": lambda mu: op.abs(mu.eta)
+                },
+                systParam="scale_factors",
+                systNomName="nominal",
+                systName="syst",
+                sel=sel
+            )
+
             if sel.name == 'muPairMultiplicitySel':
                 # pt and eta cut here since correction are available only when pt >= 15 and |eta| < 2.4
                 sel = sel.refine(sel.name+"_muonSF", cut=[
@@ -144,60 +174,86 @@ class ScaleFactors():
                         op.abs(
                         self.firstMuTightPair[1].eta) < 2.4
                     )],
-                    weight=[muonIDSF(self.firstMuTightPair[0]),
-                            muonIDSF(self.firstMuTightPair[1])]
+                    weight=[muon_ID_sf(self.firstMuTightPair[0]),
+                            muon_ID_sf(self.firstMuTightPair[1]),
+                            muon_trigger_sf(self.firstMuTightPair[0]),
+                            muon_trigger_sf(self.firstMuTightPair[1]),
+                            muon_ISO_sf(self.firstMuTightPair[0]),
+                            muon_ISO_sf(self.firstMuTightPair[1])]
                 )
             elif sel.name == 'emuPairMultiplicitySel':
                 sel = sel.refine(sel.name+"_muonSF",
                                  cut=[op.AND(self.firstEmuTightPair[1].pt >= 15,
                                              op.abs(self.firstEmuTightPair[1].eta) < 2.4)],
-                                 weight=muonIDSF(self.firstEmuTightPair[1])
+                                 weight=[muon_ID_sf(self.firstEmuTightPair[1]),
+                                         muon_trigger_sf(
+                                             self.firstEmuTightPair[1]),
+                                         muon_ISO_sf(self.firstEmuTightPair[1])]
                                  )
             else:
                 sel = sel.refine(sel.name+"_muonSF", weight=op.c_float(1.))
         else:
             sel = sel.refine(sel.name+"_muonSF", weight=op.c_float(1.))
-        # self.yields.add(sel, "muon SF")
+        self.yields.add(sel, "muon id-iso-trg SF")
         return sel
 
     def electronSF(self, sel):
-        # Electron SF
         if self.is_MC:
             from bamboo.scalefactors import get_correction
             logger.info("Applying Electron SF for "+sel.name)
 
             params = {"pt": lambda e: e.pt,
                       "eta": lambda e: e.eta,
-                      "year": EL_SF_JSONFiles[self.era][1],
+                      "year": EGamma_SF_JSONFiles[self.era][1],
                       "WorkingPoint": "Loose"}
+
+            # add phi for 2023 and 2023BPix
             if self.era in ['2023', '2023BPix']:
                 params["phi"] = lambda e: e.phi
 
-            electronIDSF = get_correction(
-                EL_SF_JSONFiles[self.era][0],
+            # Electron ID SF
+            electron_ID_sf = get_correction(
+                EGamma_SF_JSONFiles[self.era][0],
                 "Electron-ID-SF",
                 params=params,
                 systParam="ValType",
                 systNomName="sf",
                 sel=sel
             )
+            # Electron Trigger SF
+            el_trigger_sf = get_correction(
+                (EGamma_SF_JSONFiles[self.era][0]).replace("electron", "electronHlt"),
+                "Electron-HLT-SF",
+                params={"pt": lambda el: op.max(el.pt, 25.0),
+                        "eta": lambda el: el.eta,
+                        "Path": "HLT_SF_Ele30_MVAiso80ID",
+                        "year": EGamma_SF_JSONFiles[self.era][1]
+                        },
+                systParam="ValType",
+                systNomName="sf",
+                sel=sel
+            )
+
             if sel.name == 'elPairMultiplicitySel':
-                # pt cut here since correction's available only when pt >= 10
-                sel = sel.refine(sel.name+"_electronSF", cut=[
+                # pt cut here since correction's available only for pt >= 10
+                sel=sel.refine(sel.name+"_electronSF", cut=[
                     op.AND(self.firstElTightPair[0].pt >= 10,
                            self.firstElTightPair[1].pt >= 10
                            )],
-                    weight=[electronIDSF(self.firstElTightPair[0]),
-                            electronIDSF(self.firstElTightPair[1])]
+                    weight=[electron_ID_sf(self.firstElTightPair[0]),
+                            electron_ID_sf(self.firstElTightPair[1]),
+                            el_trigger_sf(self.firstElTightPair[0]),
+                            el_trigger_sf(self.firstElTightPair[1])]
                 )
             elif sel.name == 'emuPairMultiplicitySel':
-                sel = sel.refine(sel.name+"_electronSF",
+                sel=sel.refine(sel.name+"_electronSF",
                                  cut=[self.firstEmuTightPair[0].pt >= 10],
-                                 weight=electronIDSF(self.firstEmuTightPair[0])
+                                 weight=[electron_ID_sf(self.firstEmuTightPair[0]),
+                                         el_trigger_sf(self.firstEmuTightPair[0])]
                                  )
             else:
-                sel = sel.refine(sel.name+"_electronSF", weight=op.c_float(1.))
+                sel=sel.refine(sel.name+"_electronSF", weight=op.c_float(1.))
         else:
-            sel = sel.refine(sel.name+"_electronSF", weight=op.c_float(1.))
-        # self.yields.add(sel, "electron SF")
+            sel=sel.refine(sel.name+"_electronSF", weight=op.c_float(1.))
+        self.yields.add(sel, "electron id-trg SF")
         return sel
