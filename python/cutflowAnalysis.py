@@ -58,28 +58,14 @@ class cutflowAnalysis(NanoBaseHHWWbb):
             DLboostedEE_label = labeler('DL boosted EE')
             DLboostedMuMu_label = labeler('DL boosted MuMu')
             DLboostedEMU_label = labeler('DL boosted EMu')
-            DLresolvedEE_label = labeler('DL resolved EE')
-            DLresolvedMuMu_label = labeler('DL resolved MuMu')
-            DLresolvedEMu_label = labeler('DL resolved EMu')
 
-        if self.channel == 'SL':
-            # get SL selections
-            SL_resolved_pre, SL_resolved_1b_e, SL_resolved_2b_e, \
-                SL_resolved_1b_mu, SL_resolved_2b_mu, SL_boosted, \
-                SL_boosted_e, SL_boosted_mu, SL_e = makeSLSelection(
-                    self, noSel)
+            DLresolved_1b_EE_label = labeler('DL resolved 1b EE')
+            DLresolved_1b_MuMu_label = labeler('DL resolved 1b MuMu')
+            DLresolved_1b_EMu_label = labeler('DL resolved 1b EMu')
 
-            # cutflow report for SL channel
-            self.yields.add(SL_boosted_e, 'SL boosted e')
-            self.yields.add(SL_boosted_mu, 'SL boosted mu')
-            self.yields.add(SL_resolved_1b_e, 'SL resolved e')
-            self.yields.add(SL_resolved_1b_mu, 'SL resolved mu')
-
-            # labels on plots
-            SLboostedE_label = labeler('SL boosted E')
-            SLboostedMu_label = labeler('SL boosted Mu')
-            SLresolvedE_label = labeler('SL resolved E')
-            SLresolvedMu_label = labeler('SL resolved Mu')
+            DLresolved_2b_EE_label = labeler('DL resolved 2b EE')
+            DLresolved_2b_MuMu_label = labeler('DL resolved 2b MuMu')
+            DLresolved_2b_EMu_label = labeler('DL resolved 2b EMu')
 
         tnn_vars = {
             "event_no": tree.event,
@@ -313,514 +299,353 @@ class cutflowAnalysis(NanoBaseHHWWbb):
 
                 # number of ak4 bjets
                 Plot.make1D("DL_resolved_1b_nAK4bJets_ee", op.rng_len(self.ak4BJets), DL_resolved_1b_ee, EqBin(
-                    10, 0., 10), xTitle="Number of AK4 B-jets", plotopts=DLresolvedEE_label),
+                    10, 0., 10), xTitle="Number of AK4 B-jets", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_nAK4bJets_mumu", op.rng_len(self.ak4BJets), DL_resolved_1b_mumu, EqBin(
-                    10, 0., 10), xTitle="Number of AK4 B-jets", plotopts=DLresolvedMuMu_label),
+                    10, 0., 10), xTitle="Number of AK4 B-jets", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_nAK4bJets_emu", op.rng_len(self.ak4BJets), DL_resolved_1b_emu, EqBin(
-                    10, 0., 10), xTitle="Number of AK4 B-jets", plotopts=DLresolvedEMu_label),
+                    10, 0., 10), xTitle="Number of AK4 B-jets", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_nAK4bJets_ee", op.rng_len(self.ak4BJets), DL_resolved_2b_ee, EqBin(
-                    10, 0., 10), xTitle="Number of AK4 B-jets", plotopts=DLresolvedEE_label),
+                    10, 0., 10), xTitle="Number of AK4 B-jets", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_nAK4bJets_mumu", op.rng_len(self.ak4BJets), DL_resolved_2b_mumu, EqBin(
-                    10, 0., 10), xTitle="Number of AK4 B-jets", plotopts=DLresolvedMuMu_label),
+                    10, 0., 10), xTitle="Number of AK4 B-jets", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_nAK4bJets_emu", op.rng_len(self.ak4BJets), DL_resolved_2b_emu, EqBin(
-                    10, 0., 10), xTitle="Number of AK4 B-jets", plotopts=DLresolvedEMu_label),
+                    10, 0., 10), xTitle="Number of AK4 B-jets", plotopts=DLresolved_2b_EMu_label),
 
                 # ak4 bjet pt
                 Plot.make1D("DL_resolved_1b_ak4BJet_pt_ee", self.ak4BJets[0].pt, DL_resolved_1b_ee, EqBin(
-                    100, 0, 500), title="pT(j1)", xTitle="AK4 B-jet jet p_{T} (GeV/c)", plotopts=DLresolvedEE_label),
+                    100, 0, 500), title="pT(j1)", xTitle="AK4 B-jet jet p_{T} (GeV/c)", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_ak4BJet_pt_mumu", self.ak4BJets[0].pt, DL_resolved_1b_mumu, EqBin(
-                    100, 0, 500), title="pT(j1)", xTitle="AK4 B-jet jet p_{T} (GeV/c)", plotopts=DLresolvedMuMu_label),
+                    100, 0, 500), title="pT(j1)", xTitle="AK4 B-jet jet p_{T} (GeV/c)", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_ak4BJet_pt_emu", self.ak4BJets[0].pt, DL_resolved_1b_emu, EqBin(
-                    100, 0, 500), title="pT(j1)", xTitle="AK4 B-jet jet p_{T} (GeV/c)", plotopts=DLresolvedEMu_label),
+                    100, 0, 500), title="pT(j1)", xTitle="AK4 B-jet jet p_{T} (GeV/c)", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_ak4BJet_pt_ee", self.ak4BJets[0].pt, DL_resolved_2b_ee, EqBin(
-                    100, 0, 500), title="pT(j1)", xTitle="AK4 B-jet jet p_{T} (GeV/c)", plotopts=DLresolvedEE_label),
+                    100, 0, 500), title="pT(j1)", xTitle="AK4 B-jet jet p_{T} (GeV/c)", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_ak4BJet_pt_mumu", self.ak4BJets[0].pt, DL_resolved_2b_mumu, EqBin(
-                    100, 0, 500), title="pT(j1)", xTitle="AK4 B-jet jet p_{T} (GeV/c)", plotopts=DLresolvedMuMu_label),
+                    100, 0, 500), title="pT(j1)", xTitle="AK4 B-jet jet p_{T} (GeV/c)", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_ak4BJet_pt_emu", self.ak4BJets[0].pt, DL_resolved_2b_emu, EqBin(
-                    100, 0, 500), title="pT(j1)", xTitle="AK4 B-jet jet p_{T} (GeV/c)", plotopts=DLresolvedEMu_label),
+                    100, 0, 500), title="pT(j1)", xTitle="AK4 B-jet jet p_{T} (GeV/c)", plotopts=DLresolved_2b_EMu_label),
 
                 # ak4 bjet eta
                 Plot.make1D("DL_resolved_1b_ak4BJet_eta_ee", self.ak4BJets[0].eta, DL_resolved_1b_ee, EqBin(
-                    30, -3, 3), title="pT(j1)", xTitle="AK4 B-jet \eta", plotopts=DLresolvedEE_label),
+                    30, -3, 3), title="pT(j1)", xTitle="AK4 B-jet \eta", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_ak4BJet_eta_mumu", self.ak4BJets[0].eta, DL_resolved_1b_mumu, EqBin(
-                    30, -3, 3), title="pT(j1)", xTitle="AK4 B-jet \eta", plotopts=DLresolvedMuMu_label),
+                    30, -3, 3), title="pT(j1)", xTitle="AK4 B-jet \eta", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_ak4BJet_eta_emu", self.ak4BJets[0].eta, DL_resolved_1b_emu, EqBin(
-                    30, -3, 3), title="pT(j1)", xTitle="AK4 B-jet \eta", plotopts=DLresolvedEMu_label),
+                    30, -3, 3), title="pT(j1)", xTitle="AK4 B-jet \eta", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_ak4BJet_eta_ee", self.ak4BJets[0].eta, DL_resolved_2b_ee, EqBin(
-                    30, -3, 3), title="pT(j1)", xTitle="AK4 B-jet \eta", plotopts=DLresolvedEE_label),
+                    30, -3, 3), title="pT(j1)", xTitle="AK4 B-jet \eta", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_ak4BJet_eta_mumu", self.ak4BJets[0].eta, DL_resolved_2b_mumu, EqBin(
-                    30, -3, 3), title="pT(j1)", xTitle="AK4 B-jet \eta", plotopts=DLresolvedMuMu_label),
+                    30, -3, 3), title="pT(j1)", xTitle="AK4 B-jet \eta", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_ak4BJet_eta_emu", self.ak4BJets[0].eta, DL_resolved_2b_emu, EqBin(
-                    30, -3, 3), title="pT(j1)", xTitle="AK4 B-jet \eta", plotopts=DLresolvedEMu_label),
+                    30, -3, 3), title="pT(j1)", xTitle="AK4 B-jet \eta", plotopts=DLresolved_2b_EMu_label),
 
                 # number of ak4 jets
                 Plot.make1D("DL_resolved_1b_nak4Jets_ee", op.rng_len(self.ak4Jets), DL_resolved_1b_ee, EqBin(
-                    15, 0., 15.), xTitle="Number of AK4 jets", plotopts=DLresolvedEE_label),
+                    15, 0., 15.), xTitle="Number of AK4 jets", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_nak4Jets_mumu", op.rng_len(self.ak4Jets), DL_resolved_1b_mumu, EqBin(
-                    15, 0., 15.), xTitle="Number of AK4 jets", plotopts=DLresolvedMuMu_label),
+                    15, 0., 15.), xTitle="Number of AK4 jets", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_nak4Jets_emu", op.rng_len(self.ak4Jets), DL_resolved_1b_emu, EqBin(
-                    15, 0., 15.), xTitle="Number of AK4 jets", plotopts=DLresolvedEMu_label),
+                    15, 0., 15.), xTitle="Number of AK4 jets", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_nak4Jets_ee", op.rng_len(self.ak4Jets), DL_resolved_2b_ee, EqBin(
-                    15, 0., 15.), xTitle="Number of AK4 jets", plotopts=DLresolvedEE_label),
+                    15, 0., 15.), xTitle="Number of AK4 jets", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_nak4Jets_mumu", op.rng_len(self.ak4Jets), DL_resolved_2b_mumu, EqBin(
-                    15, 0., 15.), xTitle="Number of AK4 jets", plotopts=DLresolvedMuMu_label),
+                    15, 0., 15.), xTitle="Number of AK4 jets", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_nak4Jets_emu", op.rng_len(self.ak4Jets), DL_resolved_2b_emu, EqBin(
-                    15, 0., 15.), xTitle="Number of AK4 jets", plotopts=DLresolvedEMu_label),
+                    15, 0., 15.), xTitle="Number of AK4 jets", plotopts=DLresolved_2b_EMu_label),
 
                 # leading jet pt
                 Plot.make1D("DL_resolved_1b_leadingJet_pt_ee", self.ak4Jets[0].pt, DL_resolved_1b_ee, EqBin(
-                    100, 0, 500), title="pT(j1)", xTitle="Leading jet p_{T} (GeV/c)", plotopts=DLresolvedEE_label),
+                    100, 0, 500), title="pT(j1)", xTitle="Leading jet p_{T} (GeV/c)", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_leadingJet_pt_mumu", self.ak4Jets[0].pt, DL_resolved_1b_mumu, EqBin(
-                    100, 0, 500), title="pT(j1)", xTitle="Leading jet p_{T} (GeV/c)", plotopts=DLresolvedMuMu_label),
+                    100, 0, 500), title="pT(j1)", xTitle="Leading jet p_{T} (GeV/c)", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_leadingJet_pt_emu", self.ak4Jets[0].pt, DL_resolved_1b_emu, EqBin(
-                    100, 0, 500), title="pT(j1)", xTitle="Leading jet p_{T} (GeV/c)", plotopts=DLresolvedEMu_label),
+                    100, 0, 500), title="pT(j1)", xTitle="Leading jet p_{T} (GeV/c)", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_leadingJet_pt_ee", self.ak4Jets[0].pt, DL_resolved_2b_ee, EqBin(
-                    100, 0, 500), title="pT(j1)", xTitle="Leading jet p_{T} (GeV/c)", plotopts=DLresolvedEE_label),
+                    100, 0, 500), title="pT(j1)", xTitle="Leading jet p_{T} (GeV/c)", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_leadingJet_pt_mumu", self.ak4Jets[0].pt, DL_resolved_2b_mumu, EqBin(
-                    100, 0, 500), title="pT(j1)", xTitle="Leading jet p_{T} (GeV/c)", plotopts=DLresolvedMuMu_label),
+                    100, 0, 500), title="pT(j1)", xTitle="Leading jet p_{T} (GeV/c)", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_leadingJet_pt_emu", self.ak4Jets[0].pt, DL_resolved_2b_emu, EqBin(
-                    100, 0, 500), title="pT(j1)", xTitle="Leading jet p_{T} (GeV/c)", plotopts=DLresolvedEMu_label),
+                    100, 0, 500), title="pT(j1)", xTitle="Leading jet p_{T} (GeV/c)", plotopts=DLresolved_2b_EMu_label),
 
                 # leading jet eta
                 Plot.make1D("DL_resolved_1b_leadingJet_eta_ee", self.ak4Jets[0].eta, DL_resolved_1b_ee, EqBin(
-                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolvedEE_label),
+                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_leadingJet_eta_mumu", self.ak4Jets[0].eta, DL_resolved_1b_mumu, EqBin(
-                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolvedMuMu_label),
+                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_leadingJet_eta_emu", self.ak4Jets[0].eta, DL_resolved_1b_emu, EqBin(
-                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolvedEMu_label),
+                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_leadingJet_eta_ee", self.ak4Jets[0].eta, DL_resolved_2b_ee, EqBin(
-                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolvedEE_label),
+                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_leadingJet_eta_mumu", self.ak4Jets[0].eta, DL_resolved_2b_mumu, EqBin(
-                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolvedMuMu_label),
+                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_leadingJet_eta_emu", self.ak4Jets[0].eta, DL_resolved_2b_emu, EqBin(
-                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolvedEMu_label),
+                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_EMu_label),
 
                 # btagging score of the jet
                 Plot.make1D("DL_resolved_1b_jet_btagScore_ee", self.ak4BJets[0].btagPNetB, DL_resolved_1b_ee, EqBin(
-                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the leading jet", plotopts=DLresolvedEE_label),
+                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the leading jet", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_jet_btagScore_mumu", self.ak4BJets[0].btagPNetB, DL_resolved_1b_mumu, EqBin(
-                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the leading jet", plotopts=DLresolvedMuMu_label),
+                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the leading jet", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_jet_btagScore_emu", self.ak4BJets[0].btagPNetB, DL_resolved_1b_emu, EqBin(
-                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the leading jet", plotopts=DLresolvedEMu_label),
+                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the leading jet", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_jet_btagScore_ee", self.ak4BJets[0].btagPNetB, DL_resolved_2b_ee, EqBin(
-                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the leading jet", plotopts=DLresolvedEE_label),
+                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the leading jet", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_jet_btagScore_mumu", self.ak4BJets[0].btagPNetB, DL_resolved_2b_mumu, EqBin(
-                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the leading jet", plotopts=DLresolvedMuMu_label),
+                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the leading jet", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_jet_btagScore_emu", self.ak4BJets[0].btagPNetB, DL_resolved_2b_emu, EqBin(
-                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the leading jet", plotopts=DLresolvedEMu_label),
+                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the leading jet", plotopts=DLresolved_2b_EMu_label),
 
                 # sub-leading jet pt
                 Plot.make1D("DL_resolved_1b_subleadingJet_pt_ee", self.ak4Jets[1].pt, DL_resolved_1b_ee, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="Sub-leading jet p_{T} (GeV/c)", plotopts=DLresolvedEE_label),
+                    100, 0, 500), title="pT(j2)", xTitle="Sub-leading jet p_{T} (GeV/c)", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_subleadingJet_pt_mumu", self.ak4Jets[1].pt, DL_resolved_1b_mumu, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="Sub-leading jet p_{T} (GeV/c)", plotopts=DLresolvedMuMu_label),
+                    100, 0, 500), title="pT(j2)", xTitle="Sub-leading jet p_{T} (GeV/c)", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_subleadingJet_pt_emu", self.ak4Jets[1].pt, DL_resolved_1b_emu, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="Sub-leading jet p_{T} (GeV/c)", plotopts=DLresolvedEMu_label),
+                    100, 0, 500), title="pT(j2)", xTitle="Sub-leading jet p_{T} (GeV/c)", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_subleadingJet_pt_ee", self.ak4Jets[1].pt, DL_resolved_2b_ee, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="Sub-leading jet p_{T} (GeV/c)", plotopts=DLresolvedEE_label),
+                    100, 0, 500), title="pT(j2)", xTitle="Sub-leading jet p_{T} (GeV/c)", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_subleadingJet_pt_mumu", self.ak4Jets[1].pt, DL_resolved_2b_mumu, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="Sub-leading jet p_{T} (GeV/c)", plotopts=DLresolvedMuMu_label),
+                    100, 0, 500), title="pT(j2)", xTitle="Sub-leading jet p_{T} (GeV/c)", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_subleadingJet_pt_emu", self.ak4Jets[1].pt, DL_resolved_2b_emu, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="Sub-leading jet p_{T} (GeV/c)", plotopts=DLresolvedEMu_label),
+                    100, 0, 500), title="pT(j2)", xTitle="Sub-leading jet p_{T} (GeV/c)", plotopts=DLresolved_2b_EMu_label),
 
                 # sub-leading jet eta
                 Plot.make1D("DL_resolved_1b_subleadingJet_eta_ee", self.ak4Jets[1].eta, DL_resolved_1b_ee, EqBin(
-                    30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolvedEE_label),
+                    30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_subleadingJet_eta_mumu", self.ak4Jets[1].eta, DL_resolved_1b_mumu, EqBin(
-                    30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolvedMuMu_label),
+                    30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_subleadingJet_eta_emu", self.ak4Jets[1].eta, DL_resolved_1b_emu, EqBin(
-                    30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolvedEMu_label),
+                    30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_subleadingJet_eta_ee", self.ak4Jets[1].eta, DL_resolved_2b_ee, EqBin(
-                    30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolvedEE_label),
+                    30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_subleadingJet_eta_mumu", self.ak4Jets[1].eta, DL_resolved_2b_mumu, EqBin(
-                    30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolvedMuMu_label),
+                    30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_subleadingJet_eta_emu", self.ak4Jets[1].eta, DL_resolved_2b_emu, EqBin(
-                    30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolvedEMu_label),
+                    30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_2b_EMu_label),
 
                 # btagging score of the jet
                 Plot.make1D("DL_resolved_1b_subleadingJet_btagScore_ee", self.ak4BJets[1].btagPNetB, DL_resolved_1b_ee, EqBin(
-                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolvedEE_label),
+                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_subleadingJet_btagScore_mumu", self.ak4BJets[1].btagPNetB, DL_resolved_1b_mumu, EqBin(
-                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolvedMuMu_label),
+                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_subleadingJet_btagScore_emu", self.ak4BJets[1].btagPNetB, DL_resolved_1b_emu, EqBin(
-                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolvedEMu_label),
+                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_subleadingJet_btagScore_ee", self.ak4BJets[1].btagPNetB, DL_resolved_2b_ee, EqBin(
-                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolvedEE_label),
+                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_subleadingJet_btagScore_mumu", self.ak4BJets[1].btagPNetB, DL_resolved_2b_mumu, EqBin(
-                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolvedMuMu_label),
+                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_subleadingJet_btagScore_emu", self.ak4BJets[1].btagPNetB, DL_resolved_2b_emu, EqBin(
-                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolvedEMu_label),
+                    100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolved_2b_EMu_label),
 
                 # DR between leading and sub-leading jet
                 Plot.make1D("DL_resolved_1b_DR_jets_ee", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), DL_resolved_1b_ee, EqBin(
-                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolvedEE_label),
+                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_DR_jets_mumu", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), DL_resolved_1b_mumu, EqBin(
-                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolvedMuMu_label),
+                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_DR_jets_emu", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), DL_resolved_1b_emu, EqBin(
-                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolvedEMu_label),
+                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_DR_jets_ee", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), DL_resolved_2b_ee, EqBin(
-                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolvedEE_label),
+                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_DR_jets_mumu", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), DL_resolved_2b_mumu, EqBin(
-                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolvedMuMu_label),
+                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_DR_jets_emu", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), DL_resolved_2b_emu, EqBin(
-                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolvedEMu_label),
+                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_2b_EMu_label),
 
                 # Invariant mass of leptons
                 Plot.make1D("DL_resolved_1b_InvM_ee", op.invariant_mass(self.firstElTightPair[0].p4, self.firstElTightPair[1].p4), DL_resolved_1b_ee, EqBin(
-                    100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DLresolvedEE_label),
+                    100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_InvM_mumu", op.invariant_mass(self.firstMuTightPair[0].p4, self.firstMuTightPair[1].p4), DL_resolved_1b_mumu, EqBin(
-                    100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DLresolvedMuMu_label),
+                    100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_InvM_emu", op.invariant_mass(self.firstEmuTightPair[0].p4, self.firstEmuTightPair[1].p4), DL_resolved_1b_emu, EqBin(
-                    100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electron-muon pair (GeV/c^{2})", plotopts=DLresolvedEMu_label),
+                    100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electron-muon pair (GeV/c^{2})", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_InvM_ee", op.invariant_mass(self.firstElTightPair[0].p4, self.firstElTightPair[1].p4), DL_resolved_2b_ee, EqBin(
-                    100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DLresolvedEE_label),
+                    100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_InvM_mumu", op.invariant_mass(self.firstMuTightPair[0].p4, self.firstMuTightPair[1].p4), DL_resolved_2b_mumu, EqBin(
-                    100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DLresolvedMuMu_label),
+                    100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_InvM_emu", op.invariant_mass(self.firstEmuTightPair[0].p4, self.firstEmuTightPair[1].p4), DL_resolved_2b_emu, EqBin(
-                    100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electron-muon pair (GeV/c^{2})", plotopts=DLresolvedEMu_label),
+                    100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electron-muon pair (GeV/c^{2})", plotopts=DLresolved_2b_EMu_label),
 
                 # pt of the di-lepton
                 Plot.make1D("DL_resolved_1b_dileptonPt_ee", op.sum(self.firstElTightPair[0].pt, self.firstElTightPair[1].pt), DL_resolved_1b_ee, EqBin(
-                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electrons (GeV/c^{2})", plotopts=DLresolvedEE_label),
+                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electrons (GeV/c^{2})", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_dileptonPt_mumu", op.sum(self.firstMuTightPair[0].pt, self.firstMuTightPair[1].pt), DL_resolved_1b_mumu, EqBin(
-                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of muons  (GeV/c^{2})", plotopts=DLresolvedMuMu_label),
+                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of muons  (GeV/c^{2})", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_dileptonPt_emu", op.sum(self.firstEmuTightPair[0].pt, self.firstEmuTightPair[1].pt), DL_resolved_1b_emu, EqBin(
-                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electron-muon pair  (GeV/c^{2})", plotopts=DLresolvedEMu_label),
+                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electron-muon pair  (GeV/c^{2})", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_dileptonPt_ee", op.sum(self.firstElTightPair[0].pt, self.firstElTightPair[1].pt), DL_resolved_2b_ee, EqBin(
-                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electrons (GeV/c^{2})", plotopts=DLresolvedEE_label),
+                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electrons (GeV/c^{2})", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_dileptonPt_mumu", op.sum(self.firstMuTightPair[0].pt, self.firstMuTightPair[1].pt), DL_resolved_2b_mumu, EqBin(
-                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of muons  (GeV/c^{2})", plotopts=DLresolvedMuMu_label),
+                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of muons  (GeV/c^{2})", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_dileptonPt_emu", op.sum(self.firstEmuTightPair[0].pt, self.firstEmuTightPair[1].pt), DL_resolved_2b_emu, EqBin(
-                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electron-muon pair  (GeV/c^{2})", plotopts=DLresolvedEMu_label),
+                    60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electron-muon pair  (GeV/c^{2})", plotopts=DLresolved_2b_EMu_label),
 
                 # MET pt
                 Plot.make1D("DL_resolved_1b_MET_pt_ee", tree.MET.pt, DL_resolved_1b_ee, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolvedEE_label),
+                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_MET_pt_mumu", tree.MET.pt, DL_resolved_1b_mumu, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolvedMuMu_label),
+                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_MET_pt_emu", tree.MET.pt, DL_resolved_1b_emu, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolvedEMu_label),
+                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_MET_pt_ee", tree.MET.pt, DL_resolved_2b_ee, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolvedEE_label),
+                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_MET_pt_mumu", tree.MET.pt, DL_resolved_2b_mumu, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolvedMuMu_label),
+                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_MET_pt_emu", tree.MET.pt, DL_resolved_2b_emu, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolvedEMu_label),
+                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=DLresolved_2b_EMu_label),
 
                 # MET phi
                 Plot.make1D("DL_resolved_1b_MET_phi_ee", tree.MET.phi, DL_resolved_1b_ee, EqBin(
-                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolvedEE_label),
+                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_MET_phi_mumu", tree.MET.phi, DL_resolved_1b_mumu, EqBin(
-                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolvedMuMu_label),
+                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_MET_phi_emu", tree.MET.phi, DL_resolved_1b_emu, EqBin(
-                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolvedEMu_label),
+                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_MET_phi_ee", tree.MET.phi, DL_resolved_2b_ee, EqBin(
-                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolvedEE_label),
+                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_MET_phi_mumu", tree.MET.phi, DL_resolved_2b_mumu, EqBin(
-                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolvedMuMu_label),
+                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_MET_phi_emu", tree.MET.phi, DL_resolved_2b_emu, EqBin(
-                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolvedEMu_label),
+                    7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolved_2b_EMu_label),
 
                 # total charge of leptons
                 Plot.make1D("DL_resolved_1b_totalCharge_ee", op.sum(self.firstElTightPair[0].charge, self.firstElTightPair[1].charge), DL_resolved_1b_ee, EqBin(
-                    5, -2.5, 2.5), title="total charge", xTitle="Total charge of electrons", plotopts=DLresolvedEE_label),
+                    5, -2.5, 2.5), title="total charge", xTitle="Total charge of electrons", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_totalCharge_mumu", op.sum(self.firstMuTightPair[0].charge, self.firstMuTightPair[1].charge), DL_resolved_1b_mumu, EqBin(
-                    5, -2.5, 2.5), title="total charge", xTitle="Total charge of muons", plotopts=DLresolvedMuMu_label),
+                    5, -2.5, 2.5), title="total charge", xTitle="Total charge of muons", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_totalCharge_emu", op.sum(self.firstEmuTightPair[0].charge, self.firstEmuTightPair[1].charge), DL_resolved_1b_emu, EqBin(
-                    5, -2.5, 2.5), title="total charge", xTitle="Total charge of electron-muon pair", plotopts=DLresolvedEMu_label),
+                    5, -2.5, 2.5), title="total charge", xTitle="Total charge of electron-muon pair", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_totalCharge_ee", op.sum(self.firstElTightPair[0].charge, self.firstElTightPair[1].charge), DL_resolved_2b_ee, EqBin(
-                    5, -2.5, 2.5), title="total charge", xTitle="Total charge of electrons", plotopts=DLresolvedEE_label),
+                    5, -2.5, 2.5), title="total charge", xTitle="Total charge of electrons", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_totalCharge_mumu", op.sum(self.firstMuTightPair[0].charge, self.firstMuTightPair[1].charge), DL_resolved_2b_mumu, EqBin(
-                    5, -2.5, 2.5), title="total charge", xTitle="Total charge of muons", plotopts=DLresolvedMuMu_label),
+                    5, -2.5, 2.5), title="total charge", xTitle="Total charge of muons", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_totalCharge_emu", op.sum(self.firstEmuTightPair[0].charge, self.firstEmuTightPair[1].charge), DL_resolved_2b_emu, EqBin(
-                    5, -2.5, 2.5), title="total charge", xTitle="Total charge of electron-muon pair", plotopts=DLresolvedEMu_label),
+                    5, -2.5, 2.5), title="total charge", xTitle="Total charge of electron-muon pair", plotopts=DLresolved_2b_EMu_label),
 
                 # leading lepton pt
                 Plot.make1D("DL_resolved_1b_leadingLepton_pt_ee", self.firstElTightPair[0].pt, DL_resolved_1b_ee, EqBin(
-                    100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolvedEE_label),
+                    100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_leadingLepton_pt_mumu", self.firstMuTightPair[0].pt, DL_resolved_1b_mumu, EqBin(
-                    100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolvedMuMu_label),
+                    100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_leadingLepton_pt_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[0].pt, self.firstEmuTightPair[1].pt), DL_resolved_1b_emu, EqBin(
-                    100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolvedEMu_label),
+                    100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_leadingLepton_pt_ee", self.firstElTightPair[0].pt, DL_resolved_2b_ee, EqBin(
-                    100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolvedEE_label),
+                    100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_leadingLepton_pt_mumu", self.firstMuTightPair[0].pt, DL_resolved_2b_mumu, EqBin(
-                    100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolvedMuMu_label),
+                    100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_leadingLepton_pt_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[0].pt, self.firstEmuTightPair[1].pt), DL_resolved_2b_emu, EqBin(
-                    100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolvedEMu_label),
+                    100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolved_2b_EMu_label),
 
                 # sub-leading lepton pt
                 Plot.make1D("DL_resolved_1b_subleadingLepton_pt_ee", self.firstElTightPair[1].pt, DL_resolved_1b_ee, EqBin(
-                    50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolvedEE_label),
+                    50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_subleadingLepton_pt_mumu", self.firstMuTightPair[1].pt, DL_resolved_1b_mumu, EqBin(
-                    50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolvedMuMu_label),
+                    50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_subleadingLepton_pt_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[1].pt, self.firstEmuTightPair[0].pt), DL_resolved_1b_emu, EqBin(
-                    50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolvedEMu_label),
+                    50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_subleadingLepton_pt_ee", self.firstElTightPair[1].pt, DL_resolved_2b_ee, EqBin(
-                    50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolvedEE_label),
+                    50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_subleadingLepton_pt_mumu", self.firstMuTightPair[1].pt, DL_resolved_2b_mumu, EqBin(
-                    50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolvedMuMu_label),
+                    50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_subleadingLepton_pt_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[1].pt, self.firstEmuTightPair[0].pt), DL_resolved_2b_emu, EqBin(
-                    50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolvedEMu_label),
+                    50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolved_2b_EMu_label),
 
                 # leading lepton eta
                 Plot.make1D("DL_resolved_1b_leadingLepton_eta_ee", self.firstElTightPair[0].eta, DL_resolved_1b_ee, EqBin(
-                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolvedEE_label),
+                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_leadingLepton_eta_mumu", self.firstMuTightPair[0].eta, DL_resolved_1b_mumu, EqBin(
-                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolvedMuMu_label),
+                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_leadingLepton_eta_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[0].eta, self.firstEmuTightPair[1].eta), DL_resolved_1b_emu, EqBin(
-                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolvedEMu_label),
+                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_leadingLepton_eta_ee", self.firstElTightPair[0].eta, DL_resolved_2b_ee, EqBin(
-                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolvedEE_label),
+                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_leadingLepton_eta_mumu", self.firstMuTightPair[0].eta, DL_resolved_2b_mumu, EqBin(
-                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolvedMuMu_label),
+                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_leadingLepton_eta_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[0].eta, self.firstEmuTightPair[1].eta), DL_resolved_2b_emu, EqBin(
-                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolvedEMu_label),
+                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolved_2b_EMu_label),
 
                 # sub-leading lepton eta
                 Plot.make1D("DL_resolved_1b_subleadingLepton_eta_ee", self.firstElTightPair[1].eta, DL_resolved_1b_ee, EqBin(
-                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolvedEE_label),
+                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_subleadingLepton_eta_mumu", self.firstMuTightPair[1].eta, DL_resolved_1b_mumu, EqBin(
-                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolvedMuMu_label),
+                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_subleadingLepton_eta_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[1].eta, self.firstEmuTightPair[0].eta), DL_resolved_1b_emu, EqBin(
-                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolvedEMu_label),
+                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_subleadingLepton_eta_ee", self.firstElTightPair[1].eta, DL_resolved_2b_ee, EqBin(
-                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolvedEE_label),
+                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_subleadingLepton_eta_mumu", self.firstMuTightPair[1].eta, DL_resolved_2b_mumu, EqBin(
-                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolvedMuMu_label),
+                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_subleadingLepton_eta_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[1].eta, self.firstEmuTightPair[0].eta), DL_resolved_2b_emu, EqBin(
-                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolvedEMu_label),
+                    30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolved_2b_EMu_label),
 
                 # DR between leading and sub-leading lepton
                 Plot.make1D("DL_resolved_1b_DR_leptons_ee", op.deltaR(self.firstElTightPair[0].p4, self.firstElTightPair[1].p4), DL_resolved_1b_ee, EqBin(
-                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolvedEE_label),
+                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_DR_leptons_mumu", op.deltaR(self.firstMuTightPair[0].p4, self.firstMuTightPair[1].p4), DL_resolved_1b_mumu, EqBin(
-                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolvedMuMu_label),
+                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_DR_leptons_emu", op.deltaR(self.firstEmuTightPair[0].p4, self.firstEmuTightPair[1].p4), DL_resolved_1b_emu, EqBin(
-                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolvedEMu_label),
+                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_DR_leptons_ee", op.deltaR(self.firstElTightPair[0].p4, self.firstElTightPair[1].p4), DL_resolved_2b_ee, EqBin(
-                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolvedEE_label),
+                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_DR_leptons_mumu", op.deltaR(self.firstMuTightPair[0].p4, self.firstMuTightPair[1].p4), DL_resolved_2b_mumu, EqBin(
-                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolvedMuMu_label),
+                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_DR_leptons_emu", op.deltaR(self.firstEmuTightPair[0].p4, self.firstEmuTightPair[1].p4), DL_resolved_2b_emu, EqBin(
-                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolvedEMu_label),
+                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_2b_EMu_label),
 
                 # DR between leading lepton and ak4 b jet
                 Plot.make1D("DL_resolved_1b_DR_leadingleptonANDak4bjet_ee", op.deltaR(self.firstElTightPair[0].p4, self.ak4BJets[0].p4), DL_resolved_1b_ee, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolvedEE_label),
+                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_DR_leadingleptonANDak4bjet_mumu", op.deltaR(self.firstMuTightPair[0].p4, self.ak4BJets[0].p4), DL_resolved_1b_mumu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolvedMuMu_label),
+                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_DR_leadingleptonANDak4bjet_emu", op.deltaR(op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[0].p4, self.firstEmuTightPair[1].p4), self.ak4BJets[0].p4), DL_resolved_1b_emu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolvedEMu_label),
+                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_DR_leadingleptonANDak4bjet_ee", op.deltaR(self.firstElTightPair[0].p4, self.ak4BJets[0].p4), DL_resolved_2b_ee, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolvedEE_label),
+                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_DR_leadingleptonANDak4bjet_mumu", op.deltaR(self.firstMuTightPair[0].p4, self.ak4BJets[0].p4), DL_resolved_2b_mumu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolvedMuMu_label),
+                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_DR_leadingleptonANDak4bjet_emu", op.deltaR(op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[0].p4, self.firstEmuTightPair[1].p4), self.ak4BJets[0].p4), DL_resolved_2b_emu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolvedEMu_label),
+                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_2b_EMu_label),
 
                 # DR between sub-leading lepton and ak4 b jet
                 Plot.make1D("DL_resolved_1b_DR_subleadingleptonANDak4bjet_ee", op.deltaR(self.firstElTightPair[1].p4, self.ak4BJets[0].p4), DL_resolved_1b_ee, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolvedEE_label),
+                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_DR_subleadingleptonANDak4bjet_mumu", op.deltaR(self.firstMuTightPair[1].p4, self.ak4BJets[0].p4), DL_resolved_1b_mumu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolvedMuMu_label),
+                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_DR_subleadingleptonANDak4bjet_emu", op.deltaR(op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[1].p4, self.firstEmuTightPair[0].p4), self.ak4BJets[0].p4), DL_resolved_1b_emu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolvedEMu_label),
+                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_DR_subleadingleptonANDak4bjet_ee", op.deltaR(self.firstElTightPair[1].p4, self.ak4BJets[0].p4), DL_resolved_2b_ee, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolvedEE_label),
+                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_DR_subleadingleptonANDak4bjet_mumu", op.deltaR(self.firstMuTightPair[1].p4, self.ak4BJets[0].p4), DL_resolved_2b_mumu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolvedMuMu_label),
+                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_DR_subleadingleptonANDak4bjet_emu", op.deltaR(op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[1].p4, self.firstEmuTightPair[0].p4), self.ak4BJets[0].p4), DL_resolved_2b_emu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolvedEMu_label),
+                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_2b_EMu_label),
 
                 # number of electrons
                 Plot.make1D("DL_resolved_1b_nElectrons_ee", op.rng_len(self.tightElectrons), DL_resolved_1b_ee, EqBin(
-                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolvedEE_label),
+                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_nElectrons_mumu", op.rng_len(self.tightElectrons), DL_resolved_1b_mumu, EqBin(
-                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolvedMuMu_label),
+                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_nElectrons_emu", op.rng_len(self.tightElectrons), DL_resolved_1b_emu, EqBin(
-                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolvedEMu_label),
+                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_nElectrons_ee", op.rng_len(self.tightElectrons), DL_resolved_2b_ee, EqBin(
-                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolvedEE_label),
+                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_nElectrons_mumu", op.rng_len(self.tightElectrons), DL_resolved_2b_mumu, EqBin(
-                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolvedMuMu_label),
+                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_nElectrons_emu", op.rng_len(self.tightElectrons), DL_resolved_2b_emu, EqBin(
-                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolvedEMu_label),
+                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolved_2b_EMu_label),
 
                 # number of muons
                 Plot.make1D("DL_resolved_1b_nMuons_ee", op.rng_len(self.tightMuons), DL_resolved_1b_ee, EqBin(
-                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolvedEE_label),
+                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_nMuons_mumu", op.rng_len(self.tightMuons), DL_resolved_1b_mumu, EqBin(
-                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolvedMuMu_label),
+                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_nMuons_emu", op.rng_len(self.tightMuons), DL_resolved_1b_emu, EqBin(
-                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolvedEMu_label),
+                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_nMuons_ee", op.rng_len(self.tightMuons), DL_resolved_2b_ee, EqBin(
-                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolvedEE_label),
+                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_nMuons_mumu", op.rng_len(self.tightMuons), DL_resolved_2b_mumu, EqBin(
-                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolvedMuMu_label),
+                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_nMuons_emu", op.rng_len(self.tightMuons), DL_resolved_2b_emu, EqBin(
-                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolvedEMu_label),
-            ])
-        if self.channel == "SL":
-            plots.extend([
-
-                #########################################
-                #                 Skims                 #
-                #########################################
-
-                Skim("SL_resolved_1b_e_mva",
-                     mvaVars_SL_resolved, SL_resolved_1b_e),
-                Skim("SL_resolved_2b_e_mva",
-                     mvaVars_SL_resolved, SL_resolved_2b_e),
-                Skim("SL_resolved_1b_mu_mva",
-                     mvaVars_SL_resolved, SL_resolved_1b_mu),
-                Skim("SL_resolved_2b_mu_mva",
-                     mvaVars_SL_resolved, SL_resolved_2b_mu),
-
-                #########################################
-                ######                             ######
-                ######       SL boosted plots      ######
-                ######                             ######
-                #########################################
-
-                # number of fat b-jets
-                Plot.make1D("SL_boosted_nfatJet_e", op.rng_len(self.ak8BJets), SL_boosted_e, EqBin(
-                    10, 0, 10), title="N(ak8bjet)", xTitle="Number of fat b-jet", plotopts=SLboostedE_label),
-                Plot.make1D("SL_boosted_nfatJet_mu", op.rng_len(self.ak8BJets), SL_boosted_mu, EqBin(
-                    10, 0, 10), title="N(ak8bjet)", xTitle="Number of fat b-jet", plotopts=SLboostedMu_label),
-
-                # fatjet pt
-                Plot.make1D("SL_boosted_fatJet_pt_e", self.ak8BJets[0].pt, SL_boosted_e, EqBin(
-                    400, 200, 1000), title="pT(j)", xTitle="Fat b-jet p_{T} (GeV/c)", plotopts=SLboostedE_label),
-                Plot.make1D("SL_boosted_fatJet_pt_mu", self.ak8BJets[0].pt, SL_boosted_mu, EqBin(
-                    400, 200, 1000), title="pT(j)", xTitle="Fat b-jet p_{T} (GeV/c)", plotopts=SLboostedMu_label),
-
-                # subjet1 pt
-                Plot.make1D("SL_boosted_subjet1_pt_e", self.ak8BJets[0].subJet1.pt, SL_boosted_e, EqBin(
-                    50, 0, 500), title=" pT(subjet1)", xTitle="Subjet 1 p_{T} (GeV/c)", plotopts=SLboostedE_label),
-                Plot.make1D("SL_boosted_subjet1_pt_mu", self.ak8BJets[0].subJet1.pt, SL_boosted_mu, EqBin(
-                    50, 0, 500), title=" pT(subjet1)", xTitle="Subjet 1 p_{T} (GeV/c)", plotopts=SLboostedMu_label),
-
-                # subjet2 pt
-                Plot.make1D("SL_boosted_subjet2_pt_e", self.ak8BJets[0].subJet2.pt, SL_boosted_e, EqBin(
-                    50, 0, 500), title=" pT(subjet2)", xTitle="Subjet 2 p_{T} (GeV/c)", plotopts=SLboostedE_label),
-                Plot.make1D("SL_boosted_subjet2_pt_mu", self.ak8BJets[0].subJet2.pt, SL_boosted_mu, EqBin(
-                    50, 0, 500), title=" pT(subjet2)", xTitle="Subjet 2 p_{T} (GeV/c)", plotopts=SLboostedMu_label),
-
-                # ak8jet eta
-                Plot.make1D("SL_boosted_fatJet_eta_e", self.ak8BJets[0].eta, SL_boosted_e, EqBin(
-                    30, -3, 3), title="eta(j)", xTitle="eta(j)", plotopts=SLboostedE_label),
-                Plot.make1D("SL_boosted_fatJet_eta_mu", self.ak8BJets[0].eta, SL_boosted_mu, EqBin(
-                    30, -3, 3), title="eta(j)", xTitle="eta(j)", plotopts=SLboostedMu_label),
-
-                # subjet1 eta
-                Plot.make1D("SL_boosted_subjet1_eta_e", self.ak8BJets[0].subJet1.eta, SL_boosted_e, EqBin(
-                    30, -3, 3), title="eta(subjet1)", xTitle="Subjet 1 \eta", plotopts=SLboostedE_label),
-                Plot.make1D("SL_boosted_subjet1_eta_mu", self.ak8BJets[0].subJet1.eta, SL_boosted_mu, EqBin(
-                    30, -3, 3), title="eta(subjet1)", xTitle="Subjet 1 \eta", plotopts=SLboostedMu_label),
-
-                # subjet2 eta
-                Plot.make1D("SL_boosted_subjet2_eta_e", self.ak8BJets[0].subJet2.eta, SL_boosted_e, EqBin(
-                    30, -3, 3), title="eta(subjet2)", xTitle="Subjet 2 \eta", plotopts=SLboostedE_label),
-                Plot.make1D("SL_boosted_subjet2_eta_mu", self.ak8BJets[0].subJet2.eta, SL_boosted_mu, EqBin(
-                    30, -3, 3), title="eta(subjet2)", xTitle="Subjet 2 \eta", plotopts=SLboostedMu_label),
-
-                # Invariant mass of subjets
-                Plot.make1D("SL_boosted_InvM_jj_e", op.invariant_mass(self.ak8BJets[0].subJet1.p4, self.ak8BJets[0].subJet2.p4), SL_boosted_e, EqBin(
-                    100, 0., 200.), title="InvM(jj)", xTitle="Invariant Mass of sub-jets (GeV/c^{2})", plotopts=SLboostedE_label),
-                Plot.make1D("SL_boosted_InvM_jj_mu", op.invariant_mass(self.ak8BJets[0].subJet1.p4, self.ak8BJets[0].subJet2.p4), SL_boosted_mu, EqBin(
-                    100, 0., 200.), title="InvM(jj)", xTitle="Invariant Mass of sub-jets (GeV/c^{2})", plotopts=SLboostedMu_label),
-
-                # lepton pt
-                Plot.make1D("SL_boosted_lepton_pt_e", self.tightElectrons[0].pt, SL_boosted_e, EqBin(
-                    100, 0., 300.), title="lepton pT", xTitle="p_{T} of the lepton (GeV/c)", plotopts=SLboostedE_label),
-                Plot.make1D("SL_boosted_lepton_pt_mu", self.tightMuons[0].pt, SL_boosted_mu, EqBin(
-                    100, 0., 300.), title="lepton pT", xTitle="p_{T} of the lepton (GeV/c)", plotopts=SLboostedMu_label),
-
-                # lepton eta
-                Plot.make1D("SL_boosted_lepton_eta_e", self.tightElectrons[0].eta, SL_boosted_e, EqBin(
-                    30, -3, 3), title="lepton eta", xTitle="lepton \eta", plotopts=SLboostedE_label),
-                Plot.make1D("SL_boosted_lepton_eta_mu", self.tightMuons[0].eta, SL_boosted_mu, EqBin(
-                    30, -3, 3), title="lepton eta", xTitle="lepton \eta", plotopts=SLboostedMu_label),
-
-                # DR between lepton and ak8 jet
-                Plot.make1D("SL_boosted_DR_leptonANDak8bjet_e", op.deltaR(self.tightElectrons[0].p4, self.ak8Jets[0].p4), SL_boosted_e, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=SLboostedE_label),
-                Plot.make1D("SL_boosted_DR_leptonANDak8bjet_mu", op.deltaR(self.tightMuons[0].p4, self.ak8Jets[0].p4), SL_boosted_mu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=SLboostedMu_label),
-
-                # MET pt
-                Plot.make1D("SL_boosted_MET_pt_e", tree.MET.pt, SL_boosted_e, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=SLboostedE_label),
-                Plot.make1D("SL_boosted_MET_pt_mu", tree.MET.pt, SL_boosted_mu, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=SLboostedMu_label),
-
-
-                #########################################
-                ######                             ######
-                ######      SL resolved plots      ######
-                ######                             ######
-                #########################################
-
-                # number of ak4 jets
-                Plot.make1D("SL_resolved_nJets_e", op.rng_len(self.ak4BJets), SL_resolved_1b_e, EqBin(
-                    15, 0., 15.), xTitle="Number of b-jets", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_nJets_mu", op.rng_len(self.ak4BJets), SL_resolved_1b_mu, EqBin(
-                    15, 0., 15.), xTitle="Number of b-jets", plotopts=SLresolvedMu_label),
-
-                # leading jet pt
-                Plot.make1D("SL_resolved_leadingJet_pt_e", self.ak4BJets[0].pt, SL_resolved_1b_e, EqBin(
-                    100, 0, 500), title="pT(j1)", xTitle="pT(j1) (GeV/c)", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_leadingJet_pt_mu", self.ak4BJets[0].pt, SL_resolved_1b_mu, EqBin(
-                    100, 0, 500), title="pT(j1)", xTitle="pT(j1) (GeV/c)", plotopts=SLresolvedMu_label),
-
-                # leading jet eta
-                Plot.make1D("SL_resolved_leadingJet_eta_e", self.ak4BJets[0].eta, SL_resolved_1b_e, EqBin(
-                    30, -3, 3), title="eta(j1)", xTitle="B-jet \eta", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_leadingJet_eta_mu", self.ak4BJets[0].eta, SL_resolved_1b_mu, EqBin(
-                    30, -3, 3), title="eta(j1)", xTitle="eta(j1)", plotopts=SLresolvedMu_label),
-
-                # sub-leading jet pt
-                Plot.make1D("SL_resolved_subleadingJet_pt_e", self.ak4Jets[1].pt, SL_resolved_1b_e, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="pT(j2) (GeV/c)", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_subleadingJet_pt_mu", self.ak4Jets[1].pt, SL_resolved_1b_mu, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="pT(j2) (GeV/c)", plotopts=SLresolvedMu_label),
-
-                # sub-leading jet eta
-                Plot.make1D("SL_resolved_subleadingJet_eta_e", self.ak4Jets[1].eta, SL_resolved_1b_e, EqBin(
-                    30, -3, 3), title="eta(j2)", xTitle="eta(j2)", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_subleadingJet_eta_mu", self.ak4Jets[1].eta, SL_resolved_1b_mu, EqBin(
-                    30, -3, 3), title="eta(j2)", xTitle="eta(j2)", plotopts=SLresolvedMu_label),
-
-                # DR between leading and sub-leading jet
-                Plot.make1D("SL_resolved_DR_jets_e", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), SL_resolved_1b_e, EqBin(
-                    100, 0, 10), title="DR(j1,j2)", xTitle="DR(j1,j2)", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_DR_jets_mu", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), SL_resolved_1b_mu, EqBin(
-                    100, 0, 10), title="DR(j1,j2)", xTitle="DR(j1,j2)", plotopts=SLresolvedMu_label),
-
-                # DR between  lepton and ak4 b jet
-                Plot.make1D("SL_resolved_DR_leptonANDak4bjet_e", op.deltaR(self.tightElectrons[0].p4, self.ak4BJets[0].p4), SL_resolved_1b_e, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(lepton, ak8bjet)", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_DR_leptonANDak4bjet_mu", op.deltaR(self.tightMuons[0].p4, self.ak4BJets[0].p4), SL_resolved_1b_mu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(lepton, ak8bjet)", plotopts=SLresolvedMu_label),
-
-                # lepton pt
-                Plot.make1D("SL_resolved_lepton_pt_e", self.tightElectrons[0].pt, SL_resolved_1b_e, EqBin(
-                    100, 0., 300.), title="lepton pT", xTitle="p_{T} of the lepton (GeV/c)", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_lepton_pt_mu", self.tightMuons[0].pt, SL_resolved_1b_mu, EqBin(
-                    100, 0., 300.), title="lepton pT", xTitle="p_{T} of the lepton (GeV/c)", plotopts=SLresolvedMu_label),
-
-                # lepton eta
-                Plot.make1D("SL_resolved_lepton_eta_e", self.tightElectrons[0].eta, SL_resolved_1b_e, EqBin(
-                    30, -3, 3), title="lepton pT", xTitle="\eta of the lepton (GeV/c)", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_lepton_eta_mu", self.tightMuons[0].eta, SL_resolved_1b_mu, EqBin(
-                    30, -3, 3), title="lepton pT", xTitle="\eta of the lepton (GeV/c)", plotopts=SLresolvedMu_label),
-
-                # MET pt
-                Plot.make1D("SL_resolved_MET_pt_e", tree.MET.pt, SL_resolved_1b_e, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=SLresolvedE_label),
-                Plot.make1D("SL_resolved_MET_pt_mu", tree.MET.pt, SL_resolved_1b_mu, EqBin(
-                    100, 0, 500), title="pT(j2)", xTitle="MET p_{T} (GeV/c)", plotopts=SLresolvedMu_label),
+                    3, 0, 3), title="N(el)", xTitle="Number of electrons", plotopts=DLresolved_2b_EMu_label),
             ])
 
         return plots
