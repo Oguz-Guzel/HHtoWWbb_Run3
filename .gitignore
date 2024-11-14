@@ -6,4 +6,3 @@ config/dascache/*
 __pycache__/
 *.cc
 texput.log
-bamboo.ini
