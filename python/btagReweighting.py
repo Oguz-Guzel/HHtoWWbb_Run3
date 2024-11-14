@@ -1,5 +1,5 @@
 
-from bamboo.plots import Skim
+from bamboo.plots import Skim, CutFlowReport
 from bamboo import treefunctions as op
 
 from bamboo.analysismodules import NanoAODModule, HistogramsModule
@@ -59,6 +59,10 @@ class _base(NanoAODModule, HistogramsModule):
         genWeight = tree.genWeight if self.is_MC else op.c_float(1.)
         noSel = noSel.refine('genWeight', weight=genWeight)
 
+        # initialise CFR
+        self.yields = CutFlowReport(
+            "yields", recursive=False, printInLog=True)
+
         # Triggers
         self.triggers_per_PD = {}
 
@@ -115,6 +119,9 @@ class btagReweighting(_base):
 
     def definePlots(self, tree, noSel, sample=None, sampleCfg=None):
         plots = []
+
+        # cutflow report
+        plots.append(self.yields)
 
         # define objects
         defs.defineObjects(self, tree)
