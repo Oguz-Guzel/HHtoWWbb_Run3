@@ -182,15 +182,20 @@ class btagReweighting(_base):
         sumW_perEra = {era: {"before": [0]*11,
                              "after": [0]*11} for era in eras}
 
+        def accumulate_weights(tree, weight_branch, multiplicity_branch, accumulator):
+            for entry in tree:
+                jm = min(getattr(entry, multiplicity_branch), 10)
+                accumulator[jm] += getattr(entry, weight_branch)
+
+        def _openFileAndGet(path, mode="read"):
+            tf = TFile.Open(path, mode)
+            if not tf or not tf.IsOpen():
+                raise Exception(f"Could not open file {path}")
+            return tf
+
         for proc, smpCfg in config["samples"].items():
             if smpCfg.get("group") == "data":
                 continue
-
-            def _openFileAndGet(path, mode="read"):
-                tf = TFile.Open(path, mode)
-                if not tf or not tf.IsOpen():
-                    raise Exception(f"Could not open file {path}")
-                return tf
 
             sample_rootfile = _openFileAndGet(
                 os.path.join(resultsdir, f"{proc}.root"), "read")
@@ -213,11 +218,6 @@ class btagReweighting(_base):
 
                 branch_names = [branch.GetName()
                                 for branch in tree.GetListOfBranches()]
-
-                def accumulate_weights(tree, weight_branch, multiplicity_branch, accumulator):
-                    for entry in tree:
-                        jm = min(getattr(entry, multiplicity_branch), 10)
-                        accumulator[jm] += getattr(entry, weight_branch)
 
                 if "Sel_weight_after" in branch_names:
                     accumulate_weights(
