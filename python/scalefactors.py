@@ -220,13 +220,14 @@ class ScaleFactors():
                 systNomName="sf",
                 sel=sel
             )
-            # Electron Trigger SF
+            # Electron Trigger SF # to be added in the following selections
             el_trigger_sf = get_correction(
-                (EGamma_SF_JSONFiles[self.era][0]).replace("electron", "electronHlt"),
+                (EGamma_SF_JSONFiles[self.era][0]).replace(
+                    "electron", "electronHlt"),
                 "Electron-HLT-SF",
-                params={"pt": lambda el: op.max(el.pt, 25.0),
+                params={"pt": lambda el: el.pt,
                         "eta": lambda el: el.eta,
-                        "Path": "HLT_SF_Ele30_MVAiso80ID",
+                        "Path": "HLT_SF_Ele30_MVAiso90ID",
                         "year": EGamma_SF_JSONFiles[self.era][1]
                         },
                 systParam="ValType",
@@ -236,24 +237,29 @@ class ScaleFactors():
 
             if sel.name == 'elPairMultiplicitySel':
                 # pt cut here since correction's available only for pt >= 10
-                sel=sel.refine(sel.name+"_electronSF", cut=[
+                sel = sel.refine(sel.name+"_electron_ID_SF", cut=[
                     op.AND(self.firstElTightPair[0].pt >= 10,
                            self.firstElTightPair[1].pt >= 10
                            )],
                     weight=[electron_ID_sf(self.firstElTightPair[0]),
-                            electron_ID_sf(self.firstElTightPair[1]),
-                            el_trigger_sf(self.firstElTightPair[0]),
-                            el_trigger_sf(self.firstElTightPair[1])]
+                            electron_ID_sf(self.firstElTightPair[1])]
                 )
+                self.yields.add(sel, "electron ID SF")
+
             elif sel.name == 'emuPairMultiplicitySel':
-                sel=sel.refine(sel.name+"_electronSF",
+                sel = sel.refine(sel.name+"_electron_ID_SF",
                                  cut=[self.firstEmuTightPair[0].pt >= 10],
-                                 weight=[electron_ID_sf(self.firstEmuTightPair[0]),
-                                         el_trigger_sf(self.firstEmuTightPair[0])]
+                                 weight=[electron_ID_sf(
+                                     self.firstEmuTightPair[0])]
                                  )
+                self.yields.add(sel, "electron ID SF")
+
             else:
-                sel=sel.refine(sel.name+"_electronSF", weight=op.c_float(1.))
+                sel = sel.refine(sel.name+"_electron_ID_SF",
+                                 weight=op.c_float(1.))
+                self.yields.add(sel, "electron ID SF")
         else:
-            sel=sel.refine(sel.name+"_electronSF", weight=op.c_float(1.))
-        self.yields.add(sel, "electron id-trg SF")
+            sel = sel.refine(sel.name+"_electron_ID_SF", weight=op.c_float(1.))
+            self.yields.add(sel, "electron ID SF")
+
         return sel
