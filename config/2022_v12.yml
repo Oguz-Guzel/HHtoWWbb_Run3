@@ -47,12 +47,12 @@ plotIt:
     DY:
       legend: 'DY'
       fill-color: "#9e2a2b"
-    # WJets:
-    #   legend: 'WJets'
-    #   fill-color: "#e09f3e"
-    # VV:
-    #   legend: 'VV'
-    #   fill-color: "#540B0E"
+    WJets:
+      legend: 'WJets'
+      fill-color: "#e09f3e"
+    VV:
+      legend: 'VV'
+      fill-color: "#540B0E"
     TW:
       legend: 'TW'
       fill-color: "#335c67"
