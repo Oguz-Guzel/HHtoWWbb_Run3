@@ -56,7 +56,7 @@ def custom_Plotit(cfgName, workdir, inDir, outDir, counterReader, config, plotIt
     _gp = list(config["plotIt"]["groups"].keys())
     if 'signal' in _gp:
         _gp.remove('signal')
-
+    
     lumiCFG = {}
     for smp, smpCfg in config["samples"].items():
 
@@ -68,6 +68,7 @@ def custom_Plotit(cfgName, workdir, inDir, outDir, counterReader, config, plotIt
         mergedHists = {}
 
         if smpCfg.get("group") in _gp:
+            print(f"Copying {smp}.root to {outDir}")
             shutil.copyfile(os.path.join(
                 inDir, f"{smp}.root"), os.path.join(outDir, f"{smp}.root"))
             keep_cfg[smp] = smpCfg
@@ -191,8 +192,8 @@ def custom_Plotit(cfgName, workdir, inDir, outDir, counterReader, config, plotIt
     except subprocess.CalledProcessError:
         logger.error("Failed to run {0}".format(" ".join(plotitCmd)))
 
-def runPDF(workdir, channel, era=None):
-    plots_dir = [os.path.join(workdir, "plots")]
+def runPDF(workdir, channel, era=None, plotsDir='plots'):
+    plots_dir = [os.path.join(workdir, plotsDir)]
     if era:
         plots_dir.append(os.path.join(workdir, f"plots_{era}"))
     else:

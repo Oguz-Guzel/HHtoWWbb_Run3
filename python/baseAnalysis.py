@@ -272,8 +272,11 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 cfgName, workdir=workdir, plotIt=self.args.plotIt, eras=(
                     eraMode, eras),
                 verbose=self.args.verbose)
-        # # add _full to the plots dir below in the runPDF function when activating the following code
+        plotsDir = 'plots'
+        # # to be automatised soon
+        # # activate the following lines to combine signal samples
         # # hadd signal files and create another plots.yml called plots_full.yml
+        # plotsDir = 'plots_full'
         # import os
         # import shutil
         # outDir = os.path.join(resultsdir, "normalizedSummedSignal")
@@ -290,7 +293,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 for era in eras:
                     os.system(utils.runPDF(workdir=workdir, channel=self.args.channel, era=era))
                     logger.info(f"PDF presentation created for era {era}.\n")
-                os.system(utils.runPDF(workdir=workdir, channel=self.args.channel))
+                os.system(utils.runPDF(workdir=workdir, channel=self.args.channel, plotsDir=plotsDir))
                 logger.info(
                     f"PDF presentation created for all eras combined.\n")
             except Exception as e:
