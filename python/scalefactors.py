@@ -128,7 +128,7 @@ class ScaleFactors():
             # Muon SF
             muon_ID_sf = get_correction(
                 MUON_SF_JSONFiles[self.era],
-                "NUM_LooseID_DEN_TrackerMuons",
+                "NUM_LooseID_DEN_TrackerMuons",  # change to NUM_TightID_DEN_TrackerMuons
                 params={"pt": lambda mu: mu.pt,
                         "eta": lambda mu: op.abs(mu.eta)},
                 systParam="scale_factors",

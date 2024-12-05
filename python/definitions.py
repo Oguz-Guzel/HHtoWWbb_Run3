@@ -111,7 +111,9 @@ def ak8jetDef(jets):
     return op.select(jets, lambda jet: op.AND(
         jet.pt >= 200.,
         op.abs(jet.eta) <= 2.4,
-        jet.jetId & 2,  # tight
+        jet.jetId & 2,  # tight, change to the following, for ak4 too
+#       (jet.jetId>>1 & 0x1) == 1, #pass tigh
+#       (jet.jetId>>2 & 0x1) == 1, #pass tightleptveto
         jet.subJet1.isValid,
         jet.subJet2.isValid,
         jet.subJet1.pt >= 20.,
