@@ -6,7 +6,7 @@ Zmass = 91.1876  # GeV
 
 
 def lowMllCut(dileptons) -> bool:
-    " Minimum dilepton invariant mass cut, that's 12 GeV."
+    " Minimum dilepton invariant mass cut of 12 GeV."
     return op.NOT(op.rng_any(
         dileptons, lambda dilep: op.invariant_mass(dilep[0].p4, dilep[1].p4) < 12.))
 
@@ -14,7 +14,7 @@ def lowMllCut(dileptons) -> bool:
 def outZ(dileptons) -> bool:
     "Reject events with same-flavoured dilepton mass around Z peak."
     return op.NOT(op.rng_any(
-        dileptons, lambda dilep: op.invariant_mass(dilep[0].p4, dilep[1].p4) > Zmass - 10.))
+        dileptons, lambda dilep: op.abs(op.invariant_mass(dilep[0].p4, dilep[1].p4) - Zmass) >= 10.))
 
 
 def makeDLSelection(self, sel):
@@ -27,7 +27,7 @@ def makeDLSelection(self, sel):
         A list of selection objects for the Dilepton analysis.
     """
 
-    # Pt cuts : leading above 25 GeV and sub-leading above 15 GeV
+    # lepton Pt cuts : leading above 25 GeV and sub-leading above 15 GeV
     def ptCutSameFlavourPair(dilep) -> bool:
         """Minimum pT cut for the same flavour leptons.
         Leading lepton pT > 25 GeV and sub-leading lepton pT > 15 GeV.
