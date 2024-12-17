@@ -66,4 +66,4 @@ plotIt:
     sort-by-yields: True
     legend-columns: 4
     ratio-y-axis: '#frac{Data}{MC}'
-    ratio-y-axis-range: [0.5, 1.5] # [0.5, 1.5] is the default
+    ratio-y-axis-range: [0.75, 1.25] # [0.5, 1.5] is the default
