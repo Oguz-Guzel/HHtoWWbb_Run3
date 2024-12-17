@@ -263,7 +263,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2023BPix:
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
   split: -25
-  line-color: 5
+  line-color: 4
   legend: 'HH\rightarrow bbll\nu\nu kl 2p45'
 
 ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2023:
@@ -274,7 +274,7 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2023:
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
   split: -25
-  line-color: 6
+  line-color: 5
   legend: 'HH\rightarrow bbll\nu\nu kl 5p00'
 
 ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2023BPix:
@@ -285,5 +285,5 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2023BPix:
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
   split: -25
-  line-color: 6
+  line-color: 5
   legend: 'HH\rightarrow bbll\nu\nu kl 5p00'
