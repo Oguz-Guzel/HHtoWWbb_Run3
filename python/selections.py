@@ -13,8 +13,8 @@ def lowMllCut(dileptons) -> bool:
 
 def outZ(dileptons) -> bool:
     "Reject events with same-flavoured dilepton mass around Z peak."
-    return op.rng_any(
-        dileptons, lambda dilep: op.abs(op.invariant_mass(dilep[0].p4, dilep[1].p4) - Zmass) >= 10.)
+    return op.NOT(op.rng_any(
+        dileptons, lambda dilep: op.abs(op.invariant_mass(dilep[0].p4, dilep[1].p4) - Zmass) < 10.))
 
 
 def makeDLSelection(self, sel):
