@@ -308,53 +308,44 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         _, samples, _, _, _ = loadPlotIt(
             config, [], eras=self.args.eras[1], workdir=workdir, resultsdir=resultsdir, readCounters=self.readCounters, vetoFileAttributes=self.__class__.CustomSampleAttributes)
 
-        if skims and not self.args.mvaModels:
-            sync_dfs = []
-            mva_dfs = []
-            for skim in skims:
-                pqoutname = os.path.join(resultsdir, f"{skim.name}.parquet")
-                if os.path.isfile(pqoutname):
-                    logger.info(
-                        f"WARNING: {skim.name}.parquet already exists in {resultsdir}")
-                    logger.info("         skipping...")
-                    pass
-                else:
-                    from bamboo.root import gbl
-                    import pandas as pd
-                    frames = []
-                    for smp in samples:
-                        for cb in (smp.files if hasattr(smp, "files") else [smp]):
-                            tree = cb.tFile.Get(skim.treeName)
-                            if not tree:
-                                logger.info("WARNING: skim tree %s not found in file %s" % (
-                                    skim.treeName, cb.tFile.GetName()))
-                                logger.info("         skipping...")
-                            else:
-                                N = tree.GetEntries()
-                                cols = gbl.ROOT.RDataFrame(tree).AsNumpy()
-                                if "sync" not in skim.name:
-                                    cols["weight"] *= cb.scale
-                                    cols["process"] = [smp.name] * \
-                                        len(cols["weight"])
-                                frames.append(pd.DataFrame(cols))
-                    df = pd.concat(frames)
-                    if "sync" in skim.name:
+        # create sync skims if asked
+        if self.args.sync:
+            if skims:
+                sync_dfs = []
+                for skim in skims:
+                    pqoutname = os.path.join(
+                        resultsdir, f"{skim.name}.parquet")
+                    if os.path.isfile(pqoutname):
+                        logger.info(
+                            f"WARNING: {skim.name}.parquet already exists in {resultsdir}")
+                        logger.info("         skipping...")
+                        pass
+                    else:
+                        from bamboo.root import gbl
+                        import pandas as pd
+                        frames = []
+                        for smp in samples:
+                            for cb in (smp.files if hasattr(smp, "files") else [smp]):
+                                tree = cb.tFile.Get(skim.treeName)
+                                if not tree:
+                                    logger.info("WARNING: skim tree %s not found in file %s" % (
+                                        skim.treeName, cb.tFile.GetName()))
+                                    logger.info("         skipping...")
+                                else:
+                                    N = tree.GetEntries()
+                                    cols = gbl.ROOT.RDataFrame(tree).AsNumpy()
+                                    if "sync" not in skim.name:
+                                        cols["weight"] *= cb.scale
+                                        cols["process"] = [smp.name] * \
+                                            len(cols["weight"])
+                                    frames.append(pd.DataFrame(cols))
+                        df = pd.concat(frames)
                         df = df[self.order]
                         sync_dfs.append(df)
-                    else:
-                        df["process"] = pd.Categorical(
-                            df["process"], categories=pd.unique(df["process"]))
-                        mva_dfs.append(df)
-            if sync_dfs:
                 df = pd.concat(sync_dfs)
                 df = df.sort_values(by='event_no')
                 syncFileName = f"{self.channel}_sync.csv"
                 df.to_csv(os.path.join(resultsdir, syncFileName))
                 logger.info(f"Saved dataframe for sync to {syncFileName}")
-            if mva_dfs:
-                df = pd.concat(mva_dfs)
-                mvaFileName = f"{self.channel}_mva.parquet"
-                df.to_parquet(os.path.join(resultsdir, mvaFileName))
-                df.to_csv(os.path.join(resultsdir, "test.csv"))
-                logger.info(
-                    f"Saved dataframe for mva to {resultsdir}/{mvaFileName}")
+            else:
+                logger.warning("No skims are found, hence sync file is not produced.")
