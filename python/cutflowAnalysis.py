@@ -36,6 +36,9 @@ class cutflowAnalysis(NanoBaseHHWWbb):
         # btag rescaling
         noSel = sf.btagRescale(self, noSel)
 
+        # Noise filters
+        noSel = sf.NoiseFilters(self, tree, noSel)
+
         if self.channel == 'DL':
             # get DL selections
             [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu, \

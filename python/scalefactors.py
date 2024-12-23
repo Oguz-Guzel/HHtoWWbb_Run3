@@ -266,3 +266,17 @@ class ScaleFactors():
             self.yields.add(sel, "electron ID SF")
 
         return sel
+
+    def NoiseFilters(self, tree, sel):
+        "https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2#Run_3_2022_and_2023_data_and_MC"
+        flags = [tree.Flag.goodVertices,
+                 tree.Flag.globalSuperTightHalo2016Filter,
+                 tree.Flag.EcalDeadCellTriggerPrimitiveFilter,
+                 tree.Flag.BadPFMuonFilter,
+                 tree.Flag.BadPFMuonDzFilter,
+                 tree.Flag.hfNoisyHitsFilter,
+                 tree.Flag.eeBadScFilter,
+                 tree.Flag.ecalBadCalibFilter]
+        sel = sel.refine('NoiseFilters', cut=flags)
+        self.yields.add(sel, 'Noise filters')
+        return sel
