@@ -241,16 +241,19 @@ class ScaleFactors():
                     op.AND(self.firstElTightPair[0].pt >= 10,
                            self.firstElTightPair[1].pt >= 10
                            )],
-                    weight=[electron_ID_sf(self.firstElTightPair[0]),
-                            electron_ID_sf(self.firstElTightPair[1])]
+                    weight=[
+                        el_trigger_sf(self.firstElTightPair[0]),
+                        electron_ID_sf(self.firstElTightPair[0]),
+                        electron_ID_sf(self.firstElTightPair[1])]
                 )
                 self.yields.add(sel, "electron ID SF")
 
             elif sel.name == 'emuPairMultiplicitySel':
                 sel = sel.refine(sel.name+"_electron_ID_SF",
                                  cut=[self.firstEmuTightPair[0].pt >= 10],
-                                 weight=[electron_ID_sf(
-                                     self.firstEmuTightPair[0])]
+                                 weight=[
+                                    el_trigger_sf(self.firstElTightPair[0]),
+                                    electron_ID_sf(self.firstEmuTightPair[0])]
                                  )
                 self.yields.add(sel, "electron ID SF")
 
