@@ -86,7 +86,6 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                             help='Channel to be selected between SL and DL')
         parser.add_argument("--mvaModels",
                             dest="mvaModels",
-                            default=f"{os.getcwd()}/DNN/",
                             type=str,
                             help="Path to MVA models and Evaluate DNN")
         # parser.add_argument("--samples", nargs='*',
@@ -112,7 +111,8 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
     def prepareTree(self, tree, sample=None, sampleCfg=None, backend=None):
 
         # Define the git project's directory
-        self.git_project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        self.git_project_dir = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), '..'))
         self.era = sampleCfg["era"] if sampleCfg else None
         self.is_MC = self.isMC(sample)
 
@@ -291,20 +291,21 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         if not self.mvaModels and not self.args.sync:
             try:
                 for era in eras:
-                    os.system(utils.runPDF(workdir=workdir, channel=self.args.channel, era=era))
+                    os.system(utils.runPDF(workdir=workdir,
+                              channel=self.args.channel, era=era))
                     logger.info(f"PDF presentation created for era {era}.\n")
-                os.system(utils.runPDF(workdir=workdir, channel=self.args.channel, plotsDir=plotsDir))
+                os.system(utils.runPDF(workdir=workdir,
+                          channel=self.args.channel, plotsDir=plotsDir))
                 logger.info(
                     f"PDF presentation created for all eras combined.\n")
             except Exception as e:
                 logger.info(e)
 
-        # produce skims
         from bamboo.plots import Skim
         skims = [ap for ap in self.plotList if isinstance(ap, Skim)]
 
         from bamboo.analysisutils import loadPlotIt
-        p_config, samples, _, systematics, legend = loadPlotIt(
+        _, samples, _, _, _ = loadPlotIt(
             config, [], eras=self.args.eras[1], workdir=workdir, resultsdir=resultsdir, readCounters=self.readCounters, vetoFileAttributes=self.__class__.CustomSampleAttributes)
 
         if skims and not self.args.mvaModels:
