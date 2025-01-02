@@ -34,7 +34,8 @@ JECTagDatabase = {
     },
     "2023": {
         "MC": "Summer23Prompt23_V1_MC",
-        "C": "Summer23Prompt23_RunCv4_V1_DATA"
+        "Cv123": "Summer23Prompt23_RunCv123_V1_DATA",
+        "Cv4": "Summer23Prompt23_RunCv4_V1_DATA"
     },
     "2023BPix": {
         "MC": "Summer23BPixPrompt23_V1_MC",
@@ -65,13 +66,10 @@ JEC_JSONFiles = {
 }
 
 
-def getRunEra(sample):
-    """Return run era (A/B/...) for data sample"""
-    result = re.search(r'Run20..([A-Z]?)', sample)
-    if result is None:
-        return "MC"
-    else:
-        return result.group(1)
+def getDataRunEra(sample):
+    """Return run era (A/B/...) and the following digits for data sample"""
+    result = re.search(r'Run20\d{2}([A-Z]\w*)', sample)
+    return result.group(1) if result else None
 
 
 class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
@@ -206,8 +204,9 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         # logger.info(f"Triggers for {sample}: {self.triggers_per_PD}")
 
         # JEC/JER
-        runEra = getRunEra(sample)
-        jecTag = JECTagDatabase[self.era]["MC" if self.is_MC else runEra]
+        jecTag = JECTagDatabase[self.era]["MC" if self.is_MC else getDataRunEra(
+            sample)]
+        logger.info(f"JEC tag for sample {sample} is {jecTag}")
         smearTag = JERTagDatabase[self.era] if self.is_MC else None
 
         JMEArgs = {
