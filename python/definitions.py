@@ -112,8 +112,8 @@ def ak8jetDef(jets):
         jet.pt >= 200.,
         op.abs(jet.eta) <= 2.4,
         jet.jetId & 2,  # tight, change to the following, for ak4 too
-#       (jet.jetId>>1 & 0x1) == 1, #pass tigh
-#       (jet.jetId>>2 & 0x1) == 1, #pass tightleptveto
+        #       (jet.jetId>>1 & 0x1) == 1, #pass tigh
+        #       (jet.jetId>>2 & 0x1) == 1, #pass tightleptveto
         jet.subJet1.isValid,
         jet.subJet2.isValid,
         jet.subJet1.pt >= 20.,
@@ -128,6 +128,13 @@ def ak8jetDef(jets):
 
 
 def ak4BtagSel(jet): return jet.btagPNetB > 0.245
+
+
+def ak8Btag(fatjet): return op.AND(
+    fatjet.particleNet_XbbVsQCD > 0.4,
+    op.OR(fatjet.subJet1.pt >= 30,
+          fatjet.subJet2.pt >= 30)
+)
 
 
 def tauDef(taus):
@@ -261,12 +268,6 @@ def defineObjects(self, tree):
 
     self.ak8Jets = op.select(ak8JetsPreSel, self.cleanAk8Jets)
 
-    def ak8Btag(fatjet): return op.AND(
-        fatjet.particleNet_XbbVsQCD > 0.4,
-        op.OR(fatjet.subJet1.pt >= 30,
-              fatjet.subJet2.pt >= 30)
-    )
-
     self.ak8BJets = op.select(self.ak8Jets, ak8Btag)
 
     # Ak4 Jet Collection cleaned from Ak8b #
@@ -277,7 +278,7 @@ def defineObjects(self, tree):
 
 
 def ml_input_features(self, tree):
-    """Define variables to be used to create the skims containing them, also to give them later on in the DNN evaluation."""
+    """Define variables to be used to create the skims containing them, also to use them later on in the DNN evaluation."""
     l1_Px = op.multiSwitch(
         (op.rng_len(self.tightElectrons) == 2,
             self.tightElectrons[0].p4.Px()),  # if nElectrons = 2
