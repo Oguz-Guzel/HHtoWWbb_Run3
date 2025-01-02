@@ -20,7 +20,7 @@ PU_JSONFiles = {
     "2023BPix": (jsonPathBase + "LUM/2023_Summer23BPix/puWeights.json.gz", "Collisions2023_369803_370790_eraD_GoldenJson"),
 }
 
-JECTagDatabase = {
+JECTags = {
     "2022": {
         "MC": "Summer22_22Sep2023_V2_MC",
         "C": "Summer22_22Sep2023_RunCD_V2_DATA",
@@ -43,7 +43,7 @@ JECTagDatabase = {
     }
 }
 
-JERTagDatabase = {
+JERTags = {
     "2022": "Summer22_22Sep2023_JRV1_MC",
     "2022EE": "Summer22EE_22Sep2023_JRV1_MC",
     "2023": "Summer23Prompt23_RunCv4_JRV1_MC",
@@ -204,10 +204,11 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         # logger.info(f"Triggers for {sample}: {self.triggers_per_PD}")
 
         # JEC/JER
-        jecTag = JECTagDatabase[self.era]["MC" if self.is_MC else getDataRunEra(
+        jecTag = JECTags[self.era]["MC" if self.is_MC else getDataRunEra(
             sample)]
         logger.info(f"JEC tag for sample {sample} is {jecTag}")
-        smearTag = JERTagDatabase[self.era] if self.is_MC else None
+        # smearing is done only for MC
+        smearTag = JERTags[self.era] if self.is_MC else None
 
         JMEArgs = {
             "jsonFile": JEC_JSONFiles[self.era]["AK4"],
@@ -347,4 +348,5 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 df.to_csv(os.path.join(resultsdir, syncFileName))
                 logger.info(f"Saved dataframe for sync to {syncFileName}")
             else:
-                logger.warning("No skims are found, hence sync file is not produced.")
+                logger.warning(
+                    "No skims are found, hence sync file is not produced.")
