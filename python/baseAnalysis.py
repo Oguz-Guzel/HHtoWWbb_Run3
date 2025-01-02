@@ -46,7 +46,7 @@ JECTags = {
 JERTags = {
     "2022": "Summer22_22Sep2023_JRV1_MC",
     "2022EE": "Summer22EE_22Sep2023_JRV1_MC",
-    "2023": "Summer23Prompt23_RunCv4_JRV1_MC",
+    "2023": "Summer23Prompt23_RunCv1234_JRV1_MC",
     "2023BPix": "Summer23BPixPrompt23_RunD_JRV1_MC"
 }
 
