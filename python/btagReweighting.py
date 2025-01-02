@@ -115,7 +115,7 @@ class _base(NanoAODModule, HistogramsModule):
 
 
 class btagReweighting(_base):
-    """ Class to create the ratio that sould be applied to as a weight 
+    """ Class to create the ratio that should be applied as a weight 
         before making any btagged jet selection, see
         https://btv-wiki.docs.cern.ch/PerformanceCalibration/shapeCorrectionSFRecommendations/#effect-on-event-yields"""
 
@@ -161,7 +161,7 @@ class btagReweighting(_base):
                      ps
                      )
             )
-        
+
         return plots
 
     def postProcess(self, taskList, config=None, workdir=None, resultsdir=None):
