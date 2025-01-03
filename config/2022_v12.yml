@@ -24,7 +24,7 @@ plotIt:
     luminosity-label: '%1$.2f fb^{-1} (13.6 TeV)'
     experiment: CMS
     extra-label: Run 3 (2022) - Work in progress
-    luminosity-error: 0.025
+    luminosity-error: 0.014 # https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun3
     show-overflow: true
     error-fill-style: 3154
     error-fill-color: "#ee556270"
