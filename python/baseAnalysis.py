@@ -85,6 +85,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         parser.add_argument("--mvaModels",
                             dest="mvaModels",
                             type=str,
+                            default="DNN",
                             help="Path to MVA models and Evaluate DNN")
         # parser.add_argument("--samples", nargs='*',
         #                     required=True, help="Sample template YML file")
