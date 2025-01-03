@@ -124,7 +124,7 @@ def ak8jetDef(jets):
         jet.tau2 / jet.tau1 <= 0.75
     ))
 
-# bTagging for ak4 jets
+# bTagging for jets
 
 
 def ak4BtagSel(jet): return jet.btagPNetB > 0.245
