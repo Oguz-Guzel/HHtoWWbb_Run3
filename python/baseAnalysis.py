@@ -175,17 +175,14 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                 addHLTPath("DoubleMuon_",
                            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
                 addHLTPath("SingleMuon_", "IsoMu24")
-                addHLTPath("SingleMuon_", "IsoMu27")
             else:
                 addHLTPath("Muon_",
                            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
                 addHLTPath("Muon_", "IsoMu24")
-                addHLTPath("Muon_", "IsoMu27")
 
         else:
             addHLTPath("Muon_", "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
             addHLTPath("Muon_", "IsoMu24")
-            addHLTPath("Muon_", "IsoMu27")
 
         addHLTPath("EGamma_", "Ele30_WPTight_Gsf")
         addHLTPath("EGamma_", "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL")
