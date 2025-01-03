@@ -127,8 +127,8 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         nanoJetMETCalc_data = CalcCollectionsGroups(
             Jet=("pt", "mass"), changes={metName: (f"{metName}T1",)},
             **{metName: ("pt", "phi")})
-        systVars = (([nanoFatJetCalc])
-                    + [nanoJetMETCalc_both if self.is_MC else nanoJetMETCalc_data])
+        systVars = (
+            [(nanoJetMETCalc_both if self.is_MC else nanoJetMETCalc_data), nanoFatJetCalc])
         tree, noSel, be, lumiArgs = super().prepareTree(
             tree, sample=sample, sampleCfg=sampleCfg,
             description=NanoAODDescription.get(
@@ -207,19 +207,19 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         jecTag = JECTags[self.era]["MC" if self.is_MC else getDataRunEra(
             sample)]
         logger.info(f"JEC tag for sample {sample} is {jecTag}")
-        # smearing is done only for MC
+        # smearing is applied only on MC
         smearTag = JERTags[self.era] if self.is_MC else None
 
         JMEArgs = {
             "jsonFile": JEC_JSONFiles[self.era]["AK4"],
             "jec": jecTag,
-            # "smear": smearTag, causes runtime_error: Index below bounds in Binning for input argument 4 value: -1.000000
-            "jsonFileSmearingTool": jsonPathBase+'JME/jer_smear.json.gz',
-            "splitJER": True,
+            # "smear": smearTag,
+            # "jsonFileSmearingTool": jsonPathBase+'JME/jer_smear.json.gz',
             "jesUncertaintySources": (["Total"] if self.is_MC else None),
             "isMC": self.is_MC,
             "backend": be
         }
+
         from bamboo.analysisutils import configureJets, configureType1MET
         configureJets(tree._Jet, jetType="AK4PFPuppi", **JMEArgs)
         metName = "PuppiMET"
@@ -233,7 +233,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         JMEArgs.update({"jecSubjet": jecTag, })
         JMEArgs.update({"jsonFileSubjet": JEC_JSONFiles[self.era]["AK4"], })
         configureJets(tree._FatJet, jetType="AK8PFPuppi", **JMEArgs)
-        logger.info("Applying Jet and MET systematics")
+        logger.info("Applying Jet energy and resolution corrections.")
         return tree, noSel, be, lumiArgs
 
     def postProcess(self, taskList, config=None, workdir=None, resultsdir=None):
