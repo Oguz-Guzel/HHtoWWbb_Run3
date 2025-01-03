@@ -28,31 +28,23 @@ class mvaEvaluator(NanoBaseHHWWbb):
         # define objects
         defs.defineObjects(self, tree)
 
-        # common scale factors
-        noSel = sf.commonSF(self, tree, noSel, sample)
+        # top pT reweighting
+        noSel = sf.top_pT_reweight(self, tree, noSel, sample)
 
-        if self.channel == 'DL':
-            # get DL selections
-            DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu, \
-                DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu, \
-                DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu = makeDLSelection(
-                    self, noSel)
+        # btag scale factors
+        noSel = sf.btagSF(self, noSel)
 
-            # muonSF
-            DL_boosted_mumu = sf.muonSF(self, DL_boosted_mumu)
-            DL_boosted_emu = sf.muonSF(self, DL_boosted_emu)
-            DL_resolved_1b_mumu = sf.muonSF(self, DL_resolved_1b_mumu)
-            DL_resolved_1b_emu = sf.muonSF(self, DL_resolved_1b_emu)
-            DL_resolved_2b_emu = sf.muonSF(self, DL_resolved_2b_emu)
-            DL_resolved_2b_mumu = sf.muonSF(self, DL_resolved_2b_mumu)
+        # btag rescaling
+        noSel = sf.btagRescale(self, noSel)
 
-            # electronSF
-            DL_boosted_ee = sf.electronSF(self, DL_boosted_ee)
-            DL_boosted_emu = sf.electronSF(self, DL_boosted_emu)
-            DL_resolved_1b_ee = sf.electronSF(self, DL_resolved_1b_ee)
-            DL_resolved_1b_emu = sf.electronSF(self, DL_resolved_1b_emu)
-            DL_resolved_2b_ee = sf.electronSF(self, DL_resolved_2b_ee)
-            DL_resolved_2b_emu = sf.electronSF(self, DL_resolved_2b_emu)
+        # Noise filters
+        noSel = sf.NoiseFilters(self, tree, noSel)
+
+        # get DL selections
+        [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
+            DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
+            DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu], _ = makeDLSelection(
+                self, noSel)
 
         #############################################################################
         #                            MVA evaluation                                 #
