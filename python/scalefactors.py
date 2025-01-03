@@ -220,7 +220,8 @@ class ScaleFactors():
                 systNomName="sf",
                 sel=sel
             )
-            # Electron Trigger SF # to be added in the following selections
+
+            # Electron Trigger SF
             el_trigger_sf = get_correction(
                 (EGamma_SF_JSONFiles[self.era][0]).replace(
                     "electron", "electronHlt"),
@@ -252,8 +253,8 @@ class ScaleFactors():
                 sel = sel.refine(sel.name+"_electron_ID_SF",
                                  cut=[self.firstEmuTightPair[0].pt >= 10],
                                  weight=[
-                                    el_trigger_sf(self.firstElTightPair[0]),
-                                    electron_ID_sf(self.firstEmuTightPair[0])]
+                                     el_trigger_sf(self.firstElTightPair[0]),
+                                     electron_ID_sf(self.firstEmuTightPair[0])]
                                  )
                 self.yields.add(sel, "electron ID SF")
 
