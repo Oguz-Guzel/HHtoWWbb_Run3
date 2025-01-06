@@ -76,9 +76,12 @@ class mvaEvaluator(NanoBaseHHWWbb):
 
         # load the model file
         split_var = 'even' if tree.event % 2 == 1 else 'odd'
+        models_dir = os.path.join(self.git_project_dir, self.mvaModels)
         modelFile = os.path.join(
-            self.mvaModels, f"{split_var}_model/model_simplified.onnx")
-        logger.info(f"Using model file: {modelFile}")
+            models_dir, f"{split_var}_model/model_simplified.onnx")
+        logger.info(
+            f"Using the following directory for ML models: {models_dir}"
+        )
 
         # evaluate the model
         tnn_model = op.mvaEvaluator(modelFile, otherArgs='output')
