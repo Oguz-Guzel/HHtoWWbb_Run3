@@ -128,7 +128,7 @@ class ScaleFactors():
             # Muon SF
             muon_ID_sf = get_correction(
                 MUON_SF_JSONFiles[self.era],
-                "NUM_LooseID_DEN_TrackerMuons",  # change to NUM_TightID_DEN_TrackerMuons
+                "NUM_MediumID_DEN_TrackerMuons",  # NUM_MediumPromptID_DEN_TrackerMuons, too ?
                 params={"pt": lambda mu: mu.pt,
                         "eta": lambda mu: op.abs(mu.eta)},
                 systParam="scale_factors",
@@ -140,7 +140,8 @@ class ScaleFactors():
             # Muon Isolation SF
             muon_ISO_sf = get_correction(
                 MUON_SF_JSONFiles[self.era],
-                "NUM_TightPFIso_DEN_TightID",
+                # since muon iso is miniPFreliso and id is medium
+                "NUM_MediumMiniIso_DEN_MediumID",
                 params={"pt": lambda mu: mu.pt,
                         "eta": lambda mu: op.abs(mu.eta),
                         },
@@ -153,7 +154,7 @@ class ScaleFactors():
             # Muon Trigger SF
             muon_trigger_sf = get_correction(
                 MUON_SF_JSONFiles[self.era],
-                "NUM_IsoMu24_or_Mu50_or_CascadeMu100_or_HighPtTkMu100_DEN_CutBasedIdTight_and_PFIsoTight",
+                "NUM_IsoMu24_DEN_CutBasedIdMedium_and_PFIsoMedium",
                 params={
                     "pt": lambda mu: op.max(mu.pt, 26.0),
                     "eta": lambda mu: op.abs(mu.eta)
@@ -205,7 +206,7 @@ class ScaleFactors():
             params = {"pt": lambda e: e.pt,
                       "eta": lambda e: e.eta,
                       "year": EGamma_SF_JSONFiles[self.era][1],
-                      "WorkingPoint": "wp80iso"}
+                      "WorkingPoint": "wp90iso"}
 
             # add phi for 2023 and 2023BPix
             if self.era in ['2023', '2023BPix']:
