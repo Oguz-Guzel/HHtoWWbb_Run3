@@ -49,16 +49,16 @@ def getRunEra(sample):
 class ScaleFactors():
     """Class to define scale factors"""
 
-    def top_pT_reweight(self, tree, sel, sample):
+    def top_pT_reweight(self, GenPartBranch, sel, sample):
         isMC = self.is_MC
         # top pt reweighting
         if isMC and sample.startswith("TT"):
             def top_pt_weight(pt):
                 return op.exp(-2.02274e-01 + 1.09734e-04*pt + -1.30088e-07*pt**2 + (5.83494e+01/(pt+1.96252e+02)))
 
-            def getTopPtWeight(tree):
+            def getTopPtWeight(GenPart):
                 lastCopy = op.select(
-                    tree.GenPart, lambda p: (op.static_cast("int", p.statusFlags) >> 13) & 1)
+                    GenPart, lambda p: (op.static_cast("int", p.statusFlags) >> 13) & 1)
                 tops = op.select(lastCopy, lambda p: p.pdgId == 6)
                 antitops = op.select(lastCopy, lambda p: p.pdgId == -6)
                 weight = op.switch(op.AND(op.rng_len(tops) >= 1, op.rng_len(antitops) >= 1),
@@ -71,7 +71,7 @@ class ScaleFactors():
                 "Applying Top Pt reweighting (only for TTbar samples)")
 
             sel = sel.refine("topPt", weight=op.systematic(
-                getTopPtWeight(tree)))
+                getTopPtWeight(GenPartBranch)))
         else:
             sel = sel.refine("topPt", weight=op.c_float(1.))
         self.yields.add(sel, "topPt reweighting")
@@ -269,16 +269,16 @@ class ScaleFactors():
 
         return sel
 
-    def NoiseFilters(self, tree, sel):
+    def NoiseFilters(self, FlagBranch, sel):
         "https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2#Run_3_2022_and_2023_data_and_MC"
-        flags = [tree.Flag.goodVertices,
-                 tree.Flag.globalSuperTightHalo2016Filter,
-                 tree.Flag.EcalDeadCellTriggerPrimitiveFilter,
-                 tree.Flag.BadPFMuonFilter,
-                 tree.Flag.BadPFMuonDzFilter,
-                 tree.Flag.hfNoisyHitsFilter,
-                 tree.Flag.eeBadScFilter,
-                 tree.Flag.ecalBadCalibFilter]
+        flags = [FlagBranch.goodVertices,
+                 FlagBranch.globalSuperTightHalo2016Filter,
+                 FlagBranch.EcalDeadCellTriggerPrimitiveFilter,
+                 FlagBranch.BadPFMuonFilter,
+                 FlagBranch.BadPFMuonDzFilter,
+                 FlagBranch.hfNoisyHitsFilter,
+                 FlagBranch.eeBadScFilter,
+                 FlagBranch.ecalBadCalibFilter]
         sel = sel.refine('NoiseFilters', cut=flags)
         self.yields.add(sel, 'Noise filters')
         return sel

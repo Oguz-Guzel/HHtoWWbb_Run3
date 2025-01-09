@@ -28,7 +28,7 @@ class cutflowAnalysis(NanoBaseHHWWbb):
         defs.defineObjects(self, tree)
 
         # top pT reweighting
-        noSel = sf.top_pT_reweight(self, tree, noSel, sample)
+        noSel = sf.top_pT_reweight(self, tree.GenPart, noSel, sample)
 
         # btag scale factors
         noSel = sf.btagSF(self, noSel)
@@ -37,7 +37,7 @@ class cutflowAnalysis(NanoBaseHHWWbb):
         noSel = sf.btagRescale(self, noSel)
 
         # Noise filters
-        noSel = sf.NoiseFilters(self, tree, noSel)
+        noSel = sf.NoiseFilters(self, tree.Flag, noSel)
 
         if self.channel == 'DL':
             # get DL selections
