@@ -127,6 +127,8 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         logger.info(f"JEC tag for sample {sample} is {jecTag}")
         # smearing is for MC only
         smearTag = JERTags[self.era] if self.is_MC else None
+        if smearTag:
+            logger.info(f"JER tag for sample {sample} is {smearTag}")
 
         jecArgs = {
             "jsonFile": JEC_JSONFiles[self.era]["AK4"],
@@ -152,7 +154,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         jecArgs.update({"jecSubjet": jecTag, })
         jecArgs.update({"jsonFileSubjet": JEC_JSONFiles[self.era]["AK4"], })
         configureJets(tree._FatJet, jetType="AK8PFPuppi", **jecArgs)
-        logger.info("Applying Jet energy and resolution corrections.")
+        logger.info("Applying Jet energy and resolution corrections")
 
         # Number of events before any processing
         self.yields.add(noSel, "noSel")
