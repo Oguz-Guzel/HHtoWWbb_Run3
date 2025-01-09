@@ -241,6 +241,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         this enables rerunning the postprocessing step on the results files),
         and then plotIt is executed
         """
+        import os
         if not self.plotList:
             self.plotList = self.getPlotList(
                 resultsdir=resultsdir, config=config)
@@ -258,9 +259,8 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             printCutFlowReports(
                 config, plotList_cutflowreport, workdir=workdir, resultsdir=resultsdir,
                 readCounters=self.readCounters, eras=(eraMode, eras), verbose=self.args.verbose)
-        if plotList_plotIt:
+        if plotList_plotIt and not self.args.sync:
             from bamboo.analysisutils import writePlotIt, runPlotIt
-            import os
             cfgName = os.path.join(workdir, "plots.yml")
             writePlotIt(
                 config, plotList_plotIt, cfgName, eras=eras, workdir=workdir, resultsdir=resultsdir,
@@ -309,37 +309,29 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         # create sync skims if asked
         if self.args.sync:
             if skims:
+                from bamboo.root import gbl
+                import pandas as pd
                 sync_dfs = []
                 for skim in skims:
-                    pqoutname = os.path.join(
-                        resultsdir, f"{skim.name}.parquet")
-                    if os.path.isfile(pqoutname):
-                        logger.info(
-                            f"WARNING: {skim.name}.parquet already exists in {resultsdir}")
-                        logger.info("         skipping...")
-                        pass
-                    else:
-                        from bamboo.root import gbl
-                        import pandas as pd
-                        frames = []
-                        for smp in samples:
-                            for cb in (smp.files if hasattr(smp, "files") else [smp]):
-                                tree = cb.tFile.Get(skim.treeName)
-                                if not tree:
-                                    logger.info("WARNING: skim tree %s not found in file %s" % (
-                                        skim.treeName, cb.tFile.GetName()))
-                                    logger.info("         skipping...")
-                                else:
-                                    N = tree.GetEntries()
-                                    cols = gbl.ROOT.RDataFrame(tree).AsNumpy()
-                                    if "sync" not in skim.name:
-                                        cols["weight"] *= cb.scale
-                                        cols["process"] = [smp.name] * \
-                                            len(cols["weight"])
-                                    frames.append(pd.DataFrame(cols))
-                        df = pd.concat(frames)
-                        df = df[self.order]
-                        sync_dfs.append(df)
+                    frames = []
+                    for smp in samples:
+                        for cb in (smp.files if hasattr(smp, "files") else [smp]):
+                            tree = cb.tFile.Get(skim.treeName)
+                            if not tree:
+                                logger.info("WARNING: skim tree %s not found in file %s" % (
+                                    skim.treeName, cb.tFile.GetName()))
+                                logger.info("         skipping...")
+                            else:
+                                N = tree.GetEntries()
+                                cols = gbl.ROOT.RDataFrame(tree).AsNumpy()
+                                if "sync" not in skim.name:
+                                    cols["weight"] *= cb.scale
+                                    cols["process"] = [smp.name] * \
+                                        len(cols["weight"])
+                                frames.append(pd.DataFrame(cols))
+                    df = pd.concat(frames)
+                    df = df[self.order]
+                    sync_dfs.append(df)
                 df = pd.concat(sync_dfs)
                 df = df.sort_values(by='event_no')
                 syncFileName = f"{self.channel}_sync.csv"
