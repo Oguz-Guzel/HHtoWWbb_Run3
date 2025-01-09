@@ -85,7 +85,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         parser.add_argument("--mvaModels",
                             dest="mvaModels",
                             type=str,
-                            default="DNN/",
+                            default="./DNN/",
                             help="Path to MVA models and Evaluate DNN")
         # parser.add_argument("--samples", nargs='*',
         #                     required=True, help="Sample template YML file")
@@ -128,13 +128,46 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         nanoJetMETCalc_data = CalcCollectionsGroups(
             Jet=("pt", "mass"), changes={metName: (f"{metName}T1",)},
             **{metName: ("pt", "phi")})
-        systVars = (
-            [(nanoJetMETCalc_both if self.is_MC else nanoJetMETCalc_data), nanoFatJetCalc])
+        systVariations = (([nanoFatJetCalc])
+                          + [nanoJetMETCalc_both if self.is_MC else nanoJetMETCalc_data])
         tree, noSel, be, lumiArgs = super().prepareTree(
             tree, sample=sample, sampleCfg=sampleCfg,
             description=NanoAODDescription.get(
-                "v12", year=self.era[:4], isMC=self.is_MC, systVariations=systVars),
-            backend=self.args.backend or backend)
+                "v12", year=self.era[:4], isMC=self.is_MC, systVariations=systVariations),
+            backend=backend)
+
+        # JEC/JER
+        jecTag = JECTags[self.era]["MC" if self.is_MC else getDataRunEra(
+            sample)]
+        logger.info(f"JEC tag for sample {sample} is {jecTag}")
+        # smearing is for MC only
+        smearTag = JERTags[self.era] if self.is_MC else None
+
+        jecArgs = {
+            "jsonFile": JEC_JSONFiles[self.era]["AK4"],
+            "jec": jecTag,
+            # "smear": smearTag,
+            "splitJER": True,
+            "jsonFileSmearingTool": jsonPathBase+'JME/jer_smear.json.gz',
+            "jesUncertaintySources": (["Total"] if self.is_MC else None),
+            "isMC": self.is_MC,
+            "backend": be,
+        }
+
+        from bamboo.analysisutils import configureJets, configureType1MET
+        configureJets(tree._Jet, jetType="AK4PFPuppi", **jecArgs)
+        metName = "PuppiMET"
+        configureType1MET(
+            getattr(tree, f"_{metName}T1"),
+            enableSystematics=(
+                (lambda v: not v.startswith("jer")) if self.is_MC else None),
+            **jecArgs)
+        jecArgs.update({"jsonFile": JEC_JSONFiles[self.era]["AK8"], })
+        jecArgs.update({"jetAlgoSubjet": "AK4PFPuppi", })
+        jecArgs.update({"jecSubjet": jecTag, })
+        jecArgs.update({"jsonFileSubjet": JEC_JSONFiles[self.era]["AK4"], })
+        configureJets(tree._FatJet, jetType="AK8PFPuppi", **jecArgs)
+        logger.info("Applying Jet energy and resolution corrections.")
 
         # Number of events before any processing
         self.yields.add(noSel, "noSel")
@@ -199,39 +232,6 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
 
         self.yields.add(noSel, "triggers")
 
-        # logger.info(f"Triggers for {sample}: {self.triggers_per_PD}")
-
-        # JEC/JER
-        jecTag = JECTags[self.era]["MC" if self.is_MC else getDataRunEra(
-            sample)]
-        logger.info(f"JEC tag for sample {sample} is {jecTag}")
-        # smearing is applied only on MC
-        smearTag = JERTags[self.era] if self.is_MC else None
-
-        JMEArgs = {
-            "jsonFile": JEC_JSONFiles[self.era]["AK4"],
-            "jec": jecTag,
-            # "smear": smearTag,
-            # "jsonFileSmearingTool": jsonPathBase+'JME/jer_smear.json.gz',
-            "jesUncertaintySources": (["Total"] if self.is_MC else None),
-            "isMC": self.is_MC,
-            "backend": be
-        }
-
-        from bamboo.analysisutils import configureJets, configureType1MET
-        configureJets(tree._Jet, jetType="AK4PFPuppi", **JMEArgs)
-        metName = "PuppiMET"
-        configureType1MET(
-            getattr(tree, f"_{metName}T1"),
-            enableSystematics=(
-                (lambda v: not v.startswith("jer")) if self.is_MC else None),
-            **JMEArgs)
-        JMEArgs.update({"jsonFile": JEC_JSONFiles[self.era]["AK8"], })
-        JMEArgs.update({"jetAlgoSubjet": "AK4PFPuppi", })
-        JMEArgs.update({"jecSubjet": jecTag, })
-        JMEArgs.update({"jsonFileSubjet": JEC_JSONFiles[self.era]["AK4"], })
-        configureJets(tree._FatJet, jetType="AK8PFPuppi", **JMEArgs)
-        logger.info("Applying Jet energy and resolution corrections.")
         return tree, noSel, be, lumiArgs
 
     def postProcess(self, taskList, config=None, workdir=None, resultsdir=None):
