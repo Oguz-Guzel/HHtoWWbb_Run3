@@ -87,25 +87,10 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                             type=str,
                             default="./DNN/",
                             help="Path to MVA models and Evaluate DNN")
-        # parser.add_argument("--samples", nargs='*',
-        #                     required=True, help="Sample template YML file")
         parser.add_argument("--backend", type=str, default="dataframe",
                             help="Backend to use, 'dataframe' (default), 'lazy', or 'compiled'")
         parser.add_argument("--sync", action="store_true", default=False,
                             help="Run synchronisation")
-
-    # def customizeAnalysisCfg(self, analysisCfg):
-    #     # fill sample template using JSON files
-    #     if self.args.samples:
-    #         eras = self.args.eras[1]
-    #         samples = {}
-    #         # make sure we use absolute paths as this argument will be used by the worker jobs
-    #         self.args.samples = [os.path.abspath(p) for p in self.args.samples]
-    #         for tmpPath in self.args.samples:
-    #             with open(tmpPath) as f_:
-    #                 template = yaml.load(f_, Loader=yaml.SafeLoader)
-    #                 samples.update(utils.fillSampleTemplate(template, eras))
-    #         analysisCfg["samples"] = samples
 
     def prepareTree(self, tree, sample=None, sampleCfg=None, backend=None):
 
