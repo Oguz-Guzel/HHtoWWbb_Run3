@@ -103,6 +103,7 @@ def ak4jetDef(jets):
         jet.jetId & 2,  # tight
         jet.pt >= 25.,
         op.abs(jet.eta) <= 2.4,
+        jet.btagPNetB >= 0, # due to some events having -1 as btagPNetB
         # op.OR(((jet.puId >> 2) & 1), jet.pt > 50.) # Jet PU ID bit1 is loose # no puId in Run3 so far
     ))
 
