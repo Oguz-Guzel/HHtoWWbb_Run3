@@ -129,14 +129,8 @@ class btagReweighting(_base):
         # cutflow report
         plots.append(self.yields)
 
-        # define objects
-        defs.defineObjects(self, tree)
-
-        # common scalefactors
-        noSel = sf.top_pT_reweight(self, tree, noSel, sample)
-
         _, pre_sels = makeDLSelection(
-            self, noSel)
+            self, noSel, tree, sample)
 
         # pre_sels is [DL_boosted_pre_ee, DL_boosted_pre_mumu, DL_boosted_pre_emu, DL_resolved_pre_ee, DL_resolved_pre_mumu, DL_resolved_pre_emu]
 

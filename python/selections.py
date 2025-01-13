@@ -1,6 +1,7 @@
 from bamboo import treefunctions as op
-from scalefactors import ScaleFactors as sf
 
+import definitions as defs
+from scalefactors import ScaleFactors as sf
 
 Zmass = 91.1876  # GeV
 
@@ -17,7 +18,34 @@ def outZ(dileptons) -> bool:
         dileptons, lambda dilep: op.abs(op.invariant_mass(dilep[0].p4, dilep[1].p4) - Zmass) < 10.))
 
 
-def makeDLSelection(self, sel):
+# lepton Pt cuts : leading above 25 GeV and sub-leading above 15 GeV
+
+
+def ptCutSameFlavourPair(dilep) -> bool:
+    """Minimum pT cut for the same flavour leptons.
+    Leading lepton pT > 25 GeV and sub-leading lepton pT > 15 GeV.
+    There is no need to check for the opposite order since we're taking
+    the objects from the same collection that is already sorted by pt.
+    """
+    return op.AND(
+        dilep[0].pt > 25,
+        dilep[1].pt > 15,
+    )
+
+
+def ptCutDifferentFlavourPair(dilep) -> bool:
+    """Minimum pT cut for the different flavour leptons.
+    Leading lepton pT > 25 GeV and sub-leading lepton pT > 15 GeV.
+    Here is necessary to check for the opposite order since we're taking
+    the objects from different collections hence we don't know which one has a higher pT."""
+    return op.AND(
+        dilep[0].pt > 15,
+        dilep[1].pt > 15,
+        op.OR(dilep[0].pt > 25, dilep[1].pt > 25)
+    )
+
+
+def makeDLSelection(self, sel, tree, sample):
     """Creates a list of selection objects for the Dilepton final state.
 
     Args:
@@ -27,28 +55,8 @@ def makeDLSelection(self, sel):
         A list of selection objects for the Dilepton analysis.
     """
 
-    # lepton Pt cuts : leading above 25 GeV and sub-leading above 15 GeV
-    def ptCutSameFlavourPair(dilep) -> bool:
-        """Minimum pT cut for the same flavour leptons.
-        Leading lepton pT > 25 GeV and sub-leading lepton pT > 15 GeV.
-        There is no need to check for the opposite order since we're taking
-        the objects from the same collection that is already sorted by pt.
-        """
-        return op.AND(
-            dilep[0].pt > 25,
-            dilep[1].pt > 15,
-        )
-
-    def ptCutDifferentFlavourPair(dilep) -> bool:
-        """Minimum pT cut for the different flavour leptons.
-        Leading lepton pT > 25 GeV and sub-leading lepton pT > 15 GeV.
-        Here is necessary to check for the opposite order since we're taking
-        the objects from different collections hence we don't know which one has a higher pT."""
-        return op.AND(
-            dilep[0].pt > 15,
-            dilep[1].pt > 15,
-            op.OR(dilep[0].pt > 25, dilep[1].pt > 25)
-        )
+    # call defined objects
+    defs.defineObjects(self, tree)
 
     # OS loose lepton pairs of same type to be vetoed around Z peak
     elLoosePair = op.combine(
@@ -70,6 +78,12 @@ def makeDLSelection(self, sel):
     self.firstElTightPair = elTightPair[0]
     self.firstMuTightPair = muTightPair[0]
     self.firstEmuTightPair = emuTightPair[0]
+
+    # top pT reweighting
+    sel = sf.top_pT_reweight(self, tree.GenPart, sel, sample)
+
+    # Noise filters
+    sel = sf.NoiseFilters(self, tree.Flag, sel)
 
     # minimum pT cut : at least one lepton pair with leading lepton above 25 GeV
     elPairMinPtSel = sel.refine(
@@ -110,13 +124,9 @@ def makeDLSelection(self, sel):
         op.rng_len(emuTightPair) == 1,
     )])
 
-    # di-muon channel SF
+    # lepton scale factors
     muPairMultiplicitySel = sf.muonSF(self, muPairMultiplicitySel)
-
-    # di-electron channel SF
     elPairMultiplicitySel = sf.electronSF(self, elPairMultiplicitySel)
-
-    # e-mu channel SF
     emuPairMultiplicitySel = sf.muonSF(self, emuPairMultiplicitySel)
     emuPairMultiplicitySel = sf.electronSF(self, emuPairMultiplicitySel)
 
@@ -128,12 +138,23 @@ def makeDLSelection(self, sel):
     DL_boosted_pre_emu = emuPairMultiplicitySel.refine(
         'DL_boosted_pre_emu', cut=op.c_bool(1))
 
+    # btagging sf and reweighting for boosted
+    DL_boosted_pre_ee_btagSF = sf.btagSF(
+        self, DL_boosted_pre_ee, self.ak8Jets, "particleNet_XbbVsQCD")
+    DL_boosted_pre_mumu_btagSF = sf.btagSF(
+        self, DL_boosted_pre_mumu, self.ak8Jets, "particleNet_XbbVsQCD")
+    DL_boosted_pre_emu_btagSF = sf.btagSF(
+        self, DL_boosted_pre_emu, self.ak8Jets, "particleNet_XbbVsQCD")
+    DL_boosted_pre_ee_btagSF = sf.btagReweighting(self, sel)
+    DL_boosted_pre_mumu_btagSF = sf.btagReweighting(self, DL_boosted_pre_mumu)
+    DL_boosted_pre_emu_btagSF = sf.btagReweighting(self, DL_boosted_pre_emu)
+
     # boosted -> at least one b-tagged ak8 jet
-    DL_boosted_ee = DL_boosted_pre_ee.refine(
+    DL_boosted_ee = DL_boosted_pre_ee_btagSF.refine(
         'DL_boosted_ee', cut=(op.rng_len(self.ak8BJets) >= 1))
-    DL_boosted_mumu = DL_boosted_pre_mumu.refine(
+    DL_boosted_mumu = DL_boosted_pre_mumu_btagSF.refine(
         'DL_boosted_mumu', cut=(op.rng_len(self.ak8BJets) >= 1))
-    DL_boosted_emu = DL_boosted_pre_emu.refine(
+    DL_boosted_emu = DL_boosted_pre_emu_btagSF.refine(
         'DL_boosted_emu', cut=(op.rng_len(self.ak8BJets) >= 1))
 
     # resolved pre-final state selections for btag reweighting
@@ -144,43 +165,55 @@ def makeDLSelection(self, sel):
     DL_resolved_pre_emu = emuPairMultiplicitySel.refine(
         'DL_resolved_pre_emu', cut=[op.rng_len(self.ak4Jets) >= 2])
 
+    # btagging sf and reweighting for resolved
+    DL_resolved_pre_ee_btagSF = sf.btagSF(
+        self, DL_resolved_pre_ee, self.ak4Jets, "btagPNetB")
+    DL_resolved_pre_mumu_btagSF = sf.btagSF(
+        self, DL_resolved_pre_mumu, self.ak4Jets, "btagPNetB")
+    DL_resolved_pre_emu_btagSF = sf.btagSF(
+        self, DL_resolved_pre_emu, self.ak4Jets, "btagPNetB")
+    DL_resolved_pre_ee_btagSF = sf.btagReweighting(self, DL_resolved_pre_ee)
+    DL_resolved_pre_mumu_btagSF = sf.btagReweighting(
+        self, DL_resolved_pre_mumu)
+    DL_resolved_pre_emu_btagSF = sf.btagReweighting(self, DL_resolved_pre_emu)
+
     # resolved -> and at least two ak4 jets with 1 or at least 2 b-tagged jets and no ak8 jets
-    DL_resolved_1b_ee = DL_resolved_pre_ee.refine(
+    DL_resolved_1b_ee = DL_resolved_pre_ee_btagSF.refine(
         'DL_resolved_1b_ee',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) == 1,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_2b_ee = DL_resolved_pre_ee.refine(
+    DL_resolved_2b_ee = DL_resolved_pre_ee_btagSF.refine(
         'DL_resolved_2b_ee',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) >= 2,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_1b_mumu = DL_resolved_pre_mumu.refine(
+    DL_resolved_1b_mumu = DL_resolved_pre_mumu_btagSF.refine(
         'DL_resolved_1b_mumu',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) == 1,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_2b_mumu = DL_resolved_pre_mumu.refine(
+    DL_resolved_2b_mumu = DL_resolved_pre_mumu_btagSF.refine(
         'DL_resolved_2b_mumu',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) >= 2,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_1b_emu = DL_resolved_pre_emu.refine(
+    DL_resolved_1b_emu = DL_resolved_pre_emu_btagSF.refine(
         'DL_resolved_1b_emu',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) == 1,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_2b_emu = DL_resolved_pre_emu.refine(
+    DL_resolved_2b_emu = DL_resolved_pre_emu_btagSF.refine(
         'DL_resolved_2b_emu',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) >= 2,

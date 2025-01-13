@@ -5,7 +5,7 @@ from bamboo import treefunctions as op
 
 from baseAnalysis import NanoBaseHHWWbb
 from selections import makeDLSelection
-from scalefactors import ScaleFactors as sf
+
 import definitions as defs
 from utils import labeler
 
@@ -24,27 +24,12 @@ class cutflowAnalysis(NanoBaseHHWWbb):
         # cutflow report
         plots.append(self.yields)
 
-        # define objects
-        defs.defineObjects(self, tree)
-
-        # top pT reweighting
-        noSel = sf.top_pT_reweight(self, tree.GenPart, noSel, sample)
-
-        # btag scale factors
-        noSel = sf.btagSF(self, noSel)
-
-        # btag rescaling
-        noSel = sf.btagRescale(self, noSel)
-
-        # Noise filters
-        noSel = sf.NoiseFilters(self, tree.Flag, noSel)
-
         if self.channel == 'DL':
             # get DL selections
-            [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu, \
-                DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu, \
+            [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
+                DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
                 DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu], _ = makeDLSelection(
-                    self, noSel)
+                    self, noSel, tree, sample)
 
             # cutflow report for DL channel
             self.yields.add(DL_boosted_ee, 'DL boosted ee')

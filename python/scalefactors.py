@@ -78,15 +78,24 @@ class ScaleFactors():
 
         return sel
 
-    def btagSF(self, sel):
+    def btagSF(self, sel, jets, bTagger):
         # btagging SF
         if self.is_MC:
             from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
             logger.info("Applying btagging SF for "+sel.name)
-
+            syst_mapping={
+                "pileup": "pileup",
+                # "jesTotal": "jes",
+                # "jer0" : "jer",
+                # "jer1" : "jer",
+                # "jer2" : "jer",
+                # "jer3" : "jer",
+                # "jer4" : "jer",
+                # "jer5" : "jer",
+                }
             def btvSF(flav): return get_bTagSF_itFit(
-                BTV_SF_JSONFiles[self.era], "particleNet", "btagPNetB", flav, sel, decorr_eras=True, era=self.era)
-            btvWeight = makeBtagWeightItFit(self.ak4Jets, btvSF)
+                BTV_SF_JSONFiles[self.era], "particleNet", bTagger, flav, sel=sel, decorr_eras=True, era=self.era, syst_mapping=syst_mapping)
+            btvWeight = makeBtagWeightItFit(jets, btvSF)
         else:
             btvWeight = op.c_float(1.)
 
@@ -96,10 +105,10 @@ class ScaleFactors():
 
         return sel
 
-    def btagRescale(self, sel):
+    def btagReweighting(self, sel):
         # btag reweighting based on sum of event weights
         if self.is_MC:
-            logger.info("Applying btag reweighting")
+            logger.info("Applying btag reweighting for "+sel.name)
             btag_corr = get_correction(
                 f"{self.git_project_dir}/data/{self.era[:4]}_btagSF_reweight.json.gz",
                 "Ratio_btagSF_shape",
@@ -113,7 +122,7 @@ class ScaleFactors():
         # None since the object is already in the btag_corr i.e. self.ak4Jets
         btag_rescale = btag_corr(None) if self.is_MC else op.c_float(1.)
 
-        sel = sel.refine("btagReweight", weight=btag_rescale)
+        sel = sel.refine(sel.name+"btagReweight", weight=btag_rescale)
 
         self.yields.add(sel, "btag reweight")
 
