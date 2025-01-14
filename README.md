@@ -41,18 +41,18 @@ export X509_USER_PROXY=$HOME/private/gridproxy/x509
 Then cutflow study of the analysis is executed via the following command line using batch (you can pass `--maxFiles 1` to use only 1 file from each sample for a quick test):
 
 ```sh
-bambooRun -m python/cutflowAnalysis.py config/<2022 or 2023>_v12.yml -o ./outputDir/ --envConfig config/cern.ini -c <DL(default) or SL> --distributed driver
+bambooRun -m python/cutflowAnalysis.py config/<2022 or 2023>_v12.yml -o ./outputDir/ --envConfig config/cern.ini  --distributed driver
 ```
 Instead of passing `--envConfig config/cern.ini` everytime, you can copy the content of that file to `~/.config/bamboorc`.
 
-using the `parquet` output file that contains skims, you can perform machine learning applications. Once you get the output from your machine learning (preferably in onnx format), you can evaluate that on the datasets by
+using the skims in the root files that re in the results directory of bamboo output `./outputDir/`, you can perform machine learning applications. Once you get the output from your machine learning (preferably in onnx format), you can evaluate that on the datasets by
 
 ```sh
-bambooRun -m python/mvaEvaluator.py config/<2022 or 2023>_v12.yml -o ./outputDir/ --envConfig config/cern.ini -c <DL(default) or SL> --distributed driver
+bambooRun -m python/mvaEvaluator.py config/<2022 or 2023>_v12.yml -o ./outputDir/ --envConfig config/cern.ini  --distributed driver
 ```
 where you get the ML score applied on the analysis.
 
-to produce sync skim
+To produce sync skim
 ```sh
 bambooRun -m python/syncSkimmer.py config/2022_v12_sync.yml -o output/syncTest --sync
 ```
