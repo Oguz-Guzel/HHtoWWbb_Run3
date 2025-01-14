@@ -143,16 +143,19 @@ def makeDLSelection(self, sel, tree, sample):
 
     # btagging sf and reweighting for boosted
     DL_boosted_pre_ee_btagSF = sf.btagSF(
-        self, DL_boosted_pre_ee, self.ak8Jets, "particleNet_XbbVsQCD")
+        self, DL_boosted_pre_ee, self.ak8Jets, "particleNet", "particleNet_XbbVsQCD")
     DL_boosted_pre_mumu_btagSF = sf.btagSF(
-        self, DL_boosted_pre_mumu, self.ak8Jets, "particleNet_XbbVsQCD")
+        self, DL_boosted_pre_mumu, self.ak8Jets, "particleNet", "particleNet_XbbVsQCD")
     DL_boosted_pre_emu_btagSF = sf.btagSF(
-        self, DL_boosted_pre_emu, self.ak8Jets, "particleNet_XbbVsQCD")
-    
+        self, DL_boosted_pre_emu, self.ak8Jets, "particleNet", "particleNet_XbbVsQCD")
+
     # btagging reweighting for boosted
-    DL_boosted_pre_ee_btagRW = sf.btagReweighting(self, DL_boosted_pre_ee_btagSF)
-    DL_boosted_pre_mumu_btagRW = sf.btagReweighting(self, DL_boosted_pre_mumu_btagSF)
-    DL_boosted_pre_emu_btagRW = sf.btagReweighting(self, DL_boosted_pre_emu_btagSF)
+    DL_boosted_pre_ee_btagRW = sf.btagReweighting(
+        self, DL_boosted_pre_ee_btagSF)
+    DL_boosted_pre_mumu_btagRW = sf.btagReweighting(
+        self, DL_boosted_pre_mumu_btagSF)
+    DL_boosted_pre_emu_btagRW = sf.btagReweighting(
+        self, DL_boosted_pre_emu_btagSF)
 
     # boosted -> at least one b-tagged ak8 jet
     DL_boosted_ee = DL_boosted_pre_ee_btagRW.refine(
@@ -172,17 +175,19 @@ def makeDLSelection(self, sel, tree, sample):
 
     # btagging sf for resolved
     DL_resolved_pre_ee_btagSF = sf.btagSF(
-        self, DL_resolved_pre_ee, self.ak4Jets, "btagPNetB")
+        self, DL_resolved_pre_ee, self.ak4Jets, "particleNet", "btagPNetB")
     DL_resolved_pre_mumu_btagSF = sf.btagSF(
-        self, DL_resolved_pre_mumu, self.ak4Jets, "btagPNetB")
+        self, DL_resolved_pre_mumu, self.ak4Jets, "particleNet", "btagPNetB")
     DL_resolved_pre_emu_btagSF = sf.btagSF(
-        self, DL_resolved_pre_emu, self.ak4Jets, "btagPNetB")
-    
+        self, DL_resolved_pre_emu, self.ak4Jets, "particleNet", "btagPNetB")
+
     # btagging reweighting for resolved
-    DL_resolved_pre_ee_btagRW = sf.btagReweighting(self, DL_resolved_pre_ee_btagSF)
+    DL_resolved_pre_ee_btagRW = sf.btagReweighting(
+        self, DL_resolved_pre_ee_btagSF)
     DL_resolved_pre_mumu_btagRW = sf.btagReweighting(
         self, DL_resolved_pre_mumu_btagSF)
-    DL_resolved_pre_emu_btagRW = sf.btagReweighting(self, DL_resolved_pre_emu_btagSF)
+    DL_resolved_pre_emu_btagRW = sf.btagReweighting(
+        self, DL_resolved_pre_emu_btagSF)
 
     # resolved -> and at least two ak4 jets with 1 or at least 2 b-tagged jets and no ak8 jets
     DL_resolved_1b_ee = DL_resolved_pre_ee_btagRW.refine(

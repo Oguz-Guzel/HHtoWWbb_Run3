@@ -77,23 +77,13 @@ class ScaleFactors():
 
         return sel
 
-    def btagSF(self, sel, jets, bTagger):
+    def btagSF(self, sel, jets, json_tagger, jet_tagger):
         # btagging SF
         if self.is_MC:
             from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
             logger.info("Applying btagging SF for "+sel.name)
-            syst_mapping={
-                # "pileup": "pileup",
-                # "jesTotal": "jes",
-                # "jer0" : "jer",
-                # "jer1" : "jer",
-                # "jer2" : "jer",
-                # "jer3" : "jer",
-                # "jer4" : "jer",
-                # "jer5" : "jer",
-                }
             def btvSF(flav): return get_bTagSF_itFit(
-                BTV_SF_JSONFiles[self.era], "particleNet", bTagger, flav, sel=sel, decorr_eras=True, era=self.era, syst_mapping=syst_mapping)
+                BTV_SF_JSONFiles[self.era], json_tagger, jet_tagger, flav, sel=sel, decorr_eras=True, era=self.era)
             btvWeight = makeBtagWeightItFit(jets, btvSF)
         else:
             btvWeight = op.c_float(1.)
