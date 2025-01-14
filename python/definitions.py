@@ -122,7 +122,8 @@ def ak8jetDef(jets):
         op.abs(jet.subJet1.eta) <= 2.4,
         op.abs(jet.subJet2.eta) <= 2.4,
         op.AND(jet.msoftdrop >= 30., jet.msoftdrop <= 210.),
-        jet.tau2 / jet.tau1 <= 0.75
+        jet.tau2 / jet.tau1 <= 0.75,
+        jet.particleNet_XbbVsQCD > 0,
     ))
 
 # bTagging for jets

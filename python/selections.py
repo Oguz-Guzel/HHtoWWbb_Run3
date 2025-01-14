@@ -80,7 +80,10 @@ def makeDLSelection(self, sel, tree, sample):
     self.firstEmuTightPair = emuTightPair[0]
 
     # top pT reweighting
-    sel = sf.top_pT_reweight(self, tree.GenPart, sel, sample)
+    # defining the genPart branch here since the it's only available for MC samples
+    # and we don't want to pass the tree object to the top pt reweight method
+    genPartBranch = tree.GenPart if self.is_MC else None
+    sel = sf.top_pT_reweight(self, genPartBranch, sel, sample)
 
     # Noise filters
     sel = sf.NoiseFilters(self, tree.Flag, sel)
@@ -145,7 +148,7 @@ def makeDLSelection(self, sel, tree, sample):
         self, DL_boosted_pre_mumu, self.ak8Jets, "particleNet_XbbVsQCD")
     DL_boosted_pre_emu_btagSF = sf.btagSF(
         self, DL_boosted_pre_emu, self.ak8Jets, "particleNet_XbbVsQCD")
-    DL_boosted_pre_ee_btagSF = sf.btagReweighting(self, sel)
+    DL_boosted_pre_ee_btagSF = sf.btagReweighting(self, DL_boosted_pre_ee)
     DL_boosted_pre_mumu_btagSF = sf.btagReweighting(self, DL_boosted_pre_mumu)
     DL_boosted_pre_emu_btagSF = sf.btagReweighting(self, DL_boosted_pre_emu)
 
