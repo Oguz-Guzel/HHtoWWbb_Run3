@@ -148,16 +148,18 @@ def makeDLSelection(self, sel, tree, sample):
         self, DL_boosted_pre_mumu, self.ak8Jets, "particleNet_XbbVsQCD")
     DL_boosted_pre_emu_btagSF = sf.btagSF(
         self, DL_boosted_pre_emu, self.ak8Jets, "particleNet_XbbVsQCD")
-    DL_boosted_pre_ee_btagSF = sf.btagReweighting(self, DL_boosted_pre_ee)
-    DL_boosted_pre_mumu_btagSF = sf.btagReweighting(self, DL_boosted_pre_mumu)
-    DL_boosted_pre_emu_btagSF = sf.btagReweighting(self, DL_boosted_pre_emu)
+    
+    # btagging reweighting for boosted
+    DL_boosted_pre_ee_btagRW = sf.btagReweighting(self, DL_boosted_pre_ee_btagSF)
+    DL_boosted_pre_mumu_btagRW = sf.btagReweighting(self, DL_boosted_pre_mumu_btagSF)
+    DL_boosted_pre_emu_btagRW = sf.btagReweighting(self, DL_boosted_pre_emu_btagSF)
 
     # boosted -> at least one b-tagged ak8 jet
-    DL_boosted_ee = DL_boosted_pre_ee_btagSF.refine(
+    DL_boosted_ee = DL_boosted_pre_ee_btagRW.refine(
         'DL_boosted_ee', cut=(op.rng_len(self.ak8BJets) >= 1))
-    DL_boosted_mumu = DL_boosted_pre_mumu_btagSF.refine(
+    DL_boosted_mumu = DL_boosted_pre_mumu_btagRW.refine(
         'DL_boosted_mumu', cut=(op.rng_len(self.ak8BJets) >= 1))
-    DL_boosted_emu = DL_boosted_pre_emu_btagSF.refine(
+    DL_boosted_emu = DL_boosted_pre_emu_btagRW.refine(
         'DL_boosted_emu', cut=(op.rng_len(self.ak8BJets) >= 1))
 
     # resolved pre-final state selections for btag reweighting
@@ -168,55 +170,57 @@ def makeDLSelection(self, sel, tree, sample):
     DL_resolved_pre_emu = emuPairMultiplicitySel.refine(
         'DL_resolved_pre_emu', cut=[op.rng_len(self.ak4Jets) >= 2])
 
-    # btagging sf and reweighting for resolved
+    # btagging sf for resolved
     DL_resolved_pre_ee_btagSF = sf.btagSF(
         self, DL_resolved_pre_ee, self.ak4Jets, "btagPNetB")
     DL_resolved_pre_mumu_btagSF = sf.btagSF(
         self, DL_resolved_pre_mumu, self.ak4Jets, "btagPNetB")
     DL_resolved_pre_emu_btagSF = sf.btagSF(
         self, DL_resolved_pre_emu, self.ak4Jets, "btagPNetB")
-    DL_resolved_pre_ee_btagSF = sf.btagReweighting(self, DL_resolved_pre_ee)
-    DL_resolved_pre_mumu_btagSF = sf.btagReweighting(
-        self, DL_resolved_pre_mumu)
-    DL_resolved_pre_emu_btagSF = sf.btagReweighting(self, DL_resolved_pre_emu)
+    
+    # btagging reweighting for resolved
+    DL_resolved_pre_ee_btagRW = sf.btagReweighting(self, DL_resolved_pre_ee_btagSF)
+    DL_resolved_pre_mumu_btagRW = sf.btagReweighting(
+        self, DL_resolved_pre_mumu_btagSF)
+    DL_resolved_pre_emu_btagRW = sf.btagReweighting(self, DL_resolved_pre_emu_btagSF)
 
     # resolved -> and at least two ak4 jets with 1 or at least 2 b-tagged jets and no ak8 jets
-    DL_resolved_1b_ee = DL_resolved_pre_ee_btagSF.refine(
+    DL_resolved_1b_ee = DL_resolved_pre_ee_btagRW.refine(
         'DL_resolved_1b_ee',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) == 1,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_2b_ee = DL_resolved_pre_ee_btagSF.refine(
+    DL_resolved_2b_ee = DL_resolved_pre_ee_btagRW.refine(
         'DL_resolved_2b_ee',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) >= 2,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_1b_mumu = DL_resolved_pre_mumu_btagSF.refine(
+    DL_resolved_1b_mumu = DL_resolved_pre_mumu_btagRW.refine(
         'DL_resolved_1b_mumu',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) == 1,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_2b_mumu = DL_resolved_pre_mumu_btagSF.refine(
+    DL_resolved_2b_mumu = DL_resolved_pre_mumu_btagRW.refine(
         'DL_resolved_2b_mumu',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) >= 2,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_1b_emu = DL_resolved_pre_emu_btagSF.refine(
+    DL_resolved_1b_emu = DL_resolved_pre_emu_btagRW.refine(
         'DL_resolved_1b_emu',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) == 1,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_2b_emu = DL_resolved_pre_emu_btagSF.refine(
+    DL_resolved_2b_emu = DL_resolved_pre_emu_btagRW.refine(
         'DL_resolved_2b_emu',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) >= 2,

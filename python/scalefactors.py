@@ -83,7 +83,7 @@ class ScaleFactors():
             from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
             logger.info("Applying btagging SF for "+sel.name)
             syst_mapping={
-                "pileup": "pileup",
+                # "pileup": "pileup",
                 # "jesTotal": "jes",
                 # "jer0" : "jer",
                 # "jer1" : "jer",
@@ -118,10 +118,12 @@ class ScaleFactors():
                 },
                 sel=sel
             )
-        # None since the object is already in the btag_corr i.e. self.ak4Jets
-        btag_rescale = btag_corr(None) if self.is_MC else op.c_float(1.)
+            # None since the object is already in the btag_corr i.e. self.ak4Jets
+            btag_reweight = btag_corr(None)
+        else:
+            btag_reweight = op.c_float(1.)
 
-        sel = sel.refine(sel.name+"btagReweight", weight=btag_rescale)
+        sel = sel.refine(sel.name+"_btagRW", weight=btag_reweight)
 
         self.yields.add(sel, "btag reweight")
 
