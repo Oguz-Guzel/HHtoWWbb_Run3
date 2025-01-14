@@ -103,7 +103,7 @@ def ak4jetDef(jets):
         jet.jetId & 2,  # tight
         jet.pt >= 25.,
         op.abs(jet.eta) <= 2.4,
-        jet.btagPNetB >= 0, # due to some events having -1 as btagPNetB
+        jet.btagPNetB >= 0, # due to some events having negative value for this
         # op.OR(((jet.puId >> 2) & 1), jet.pt > 50.) # Jet PU ID bit1 is loose # no puId in Run3 so far
     ))
 
@@ -123,7 +123,7 @@ def ak8jetDef(jets):
         op.abs(jet.subJet2.eta) <= 2.4,
         op.AND(jet.msoftdrop >= 30., jet.msoftdrop <= 210.),
         jet.tau2 / jet.tau1 <= 0.75,
-        jet.particleNet_XbbVsQCD > 0,
+        jet.particleNet_XbbVsQCD >= 0,
     ))
 
 # bTagging for jets
@@ -238,9 +238,6 @@ def defineObjects(self, tree):
     taus = tauDef(tree.Tau)
     self.cleanedTaus = cleanTaus(taus, self.fakeElectrons, self.fakeMuons)
 
-    # AK4 Jets sorted by their pt
-    self.ak4JetsPreSel = op.sort(ak4jetDef(tree.Jet), lambda jet: -jet.pt)
-
     # clean jets wrt leptons
     if self.channel == 'DL':
         cleanAk4Jets_lambda = cleaningWithRespectToLeadingLeptons(
@@ -253,8 +250,13 @@ def defineObjects(self, tree):
             self.fakeElectrons, self.fakeMuons, 0.4)
         cleanAk8Jets_lambda = cleaningWithRespectToLeadingLepton(
             self.fakeElectrons, self.fakeMuons, 0.8)
+        
+    # AK4 jets
+    self.ak4JetsPreSel = op.sort(ak4jetDef(tree.Jet), lambda jet: -jet.pt)
+    
+    self.ak4Jets = op.select(self.ak4JetsPreSel, cleanAk4Jets_lambda)
 
-    cleanAK4jets = op.select(self.ak4JetsPreSel, cleanAk4Jets_lambda)
+    self.ak4BJets = op.select(self.ak4Jets, ak4BtagSel)
 
     # AK8 Jets
     self.ak8JetsDef = ak8jetDef(tree.FatJet)
@@ -264,14 +266,6 @@ def defineObjects(self, tree):
     self.ak8Jets = op.select(ak8JetsPreSel, cleanAk8Jets_lambda)
 
     self.ak8BJets = op.select(self.ak8Jets, ak8Btag)
-
-    # Ak4 Jet Collection cleaned from Ak8b #
-    def cleanAk4FromAk8b(ak4j): return op.AND(op.rng_len(
-        self.ak8BJets) > 0, op.deltaR(ak4j.p4, self.ak8BJets[0].p4) > 1.2)
-
-    self.ak4Jets = op.select(cleanAK4jets, cleanAk4FromAk8b)
-
-    self.ak4BJets = op.select(self.ak4Jets, ak4BtagSel)
 
 
 def ml_input_features(self, tree):

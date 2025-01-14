@@ -24,36 +24,35 @@ class cutflowAnalysis(NanoBaseHHWWbb):
         # cutflow report
         plots.append(self.yields)
 
-        if self.channel == 'DL':
-            # get DL selections
-            [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
-                DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
-                DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu], _ = makeDLSelection(
-                    self, noSel, tree, sample)
+        # get DL selections
+        [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
+            DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
+            DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu], _ = makeDLSelection(
+                self, noSel, tree, sample)
 
-            # cutflow report for DL channel
-            self.yields.add(DL_boosted_ee, 'DL boosted ee')
-            self.yields.add(DL_boosted_mumu, 'DL boosted mumu')
-            self.yields.add(DL_boosted_emu, 'DL boosted emu')
-            self.yields.add(DL_resolved_1b_ee, 'DL resolved 1b ee')
-            self.yields.add(DL_resolved_2b_ee, 'DL resolved 2b ee')
-            self.yields.add(DL_resolved_1b_mumu, 'DL resolved 1b mumu')
-            self.yields.add(DL_resolved_2b_mumu, 'DL resolved 2b mumu')
-            self.yields.add(DL_resolved_1b_emu, 'DL resolved 1b emu')
-            self.yields.add(DL_resolved_2b_emu, 'DL resolved 2b emu')
+        # cutflow report for DL channel
+        self.yields.add(DL_boosted_ee, 'DL boosted ee')
+        self.yields.add(DL_boosted_mumu, 'DL boosted mumu')
+        self.yields.add(DL_boosted_emu, 'DL boosted emu')
+        self.yields.add(DL_resolved_1b_ee, 'DL resolved 1b ee')
+        self.yields.add(DL_resolved_2b_ee, 'DL resolved 2b ee')
+        self.yields.add(DL_resolved_1b_mumu, 'DL resolved 1b mumu')
+        self.yields.add(DL_resolved_2b_mumu, 'DL resolved 2b mumu')
+        self.yields.add(DL_resolved_1b_emu, 'DL resolved 1b emu')
+        self.yields.add(DL_resolved_2b_emu, 'DL resolved 2b emu')
 
-            # labels on plots
-            DLboostedEE_label = labeler('DL boosted EE')
-            DLboostedMuMu_label = labeler('DL boosted MuMu')
-            DLboostedEMU_label = labeler('DL boosted EMu')
+        # labels on plots
+        DLboostedEE_label = labeler('DL boosted EE')
+        DLboostedMuMu_label = labeler('DL boosted MuMu')
+        DLboostedEMU_label = labeler('DL boosted EMu')
 
-            DLresolved_1b_EE_label = labeler('DL resolved 1b EE')
-            DLresolved_1b_MuMu_label = labeler('DL resolved 1b MuMu')
-            DLresolved_1b_EMu_label = labeler('DL resolved 1b EMu')
+        DLresolved_1b_EE_label = labeler('DL resolved 1b EE')
+        DLresolved_1b_MuMu_label = labeler('DL resolved 1b MuMu')
+        DLresolved_1b_EMu_label = labeler('DL resolved 1b EMu')
 
-            DLresolved_2b_EE_label = labeler('DL resolved 2b EE')
-            DLresolved_2b_MuMu_label = labeler('DL resolved 2b MuMu')
-            DLresolved_2b_EMu_label = labeler('DL resolved 2b EMu')
+        DLresolved_2b_EE_label = labeler('DL resolved 2b EE')
+        DLresolved_2b_MuMu_label = labeler('DL resolved 2b MuMu')
+        DLresolved_2b_EMu_label = labeler('DL resolved 2b EMu')
 
         tnn_vars = {
             "event_no": tree.event,
