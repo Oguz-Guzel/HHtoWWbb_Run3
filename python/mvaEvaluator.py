@@ -153,17 +153,6 @@ class mvaEvaluator(NanoBaseHHWWbb):
             tnn_score_DL
         ])
 
-        # cutflow report for DL channel
-        self.yields.add(DL_boosted_ee, 'DL boosted ee')
-        self.yields.add(DL_boosted_mumu, 'DL boosted mumu')
-        self.yields.add(DL_boosted_emu, 'DL boosted emu')
-        self.yields.add(DL_resolved_1b_ee, 'DL resolved 1b ee')
-        self.yields.add(DL_resolved_2b_ee, 'DL resolved 2b ee')
-        self.yields.add(DL_resolved_1b_mumu, 'DL resolved 1b mumu')
-        self.yields.add(DL_resolved_2b_mumu, 'DL resolved 2b mumu')
-        self.yields.add(DL_resolved_1b_emu, 'DL resolved 1b emu')
-        self.yields.add(DL_resolved_2b_emu, 'DL resolved 2b emu')
-
         event_selections = [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
                             DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
                             DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu]
