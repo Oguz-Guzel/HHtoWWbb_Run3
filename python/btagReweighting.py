@@ -5,7 +5,6 @@ from bamboo import treefunctions as op
 from bamboo.analysismodules import NanoAODModule, HistogramsModule
 from bamboo.analysisutils import makeMultiPrimaryDatasetTriggerSelection
 
-import definitions as defs
 from selections import makeDLSelection
 from scalefactors import ScaleFactors as sf
 
