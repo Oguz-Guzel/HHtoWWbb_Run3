@@ -129,7 +129,14 @@ def ak8jetDef(jets):
 # bTagging for jets
 
 
-def ak4BtagSel(jet): return jet.btagPNetB > 0.245
+def ak4MediumBtagWP(era): 
+    WPs = {
+        '2022': 0.245,
+        '2022EE': 0.2605,
+        '2023': 0.1917,
+        '2023BPix': 0.1919
+    }
+    return WPs[era]
 
 
 def ak8Btag(fatjet): return op.AND(
@@ -256,7 +263,7 @@ def defineObjects(self, tree):
     
     self.ak4Jets = op.select(self.ak4JetsPreSel, cleanAk4Jets_lambda)
 
-    self.ak4BJets = op.select(self.ak4Jets, ak4BtagSel)
+    self.ak4BJets = op.select(self.ak4Jets, lambda j: j.btagPNetB >= ak4MediumBtagWP(self.era))
 
     # AK8 Jets
     self.ak8JetsDef = ak8jetDef(tree.FatJet)
