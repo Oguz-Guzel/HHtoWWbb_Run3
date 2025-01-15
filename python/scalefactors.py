@@ -90,7 +90,7 @@ class ScaleFactors():
 
         sel = sel.refine(sel.name+"_btagSF", weight=btvWeight)
 
-        self.yields.add(sel, "btagging SF")
+        self.yields.add(sel, sel.name)
 
         return sel
 
@@ -115,7 +115,7 @@ class ScaleFactors():
 
         sel = sel.refine(sel.name+"_btagRW", weight=btag_reweight)
 
-        self.yields.add(sel, "btag reweight")
+        self.yields.add(sel, sel.name)
 
         return sel
 
@@ -195,7 +195,7 @@ class ScaleFactors():
                 sel = sel.refine(sel.name+"_muonSF", weight=op.c_float(1.))
         else:
             sel = sel.refine(sel.name+"_muonSF", weight=op.c_float(1.))
-        self.yields.add(sel, "muon id-iso-trg SF")
+        self.yields.add(sel, sel.name)
         return sel
 
     def electronSF(self, sel):
@@ -248,7 +248,6 @@ class ScaleFactors():
                         electron_ID_sf(self.firstElTightPair[0]),
                         electron_ID_sf(self.firstElTightPair[1])]
                 )
-                self.yields.add(sel, "electron ID SF")
 
             elif sel.name == 'emuPairMultiplicitySel':
                 sel = sel.refine(sel.name+"_electron_ID_SF",
@@ -257,15 +256,13 @@ class ScaleFactors():
                                      el_trigger_sf(self.firstElTightPair[0]),
                                      electron_ID_sf(self.firstEmuTightPair[0])]
                                  )
-                self.yields.add(sel, "electron ID SF")
 
             else:
                 sel = sel.refine(sel.name+"_electron_ID_SF",
                                  weight=op.c_float(1.))
-                self.yields.add(sel, "electron ID SF")
         else:
             sel = sel.refine(sel.name+"_electron_ID_SF", weight=op.c_float(1.))
-            self.yields.add(sel, "electron ID SF")
+        self.yields.add(sel, sel.name)
 
         return sel
 
