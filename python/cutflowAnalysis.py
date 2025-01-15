@@ -74,7 +74,7 @@ class cutflowAnalysis(NanoBaseHHWWbb):
                 Skim(sel.name+"_tnn_vars", tnn_vars, sel)
             )
 
-        def nn_input_var_binning(var_name):
+        def ml_input_var_binning(var_name):
             "Function to return binning, min and max values for the TNN input feature plots."
             if "_Px" in var_name or "_Py" in var_name:
                 N, mn, mx = 100, -1000, 1000
@@ -100,7 +100,7 @@ class cutflowAnalysis(NanoBaseHHWWbb):
             for name, var in tnn_vars.items():
                 plots.append(
                     Plot.make1D(name+"_"+selection.name, var, selection,
-                                nn_input_var_binning(name), title=name, xTitle=name)
+                                ml_input_var_binning(name), title=name, xTitle=name)
                 )
 
         if self.channel == 'DL':
@@ -355,17 +355,17 @@ class cutflowAnalysis(NanoBaseHHWWbb):
                     100, 0, 500), title="pT(j1)", xTitle="Leading jet p_{T} (GeV/c)", plotopts=DLresolved_2b_EMu_label),
 
                 # leading jet eta
-                Plot.make1D("DL_resolved_1b_leadingJet_eta_ee", self.ak4Jets[0].eta, DL_resolved_1b_ee, EqBin(
+                Plot.make1D("DL_resolved_1b_leadingJet_eta_ee", self.ak4BJets[0].eta, DL_resolved_1b_ee, EqBin(
                     30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_EE_label),
-                Plot.make1D("DL_resolved_1b_leadingJet_eta_mumu", self.ak4Jets[0].eta, DL_resolved_1b_mumu, EqBin(
+                Plot.make1D("DL_resolved_1b_leadingJet_eta_mumu", self.ak4BJets[0].eta, DL_resolved_1b_mumu, EqBin(
                     30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_MuMu_label),
-                Plot.make1D("DL_resolved_1b_leadingJet_eta_emu", self.ak4Jets[0].eta, DL_resolved_1b_emu, EqBin(
+                Plot.make1D("DL_resolved_1b_leadingJet_eta_emu", self.ak4BJets[0].eta, DL_resolved_1b_emu, EqBin(
                     30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_EMu_label),
-                Plot.make1D("DL_resolved_2b_leadingJet_eta_ee", self.ak4Jets[0].eta, DL_resolved_2b_ee, EqBin(
+                Plot.make1D("DL_resolved_2b_leadingJet_eta_ee", self.ak4BJets[0].eta, DL_resolved_2b_ee, EqBin(
                     30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_EE_label),
-                Plot.make1D("DL_resolved_2b_leadingJet_eta_mumu", self.ak4Jets[0].eta, DL_resolved_2b_mumu, EqBin(
+                Plot.make1D("DL_resolved_2b_leadingJet_eta_mumu", self.ak4BJets[0].eta, DL_resolved_2b_mumu, EqBin(
                     30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_MuMu_label),
-                Plot.make1D("DL_resolved_2b_leadingJet_eta_emu", self.ak4Jets[0].eta, DL_resolved_2b_emu, EqBin(
+                Plot.make1D("DL_resolved_2b_leadingJet_eta_emu", self.ak4BJets[0].eta, DL_resolved_2b_emu, EqBin(
                     30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_EMu_label),
 
                 # btagging score of the jet
@@ -397,17 +397,17 @@ class cutflowAnalysis(NanoBaseHHWWbb):
                     100, 0, 500), title="pT(j2)", xTitle="Sub-leading jet p_{T} (GeV/c)", plotopts=DLresolved_2b_EMu_label),
 
                 # sub-leading jet eta
-                Plot.make1D("DL_resolved_1b_subleadingJet_eta_ee", self.ak4Jets[1].eta, DL_resolved_1b_ee, EqBin(
+                Plot.make1D("DL_resolved_1b_subleadingJet_eta_ee", self.ak4BJets[1].eta, DL_resolved_1b_ee, EqBin(
                     30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_1b_EE_label),
-                Plot.make1D("DL_resolved_1b_subleadingJet_eta_mumu", self.ak4Jets[1].eta, DL_resolved_1b_mumu, EqBin(
+                Plot.make1D("DL_resolved_1b_subleadingJet_eta_mumu", self.ak4BJets[1].eta, DL_resolved_1b_mumu, EqBin(
                     30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_1b_MuMu_label),
-                Plot.make1D("DL_resolved_1b_subleadingJet_eta_emu", self.ak4Jets[1].eta, DL_resolved_1b_emu, EqBin(
+                Plot.make1D("DL_resolved_1b_subleadingJet_eta_emu", self.ak4BJets[1].eta, DL_resolved_1b_emu, EqBin(
                     30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_1b_EMu_label),
-                Plot.make1D("DL_resolved_2b_subleadingJet_eta_ee", self.ak4Jets[1].eta, DL_resolved_2b_ee, EqBin(
+                Plot.make1D("DL_resolved_2b_subleadingJet_eta_ee", self.ak4BJets[1].eta, DL_resolved_2b_ee, EqBin(
                     30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_2b_EE_label),
-                Plot.make1D("DL_resolved_2b_subleadingJet_eta_mumu", self.ak4Jets[1].eta, DL_resolved_2b_mumu, EqBin(
+                Plot.make1D("DL_resolved_2b_subleadingJet_eta_mumu", self.ak4BJets[1].eta, DL_resolved_2b_mumu, EqBin(
                     30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_2b_MuMu_label),
-                Plot.make1D("DL_resolved_2b_subleadingJet_eta_emu", self.ak4Jets[1].eta, DL_resolved_2b_emu, EqBin(
+                Plot.make1D("DL_resolved_2b_subleadingJet_eta_emu", self.ak4BJets[1].eta, DL_resolved_2b_emu, EqBin(
                     30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_2b_EMu_label),
 
                 # btagging score of the jet
