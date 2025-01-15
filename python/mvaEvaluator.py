@@ -1,13 +1,12 @@
 import os
 import logging
 
-from bamboo.plots import Plot, SummedPlot
+from bamboo.plots import Plot, SummedPlot, Skim
 from bamboo.plots import EquidistantBinning as EqBin
 from bamboo import treefunctions as op
 
 from baseAnalysis import NanoBaseHHWWbb
 from selections import makeDLSelection
-from scalefactors import ScaleFactors as sf
 import definitions as defs
 from utils import labeler
 
@@ -34,25 +33,17 @@ class mvaEvaluator(NanoBaseHHWWbb):
             DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu], _ = makeDLSelection(
                 self, noSel, tree, sample)
 
-        #############################################################################
-        #                            MVA evaluation                                 #
-        #############################################################################
-        DL_label = {**labeler('DL TNN score - blinded'),
-                    'blinded-range': [0.25, 0.999]}
-        DL_ee_label = {**labeler('DL TNN score EE - blinded'),
-                       'blinded-range': [0.25, 0.999]}
-        DL_mumu_label = {
-            **labeler('DL TNN score MuMu - blinded'), 'blinded-range': [0.25, 0.999]}
-        DL_emu_label = {
-            **labeler('DL TNN score EMu - blinded'), 'blinded-range': [0.25, 0.999]}
-        DL_boosted_label = {
-            **labeler('DL Boosted TNN score - blinded'), 'blinded-range': [0.25, 0.999]}
-        DL_resolved1b_label = {
-            **labeler('DL Resolved 1b TNN score - blinded'), 'blinded-range': [0.25, 0.999]}
-        DL_resolved2b_label = {
-            **labeler('DL Resolved 2b TNN score - blinded'), 'blinded-range': [0.25, 0.999]}
+        # fetch and prepare the input for the model evaluation
         l1, l2, j1, j2, met = defs.ml_input_features(self, tree)
-        # prepare the input for the model
+
+        tnn_vars = {
+            "event_no": tree.event,
+            "weight": noSel.weight,
+        }
+        tnn_vars = tnn_vars | l1 | l2 | j1 | j2 | met
+        # line above is equivalent to the following (concetanation of dictionaries in dim=0)
+        # tnn_vars =  {**tnn_vars, **l1, **l2, **j1, **j2, **met}
+
         l1 = op.array('float', *l1.values())
         l2 = op.array('float', *l2.values())
         j1 = op.array('float', *j1.values())
@@ -74,6 +65,23 @@ class mvaEvaluator(NanoBaseHHWWbb):
 
         signal_node = tnn_output[0]
 
+        # prepare the labels
+        DL_label = {**labeler('DL TNN score - blinded'),
+                    'blinded-range': [0.25, 0.999]}
+        DL_ee_label = {**labeler('DL TNN score EE - blinded'),
+                       'blinded-range': [0.25, 0.999]}
+        DL_mumu_label = {
+            **labeler('DL TNN score MuMu - blinded'), 'blinded-range': [0.25, 0.999]}
+        DL_emu_label = {
+            **labeler('DL TNN score EMu - blinded'), 'blinded-range': [0.25, 0.999]}
+        DL_boosted_label = {
+            **labeler('DL Boosted TNN score - blinded'), 'blinded-range': [0.25, 0.999]}
+        DL_resolved1b_label = {
+            **labeler('DL Resolved 1b TNN score - blinded'), 'blinded-range': [0.25, 0.999]}
+        DL_resolved2b_label = {
+            **labeler('DL Resolved 2b TNN score - blinded'), 'blinded-range': [0.25, 0.999]}
+        
+        # create the plots
         tnn_score_1b_ee = Plot.make1D("tnn_score_1b_ee", signal_node, DL_resolved_1b_ee, EqBin(
             100, 0, 1.), title='TNN', xTitle="TNN Score 1b ee", plotopts=DL_ee_label
         )
@@ -143,6 +151,95 @@ class mvaEvaluator(NanoBaseHHWWbb):
             tnn_score_resolved1b,
             tnn_score_resolved2b,
             tnn_score_DL
+        ])
+
+        # cutflow report for DL channel
+        self.yields.add(DL_boosted_ee, 'DL boosted ee')
+        self.yields.add(DL_boosted_mumu, 'DL boosted mumu')
+        self.yields.add(DL_boosted_emu, 'DL boosted emu')
+        self.yields.add(DL_resolved_1b_ee, 'DL resolved 1b ee')
+        self.yields.add(DL_resolved_2b_ee, 'DL resolved 2b ee')
+        self.yields.add(DL_resolved_1b_mumu, 'DL resolved 1b mumu')
+        self.yields.add(DL_resolved_2b_mumu, 'DL resolved 2b mumu')
+        self.yields.add(DL_resolved_1b_emu, 'DL resolved 1b emu')
+        self.yields.add(DL_resolved_2b_emu, 'DL resolved 2b emu')
+
+        event_selections = [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
+                            DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
+                            DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu]
+
+        # add skims that hold variables for the TNN
+        for sel in event_selections:
+            plots.append(
+                Skim(sel.name+"_tnn_vars", tnn_vars, sel)
+            )
+
+        def ml_input_var_binning(var_name):
+            "Function to return binning, min and max values for the TNN input feature plots."
+            if "_Px" in var_name or "_Py" in var_name:
+                N, mn, mx = 100, -1000, 1000
+            elif "_Pz" in var_name:
+                N, mn, mx = 200, -4000, 4000
+            elif "_E" in var_name:
+                N, mn, mx = 100, 0, 2500
+            elif "_charge" in var_name:
+                N, mn, mx = 5, -2.5, 2.5
+            elif "_btag" in var_name:
+                N, mn, mx = 50, 0, 1
+            elif "_pdgId" in var_name:
+                N, mn, mx = 30, -15, 15
+
+            return EqBin(N, mn, mx)
+
+        # We're not interested in the following two variables' match between data and MC.
+        # Hence they're not included in the input feature plots.
+        tnn_vars.pop('event_no')
+        tnn_vars.pop('weight')
+
+        for selection in event_selections:
+            for name, var in tnn_vars.items():
+                plots.append(
+                    Plot.make1D(name+"_"+selection.name, var, selection,
+                                ml_input_var_binning(name), title=name, xTitle=name)
+                )
+
+        # labels on plots
+        DLboostedEE_label = labeler('DL boosted EE')
+        DLboostedMuMu_label = labeler('DL boosted MuMu')
+        DLboostedEMU_label = labeler('DL boosted EMu')
+
+        DLresolved_1b_EE_label = labeler('DL resolved 1b EE')
+        DLresolved_1b_MuMu_label = labeler('DL resolved 1b MuMu')
+        DLresolved_1b_EMu_label = labeler('DL resolved 1b EMu')
+
+        DLresolved_2b_EE_label = labeler('DL resolved 2b EE')
+        DLresolved_2b_MuMu_label = labeler('DL resolved 2b MuMu')
+        DLresolved_2b_EMu_label = labeler('DL resolved 2b EMu')
+
+        plots.extend([
+                # Boosted - fatjet eta
+                Plot.make1D("DL_boosted_fatJet_eta_ee", self.ak8BJets[0].eta, DL_boosted_ee, EqBin(
+                    30, -3, 3), title="eta(ak8jet)", xTitle="Fatjet \eta", plotopts=DLboostedEE_label),
+                Plot.make1D("DL_boosted_fatJet_eta_mumu", self.ak8BJets[0].eta, DL_boosted_mumu, EqBin(
+                    30, -3, 3), title="eta(ak8jet)", xTitle="Fatjet \eta", plotopts=DLboostedMuMu_label),
+                Plot.make1D("DL_boosted_fatJet_eta_emu", self.ak8BJets[0].eta, DL_boosted_emu, EqBin(
+                    30, -3, 3), title="eta(ak8jet)", xTitle="Fatjet \eta", plotopts=DLboostedEMU_label),
+                    
+                # Resolved 1b - leading b-jet eta
+                Plot.make1D("DL_resolved_1b_leadingJet_eta_ee", self.ak4BJets[0].eta, DL_resolved_1b_ee, EqBin(
+                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_EE_label),
+                Plot.make1D("DL_resolved_1b_leadingJet_eta_mumu", self.ak4BJets[0].eta, DL_resolved_1b_mumu, EqBin(
+                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_MuMu_label),
+                Plot.make1D("DL_resolved_1b_leadingJet_eta_emu", self.ak4BJets[0].eta, DL_resolved_1b_emu, EqBin(
+                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_EMu_label),
+
+                # Resolved 2b - leading b-jet eta
+                Plot.make1D("DL_resolved_2b_leadingJet_eta_ee", self.ak4BJets[0].eta, DL_resolved_2b_ee, EqBin(
+                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_EE_label),
+                Plot.make1D("DL_resolved_2b_leadingJet_eta_mumu", self.ak4BJets[0].eta, DL_resolved_2b_mumu, EqBin(
+                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_MuMu_label),
+                Plot.make1D("DL_resolved_2b_leadingJet_eta_emu", self.ak4BJets[0].eta, DL_resolved_2b_emu, EqBin(
+                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_EMu_label),
         ])
 
         return plots
