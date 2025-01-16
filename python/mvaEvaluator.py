@@ -206,29 +206,29 @@ class mvaEvaluator(NanoBaseHHWWbb):
         DLresolved_2b_EMu_label = labeler('DL resolved 2b EMu')
 
         plots.extend([
-                # Boosted - fatjet eta
-                Plot.make1D("DL_boosted_fatJet_eta_ee", self.ak8BJets[0].eta, DL_boosted_ee, EqBin(
-                    30, -3, 3), title="eta(ak8jet)", xTitle="Fatjet \eta", plotopts=DLboostedEE_label),
-                Plot.make1D("DL_boosted_fatJet_eta_mumu", self.ak8BJets[0].eta, DL_boosted_mumu, EqBin(
-                    30, -3, 3), title="eta(ak8jet)", xTitle="Fatjet \eta", plotopts=DLboostedMuMu_label),
-                Plot.make1D("DL_boosted_fatJet_eta_emu", self.ak8BJets[0].eta, DL_boosted_emu, EqBin(
-                    30, -3, 3), title="eta(ak8jet)", xTitle="Fatjet \eta", plotopts=DLboostedEMU_label),
-                    
-                # Resolved 1b - leading b-jet eta
-                Plot.make1D("DL_resolved_1b_leadingJet_eta_ee", self.ak4BJets[0].eta, DL_resolved_1b_ee, EqBin(
-                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_EE_label),
-                Plot.make1D("DL_resolved_1b_leadingJet_eta_mumu", self.ak4BJets[0].eta, DL_resolved_1b_mumu, EqBin(
-                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_MuMu_label),
-                Plot.make1D("DL_resolved_1b_leadingJet_eta_emu", self.ak4BJets[0].eta, DL_resolved_1b_emu, EqBin(
-                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_EMu_label),
+            # Boosted - fatjet eta
+            Plot.make1D("DL_boosted_fatJet_eta_ee", self.ak8BJets[0].eta, DL_boosted_ee, EqBin(
+                30, -3, 3), title="eta(ak8jet)", xTitle="Fatjet \eta", plotopts=DLboostedEE_label),
+            Plot.make1D("DL_boosted_fatJet_eta_mumu", self.ak8BJets[0].eta, DL_boosted_mumu, EqBin(
+                30, -3, 3), title="eta(ak8jet)", xTitle="Fatjet \eta", plotopts=DLboostedMuMu_label),
+            Plot.make1D("DL_boosted_fatJet_eta_emu", self.ak8BJets[0].eta, DL_boosted_emu, EqBin(
+                30, -3, 3), title="eta(ak8jet)", xTitle="Fatjet \eta", plotopts=DLboostedEMU_label),
 
-                # Resolved 2b - leading b-jet eta
-                Plot.make1D("DL_resolved_2b_leadingJet_eta_ee", self.ak4BJets[0].eta, DL_resolved_2b_ee, EqBin(
-                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_EE_label),
-                Plot.make1D("DL_resolved_2b_leadingJet_eta_mumu", self.ak4BJets[0].eta, DL_resolved_2b_mumu, EqBin(
-                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_MuMu_label),
-                Plot.make1D("DL_resolved_2b_leadingJet_eta_emu", self.ak4BJets[0].eta, DL_resolved_2b_emu, EqBin(
-                    30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_EMu_label),
+            # Resolved 1b - leading b-jet eta
+            Plot.make1D("DL_resolved_1b_leadingJet_eta_ee", self.ak4BJets[0].eta, DL_resolved_1b_ee, EqBin(
+                30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_EE_label),
+            Plot.make1D("DL_resolved_1b_leadingJet_eta_mumu", self.ak4BJets[0].eta, DL_resolved_1b_mumu, EqBin(
+                30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_MuMu_label),
+            Plot.make1D("DL_resolved_1b_leadingJet_eta_emu", self.ak4BJets[0].eta, DL_resolved_1b_emu, EqBin(
+                30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_EMu_label),
+
+            # Resolved 2b - leading b-jet eta
+            Plot.make1D("DL_resolved_2b_leadingJet_eta_ee", self.ak4BJets[0].eta, DL_resolved_2b_ee, EqBin(
+                30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_EE_label),
+            Plot.make1D("DL_resolved_2b_leadingJet_eta_mumu", self.ak4BJets[0].eta, DL_resolved_2b_mumu, EqBin(
+                30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_MuMu_label),
+            Plot.make1D("DL_resolved_2b_leadingJet_eta_emu", self.ak4BJets[0].eta, DL_resolved_2b_emu, EqBin(
+                30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_EMu_label),
         ])
 
         return plots
