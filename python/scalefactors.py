@@ -61,43 +61,34 @@ class ScaleFactors():
 
         return sel
 
-    def btagSF(self, sel, jets, json_tagger, jet_tagger):
-        # btagging SF
+    def btagSF(self, sel, jets, json_tagger="particleNet", jet_tagger="btagPNetB", apply_reweighting=True):
+        """Apply btagging SF"""
         if self.is_MC:
             from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
             logger.info("Applying btagging SF for "+sel.name)
             def btvSF(flav): return get_bTagSF_itFit(
                 BTV_SF_JSONFiles[self.era], json_tagger, jet_tagger, flav, sel=sel, decorr_eras=True, era=self.era)
             btvWeight = makeBtagWeightItFit(jets, btvSF)
+            if apply_reweighting:
+                btag_corr = get_correction(
+                    f"{self.git_project_dir}/data/{self.era[:4]}_btagSF_reweight.json.gz", # the file from the btagReweighting.py
+                    "Ratio_btagSF_shape",
+                    params={
+                        "year": self.era,
+                        # 1. to make it a float
+                        "jet_multiplicity": 1.*op.rng_len(jets)
+                    },
+                    sel=sel
+                )
+                # None since the object is already in the btag_corr i.e. self.ak4Jets
+                btag_reweight = btag_corr(None)
+            else: 
+                btag_reweight = op.c_float(1.)
         else:
             btvWeight = op.c_float(1.)
-
-        sel = sel.refine(sel.name+"_btagSF", weight=btvWeight)
-
-        self.yields.add(sel, sel.name)
-
-        return sel
-
-    def btagReweighting(self, sel):
-        # btag reweighting based on sum of event weights
-        if self.is_MC:
-            logger.info("Applying btag reweighting for "+sel.name)
-            btag_corr = get_correction(
-                f"{self.git_project_dir}/data/{self.era[:4]}_btagSF_reweight.json.gz",
-                "Ratio_btagSF_shape",
-                params={
-                    "year": self.era,
-                    # 1. to make it a float
-                    "jet_multiplicity": 1.*op.rng_len(self.ak4Jets)
-                },
-                sel=sel
-            )
-            # None since the object is already in the btag_corr i.e. self.ak4Jets
-            btag_reweight = btag_corr(None)
-        else:
             btag_reweight = op.c_float(1.)
-
-        sel = sel.refine(sel.name+"_btagRW", weight=btag_reweight)
+        
+        sel = sel.refine(sel.name+"_btagSF", weight=btvWeight*btag_reweight)
 
         self.yields.add(sel, sel.name)
 

@@ -45,7 +45,7 @@ def ptCutDifferentFlavourPair(dilep) -> bool:
     )
 
 
-def makeDLSelection(self, sel, tree, sample):
+def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
     """Creates a list of selection objects for the Dilepton final state.
 
     Args:
@@ -135,35 +135,31 @@ def makeDLSelection(self, sel, tree, sample):
 
     # boosted pre-final state selections for btag reweighting
     DL_boosted_pre_ee = elPairMultiplicitySel.refine(
-        'DL_boosted_pre_ee', cut=op.c_bool(1))
+        'DL_boosted_pre_ee', cut=op.rng_len(self.ak8Jets) >= 1)
     DL_boosted_pre_mumu = muPairMultiplicitySel.refine(
-        'DL_boosted_pre_mumu', cut=op.c_bool(1))
+        'DL_boosted_pre_mumu', cut=op.rng_len(self.ak8Jets) >= 1)
     DL_boosted_pre_emu = emuPairMultiplicitySel.refine(
-        'DL_boosted_pre_emu', cut=op.c_bool(1))
+        'DL_boosted_pre_emu', cut=op.rng_len(self.ak8Jets) >= 1)
+
+    self.yields.add(DL_boosted_pre_ee, 'DL boosted pre ee')
+    self.yields.add(DL_boosted_pre_mumu, 'DL boosted pre mumu')
+    self.yields.add(DL_boosted_pre_emu, 'DL boosted pre emu')
 
     # btagging sf and reweighting for boosted
     DL_boosted_pre_ee_btagSF = sf.btagSF(
-        self, DL_boosted_pre_ee, self.ak8Jets, "particleNet", "particleNet_XbbVsQCD")
+        self, DL_boosted_pre_ee, self.ak8Jets, jet_tagger="particleNet_XbbVsQCD", apply_reweighting=apply_btagReweight)
     DL_boosted_pre_mumu_btagSF = sf.btagSF(
-        self, DL_boosted_pre_mumu, self.ak8Jets, "particleNet", "particleNet_XbbVsQCD")
+        self, DL_boosted_pre_mumu, self.ak8Jets, jet_tagger="particleNet_XbbVsQCD", apply_reweighting=apply_btagReweight)
     DL_boosted_pre_emu_btagSF = sf.btagSF(
-        self, DL_boosted_pre_emu, self.ak8Jets, "particleNet", "particleNet_XbbVsQCD")
-
-    # btagging reweighting for boosted
-    DL_boosted_pre_ee_btagRW = sf.btagReweighting(
-        self, DL_boosted_pre_ee_btagSF)
-    DL_boosted_pre_mumu_btagRW = sf.btagReweighting(
-        self, DL_boosted_pre_mumu_btagSF)
-    DL_boosted_pre_emu_btagRW = sf.btagReweighting(
-        self, DL_boosted_pre_emu_btagSF)
+        self, DL_boosted_pre_emu, self.ak8Jets, jet_tagger="particleNet_XbbVsQCD", apply_reweighting=apply_btagReweight)
 
     # boosted -> at least one b-tagged ak8 jet
-    DL_boosted_ee = DL_boosted_pre_ee_btagRW.refine(
-        'DL_boosted_ee', cut=(op.rng_len(self.ak8BJets) >= 1))
-    DL_boosted_mumu = DL_boosted_pre_mumu_btagRW.refine(
-        'DL_boosted_mumu', cut=(op.rng_len(self.ak8BJets) >= 1))
-    DL_boosted_emu = DL_boosted_pre_emu_btagRW.refine(
-        'DL_boosted_emu', cut=(op.rng_len(self.ak8BJets) >= 1))
+    DL_boosted_ee = DL_boosted_pre_ee_btagSF.refine(
+        'DL_boosted_ee', cut=op.rng_len(self.ak8BJets) >= 1)
+    DL_boosted_mumu = DL_boosted_pre_mumu_btagSF.refine(
+        'DL_boosted_mumu', cut=op.rng_len(self.ak8BJets) >= 1)
+    DL_boosted_emu = DL_boosted_pre_emu_btagSF.refine(
+        'DL_boosted_emu', cut=op.rng_len(self.ak8BJets) >= 1)
 
     # resolved pre-final state selections for btag reweighting
     DL_resolved_pre_ee = elPairMultiplicitySel.refine(
@@ -173,67 +169,70 @@ def makeDLSelection(self, sel, tree, sample):
     DL_resolved_pre_emu = emuPairMultiplicitySel.refine(
         'DL_resolved_pre_emu', cut=[op.rng_len(self.ak4Jets) >= 2])
 
-    # btagging sf for resolved
-    DL_resolved_pre_ee_btagSF = sf.btagSF(
-        self, DL_resolved_pre_ee, self.ak4Jets, "particleNet", "btagPNetB")
-    DL_resolved_pre_mumu_btagSF = sf.btagSF(
-        self, DL_resolved_pre_mumu, self.ak4Jets, "particleNet", "btagPNetB")
-    DL_resolved_pre_emu_btagSF = sf.btagSF(
-        self, DL_resolved_pre_emu, self.ak4Jets, "particleNet", "btagPNetB")
+    self.yields.add(DL_resolved_pre_ee, 'DL resolved pre ee')
+    self.yields.add(DL_resolved_pre_mumu, 'DL resolved pre mumu')
+    self.yields.add(DL_resolved_pre_emu, 'DL resolved pre emu')
 
-    # btagging reweighting for resolved
-    DL_resolved_pre_ee_btagRW = sf.btagReweighting(
-        self, DL_resolved_pre_ee_btagSF)
-    DL_resolved_pre_mumu_btagRW = sf.btagReweighting(
-        self, DL_resolved_pre_mumu_btagSF)
-    DL_resolved_pre_emu_btagRW = sf.btagReweighting(
-        self, DL_resolved_pre_emu_btagSF)
+    # btagging sf for resolved.
+    # default jet_tagger is btagPNetB, hence we're using that here
+    DL_resolved_pre_ee_btagSF = sf.btagSF(
+        self, DL_resolved_pre_ee, self.ak4Jets, apply_reweighting=apply_btagReweight)
+    DL_resolved_pre_mumu_btagSF = sf.btagSF(
+        self, DL_resolved_pre_mumu, self.ak4Jets, apply_reweighting=apply_btagReweight)
+    DL_resolved_pre_emu_btagSF = sf.btagSF(
+        self, DL_resolved_pre_emu, self.ak4Jets, apply_reweighting=apply_btagReweight)
 
     # resolved -> and at least two ak4 jets with 1 or at least 2 b-tagged jets and no ak8 jets
-    DL_resolved_1b_ee = DL_resolved_pre_ee_btagRW.refine(
+    DL_resolved_1b_ee = DL_resolved_pre_ee_btagSF.refine(
         'DL_resolved_1b_ee',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) == 1,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_2b_ee = DL_resolved_pre_ee_btagRW.refine(
+    DL_resolved_2b_ee = DL_resolved_pre_ee_btagSF.refine(
         'DL_resolved_2b_ee',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) >= 2,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_1b_mumu = DL_resolved_pre_mumu_btagRW.refine(
+    DL_resolved_1b_mumu = DL_resolved_pre_mumu_btagSF.refine(
         'DL_resolved_1b_mumu',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) == 1,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_2b_mumu = DL_resolved_pre_mumu_btagRW.refine(
+    DL_resolved_2b_mumu = DL_resolved_pre_mumu_btagSF.refine(
         'DL_resolved_2b_mumu',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) >= 2,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_1b_emu = DL_resolved_pre_emu_btagRW.refine(
+    DL_resolved_1b_emu = DL_resolved_pre_emu_btagSF.refine(
         'DL_resolved_1b_emu',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) == 1,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    DL_resolved_2b_emu = DL_resolved_pre_emu_btagRW.refine(
+    DL_resolved_2b_emu = DL_resolved_pre_emu_btagSF.refine(
         'DL_resolved_2b_emu',
         cut=(op.AND(
             op.rng_len(self.ak4BJets) >= 2,
             op.rng_len(self.ak8BJets) == 0))
     )
 
-    pre_final_state_sels = [DL_boosted_pre_ee, DL_boosted_pre_mumu, DL_boosted_pre_emu,
-                            DL_resolved_pre_ee, DL_resolved_pre_mumu, DL_resolved_pre_emu]
+    pre_final_state_sels = {
+        'DL_boosted_pre_ee': (DL_boosted_pre_ee, DL_boosted_pre_ee_btagSF),
+        'DL_boosted_pre_mumu': (DL_boosted_pre_mumu, DL_boosted_pre_mumu_btagSF),
+        'DL_boosted_pre_emu': (DL_boosted_pre_emu, DL_boosted_pre_emu_btagSF),
+        'DL_resolved_pre_ee': (DL_resolved_pre_ee, DL_resolved_pre_ee_btagSF),
+        'DL_resolved_pre_mumu': (DL_resolved_pre_mumu, DL_resolved_pre_mumu_btagSF),
+        'DL_resolved_pre_emu': (DL_resolved_pre_emu, DL_resolved_pre_emu_btagSF),
+    }
 
     DL_selections = [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
                      DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,

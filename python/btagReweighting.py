@@ -129,29 +129,28 @@ class btagReweighting(_base):
         plots.append(self.yields)
 
         _, pre_sels = makeDLSelection(
-            self, noSel, tree, sample)
+            self, noSel, tree, sample, apply_btagReweight=False)
 
-        # pre_sels is [DL_boosted_pre_ee, DL_boosted_pre_mumu, DL_boosted_pre_emu, DL_resolved_pre_ee, DL_resolved_pre_mumu, DL_resolved_pre_emu]
 
-        for ps in pre_sels:
+        for preSel, btagSel in pre_sels.values():
             # add weights before btagSF
             plots.append(
-                Skim("WeightsBeforeBtagSF_"+ps.name,
+                Skim("WeightsBeforeBtagSF_"+preSel.name,
                      {"jetMultiplicity_before": op.rng_len(self.ak4Jets),
-                         "Sel_weight_before": ps.weight},
-                     ps
+                         "Sel_weight_before": preSel.weight},
+                     preSel
                      )
             )
 
             # apply btagSF
-            ps = sf.btagSF(self, ps)
+            # sel = sf.btagSF(self, sel, self.ak4Jets, apply_reweighting=False)
 
             # add weights after btagSF
             plots.append(
-                Skim("WeightsAfterBtagSF_"+ps.name,
+                Skim("WeightsAfterBtagSF_"+btagSel.name,
                      {"jetMultiplicity_after": op.rng_len(self.ak4Jets),
-                      "Sel_weight_after": ps.weight},
-                     ps
+                      "Sel_weight_after": btagSel.weight},
+                     btagSel
                      )
             )
 
