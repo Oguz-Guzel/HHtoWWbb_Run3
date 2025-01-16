@@ -36,13 +36,13 @@ class mvaEvaluator(NanoBaseHHWWbb):
         # fetch and prepare the input for the model evaluation
         l1, l2, j1, j2, met = defs.ml_input_features(self, tree)
 
-        tnn_vars = {
+        ml_vars = {
             "event_no": tree.event,
             "weight": noSel.weight,
         }
-        tnn_vars = tnn_vars | l1 | l2 | j1 | j2 | met
+        ml_vars = ml_vars | l1 | l2 | j1 | j2 | met
         # line above is equivalent to the following (concetanation of dictionaries in dim=0)
-        # tnn_vars =  {**tnn_vars, **l1, **l2, **j1, **j2, **met}
+        # ml_vars =  {**ml_vars, **l1, **l2, **j1, **j2, **met}
 
         l1 = op.array('float', *l1.values())
         l2 = op.array('float', *l2.values())
@@ -60,111 +60,111 @@ class mvaEvaluator(NanoBaseHHWWbb):
         )
 
         # evaluate the model
-        tnn_model = op.mvaEvaluator(modelFile, otherArgs='output')
-        tnn_output = tnn_model(l1, l2, j1, j2, met)
+        ml_model = op.mvaEvaluator(modelFile, otherArgs='output')
+        ml_output = ml_model(l1, l2, j1, j2, met)
 
-        signal_node = tnn_output[0]
+        signal_node = ml_output[0]
 
         # prepare the labels
-        DL_label = {**labeler('DL TNN score - blinded'),
+        DL_label = {**labeler('DL ML score - blinded'),
                     'blinded-range': [0.25, 0.999]}
-        DL_ee_label = {**labeler('DL TNN score EE - blinded'),
+        DL_ee_label = {**labeler('DL ML score EE - blinded'),
                        'blinded-range': [0.25, 0.999]}
         DL_mumu_label = {
-            **labeler('DL TNN score MuMu - blinded'), 'blinded-range': [0.25, 0.999]}
+            **labeler('DL ML score MuMu - blinded'), 'blinded-range': [0.25, 0.999]}
         DL_emu_label = {
-            **labeler('DL TNN score EMu - blinded'), 'blinded-range': [0.25, 0.999]}
+            **labeler('DL ML score EMu - blinded'), 'blinded-range': [0.25, 0.999]}
         DL_boosted_label = {
-            **labeler('DL Boosted TNN score - blinded'), 'blinded-range': [0.25, 0.999]}
+            **labeler('DL Boosted ML score - blinded'), 'blinded-range': [0.25, 0.999]}
         DL_resolved1b_label = {
-            **labeler('DL Resolved 1b TNN score - blinded'), 'blinded-range': [0.25, 0.999]}
+            **labeler('DL Resolved 1b ML score - blinded'), 'blinded-range': [0.25, 0.999]}
         DL_resolved2b_label = {
-            **labeler('DL Resolved 2b TNN score - blinded'), 'blinded-range': [0.25, 0.999]}
+            **labeler('DL Resolved 2b ML score - blinded'), 'blinded-range': [0.25, 0.999]}
         
         # create the plots
-        tnn_score_1b_ee = Plot.make1D("tnn_score_1b_ee", signal_node, DL_resolved_1b_ee, EqBin(
-            100, 0, 1.), title='TNN', xTitle="TNN Score 1b ee", plotopts=DL_ee_label
+        ml_score_1b_ee = Plot.make1D("ml_score_1b_ee", signal_node, DL_resolved_1b_ee, EqBin(
+            100, 0, 1.), title='ML', xTitle="ML Score 1b ee", plotopts=DL_ee_label
         )
-        tnn_score_2b_ee = Plot.make1D("tnn_score_2b_ee", signal_node, DL_resolved_2b_ee, EqBin(
-            100, 0, 1.), title='TNN', xTitle="TNN Score 2b ee", plotopts=DL_ee_label
+        ml_score_2b_ee = Plot.make1D("ml_score_2b_ee", signal_node, DL_resolved_2b_ee, EqBin(
+            100, 0, 1.), title='ML', xTitle="ML Score 2b ee", plotopts=DL_ee_label
         )
-        tnn_score_1b_emu = Plot.make1D("tnn_score_1b_emu", signal_node, DL_resolved_1b_emu, EqBin(
-            100, 0, 1.), title='TNN', xTitle="TNN Score 1b emu", plotopts=DL_emu_label
+        ml_score_1b_emu = Plot.make1D("ml_score_1b_emu", signal_node, DL_resolved_1b_emu, EqBin(
+            100, 0, 1.), title='ML', xTitle="ML Score 1b emu", plotopts=DL_emu_label
         )
-        tnn_score_2b_emu = Plot.make1D("tnn_score_2b_emu", signal_node, DL_resolved_2b_emu, EqBin(
-            100, 0, 1.), title='TNN', xTitle="TNN Score 1b emu", plotopts=DL_emu_label
+        ml_score_2b_emu = Plot.make1D("ml_score_2b_emu", signal_node, DL_resolved_2b_emu, EqBin(
+            100, 0, 1.), title='ML', xTitle="ML Score 1b emu", plotopts=DL_emu_label
         )
-        tnn_score_1b_mumu = Plot.make1D("tnn_score_1b_mumu", signal_node, DL_resolved_1b_mumu, EqBin(
-            100, 0, 1.), title='TNN', xTitle="TNN Score 1b mumu", plotopts=DL_mumu_label
+        ml_score_1b_mumu = Plot.make1D("ml_score_1b_mumu", signal_node, DL_resolved_1b_mumu, EqBin(
+            100, 0, 1.), title='ML', xTitle="ML Score 1b mumu", plotopts=DL_mumu_label
         )
-        tnn_score_2b_mumu = Plot.make1D("tnn_score_2b_mumu", signal_node, DL_resolved_2b_mumu, EqBin(
-            100, 0, 1.), title='TNN', xTitle="TNN Score 2b mumu", plotopts=DL_mumu_label
+        ml_score_2b_mumu = Plot.make1D("ml_score_2b_mumu", signal_node, DL_resolved_2b_mumu, EqBin(
+            100, 0, 1.), title='ML', xTitle="ML Score 2b mumu", plotopts=DL_mumu_label
         )
-        tnn_score_boosted_ee = Plot.make1D("tnn_score_boosted_ee", signal_node, DL_boosted_ee, EqBin(
-            100, 0, 1.), title='TNN', xTitle="TNN Score boosted ee", plotopts=DL_label
+        ml_score_boosted_ee = Plot.make1D("ml_score_boosted_ee", signal_node, DL_boosted_ee, EqBin(
+            100, 0, 1.), title='ML', xTitle="ML Score boosted ee", plotopts=DL_label
         )
-        tnn_score_boosted_emu = Plot.make1D("tnn_score_boosted_emu", signal_node, DL_boosted_emu, EqBin(
-            100, 0, 1.), title='TNN', xTitle="TNN Score bossted emu", plotopts=DL_label
+        ml_score_boosted_emu = Plot.make1D("ml_score_boosted_emu", signal_node, DL_boosted_emu, EqBin(
+            100, 0, 1.), title='ML', xTitle="ML Score bossted emu", plotopts=DL_label
         )
-        tnn_score_boosted_mumu = Plot.make1D("tnn_score_boosted_mumu", signal_node, DL_boosted_mumu, EqBin(
-            100, 0, 1.), title='TNN', xTitle="TNN Score bossted mumu", plotopts=DL_label
+        ml_score_boosted_mumu = Plot.make1D("ml_score_boosted_mumu", signal_node, DL_boosted_mumu, EqBin(
+            100, 0, 1.), title='ML', xTitle="ML Score bossted mumu", plotopts=DL_label
         )
-        boosted_tnn_score_plots = [
-            tnn_score_boosted_ee, tnn_score_boosted_emu, tnn_score_boosted_mumu]
+        boosted_ml_score_plots = [
+            ml_score_boosted_ee, ml_score_boosted_emu, ml_score_boosted_mumu]
 
-        resolved1b_tnn_score_plots = [
-            tnn_score_1b_ee, tnn_score_1b_emu, tnn_score_1b_mumu]
+        resolved1b_ml_score_plots = [
+            ml_score_1b_ee, ml_score_1b_emu, ml_score_1b_mumu]
 
-        resolved2b_tnn_score_plots = [
-            tnn_score_2b_ee, tnn_score_2b_emu, tnn_score_2b_mumu]
+        resolved2b_ml_score_plots = [
+            ml_score_2b_ee, ml_score_2b_emu, ml_score_2b_mumu]
 
-        tnn_score_booosted = SummedPlot("DL_boosted_tnn_score",
-                                        boosted_tnn_score_plots,
-                                        title="TNN",
-                                        xTitle="DL Boosted TNN score",
+        ml_score_booosted = SummedPlot("DL_boosted_ml_score",
+                                        boosted_ml_score_plots,
+                                        title="ML",
+                                        xTitle="DL Boosted ML score",
                                         plotopts=DL_boosted_label,
                                         )
-        tnn_score_resolved1b = SummedPlot("DL_resolved1b_tnn_score",
-                                          resolved1b_tnn_score_plots,
-                                          title="TNN",
-                                          xTitle="DL Resolved 1b TNN score",
+        ml_score_resolved1b = SummedPlot("DL_resolved1b_ml_score",
+                                          resolved1b_ml_score_plots,
+                                          title="ML",
+                                          xTitle="DL Resolved 1b ML score",
                                           plotopts=DL_resolved1b_label,
                                           )
-        tnn_score_resolved2b = SummedPlot("DL_resolved2b_tnn_score",
-                                          resolved2b_tnn_score_plots,
-                                          title="TNN",
-                                          xTitle="DL Resolved 2b TNN score",
+        ml_score_resolved2b = SummedPlot("DL_resolved2b_ml_score",
+                                          resolved2b_ml_score_plots,
+                                          title="ML",
+                                          xTitle="DL Resolved 2b ML score",
                                           plotopts=DL_resolved2b_label,
                                           )
-        tnn_score_DL = SummedPlot("DL_tnn_score",
-                                  [*boosted_tnn_score_plots,
-                                   *resolved1b_tnn_score_plots,
-                                   *resolved2b_tnn_score_plots],
-                                  title="DL TNN score",
+        ml_score_DL = SummedPlot("DL_ml_score",
+                                  [*boosted_ml_score_plots,
+                                   *resolved1b_ml_score_plots,
+                                   *resolved2b_ml_score_plots],
+                                  title="DL ML score",
                                   plotopts=DL_label,
                                   )
         plots.extend([
-            *resolved1b_tnn_score_plots,
-            *resolved2b_tnn_score_plots,
-            *boosted_tnn_score_plots,
-            tnn_score_booosted,
-            tnn_score_resolved1b,
-            tnn_score_resolved2b,
-            tnn_score_DL
+            *resolved1b_ml_score_plots,
+            *resolved2b_ml_score_plots,
+            *boosted_ml_score_plots,
+            ml_score_booosted,
+            ml_score_resolved1b,
+            ml_score_resolved2b,
+            ml_score_DL
         ])
 
         event_selections = [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
                             DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
                             DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu]
 
-        # add skims that hold variables for the TNN
+        # add skims that hold variables for the ML
         for sel in event_selections:
             plots.append(
-                Skim(sel.name+"_tnn_vars", tnn_vars, sel)
+                Skim(sel.name+"_ml_vars", ml_vars, sel)
             )
 
         def ml_input_var_binning(var_name):
-            "Function to return binning, min and max values for the TNN input feature plots."
+            "Function to return binning, min and max values for the ML input feature plots."
             if "_Px" in var_name or "_Py" in var_name:
                 N, mn, mx = 100, -1000, 1000
             elif "_Pz" in var_name:
@@ -182,12 +182,12 @@ class mvaEvaluator(NanoBaseHHWWbb):
 
         # We're not interested in the following two variables' match between data and MC.
         # Hence they're not included in the input feature plots.
-        tnn_vars.pop('event_no')
-        tnn_vars.pop('weight')
+        ml_vars.pop('event_no')
+        ml_vars.pop('weight')
 
         ml_plots = []
         for selection in event_selections:
-            for name, var in tnn_vars.items():
+            for name, var in ml_vars.items():
                 ml_plots.append(
                     Plot.make1D(name+"_"+selection.name, var, selection,
                                 ml_input_var_binning(name), title=name, xTitle=name)
