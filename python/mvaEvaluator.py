@@ -185,17 +185,18 @@ class mvaEvaluator(NanoBaseHHWWbb):
         ml_vars.pop('event_no')
         ml_vars.pop('weight')
 
-        ml_plots = []
-        for selection in event_selections:
-            for name, var in ml_vars.items():
+        
+        for name, var in ml_vars.items():
+            ml_plots = []
+            for selection in event_selections:
                 ml_plots.append(
                     Plot.make1D(name+"_"+selection.name, var, selection,
                                 ml_input_var_binning(name), title=name, xTitle=name)
                 )
-                plots.extend(ml_plots)
-                plots.append(
-                    SummedPlot(name+"_summed", [plt for plt in ml_plots if plt.name.startswith(name)], title=name+"_summed")
-                )
+            plots.extend(ml_plots)
+            plots.append(
+                SummedPlot(name+"_summed", [plt for plt in ml_plots if plt.name.startswith(name)], title=name+"_summed")
+            )
 
         # labels on plots
         DLboostedEE_label = labeler('DL boosted EE')
