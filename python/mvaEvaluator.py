@@ -33,7 +33,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
                 self, noSel, tree, sample)
 
         # fetch and prepare the input for the model evaluation
-        l1, l2, j1, j2, met = defs.ml_input_features(self, tree)
+        l1, l2, j1, j2, met = defs.ml_input_features(self)
 
         ml_vars = {
             "event_no": tree.event,

@@ -47,7 +47,7 @@ class cutflowAnalysis(NanoBaseHHWWbb):
             "event_no": tree.event,
             "weight": noSel.weight,
         }
-        l1, l2, j1, j2, met = defs.ml_input_features(self, tree)
+        l1, l2, j1, j2, met = defs.ml_input_features(self)
 
         ml_vars = ml_vars | l1 | l2 | j1 | j2 | met
         # line above is equivalent to the following (concetanation of dictionaries in dim=0)
