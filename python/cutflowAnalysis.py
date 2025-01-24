@@ -43,15 +43,15 @@ class cutflowAnalysis(NanoBaseHHWWbb):
         DLresolved_2b_MuMu_label = labeler('DL resolved 2b MuMu')
         DLresolved_2b_EMu_label = labeler('DL resolved 2b EMu')
 
-        tnn_vars = {
+        ml_vars = {
             "event_no": tree.event,
             "weight": noSel.weight,
         }
         l1, l2, j1, j2, met = defs.ml_input_features(self, tree)
 
-        tnn_vars = tnn_vars | l1 | l2 | j1 | j2 | met
+        ml_vars = ml_vars | l1 | l2 | j1 | j2 | met
         # line above is equivalent to the following (concetanation of dictionaries in dim=0)
-        # tnn_vars =  {**tnn_vars, **l1, **l2, **j1, **j2, **met}
+        # ml_vars =  {**ml_vars, **l1, **l2, **j1, **j2, **met}
 
         event_selections = [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
                             DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
@@ -60,16 +60,16 @@ class cutflowAnalysis(NanoBaseHHWWbb):
         # add skims that hold variables for the TNN
         for sel in event_selections:
             plots.append(
-                Skim(sel.name+"_tnn_vars", tnn_vars, sel)
+                Skim(sel.name+"_ml_vars", ml_vars, sel)
             )
 
         # We're not interested in the following two variables' match between data and MC.
         # Hence they're not included in the input feature plots.
-        tnn_vars.pop('event_no')
-        tnn_vars.pop('weight')
+        ml_vars.pop('event_no')
+        ml_vars.pop('weight')
 
         for selection in event_selections:
-            for name, var in tnn_vars.items():
+            for name, var in ml_vars.items():
                 plots.append(
                     Plot.make1D(name+"_"+selection.name, var, selection,
                                 ml_input_var_binning(name), title=name, xTitle=name)
