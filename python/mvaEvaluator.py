@@ -5,6 +5,7 @@ from bamboo.plots import Plot, SummedPlot, Skim
 from bamboo.plots import EquidistantBinning as EqBin
 from bamboo import treefunctions as op
 
+import definitions as defs
 from baseAnalysis import NanoBaseHHWWbb
 from selections import makeDLSelection
 from utils import labeler, ml_input_var_binning
@@ -79,7 +80,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             **labeler('DL Resolved 1b ML score - blinded'), 'blinded-range': [0.25, 0.999]}
         DL_resolved2b_label = {
             **labeler('DL Resolved 2b ML score - blinded'), 'blinded-range': [0.25, 0.999]}
-        
+
         # create the plots
         ml_score_1b_ee = Plot.make1D("ml_score_1b_ee", signal_node, DL_resolved_1b_ee, EqBin(
             100, 0, 1.), title='ML', xTitle="ML Score 1b ee", plotopts=DL_ee_label
@@ -118,30 +119,30 @@ class mvaEvaluator(NanoBaseHHWWbb):
             ml_score_2b_ee, ml_score_2b_emu, ml_score_2b_mumu]
 
         ml_score_booosted = SummedPlot("DL_boosted_ml_score",
-                                        boosted_ml_score_plots,
-                                        title="ML",
-                                        xTitle="DL Boosted ML score",
-                                        plotopts=DL_boosted_label,
-                                        )
+                                       boosted_ml_score_plots,
+                                       title="ML",
+                                       xTitle="DL Boosted ML score",
+                                       plotopts=DL_boosted_label,
+                                       )
         ml_score_resolved1b = SummedPlot("DL_resolved1b_ml_score",
-                                          resolved1b_ml_score_plots,
-                                          title="ML",
-                                          xTitle="DL Resolved 1b ML score",
-                                          plotopts=DL_resolved1b_label,
-                                          )
+                                         resolved1b_ml_score_plots,
+                                         title="ML",
+                                         xTitle="DL Resolved 1b ML score",
+                                         plotopts=DL_resolved1b_label,
+                                         )
         ml_score_resolved2b = SummedPlot("DL_resolved2b_ml_score",
-                                          resolved2b_ml_score_plots,
-                                          title="ML",
-                                          xTitle="DL Resolved 2b ML score",
-                                          plotopts=DL_resolved2b_label,
-                                          )
+                                         resolved2b_ml_score_plots,
+                                         title="ML",
+                                         xTitle="DL Resolved 2b ML score",
+                                         plotopts=DL_resolved2b_label,
+                                         )
         ml_score_DL = SummedPlot("DL_ml_score",
-                                  [*boosted_ml_score_plots,
-                                   *resolved1b_ml_score_plots,
-                                   *resolved2b_ml_score_plots],
-                                  title="DL ML score",
-                                  plotopts=DL_label,
-                                  )
+                                 [*boosted_ml_score_plots,
+                                  *resolved1b_ml_score_plots,
+                                  *resolved2b_ml_score_plots],
+                                 title="DL ML score",
+                                 plotopts=DL_label,
+                                 )
         plots.extend([
             *resolved1b_ml_score_plots,
             *resolved2b_ml_score_plots,
@@ -167,7 +168,6 @@ class mvaEvaluator(NanoBaseHHWWbb):
         ml_vars.pop('event_no')
         ml_vars.pop('weight')
 
-        
         for name, var in ml_vars.items():
             ml_plots = []
             for selection in event_selections:
@@ -177,7 +177,8 @@ class mvaEvaluator(NanoBaseHHWWbb):
                 )
             plots.extend(ml_plots)
             plots.append(
-                SummedPlot(name+"_summed", [plt for plt in ml_plots if plt.name.startswith(name)], title=name+"_summed")
+                SummedPlot(
+                    name+"_summed", [plt for plt in ml_plots if plt.name.startswith(name)], title=name+"_summed")
             )
 
         # labels on plots
