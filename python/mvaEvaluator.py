@@ -7,8 +7,7 @@ from bamboo import treefunctions as op
 
 from baseAnalysis import NanoBaseHHWWbb
 from selections import makeDLSelection
-import definitions as defs
-from utils import labeler
+from utils import labeler, ml_input_var_binning
 
 logger = logging.getLogger(__name__)
 
@@ -162,23 +161,6 @@ class mvaEvaluator(NanoBaseHHWWbb):
             plots.append(
                 Skim(sel.name+"_ml_vars", ml_vars, sel)
             )
-
-        def ml_input_var_binning(var_name):
-            "Function to return binning, min and max values for the ML input feature plots."
-            if "_Px" in var_name or "_Py" in var_name:
-                N, mn, mx = 100, -1000, 1000
-            elif "_Pz" in var_name:
-                N, mn, mx = 200, -4000, 4000
-            elif "_E" in var_name:
-                N, mn, mx = 100, 0, 2500
-            elif "_charge" in var_name:
-                N, mn, mx = 5, -2.5, 2.5
-            elif "_btag" in var_name:
-                N, mn, mx = 50, 0, 1
-            elif "_pdgId" in var_name:
-                N, mn, mx = 30, -15, 15
-
-            return EqBin(N, mn, mx)
 
         # We're not interested in the following two variables' match between data and MC.
         # Hence they're not included in the input feature plots.

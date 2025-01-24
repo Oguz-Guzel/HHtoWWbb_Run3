@@ -209,3 +209,27 @@ def runPDF(workdir, channel, era=None, plotsDir='plots'):
         # pdflatex yields.tex
         # cd ../..
         """
+
+
+def ml_input_var_binning(var_name):
+    "Function to return binning, min and max values for the ML input feature plots."
+    from bamboo.plots import EquidistantBinning as EqBin
+    if "_Px" in var_name or "_Py" in var_name:
+        N, mn, mx = 100, -1000, 1000
+    elif "_Pz" in var_name:
+        N, mn, mx = 200, -4000, 4000
+    elif "_E" in var_name:
+        N, mn, mx = 100, 0, 2500
+    elif "_charge" in var_name:
+        N, mn, mx = 5, -2.5, 2.5
+    elif "_btag" in var_name:
+        N, mn, mx = 50, 0, 1
+    elif "_pdgId" in var_name:
+        N, mn, mx = 30, -15, 15
+    elif "_pt" in var_name:
+        N, mn, mx = 100, 0, 1000
+    elif "_eta" in var_name:
+        N, mn, mx = 30, -3, 3
+    elif "_N" in var_name:
+        N, mn, mx = 10, 0, 10
+    return EqBin(N, mn, mx)
