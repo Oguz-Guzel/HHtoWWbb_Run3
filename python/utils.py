@@ -1,7 +1,5 @@
-import os
-from copy import deepcopy
-
 def fillSampleTemplate(template, selEras=None):
+    from copy import deepcopy
     outTemplate = {}
 
     # Expand eras
@@ -56,7 +54,7 @@ def custom_Plotit(cfgName, workdir, inDir, outDir, counterReader, config, plotIt
     _gp = list(config["plotIt"]["groups"].keys())
     if 'signal' in _gp:
         _gp.remove('signal')
-    
+
     lumiCFG = {}
     for smp, smpCfg in config["samples"].items():
 
@@ -111,7 +109,7 @@ def custom_Plotit(cfgName, workdir, inDir, outDir, counterReader, config, plotIt
                 logger.info("running {}".format(" ".join(haddCmd)))
                 subprocess.check_call(haddCmd)
             else:
-                subprocess.check_call(haddCmd , stdout=subprocess.DEVNULL)
+                subprocess.check_call(haddCmd, stdout=subprocess.DEVNULL)
         except subprocess.CalledProcessError:
             logger.error("Failed to run {0}".format(" ".join(haddCmd)))
 
@@ -127,7 +125,8 @@ def custom_Plotit(cfgName, workdir, inDir, outDir, counterReader, config, plotIt
             outf.write('  error-fill-style: 3154\n')
             outf.write('  experiment: CMS\n')
             for era in lumiCFG.keys():
-                outf.write(f'  extra-label: Run 3 ({era[:4]}) - Work in progress\n')
+                outf.write(
+                    f'  extra-label: Run 3 ({era[:4]}) - Work in progress\n')
                 break
             outf.write('  height: 600\n')
             outf.write('  luminosity:\n')
@@ -162,10 +161,11 @@ def custom_Plotit(cfgName, workdir, inDir, outDir, counterReader, config, plotIt
                 outf.write(f'  {smp}.root:\n')
                 if cfg['type'] != 'data':
                     smpFile = openFileAndGet(
-                    os.path.join(inDir, f"{smp}.root"), mode="READ")
+                        os.path.join(inDir, f"{smp}.root"), mode="READ")
                     gevt = counterReader(smpFile)[smpCfg["generated-events"]]
                     outf.write(f"    generated-events: {gevt}\n")
-                else: None
+                else:
+                    None
                 for k, v in cfg.items():
                     if k in ['type', 'group', 'era', 'cross-section', 'branching-ratio']:
                         outf.write(f"    {k}: {v}\n")
@@ -192,7 +192,9 @@ def custom_Plotit(cfgName, workdir, inDir, outDir, counterReader, config, plotIt
     except subprocess.CalledProcessError:
         logger.error("Failed to run {0}".format(" ".join(plotitCmd)))
 
+
 def runPDF(workdir, channel, era=None, plotsDir='plots'):
+    import os
     plots_dir = [os.path.join(workdir, plotsDir)]
     if era:
         plots_dir.append(os.path.join(workdir, f"plots_{era}"))
