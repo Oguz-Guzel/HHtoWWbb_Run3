@@ -145,7 +145,8 @@ def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
     self.yields.add(DL_boosted_pre_mumu, 'DL boosted pre mumu')
     self.yields.add(DL_boosted_pre_emu, 'DL boosted pre emu')
 
-    # btagging sf and reweighting for boosted
+    # btagging sf and reweighting for boosted to be done before
+    # any b-tagged jet selection
     DL_boosted_pre_ee_btagSF = sf.btagSF(
         self, DL_boosted_pre_ee, self.ak8Jets, jet_tagger="particleNet_XbbVsQCD", apply_reweighting=apply_btagReweight)
     DL_boosted_pre_mumu_btagSF = sf.btagSF(
