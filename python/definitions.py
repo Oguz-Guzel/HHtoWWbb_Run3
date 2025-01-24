@@ -103,7 +103,7 @@ def ak4jetDef(jets):
         jet.jetId & 2,  # tight
         jet.pt >= 25.,
         op.abs(jet.eta) <= 2.4,
-        jet.btagPNetB >= 0, # due to some events having negative value for this
+        jet.btagPNetB >= 0,  # due to some events having negative value for this
         # op.OR(((jet.puId >> 2) & 1), jet.pt > 50.) # Jet PU ID bit1 is loose # no puId in Run3 so far
     ))
 
@@ -129,7 +129,7 @@ def ak8jetDef(jets):
 # bTagging for jets
 
 
-def ak4MediumBtagWP(era): 
+def ak4MediumBtagWP(era):
     WPs = {
         '2022': 0.245,
         '2022EE': 0.2605,
@@ -257,13 +257,14 @@ def defineObjects(self, tree):
             self.fakeElectrons, self.fakeMuons, 0.4)
         cleanAk8Jets_lambda = cleaningWithRespectToLeadingLepton(
             self.fakeElectrons, self.fakeMuons, 0.8)
-        
+
     # AK4 jets
     self.ak4JetsPreSel = op.sort(ak4jetDef(tree.Jet), lambda jet: -jet.pt)
-    
+
     self.ak4Jets = op.select(self.ak4JetsPreSel, cleanAk4Jets_lambda)
 
-    self.ak4BJets = op.select(self.ak4Jets, lambda j: j.btagPNetB >= ak4MediumBtagWP(self.era))
+    self.ak4BJets = op.select(
+        self.ak4Jets, lambda j: j.btagPNetB >= ak4MediumBtagWP(self.era))
 
     # AK8 Jets
     self.ak8JetsDef = ak8jetDef(tree.FatJet)
