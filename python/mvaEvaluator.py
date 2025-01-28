@@ -17,7 +17,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
     """ Class to create control plots, cutflow reports and skims"""
 
     def __init__(self, args):
-        super(mvaEvaluator, self).__init__(args)
+        super().__init__(args)
         self.channel = self.args.channel
         self.mvaModels = self.args.mvaModels
 
@@ -162,62 +162,30 @@ class mvaEvaluator(NanoBaseHHWWbb):
             plots.append(
                 Skim(sel.name+"_ml_vars", ml_vars, sel)
             )
+        
+        # # Following is the code to plot the input features for the ML model.
+        # # It takes some time to run, so it's commented out.
+        # # We're not interested in the following two variables' match between data and MC.
+        # # Hence they're not included in the input feature plots.
+        # ml_vars.pop('event_no')
+        # ml_vars.pop('weight')
 
-        # We're not interested in the following two variables' match between data and MC.
-        # Hence they're not included in the input feature plots.
-        ml_vars.pop('event_no')
-        ml_vars.pop('weight')
+        # for name, var in ml_vars.items():
+        #     ml_plots = []
+        #     for selection in event_selections:
+        #         ml_plots.append(
+        #             Plot.make1D(name+"_"+selection.name, var, selection,
+        #                         ml_input_var_binning(name), title=name, xTitle=name)
+        #         )
+        #     plots.extend(ml_plots)
+        #     plots.append(
+        #         SummedPlot(
+        #             name+"_summed", [plt for plt in ml_plots if plt.name.startswith(name)], title=name+"_summed")
+        #     )
 
-        for name, var in ml_vars.items():
-            ml_plots = []
-            for selection in event_selections:
-                ml_plots.append(
-                    Plot.make1D(name+"_"+selection.name, var, selection,
-                                ml_input_var_binning(name), title=name, xTitle=name)
-                )
-            plots.extend(ml_plots)
-            plots.append(
-                SummedPlot(
-                    name+"_summed", [plt for plt in ml_plots if plt.name.startswith(name)], title=name+"_summed")
-            )
-
-        # labels on plots
-        DLboostedEE_label = labeler('DL boosted EE')
-        DLboostedMuMu_label = labeler('DL boosted MuMu')
-        DLboostedEMU_label = labeler('DL boosted EMu')
-
-        DLresolved_1b_EE_label = labeler('DL resolved 1b EE')
-        DLresolved_1b_MuMu_label = labeler('DL resolved 1b MuMu')
-        DLresolved_1b_EMu_label = labeler('DL resolved 1b EMu')
-
-        DLresolved_2b_EE_label = labeler('DL resolved 2b EE')
-        DLresolved_2b_MuMu_label = labeler('DL resolved 2b MuMu')
-        DLresolved_2b_EMu_label = labeler('DL resolved 2b EMu')
-
-        plots.extend([
-            # Boosted - fatjet eta
-            Plot.make1D("DL_boosted_fatJet_eta_ee", self.ak8BJets[0].eta, DL_boosted_ee, EqBin(
-                30, -3, 3), title="eta(ak8jet)", xTitle="Fatjet \eta", plotopts=DLboostedEE_label),
-            Plot.make1D("DL_boosted_fatJet_eta_mumu", self.ak8BJets[0].eta, DL_boosted_mumu, EqBin(
-                30, -3, 3), title="eta(ak8jet)", xTitle="Fatjet \eta", plotopts=DLboostedMuMu_label),
-            Plot.make1D("DL_boosted_fatJet_eta_emu", self.ak8BJets[0].eta, DL_boosted_emu, EqBin(
-                30, -3, 3), title="eta(ak8jet)", xTitle="Fatjet \eta", plotopts=DLboostedEMU_label),
-
-            # Resolved 1b - leading b-jet eta
+        plots.append(
             Plot.make1D("DL_resolved_1b_leadingJet_eta_ee", self.ak4BJets[0].eta, DL_resolved_1b_ee, EqBin(
-                30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_EE_label),
-            Plot.make1D("DL_resolved_1b_leadingJet_eta_mumu", self.ak4BJets[0].eta, DL_resolved_1b_mumu, EqBin(
-                30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_MuMu_label),
-            Plot.make1D("DL_resolved_1b_leadingJet_eta_emu", self.ak4BJets[0].eta, DL_resolved_1b_emu, EqBin(
-                30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_1b_EMu_label),
-
-            # Resolved 2b - leading b-jet eta
-            Plot.make1D("DL_resolved_2b_leadingJet_eta_ee", self.ak4BJets[0].eta, DL_resolved_2b_ee, EqBin(
-                30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_EE_label),
-            Plot.make1D("DL_resolved_2b_leadingJet_eta_mumu", self.ak4BJets[0].eta, DL_resolved_2b_mumu, EqBin(
-                30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_MuMu_label),
-            Plot.make1D("DL_resolved_2b_leadingJet_eta_emu", self.ak4BJets[0].eta, DL_resolved_2b_emu, EqBin(
-                30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta", plotopts=DLresolved_2b_EMu_label),
-        ])
+                30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta")
+        )
 
         return plots
