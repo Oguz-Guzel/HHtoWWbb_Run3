@@ -85,7 +85,7 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
         parser.add_argument("--mvaModels",
                             dest="mvaModels",
                             type=str,
-                            default="./DNN/",
+                            default="./TransformerNN/",
                             help="Path to MVA models and Evaluate DNN")
         parser.add_argument("--backend", type=str, default="dataframe",
                             help="Backend to use, 'dataframe' (default), 'lazy', or 'compiled'")

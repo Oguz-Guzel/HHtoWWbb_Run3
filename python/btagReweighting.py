@@ -119,7 +119,7 @@ class btagReweighting(_base):
         https://btv-wiki.docs.cern.ch/PerformanceCalibration/shapeCorrectionSFRecommendations/#effect-on-event-yields"""
 
     def __init__(self, args):
-        super(btagReweighting, self).__init__(args)
+        super().__init__(args)
         self.channel = self.args.channel
 
     def definePlots(self, tree, noSel, sample=None, sampleCfg=None):
