@@ -234,4 +234,8 @@ def ml_input_var_binning(var_name):
         N, mn, mx = 30, -3, 3
     elif "_N" in var_name:
         N, mn, mx = 10, 0, 10
+    elif "dR_" in var_name:
+        N, mn, mx = 100, 0, 10
+    elif "InvM_" in var_name:
+        N, mn, mx = 100, 0, 1000
     return EqBin(N, mn, mx)
