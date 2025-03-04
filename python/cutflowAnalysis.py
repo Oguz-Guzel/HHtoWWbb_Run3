@@ -14,7 +14,7 @@ class cutflowAnalysis(NanoBaseHHWWbb):
     """ Class to create control plots, cutflow reports and skims"""
 
     def __init__(self, args):
-        super(cutflowAnalysis, self).__init__(args)
+        super().__init__(args)
         self.channel = self.args.channel
         self.mvaModels = None
 
