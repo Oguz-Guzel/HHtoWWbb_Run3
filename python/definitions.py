@@ -3,32 +3,43 @@ from bamboo import treefunctions as op
 
 # Lepton functions
 
-def hasAssociatedJet(lep): return lep.jet.idx != -1
+def hasAssociatedJet(lep):
+    """Check if the lepton has an associated jet"""
+    return lep.jet.idx != -1
 
 
-def muon_x(mu): return op.min(
-    op.max(0., (0.9*mu.pt*(1+mu.jetRelIso))-20.)/(45.-20.), 1.)
+def muon_x(mu):
+    """Muon x variable for btag interpolation"""
+    return op.min(op.max(0., (0.9*mu.pt*(1+mu.jetRelIso))-20.)/(45.-20.), 1.)
 
 
-def muon_btagInterpolation(mu): return muon_x(
-    mu)*0.047 + (1-muon_x(mu))*0.245
+def muon_btagInterpolation(mu):
+    """Muon btag interpolation"""
+    return muon_x(mu)*0.047 + (1-muon_x(mu))*0.245
 
 
-def muon_pNetInterpIfMvaFailed(mu): return op.OR(op.NOT(
-    hasAssociatedJet(mu)), mu.jet.btagPNetB < muon_btagInterpolation(mu))
+def muon_pNetInterpIfMvaFailed(mu):
+    """Muon pNet interpolation if MVA failed"""
+    return op.OR(op.NOT(
+        hasAssociatedJet(mu)), mu.jet.btagPNetB < muon_btagInterpolation(mu))
 
 
-def lepton_associatedJetLessThanMediumBtag(lep): return op.OR(
-    op.NOT(hasAssociatedJet(lep)), lep.jet.btagPNetB <= 0.245)
+def lepton_associatedJetLessThanMediumBtag(lep, era):
+    """Check if the lepton's associated jet has btag score less than medium WP"""
+    return op.OR(
+        op.NOT(hasAssociatedJet(lep)), lep.jet.btagPNetB <= ak4MediumBtagWP(era))
 
 
-def lepton_associatedJetLessThanTightBtag(lep): return op.OR(
-    op.NOT(hasAssociatedJet(lep)), lep.jet.btagPNetB <= 0.6734)
+def lepton_associatedJetLessThanTightBtag(lep, era):
+    """Check if the lepton's associated jet has btag score less than tight WP"""
+    return op.OR(
+        op.NOT(hasAssociatedJet(lep)), lep.jet.btagPNetB <= ak4TightBtagWP(era))
 
 # Object definitions
 
 
 def muonPreSel(muons):
+    """Muon preselection"""
     return op.select(muons, lambda mu: op.AND(
         mu.pt >= 5.,
         op.abs(mu.eta) <= 2.4,
@@ -40,7 +51,8 @@ def muonPreSel(muons):
     ))
 
 
-def muonFakeSel(muons):
+def muonFakeSel(muons, era):
+    """Muon fakeable selection"""
     return op.select(muons, lambda mu: op.AND(
         mu.pt >= 10.,
         op.OR(lepton_associatedJetLessThanMediumBtag(mu), op.AND(mu.jetRelIso < 0.8, muon_pNetInterpIfMvaFailed(mu))))
@@ -54,6 +66,7 @@ def muonTightSel(muons): return op.select(muons, lambda mu: op.AND(
 
 
 def elePreSel(electrons):
+    """Electron preselection"""
     return op.select(electrons, lambda el: op.AND(
         el.pt >= 7.,
         op.abs(el.eta) <= 2.5,
@@ -67,6 +80,7 @@ def elePreSel(electrons):
 
 
 def cleanElectrons(electrons, muons):
+    """Remove electrons within a cone of DR<0.3 of muons"""
     cleanedElectrons = op.select(electrons, lambda el: op.NOT(
         op.rng_any(
             muons, lambda mu: op.deltaR(el.p4, mu.p4) <= 0.3))
@@ -74,7 +88,8 @@ def cleanElectrons(electrons, muons):
     return cleanedElectrons
 
 
-def elFakeSel(electrons):
+def elFakeSel(electrons, era):
+    """Electron fakeable selection"""
     return op.select(electrons, lambda el: op.AND(
         el.pt >= 10,
         op.OR(
@@ -93,12 +108,13 @@ def elFakeSel(electrons):
     ))
 
 
-def elTightSel(electrons): return op.select(electrons, lambda el:
-                                            el.mvaIso_WP90
-                                            )
+def elTightSel(electrons):
+    """Electron tight selection"""
+    return op.select(electrons, lambda el: el.mvaIso_WP90)
 
 
 def ak4jetDef(jets):
+    """AK4 jet selection"""
     return op.select(jets, lambda jet: op.AND(
         jet.jetId & 2,  # tight
         jet.pt >= 25.,
@@ -109,6 +125,7 @@ def ak4jetDef(jets):
 
 
 def ak8jetDef(jets):
+    """AK8 jet selection"""
     return op.select(jets, lambda jet: op.AND(
         jet.pt >= 200.,
         op.abs(jet.eta) <= 2.4,
@@ -130,6 +147,8 @@ def ak8jetDef(jets):
 
 
 def ak4MediumBtagWP(era):
+    """Medium btag WP for AK4 jets with particleNet tagger from
+    https://btv-wiki.docs.cern.ch/ScaleFactors/"""
     WPs = {
         '2022': 0.245,
         '2022EE': 0.2605,
@@ -147,6 +166,7 @@ def ak8Btag(fatjet): return op.AND(
 
 
 def tauDef(taus):
+    """Tau selection"""
     return op.select(taus, lambda tau: op.AND(
         tau.pt > 20.,
         op.abs(tau.eta) < 2.3,
@@ -165,6 +185,7 @@ def tauDef(taus):
 
 
 def cleanTaus(taus, electrons, muons):
+    """Remove taus within a cone of DR<0.3 of electrons and muons"""
     return op.select(taus, lambda tau: op.AND(
         op.NOT(op.rng_any(
             electrons, lambda el: op.deltaR(tau.p4, el.p4) <= 0.3)),
@@ -190,6 +211,7 @@ def cleaningWithRespectToLeadingLepton(electrons, muons, DR):
 
 
 def cleaningWithRespectToLeadingLeptons(electrons, muons, DR):
+    """Remove jets within a cone of DR<0.4 of leading leptons at each channel"""
     return lambda j: op.multiSwitch(
         # Only electrons
         (op.AND(op.rng_len(electrons) >= 2, op.rng_len(muons) == 0),
@@ -225,6 +247,7 @@ def cleaningWithRespectToLeadingLeptons(electrons, muons, DR):
 
 
 def defineObjects(self, tree):
+    """Define objects for the analysis"""
     # lepton definitions sorted by their pt
     self.preMuons = op.sort(muonPreSel(tree.Muon), lambda mu: -mu.pt)
 
