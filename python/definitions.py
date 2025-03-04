@@ -118,11 +118,11 @@ def elTightSel(electrons):
 def ak4jetDef(jets):
     """AK4 jet selection"""
     return op.select(jets, lambda jet: op.AND(
-        jet.jetId & 2,  # tight
+        (jet.jetId >> 1 & 0x1) == 1,  # tight
+        (jet.jetId >> 2 & 0x1) == 1,  # tightleptveto
         jet.pt >= 25.,
         op.abs(jet.eta) <= 2.4,
         jet.btagPNetB >= 0,  # due to some events having negative value for this
-        # op.OR(((jet.puId >> 2) & 1), jet.pt > 50.) # Jet PU ID bit1 is loose # no puId in Run3 so far
     ))
 
 
@@ -131,9 +131,8 @@ def ak8jetDef(jets):
     return op.select(jets, lambda jet: op.AND(
         jet.pt >= 200.,
         op.abs(jet.eta) <= 2.4,
-        jet.jetId & 2,  # tight, change to the following, for ak4 too
-        #       (jet.jetId>>1 & 0x1) == 1, #pass tigh
-        #       (jet.jetId>>2 & 0x1) == 1, #pass tightleptveto
+        (jet.jetId >> 1 & 0x1) == 1,
+        (jet.jetId >> 2 & 0x1) == 1,
         jet.subJet1.isValid,
         jet.subJet2.isValid,
         jet.subJet1.pt >= 20.,
@@ -160,11 +159,25 @@ def ak4MediumBtagWP(era):
     return WPs[era]
 
 
-def ak8Btag(fatjet): return op.AND(
-    fatjet.particleNet_XbbVsQCD > 0.4,
-    op.OR(fatjet.subJet1.pt >= 30,
-          fatjet.subJet2.pt >= 30)
-)
+def ak4TightBtagWP(era):
+    """Tight btag WP for AK4 jets with particleNet tagger from
+    https://btv-wiki.docs.cern.ch/ScaleFactors/"""
+    WPs = {
+        '2022': 0.6734,
+        '2022EE': 0.6915,
+        '2023': 0.6172,
+        '2023BPix': 0.6133
+    }
+    return WPs[era]
+
+
+def ak8Btag(fatjet):
+    """Btagging for AK8 jets"""
+    return op.AND(
+        fatjet.particleNet_XbbVsQCD > 0.4,
+        op.OR(fatjet.subJet1.pt >= 30,
+              fatjet.subJet2.pt >= 30)
+    )
 
 
 def tauDef(taus):
