@@ -59,16 +59,18 @@ def muonFakeSel(muons, era):
     )
 
 
-def muonTightSel(muons): return op.select(muons, lambda mu: op.AND(
-    mu.mediumPromptId,  # this run3 replacement along with mediumId, for mu.mvaTTH >= 0.50
-    mu.mediumId
-))
+def muonTightSel(muons):
+    """Muon tight selection"""
+    return op.select(muons, lambda mu: op.AND(
+        mu.mediumPromptId,  # this run3 replacement along with mediumId, for mu.mvaTTH >= 0.50
+        mu.mediumId
+    ))
 
 
 def elePreSel(electrons):
     """Electron preselection"""
     return op.select(electrons, lambda el: op.AND(
-        el.pt >= 7.,
+        el.pt >= 5.,
         op.abs(el.eta) <= 2.5,
         op.abs(el.dxy) <= 0.05,
         op.abs(el.dz) <= 0.1,
