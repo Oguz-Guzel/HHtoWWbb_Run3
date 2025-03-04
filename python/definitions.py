@@ -41,7 +41,7 @@ def lepton_associatedJetLessThanTightBtag(lep, era):
 def muonPreSel(muons):
     """Muon preselection"""
     return op.select(muons, lambda mu: op.AND(
-        mu.pt >= 5.,
+        mu.pt >= 7.,
         op.abs(mu.eta) <= 2.4,
         op.abs(mu.dxy) <= 0.05,
         op.abs(mu.dz) <= 0.1,
