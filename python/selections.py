@@ -80,8 +80,6 @@ def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
     self.firstEmuTightPair = emuTightPair[0]
 
     # top pT reweighting
-    # defining the genPart branch here since the it's only available for MC samples
-    # and we don't want to pass the tree object to the top pt reweight method
     genPartBranch = tree.GenPart if self.is_MC else None
     sel = sf.top_pT_reweight(self, genPartBranch, sel, sample)
 
