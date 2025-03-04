@@ -302,8 +302,8 @@ def defineObjects(self, tree):
     self.clElectrons = cleanElectrons(self.preElectrons, self.preMuons)
 
     # Fakeable leptons
-    self.fakeMuons = muonFakeSel(self.preMuons)
-    self.fakeElectrons = elFakeSel(self.clElectrons)
+    self.fakeMuons = muonFakeSel(self.preMuons, era=self.era)
+    self.fakeElectrons = elFakeSel(self.clElectrons, era=self.era)
 
     # tight leptons
     self.tightMuons = muonTightSel(self.fakeMuons)
@@ -314,17 +314,10 @@ def defineObjects(self, tree):
     self.cleanedTaus = cleanTaus(taus, self.fakeElectrons, self.fakeMuons)
 
     # clean jets wrt leptons
-    if self.channel == 'DL':
-        cleanAk4Jets_lambda = cleaningWithRespectToLeadingLeptons(
-            self.fakeElectrons, self.fakeMuons, 0.4)
-        cleanAk8Jets_lambda = cleaningWithRespectToLeadingLeptons(
-            self.fakeElectrons, self.fakeMuons, 0.8)
-
-    if self.channel == 'SL':
-        cleanAk4Jets_lambda = cleaningWithRespectToLeadingLepton(
-            self.fakeElectrons, self.fakeMuons, 0.4)
-        cleanAk8Jets_lambda = cleaningWithRespectToLeadingLepton(
-            self.fakeElectrons, self.fakeMuons, 0.8)
+    cleanAk4Jets_lambda = cleaningWithRespectToLeadingLeptons(
+        self.fakeElectrons, self.fakeMuons, 0.4)
+    cleanAk8Jets_lambda = cleaningWithRespectToLeadingLeptons(
+        self.fakeElectrons, self.fakeMuons, 0.8)
 
     # AK4 jets
     self.ak4JetsPreSel = op.sort(ak4jetDef(tree.Jet), lambda jet: -jet.pt)
