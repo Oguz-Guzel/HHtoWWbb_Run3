@@ -324,6 +324,8 @@ def defineObjects(self, tree):
 
     self.ak4Jets = op.select(self.ak4JetsPreSel, cleanAk4Jets_lambda)
 
+    ak4jetsbybtag = op.sort(self.ak4Jets, lambda j: -j.btagPNetB)
+
     self.ak4BJets = op.select(
         self.ak4Jets, lambda j: j.btagPNetB >= ak4MediumBtagWP(self.era))
 
