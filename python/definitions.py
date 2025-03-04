@@ -247,6 +247,50 @@ def cleaningWithRespectToLeadingLeptons(electrons, muons, DR):
     )
 
 
+def VBFjetDef(jets):
+    """VBF jet selection"""
+    return op.select(jets, lambda jet: op.AND(
+        (jet.jetId >> 1 & 0x1) == 1,  # tight
+        (jet.jetId >> 2 & 0x1) == 1,  # tightleptveto
+        jet.pt >= 30.,
+        op.abs(jet.eta) <= 4.7,
+        op.OR(
+            jet.pt >= 60.,
+            op.abs(jet.eta) < 2.7,
+            op.abs(jet.eta) > 3.0
+        ),
+        jet.btagPNetB >= 0,
+    ))
+
+
+def cleanVBFAk4_lambda(ak4jetsbybtag):
+    """Remove jets within a cone of DR<0.8 of the two leading btagged jets"""
+    return lambda j: op.multiSwitch(
+        (op.rng_len(ak4jetsbybtag) > 1, op.AND(op.deltaR(
+            j.p4, ak4jetsbybtag[0].p4) > 0.8, op.deltaR(j.p4, ak4jetsbybtag[1].p4) > 0.8)),
+        (op.rng_len(ak4jetsbybtag) == 1, op.deltaR(
+            j.p4, ak4jetsbybtag[0].p4) > 0.8),
+        op.c_bool(True)
+    )
+
+
+def cleanVBFAk8_lambda(ak8jets, ak8bjets):
+    """Remove fat jets within a cone of DR<1.2 of the leading AK8 jet or the leading btagged AK8 jet"""
+    return lambda j: op.multiSwitch(
+        (op.rng_len(ak8bjets) > 0, op.deltaR(j.p4, ak8bjets[0].p4) > 1.2),
+        (op.rng_len(ak8jets) == 1, op.deltaR(j.p4, ak8jets[0].p4) > 1.2),
+        op.c_bool(True)
+    )
+
+
+def VBFpair_lambda(j1, j2):
+    """VBF pair selection"""
+    return op.AND(
+        op.invariant_mass(j1.p4, j2.p4) > 500.,
+        op.abs(j1.eta - j2.eta) > 3.0,
+    )
+
+
 def defineObjects(self, tree):
     """Define objects for the analysis"""
     # lepton definitions sorted by their pt
@@ -302,6 +346,27 @@ def defineObjects(self, tree):
     # MET
 
     self.met = tree.MET
+
+    # VBF jets
+
+    VBFjetsPreSel = op.sort(VBFjetDef(tree.Jet), lambda jet: -jet.pt)
+
+    VBFjets = op.select(VBFjetsPreSel, cleanAk4Jets_lambda)
+
+    self.VBFjetsResolved = op.select(
+        VBFjets, cleanVBFAk4_lambda(ak4jetsbybtag))
+
+    self.VBFjetsBoosted = op.select(
+        VBFjets, cleanVBFAk8_lambda(self.ak8Jets, self.ak8BJets))
+
+    # VBFjetPairs = op.sort(op.combine(
+    #     VBFjets, N=2, pred=VBFpair_lambda), lambda pair: -op.invariant_mass(pair[0].p4, pair[1].p4))
+
+    self.VBFjetPairsResolved = op.sort(op.combine(
+        self.VBFjetsResolved, N=2, pred=VBFpair_lambda), lambda pair: -op.invariant_mass(pair[0].p4, pair[1].p4))
+
+    self.VBFjetPairsBoosted = op.sort(op.combine(
+        self.VBFjetsBoosted, N=2, pred=VBFpair_lambda), lambda pair: -op.invariant_mass(pair[0].p4, pair[1].p4))
 
 
 def ml_input_features(self):
