@@ -55,7 +55,7 @@ def muonFakeSel(muons, era):
     """Muon fakeable selection"""
     return op.select(muons, lambda mu: op.AND(
         mu.pt >= 10.,
-        op.OR(lepton_associatedJetLessThanMediumBtag(mu), op.AND(mu.jetRelIso < 0.8, muon_pNetInterpIfMvaFailed(mu))))
+        op.OR(lepton_associatedJetLessThanMediumBtag(mu, era), op.AND(mu.jetRelIso < 0.8, muon_pNetInterpIfMvaFailed(mu))))
     )
 
 
@@ -101,8 +101,8 @@ def elFakeSel(electrons, era):
         op.OR(el.mvaTTH >= 0.30, op.AND(el.jetRelIso < 0.7, el.mvaNoIso_WP90)),
         op.switch(
             el.mvaTTH < 0.30,
-            lepton_associatedJetLessThanTightBtag(el),
-            lepton_associatedJetLessThanMediumBtag(el)),
+            lepton_associatedJetLessThanTightBtag(el, era),
+            lepton_associatedJetLessThanMediumBtag(el, era)),
         el.lostHits == 0,
         el.convVeto
     ))
