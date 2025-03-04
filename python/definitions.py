@@ -211,20 +211,6 @@ def cleanTaus(taus, electrons, muons):
 # remove jets within cone of DR<0.4 of leading leptons at each channel
 
 
-def cleaningWithRespectToLeadingLepton(electrons, muons, DR):
-    return lambda jet: op.multiSwitch(
-        (op.AND(op.rng_len(electrons) >= 1, op.rng_len(
-            muons) == 0), op.deltaR(jet.p4, electrons[0].p4) >= DR),
-        (op.AND(op.rng_len(electrons) == 0, op.rng_len(
-            muons) >= 1), op.deltaR(jet.p4, muons[0].p4) >= DR),
-        (op.AND(op.rng_len(muons) >= 1, op.rng_len(electrons) >= 1), op.switch(
-            electrons[0].pt >= muons[0].pt,
-            op.deltaR(jet.p4, electrons[0].p4) >= DR,
-            op.deltaR(jet.p4, muons[0].p4) >= DR)),
-        op.c_bool(True)
-    )
-
-
 def cleaningWithRespectToLeadingLeptons(electrons, muons, DR):
     """Remove jets within a cone of DR<0.4 of leading leptons at each channel"""
     return lambda j: op.multiSwitch(
