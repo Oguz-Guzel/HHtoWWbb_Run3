@@ -224,6 +224,36 @@ def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
             op.rng_len(self.ak8BJets) == 0))
     )
 
+    DL_VBF_resolved_ee = DL_resolved_pre_ee.refine(
+        'DL_VBF_resolved_ee',
+        cut=op.rng_len(self.VBFjetPairsResolved) >= 1
+    )
+
+    DL_VBF_boosted_ee = DL_boosted_pre_ee.refine(
+        'DL_VBF_boosted_ee',
+        cut=op.rng_len(self.VBFjetPairsBoosted) >= 1
+    )
+
+    DL_VBF_resolved_mumu = DL_resolved_pre_mumu.refine(
+        'DL_VBF_resolved_mumu',
+        cut=op.rng_len(self.VBFjetPairsResolved) >= 1
+    )
+
+    DL_VBF_boosted_mumu = DL_boosted_pre_mumu.refine(
+        'DL_VBF_boosted_mumu',
+        cut=op.rng_len(self.VBFjetPairsBoosted) >= 1
+    )
+
+    DL_VBF_resolved_emu = DL_resolved_pre_emu.refine(
+        'DL_VBF_resolved_emu',
+        cut=op.rng_len(self.VBFjetPairsResolved) >= 1
+    )
+
+    DL_VBF_boosted_emu = DL_boosted_pre_emu.refine(
+        'DL_VBF_boosted_emu',
+        cut=op.rng_len(self.VBFjetPairsBoosted) >= 1
+    )
+
     pre_final_state_sels = {
         'DL_boosted_pre_ee': (DL_boosted_pre_ee, DL_boosted_pre_ee_btagSF),
         'DL_boosted_pre_mumu': (DL_boosted_pre_mumu, DL_boosted_pre_mumu_btagSF),
@@ -235,7 +265,9 @@ def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
 
     DL_selections = [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
                      DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
-                     DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu]
+                     DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu,
+                     DL_VBF_resolved_ee, DL_VBF_resolved_mumu, DL_VBF_resolved_emu,
+                     DL_VBF_boosted_ee, DL_VBF_boosted_mumu, DL_VBF_boosted_emu]
 
     # cutflow reports for the final states
     self.yields.add(DL_boosted_ee, 'DL boosted ee')
@@ -247,5 +279,11 @@ def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
     self.yields.add(DL_resolved_2b_mumu, 'DL resolved 2b mumu')
     self.yields.add(DL_resolved_1b_emu, 'DL resolved 1b emu')
     self.yields.add(DL_resolved_2b_emu, 'DL resolved 2b emu')
+    self.yields.add(DL_VBF_resolved_ee, 'DL VBF resolved ee')
+    self.yields.add(DL_VBF_boosted_ee, 'DL VBF boosted ee')
+    self.yields.add(DL_VBF_resolved_mumu, 'DL VBF resolved mumu')
+    self.yields.add(DL_VBF_boosted_mumu, 'DL VBF boosted mumu')
+    self.yields.add(DL_VBF_resolved_emu, 'DL VBF resolved emu')
+    self.yields.add(DL_VBF_boosted_emu, 'DL VBF boosted emu')
 
     return DL_selections, pre_final_state_sels

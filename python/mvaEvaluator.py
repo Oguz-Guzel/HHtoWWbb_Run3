@@ -30,8 +30,10 @@ class mvaEvaluator(NanoBaseHHWWbb):
         # get DL selections
         [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
             DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
-            DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu], _ = makeDLSelection(
-                self, noSel, tree, sample)
+            DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu,
+            DL_VBF_resolved_ee, DL_VBF_resolved_mumu, DL_VBF_resolved_emu,
+            DL_VBF_boosted_ee, DL_VBF_boosted_mumu, DL_VBF_boosted_emu], _ = makeDLSelection(
+            self, noSel, tree, sample)
 
         # fetch and prepare the input for the model evaluation
         l1, l2, j1, j2, met = defs.ml_input_features(self)
@@ -109,6 +111,24 @@ class mvaEvaluator(NanoBaseHHWWbb):
         ml_score_boosted_mumu = Plot.make1D("ml_score_boosted_mumu", signal_node, DL_boosted_mumu, EqBin(
             100, 0, 1.), title='ML', xTitle="ML Score bossted mumu", plotopts=DL_label
         )
+        ml_score_VBF_resolved_ee = Plot.make1D("ml_score_VBF_resolved_ee", signal_node, DL_VBF_resolved_ee, EqBin(
+            100, 0, 1.), title='ML', xTitle="ML Score VBF resolved ee", plotopts=DL_ee_label
+        )
+        ml_score_VBF_resolved_emu = Plot.make1D("ml_score_VBF_resolved_emu", signal_node, DL_VBF_resolved_emu, EqBin(
+            100, 0, 1.), title='ML', xTitle="ML Score VBF resolved emu", plotopts=DL_emu_label
+        )
+        ml_score_VBF_resolved_mumu = Plot.make1D("ml_score_VBF_resolved_mumu", signal_node, DL_VBF_resolved_mumu, EqBin(
+            100, 0, 1.), title='ML', xTitle="ML Score VBF resolved mumu", plotopts=DL_mumu_label
+        )
+        ml_score_VBF_boosted_ee = Plot.make1D("ml_score_VBF_boosted_ee", signal_node, DL_VBF_boosted_ee, EqBin(
+            100, 0, 1.), title='ML', xTitle="ML Score VBF boosted ee", plotopts=DL_ee_label
+        )
+        ml_score_VBF_boosted_emu = Plot.make1D("ml_score_VBF_boosted_emu", signal_node, DL_VBF_boosted_emu, EqBin(
+            100, 0, 1.), title='ML', xTitle="ML Score VBF boosted emu", plotopts=DL_emu_label
+        )
+        ml_score_VBF_boosted_mumu = Plot.make1D("ml_score_VBF_boosted_mumu", signal_node, DL_VBF_boosted_mumu, EqBin(
+            100, 0, 1.), title='ML', xTitle="ML Score VBF boosted mumu", plotopts=DL_mumu_label
+        )
         boosted_ml_score_plots = [
             ml_score_boosted_ee, ml_score_boosted_emu, ml_score_boosted_mumu]
 
@@ -117,6 +137,12 @@ class mvaEvaluator(NanoBaseHHWWbb):
 
         resolved2b_ml_score_plots = [
             ml_score_2b_ee, ml_score_2b_emu, ml_score_2b_mumu]
+
+        VBF_resolved_ml_score_plots = [
+            ml_score_VBF_resolved_ee, ml_score_VBF_resolved_emu, ml_score_VBF_resolved_mumu]
+
+        VBF_boosted_ml_score_plots = [
+            ml_score_VBF_boosted_ee, ml_score_VBF_boosted_emu, ml_score_VBF_boosted_mumu]
 
         ml_score_booosted = SummedPlot("DL_boosted_ml_score",
                                        boosted_ml_score_plots,
@@ -136,10 +162,22 @@ class mvaEvaluator(NanoBaseHHWWbb):
                                          xTitle="DL Resolved 2b ML score",
                                          plotopts=DL_resolved2b_label,
                                          )
+        ml_score_VBF_resolved = SummedPlot("DL_VBF_resolved_ml_score",
+                                           [*VBF_resolved_ml_score_plots],
+                                           title="DL ML score",
+                                           plotopts=DL_label,
+                                           )
+        ml_score_VBF_boosted = SummedPlot("DL_VBF_boosted_ml_score",
+                                          [*VBF_boosted_ml_score_plots],
+                                          title="DL ML score",
+                                          plotopts=DL_label,
+                                          )
         ml_score_DL = SummedPlot("DL_ml_score",
                                  [*boosted_ml_score_plots,
                                   *resolved1b_ml_score_plots,
-                                  *resolved2b_ml_score_plots],
+                                  *resolved2b_ml_score_plots,
+                                  *VBF_resolved_ml_score_plots,
+                                  *VBF_boosted_ml_score_plots],
                                  title="DL ML score",
                                  plotopts=DL_label,
                                  )
@@ -147,22 +185,28 @@ class mvaEvaluator(NanoBaseHHWWbb):
             *resolved1b_ml_score_plots,
             *resolved2b_ml_score_plots,
             *boosted_ml_score_plots,
+            *VBF_resolved_ml_score_plots,
+            *VBF_boosted_ml_score_plots,
             ml_score_booosted,
             ml_score_resolved1b,
             ml_score_resolved2b,
+            ml_score_VBF_resolved,
+            ml_score_VBF_boosted,
             ml_score_DL
         ])
 
         event_selections = [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
                             DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
-                            DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu]
+                            DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu,
+                            DL_VBF_resolved_ee, DL_VBF_resolved_mumu, DL_VBF_resolved_emu,
+                            DL_VBF_boosted_ee, DL_VBF_boosted_mumu, DL_VBF_boosted_emu]
 
         # add skims that hold variables for the ML
         for sel in event_selections:
             plots.append(
                 Skim(sel.name+"_ml_vars", ml_vars, sel)
             )
-        
+
         # # Following is the code to plot the input features for the ML model.
         # # It takes some time to run, so it's commented out.
         # # We're not interested in the following two variables' match between data and MC.
@@ -183,6 +227,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
         #             name+"_summed", [plt for plt in ml_plots if plt.name.startswith(name)], title=name+"_summed")
         #     )
 
+        # need to add at least one plot to the list of plots
         plots.append(
             Plot.make1D("DL_resolved_1b_leadingJet_eta_ee", self.ak4BJets[0].eta, DL_resolved_1b_ee, EqBin(
                 30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta")
