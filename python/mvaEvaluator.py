@@ -36,7 +36,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             self, noSel, tree, sample)
 
         # fetch and prepare the input for the model evaluation
-        l1, l2, j1, j2, met = defs.ml_input_features(self)
+        l1, l2, j1, j2, met, _ = defs.ml_input_features(self)
 
         ml_vars = {
             "event_no": tree.event,
@@ -53,17 +53,24 @@ class mvaEvaluator(NanoBaseHHWWbb):
         met = op.array('float', *met.values())
 
         # load the model file
-        split_var = 'even' if tree.event % 2 == 1 else 'odd'
         models_dir = os.path.join(self.git_project_dir, self.mvaModels)
-        modelFile = os.path.join(
-            models_dir, f"{split_var}_model/model_simplified.onnx")
+        model_file_even = os.path.join(
+            models_dir, "even_model/model_simplified.onnx")
+        model_file_odd = os.path.join(
+            models_dir, "odd_model/model_simplified.onnx")
         logger.info(
             f"Using the following directory for ML models: {models_dir}"
         )
 
         # evaluate the model
-        ml_model = op.mvaEvaluator(modelFile, otherArgs='output')
-        ml_output = ml_model(l1, l2, j1, j2, met)
+        ml_evaluator_even = op.mvaEvaluator(
+            model_file_even, otherArgs='output')
+        
+        ml_evaluator_odd = op.mvaEvaluator(
+            model_file_odd, otherArgs='output')
+        
+        ml_output = op.switch(tree.event % 2 == 1, ml_evaluator_even(
+            l1, l2, j1, j2, met), ml_evaluator_odd(l1, l2, j1, j2, met))
 
         signal_node = ml_output[0]
 
