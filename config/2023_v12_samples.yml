@@ -255,7 +255,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2023:
   cross-section: 0.03413
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: &signal_split -5
+  split: *nsplit
   line-color: 3
   legend: 'HH\rightarrow bbll\nu\nu'
 
@@ -266,7 +266,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2023BPix:
   cross-section: 0.03413
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *signal_split
+  split: *nsplit
   line-color: 3
   legend: 'HH\rightarrow bbll\nu\nu'
 
@@ -278,8 +278,8 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2023:
   cross-section: 0.013124
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *signal_split
-  line-color: 4
+  split: *nsplit
+  line-color: 5
   legend: 'HH\rightarrow bbll\nu\nu kl 2p45'
 
 ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2023BPix:
@@ -289,8 +289,8 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2023BPix:
   cross-section: 0.013124
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *signal_split
-  line-color: 4
+  split: *nsplit
+  line-color: 5
   legend: 'HH\rightarrow bbll\nu\nu kl 2p45'
 
 ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2023:
@@ -300,8 +300,8 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2023:
   cross-section: 0.091172
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *signal_split
-  line-color: 5
+  split: *nsplit
+  line-color: 6
   legend: 'HH\rightarrow bbll\nu\nu kl 5p00'
 
 ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2023BPix:
@@ -311,8 +311,8 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2023BPix:
   cross-section: 0.091172
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *signal_split
-  line-color: 5
+  split: *nsplit
+  line-color: 6
   legend: 'HH\rightarrow bbll\nu\nu kl 5p00'
 
 # VBF SM signal
@@ -324,7 +324,7 @@ VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2023:
   cross-section: 0.001898 # from XSDB
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *signal_split
+  split: *nsplit
   line-color: 7
   legend: 'VBF HH\rightarrow bbll\nu\nu C2V 1'
 
@@ -335,6 +335,6 @@ VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2023BPix:
   cross-section: 0.001898
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *signal_split
+  split: *nsplit
   line-color: 7
   legend: 'VBF HH\rightarrow bbll\nu\nu C2V 1'
