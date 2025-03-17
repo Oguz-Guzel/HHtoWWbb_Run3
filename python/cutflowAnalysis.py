@@ -1,12 +1,12 @@
 
-from bamboo.plots import Plot, Skim
+from bamboo.plots import Plot, Skim, SummedPlot
 from bamboo.plots import EquidistantBinning as EqBin
 from bamboo import treefunctions as op
 
 from baseAnalysis import NanoBaseHHWWbb
 from selections import makeDLSelection
 
-import definitions as defs
+from definitions import ml_input_features
 from utils import labeler, ml_input_var_binning
 
 
@@ -55,33 +55,33 @@ class cutflowAnalysis(NanoBaseHHWWbb):
             "event_no": tree.event,
             "weight": noSel.weight,
         }
-        l1, l2, j1, j2, met = defs.ml_input_features(self)
+        l1, l2, j1, j2, met, _ = ml_input_features(self)
 
         ml_vars = ml_vars | l1 | l2 | j1 | j2 | met
-        # line above is equivalent to the following (concetanation of dictionaries in dim=0)
-        # ml_vars =  {**ml_vars, **l1, **l2, **j1, **j2, **met}
 
-        event_selections = [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
-                            DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
-                            DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu]
-
-        # add skims that hold variables for the TNN
+        # add skims that hold variables for the ML model
         for sel in event_selections:
             plots.append(
                 Skim(sel.name+"_ml_vars", ml_vars, sel)
             )
-
+        # uncomment to plot the input features for the ML model
         # We're not interested in the following two variables' match between data and MC.
         # Hence they're not included in the input feature plots.
         ml_vars.pop('event_no')
         ml_vars.pop('weight')
 
-        for selection in event_selections:
-            for name, var in ml_vars.items():
-                plots.append(
+        for name, var in ml_vars.items():
+            ml_plots = []
+            for selection in event_selections:
+                ml_plots.append(
                     Plot.make1D(name+"_"+selection.name, var, selection,
                                 ml_input_var_binning(name), title=name, xTitle=name)
                 )
+            plots.extend(ml_plots)
+            plots.append(
+                SummedPlot(
+                    name+"_summed", [plt for plt in ml_plots if plt.name.startswith(name)], title=name+"_summed")
+            )
 
         if self.channel == 'DL':
             plots.extend([
