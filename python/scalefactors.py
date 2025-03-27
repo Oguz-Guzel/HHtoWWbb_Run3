@@ -100,7 +100,8 @@ class ScaleFactors():
             from bamboo.scalefactors import get_correction
             logger.info("Applying Muon SF for "+sel.name)
 
-            # Muon SF
+            # Muon ID SF
+            systName = "syst"
             muon_ID_sf = get_correction(
                 MUON_SF_JSONFiles[self.era],
                 "NUM_MediumID_DEN_TrackerMuons",  # NUM_MediumPromptID_DEN_TrackerMuons, too ?
@@ -108,11 +109,11 @@ class ScaleFactors():
                         "eta": lambda mu: op.abs(mu.eta)},
                 systParam="scale_factors",
                 systNomName="nominal",
-                systName="syst",
+                systName=systName,
                 sel=sel
             )
 
-            # Muon Isolation SF
+            # Muon ISO SF
             muon_ISO_sf = get_correction(
                 MUON_SF_JSONFiles[self.era],
                 # since muon iso is miniPFreliso and id is medium
@@ -122,7 +123,7 @@ class ScaleFactors():
                         },
                 systParam="scale_factors",
                 systNomName="nominal",
-                systName="syst",
+                systName=systName,
                 sel=sel
             )
 
@@ -136,7 +137,7 @@ class ScaleFactors():
                 },
                 systParam="scale_factors",
                 systNomName="nominal",
-                systName="syst",
+                systName=systName,
                 sel=sel
             )
 
@@ -188,13 +189,14 @@ class ScaleFactors():
             if self.era in ['2023', '2023BPix']:
                 params["phi"] = lambda e: e.phi
 
+            systName = "sf"
             # Electron ID SF
             electron_ID_sf = get_correction(
                 EGamma_SF_JSONFiles[self.era][0],
                 "Electron-ID-SF",
                 params=params,
                 systParam="ValType",
-                systNomName="sf",
+                systNomName=systName,
                 sel=sel
             )
 
@@ -209,7 +211,7 @@ class ScaleFactors():
                         "year": EGamma_SF_JSONFiles[self.era][1]
                         },
                 systParam="ValType",
-                systNomName="sf",
+                systNomName=systName,
                 sel=sel
             )
 
@@ -237,7 +239,8 @@ class ScaleFactors():
                 sel = sel.refine(sel.name+"_electron_ID_SF",
                                  weight=op.c_float(1.))
         else:
-            sel = sel.refine(sel.name+"_electron_ID_SF", weight=op.c_float(1.))
+            sel = sel.refine(sel.name+"_electron_ID_SF",
+                             weight=op.c_float(1.))
 
         return sel
 
