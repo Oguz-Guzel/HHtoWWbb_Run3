@@ -34,7 +34,7 @@ class ScaleFactors():
     """Class to define scale factors"""
 
     def top_pT_reweight(self, GenPartBranch, sel, sample):
-        # top pt reweighting
+        """ Apply top p_T reweighting."""
         if sample.startswith("TT"):
             def top_pt_weight(pt):
                 return op.exp(-2.02274e-01 + 1.09734e-04*pt + -1.30088e-07*pt**2 + (5.83494e+01/(pt+1.96252e+02)))
@@ -95,7 +95,7 @@ class ScaleFactors():
         return sel
 
     def muonSF(self, sel):
-        # Muon SF
+        """Apply Muon SF"""
         if self.is_MC:
             from bamboo.scalefactors import get_correction
             logger.info("Applying Muon SF for "+sel.name)
@@ -174,6 +174,7 @@ class ScaleFactors():
         return sel
 
     def electronSF(self, sel):
+        """Apply Electron SF"""
         if self.is_MC:
             from bamboo.scalefactors import get_correction
             logger.info("Applying Electron SF for "+sel.name)
