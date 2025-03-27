@@ -34,7 +34,7 @@ class ScaleFactors():
     """Class to define scale factors"""
 
     def top_pT_reweight(self, GenPartBranch, sel, sample):
-        # top pt reweighting
+        """ Apply top p_T reweighting."""
         if sample.startswith("TT"):
             def top_pt_weight(pt):
                 return op.exp(-2.02274e-01 + 1.09734e-04*pt + -1.30088e-07*pt**2 + (5.83494e+01/(pt+1.96252e+02)))
@@ -71,7 +71,7 @@ class ScaleFactors():
             btvWeight = makeBtagWeightItFit(jets, btvSF)
             if apply_reweighting:
                 btag_corr = get_correction(
-                    f"{self.git_project_dir}/data/{self.era[:4]}_btagSF_reweight.json.gz", # the file from the btagReweighting.py
+                    f"{self.git_project_dir}/data/{self.era[:4]}_btagSF_reweight.json.gz",
                     "Ratio_btagSF_shape",
                     params={
                         "year": self.era,
@@ -82,7 +82,7 @@ class ScaleFactors():
                 )
                 # None since the object is already in the btag_corr i.e. self.ak4Jets
                 btag_reweight = btag_corr(None)
-            else: 
+            else:
                 btag_reweight = op.c_float(1.)
         else:
             btvWeight = op.c_float(1.)
@@ -95,7 +95,7 @@ class ScaleFactors():
         return sel
 
     def muonSF(self, sel):
-        # Muon SF
+        """Apply Muon SF"""
         if self.is_MC:
             from bamboo.scalefactors import get_correction
             logger.info("Applying Muon SF for "+sel.name)
@@ -174,6 +174,7 @@ class ScaleFactors():
         return sel
 
     def electronSF(self, sel):
+        """Apply Electron SF"""
         if self.is_MC:
             from bamboo.scalefactors import get_correction
             logger.info("Applying Electron SF for "+sel.name)
