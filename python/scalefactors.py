@@ -112,6 +112,8 @@ class ScaleFactors():
             muon_ID_sf = get_correction(
                 MUON_SF_JSONFiles[self.era],
                 "NUM_MediumID_DEN_TrackerMuons",  # NUM_MediumPromptID_DEN_TrackerMuons, too ?
+                systVariations={"muonIdSFup": f"{systName}up",
+                                "muonIdSFdown": f"{systName}down"},
                 params={"pt": lambda mu: mu.pt,
                         "eta": lambda mu: op.abs(mu.eta)},
                 systParam="scale_factors",
@@ -124,7 +126,9 @@ class ScaleFactors():
             muon_ISO_sf = get_correction(
                 MUON_SF_JSONFiles[self.era],
                 # since muon iso is miniPFreliso and id is medium
-                "NUM_MediumMiniIso_DEN_MediumID",
+                "NUM_TightPFIso_DEN_MediumID",
+                systVariations={"muonIsoSFup": f"{systName}up",
+                                "muonIsoSFdown": f"{systName}down"},
                 params={"pt": lambda mu: mu.pt,
                         "eta": lambda mu: op.abs(mu.eta),
                         },
@@ -137,7 +141,9 @@ class ScaleFactors():
             # Muon Trigger SF
             muon_trigger_sf = get_correction(
                 MUON_SF_JSONFiles[self.era],
-                "NUM_IsoMu24_DEN_CutBasedIdMedium_and_PFIsoMedium",
+                "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",
+                systVariations={"muonTrgSFup": f"{systName}up",
+                                "muonTrgSFdown": f"{systName}down"},
                 params={
                     "pt": lambda mu: op.max(mu.pt, 26.0),
                     "eta": lambda mu: op.abs(mu.eta)
@@ -178,7 +184,9 @@ class ScaleFactors():
                 sel = sel.refine(sel.name+"_muonSF", weight=op.c_float(1.))
         else:
             sel = sel.refine(sel.name+"_muonSF", weight=op.c_float(1.))
-        
+
+        self.yields.add(sel, sel.name)
+
         return sel
 
     def electronSF(self, sel):
@@ -190,7 +198,7 @@ class ScaleFactors():
             params = {"pt": lambda e: e.pt,
                       "eta": lambda e: e.eta,
                       "year": EGamma_SF_JSONFiles[self.era][1],
-                      "WorkingPoint": "wp90iso"}
+                      "WorkingPoint": "wp90noiso"}
 
             # add phi for 2023 and 2023BPix
             if self.era in ['2023', '2023BPix']:
@@ -201,6 +209,8 @@ class ScaleFactors():
             electron_ID_sf = get_correction(
                 EGamma_SF_JSONFiles[self.era][0],
                 "Electron-ID-SF",
+                systVariations={"elIdSFup": f"{systName}up",
+                                "elIdSFdown": f"{systName}down"},
                 params=params,
                 systParam="ValType",
                 systNomName=systName,
@@ -212,6 +222,8 @@ class ScaleFactors():
                 (EGamma_SF_JSONFiles[self.era][0]).replace(
                     "electron", "electronHlt"),
                 "Electron-HLT-SF",
+                systVariations={"elTrgSFup": f"{systName}up",
+                                "elTrgSFdown": f"{systName}down"},
                 params={"pt": lambda el: el.pt,
                         "eta": lambda el: el.eta,
                         "Path": "HLT_SF_Ele30_MVAiso90ID",
@@ -248,6 +260,8 @@ class ScaleFactors():
         else:
             sel = sel.refine(sel.name+"_electron_ID_SF",
                              weight=op.c_float(1.))
+
+        self.yields.add(sel, sel.name)
 
         return sel
 
