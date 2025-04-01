@@ -131,6 +131,10 @@ def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
     emuPairMultiplicitySel = sf.muonSF(self, emuPairMultiplicitySel)
     emuPairMultiplicitySel = sf.electronSF(self, emuPairMultiplicitySel)
 
+    # DY Z pT reweighting
+    muPairMultiplicitySel = sf.Z_pT_reweight(self, muPairMultiplicitySel, sample, genPartBranch)
+    elPairMultiplicitySel = sf.Z_pT_reweight(self, elPairMultiplicitySel, sample, genPartBranch)
+
     # boosted pre-final state selections for btag reweighting
     DL_boosted_pre_ee = elPairMultiplicitySel.refine(
         'DL_boosted_pre_ee', cut=op.rng_len(self.ak8Jets) >= 1)

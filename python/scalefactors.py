@@ -29,6 +29,13 @@ EGamma_SF_JSONFiles = {
     "2023BPix": (jsonPathBase + "EGM/2023_Summer23BPix/electron.json.gz", "2023PromptD"),
 }
 
+DY_and_Recoil_JSONFiles = {
+    "2022": "DY_pTll_recoil_corrections_2022preEE_v2.json.gz",
+    "2022EE": "DY_pTll_recoil_corrections_2022postEE_v2.json.gz",
+    "2023": "DY_pTll_recoil_corrections_2023preBPix_v2.json.gz",
+    "2023BPix": "DY_pTll_recoil_corrections_2023postBPix_v2.json.gz",
+}
+
 
 class ScaleFactors():
     """Class to define scale factors"""
@@ -256,4 +263,69 @@ class ScaleFactors():
                  FlagBranch.ecalBadCalibFilter]
         sel = sel.refine('NoiseFilters', cut=flags)
         self.yields.add(sel, 'Noise filters')
+        return sel
+
+    def Z_pT_reweight(self, sel, sample, GenPartBranch):
+        """Apply DY Z pT reweighting"""
+        if self.is_MC and sample.startswith("DY"):
+            from bamboo.scalefactors import get_correction
+            logger.info("Applying DY Z pT reweighting for " + sel.name)
+
+            DY_and_Recoil_path = self.git_project_dir+"/data/hleprare/DYandRecoilCorrlib/"
+
+            N_unc = get_correction(
+                DY_and_Recoil_path + DY_and_Recoil_JSONFiles[self.era],
+                "DY_pTll_reweighting_N_uncertainty",
+                params={"order": 'NLO'},
+                sel=sel
+            ) # this returns 10 for NLO samples - consult the json file
+
+            N_unc = 10
+
+            systVariations = {
+                f"ZpTup{i}": f"up{i}" for i in range(1, N_unc+1)}
+            systVariations.update(
+                {f"ZpTdown{i}": f"down{i}" for i in range(1, N_unc+1)})
+
+            Z_pT_corr = get_correction(
+                DY_and_Recoil_path + DY_and_Recoil_JSONFiles[self.era],
+                "DY_pTll_reweighting",
+                params={
+                    "order": 'NLO',
+                    "ptll": lambda Zpt: Zpt,
+                },
+                systNomName="nom",
+                systVariations=systVariations,
+                systParam="syst",
+                sel=sel
+            )
+
+            def getZptWeight(GenPartBranch):
+                electrons = op.select(
+                    GenPartBranch, lambda p: op.AND(
+                        p.status == 1,
+                        op.abs(p.pdgId) == 11,
+                        ((op.static_cast("int", p.statusFlags) << 8) & 1),
+                    ))
+                muons = op.select(
+                    GenPartBranch, lambda p: op.AND(
+                        p.status == 1,
+                        op.abs(p.pdgId) == 13,
+                        ((op.static_cast("int", p.statusFlags) << 8) & 1),
+                    ))
+
+                total_e_pt = op.rng_sum(electrons, lambda p: p.pt)
+                total_m_pt = op.rng_sum(muons, lambda p: p.pt)
+
+                Z_pT = op.sum(total_e_pt, total_m_pt)
+
+                weight = Z_pT_corr(Z_pT)
+
+                return weight
+
+            sel = sel.refine(
+                sel.name+"_ZpT", weight=getZptWeight(GenPartBranch))
+        else:
+            sel = sel.refine(sel.name+"_ZpT", weight=op.c_float(1.))
+        self.yields.add(sel, sel.name)
         return sel
