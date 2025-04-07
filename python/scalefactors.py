@@ -1,4 +1,3 @@
-import re
 import logging
 
 from bamboo import treefunctions as op
@@ -94,7 +93,7 @@ class ScaleFactors():
         else:
             btvWeight = op.c_float(1.)
             btag_reweight = op.c_float(1.)
-        
+
         sel = sel.refine(sel.name+"_btagSF", weight=btvWeight*btag_reweight)
 
         self.yields.add(sel, sel.name)
@@ -104,9 +103,7 @@ class ScaleFactors():
     def muonSF(self, sel):
         """Apply Muon SF"""
         if self.is_MC:
-            from bamboo.scalefactors import get_correction
             logger.info("Applying Muon SF for "+sel.name)
-
             # Muon ID SF
             systName = "syst"
             muon_ID_sf = get_correction(
@@ -192,7 +189,6 @@ class ScaleFactors():
     def electronSF(self, sel):
         """Apply Electron SF"""
         if self.is_MC:
-            from bamboo.scalefactors import get_correction
             logger.info("Applying Electron SF for "+sel.name)
 
             params = {"pt": lambda e: e.pt,
