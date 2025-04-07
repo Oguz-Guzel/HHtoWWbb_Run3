@@ -64,24 +64,6 @@ class cutflowAnalysis(NanoBaseHHWWbb):
             plots.append(
                 Skim(sel.name+"_ml_vars", ml_vars, sel)
             )
-        # uncomment to plot the input features for the ML model
-        # We're not interested in the following two variables' match between data and MC.
-        # Hence they're not included in the input feature plots.
-        ml_vars.pop('event_no')
-        ml_vars.pop('weight')
-
-        for name, var in ml_vars.items():
-            ml_plots = []
-            for selection in event_selections:
-                ml_plots.append(
-                    Plot.make1D(name+"_"+selection.name, var, selection,
-                                ml_input_var_binning(name), title=name, xTitle=name)
-                )
-            plots.extend(ml_plots)
-            plots.append(
-                SummedPlot(
-                    name+"_summed", [plt for plt in ml_plots if plt.name.startswith(name)], title=name+"_summed")
-            )
 
         if self.channel == 'DL':
             plots.extend([
@@ -132,19 +114,19 @@ class cutflowAnalysis(NanoBaseHHWWbb):
                     30, -3, 3), title="eta(ak8jet)", xTitle="Fatjet \eta", plotopts=DLboostedEMU_label),
 
                 # Invariant mass of leptons
-                Plot.make1D("DL_boosted_InvM_ee", op.invariant_mass(self.firstElTightPair[0].p4, self.firstElTightPair[1].p4), DL_boosted_ee, EqBin(
+                Plot.make1D("DL_boosted_InvM_ee", op.invariant_mass(self.tightElectrons[0].p4, self.tightElectrons[1].p4), DL_boosted_ee, EqBin(
                     60, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DLboostedEE_label),
-                Plot.make1D("DL_boosted_InvM_mumu", op.invariant_mass(self.firstMuTightPair[0].p4, self.firstMuTightPair[1].p4), DL_boosted_mumu, EqBin(
+                Plot.make1D("DL_boosted_InvM_mumu", op.invariant_mass(self.tightMuons[0].p4, self.tightMuons[1].p4), DL_boosted_mumu, EqBin(
                     60, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons  (GeV/c^{2})", plotopts=DLboostedMuMu_label),
-                Plot.make1D("DL_boosted_InvM_emu", op.invariant_mass(self.firstEmuTightPair[0].p4, self.firstEmuTightPair[1].p4), DL_boosted_emu, EqBin(
+                Plot.make1D("DL_boosted_InvM_emu", op.invariant_mass(self.tightElectrons[0].p4, self.tightMuons[0].p4), DL_boosted_emu, EqBin(
                     60, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electron-muon pair  (GeV/c^{2})", plotopts=DLboostedEMU_label),
 
                 # pt of the di-lepton
-                Plot.make1D("DL_boosted_dileptonPt_ee", op.sum(self.firstElTightPair[0].pt, self.firstElTightPair[1].pt), DL_boosted_ee, EqBin(
+                Plot.make1D("DL_boosted_dileptonPt_ee", op.sum(self.tightElectrons[0].pt, self.tightElectrons[1].pt), DL_boosted_ee, EqBin(
                     60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electrons (GeV/c^{2})", plotopts=DLboostedEE_label),
-                Plot.make1D("DL_boosted_dileptonPt_mumu", op.sum(self.firstMuTightPair[0].pt, self.firstMuTightPair[1].pt), DL_boosted_mumu, EqBin(
+                Plot.make1D("DL_boosted_dileptonPt_mumu", op.sum(self.tightMuons[0].pt, self.tightMuons[1].pt), DL_boosted_mumu, EqBin(
                     60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of muons  (GeV/c^{2})", plotopts=DLboostedMuMu_label),
-                Plot.make1D("DL_boosted_dileptonPt_emu", op.sum(self.firstEmuTightPair[0].pt, self.firstEmuTightPair[1].pt), DL_boosted_emu, EqBin(
+                Plot.make1D("DL_boosted_dileptonPt_emu", op.sum(self.tightElectrons[0].pt, self.tightMuons[0].pt), DL_boosted_emu, EqBin(
                     60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electron-muon pair  (GeV/c^{2})", plotopts=DLboostedEMU_label),
 
                 # MET pt
@@ -164,11 +146,11 @@ class cutflowAnalysis(NanoBaseHHWWbb):
                     7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLboostedEMU_label),
 
                 # total charge of leptons
-                Plot.make1D("DL_boosted_totalCharge_ee", op.sum(self.firstElTightPair[0].charge, self.firstElTightPair[1].charge), DL_boosted_ee, EqBin(
+                Plot.make1D("DL_boosted_totalCharge_ee", op.sum(self.tightElectrons[0].charge, self.tightElectrons[1].charge), DL_boosted_ee, EqBin(
                     5, -2.5, 2.5), title="total charge", xTitle="Total charge of electrons", plotopts=DLboostedEE_label),
-                Plot.make1D("DL_boosted_totalCharge_mumu", op.sum(self.firstMuTightPair[0].charge, self.firstMuTightPair[1].charge), DL_boosted_mumu, EqBin(
+                Plot.make1D("DL_boosted_totalCharge_mumu", op.sum(self.tightMuons[0].charge, self.tightMuons[1].charge), DL_boosted_mumu, EqBin(
                     5, -2.5, 2.5), title="total charge", xTitle="Total charge of muons ", plotopts=DLboostedMuMu_label),
-                Plot.make1D("DL_boosted_totalCharge_emu", op.sum(self.firstEmuTightPair[0].charge, self.firstEmuTightPair[1].charge), DL_boosted_emu, EqBin(
+                Plot.make1D("DL_boosted_totalCharge_emu", op.sum(self.tightElectrons[0].charge, self.tightMuons[0].charge), DL_boosted_emu, EqBin(
                     5, -2.5, 2.5), title="total charge", xTitle="Total charge of electron-muon pair ", plotopts=DLboostedEMU_label),
 
                 # invariant mass of subjets
@@ -180,66 +162,66 @@ class cutflowAnalysis(NanoBaseHHWWbb):
                     100, 0., 200.), title="InvM(jj)", xTitle="Invariant Mass of sub-jets (GeV/c^{2})", plotopts=DLboostedEMU_label),
 
                 # leading lepton pt
-                Plot.make1D("DL_boosted_leadingLepton_pt_ee", self.firstElTightPair[0].pt, DL_boosted_ee, EqBin(
+                Plot.make1D("DL_boosted_leadingLepton_pt_ee", self.tightElectrons[0].pt, DL_boosted_ee, EqBin(
                     100, 0., 300.), title="leadingLeptonPt", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLboostedEE_label),
-                Plot.make1D("DL_boosted_leadingLepton_pt_mumu", self.firstMuTightPair[0].pt, DL_boosted_mumu, EqBin(
+                Plot.make1D("DL_boosted_leadingLepton_pt_mumu", self.tightMuons[0].pt, DL_boosted_mumu, EqBin(
                     100, 0., 300.), title="leadingLeptonPt", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLboostedMuMu_label),
-                Plot.make1D("DL_boosted_leadingLepton_pt_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[0].pt, self.firstEmuTightPair[1].pt), DL_boosted_emu, EqBin(
+                Plot.make1D("DL_boosted_leadingLepton_pt_emu", op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightElectrons[0].pt, self.tightMuons[0].pt), DL_boosted_emu, EqBin(
                     100, 0., 300.), title="leadingLeptonPt", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLboostedEMU_label),
-                Plot.make1D("DL_boosted_electron_pt_emu", self.firstEmuTightPair[0].pt, DL_boosted_emu, EqBin(
+                Plot.make1D("DL_boosted_electron_pt_emu", self.tightElectrons[0].pt, DL_boosted_emu, EqBin(
                     100, 0., 300.), title="leadingLeptonPt", xTitle="p_{T} of the leading electron (GeV/c)", plotopts=DLboostedMuMu_label),
-                Plot.make1D("DL_boosted_muon_pt_emu", self.firstEmuTightPair[1].pt, DL_boosted_emu, EqBin(
+                Plot.make1D("DL_boosted_muon_pt_emu", self.tightMuons[0].pt, DL_boosted_emu, EqBin(
                     100, 0., 300.), title="leadingLeptonPt", xTitle="p_{T} of the leading muon (GeV/c)", plotopts=DLboostedMuMu_label),
                 # sub-leading lepton pt
-                Plot.make1D("DL_boosted_subleadingLepton_pt_ee", self.firstElTightPair[1].pt, DL_boosted_ee, EqBin(
+                Plot.make1D("DL_boosted_subleadingLepton_pt_ee", self.tightElectrons[1].pt, DL_boosted_ee, EqBin(
                     100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLboostedEE_label),
-                Plot.make1D("DL_boosted_subleadingLepton_pt_mumu", self.firstMuTightPair[1].pt, DL_boosted_mumu, EqBin(
+                Plot.make1D("DL_boosted_subleadingLepton_pt_mumu", self.tightMuons[1].pt, DL_boosted_mumu, EqBin(
                     100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLboostedMuMu_label),
-                Plot.make1D("DL_boosted_subleadingLepton_pt_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[1].pt, self.firstEmuTightPair[0].pt), DL_boosted_emu, EqBin(
+                Plot.make1D("DL_boosted_subleadingLepton_pt_emu", op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightMuons[0].pt, self.tightElectrons[0].pt), DL_boosted_emu, EqBin(
                     100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLboostedEMU_label),
 
                 # leading lepton eta
-                Plot.make1D("DL_boosted_leadingLepton_eta_ee", self.firstElTightPair[0].eta, DL_boosted_ee, EqBin(
+                Plot.make1D("DL_boosted_leadingLepton_eta_ee", self.tightElectrons[0].eta, DL_boosted_ee, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLboostedEE_label),
-                Plot.make1D("DL_boosted_leadingLepton_eta_mumu", self.firstMuTightPair[0].eta, DL_boosted_mumu, EqBin(
+                Plot.make1D("DL_boosted_leadingLepton_eta_mumu", self.tightMuons[0].eta, DL_boosted_mumu, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLboostedMuMu_label),
-                Plot.make1D("DL_boosted_leadingLepton_eta_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[0].eta, self.firstEmuTightPair[1].eta), DL_boosted_emu, EqBin(
+                Plot.make1D("DL_boosted_leadingLepton_eta_emu", op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightElectrons[0].eta, self.tightMuons[0].eta), DL_boosted_emu, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLboostedEMU_label),
-                Plot.make1D("DL_boosted_electron_eta_emu", self.firstEmuTightPair[0].eta, DL_boosted_emu, EqBin(
+                Plot.make1D("DL_boosted_electron_eta_emu", self.tightElectrons[0].eta, DL_boosted_emu, EqBin(
                     30, -3, 3), title="leadingLeptonEta", xTitle="eta of the electron (GeV/c)", plotopts=DLboostedEMU_label),
-                Plot.make1D("DL_boosted_muon_eta_emu", self.firstEmuTightPair[1].eta, DL_boosted_emu, EqBin(
+                Plot.make1D("DL_boosted_muon_eta_emu", self.tightMuons[0].eta, DL_boosted_emu, EqBin(
                     30, -3, 3), title="leadingLeptonEta", xTitle="eta of the muon (GeV/c)", plotopts=DLboostedEMU_label),
 
                 # sub-leading lepton eta
-                Plot.make1D("DL_boosted_subleadingLepton_eta_ee", self.firstElTightPair[1].eta, DL_boosted_ee, EqBin(
+                Plot.make1D("DL_boosted_subleadingLepton_eta_ee", self.tightElectrons[1].eta, DL_boosted_ee, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLboostedEE_label),
-                Plot.make1D("DL_boosted_subleadingLepton_eta_mumu", self.firstMuTightPair[1].eta, DL_boosted_mumu, EqBin(
+                Plot.make1D("DL_boosted_subleadingLepton_eta_mumu", self.tightMuons[1].eta, DL_boosted_mumu, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLboostedMuMu_label),
-                Plot.make1D("DL_boosted_subleadingLepton_eta_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[1].eta, self.firstEmuTightPair[0].eta), DL_boosted_emu, EqBin(
+                Plot.make1D("DL_boosted_subleadingLepton_eta_emu", op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightMuons[0].eta, self.tightElectrons[0].eta), DL_boosted_emu, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLboostedEMU_label),
 
                 # DR between leading and sub-leading lepton
-                Plot.make1D("DL_boosted_DR_leptons_ee", op.deltaR(self.firstElTightPair[0].p4, self.firstElTightPair[1].p4), DL_boosted_ee, EqBin(
+                Plot.make1D("DL_boosted_DR_leptons_ee", op.deltaR(self.tightElectrons[0].p4, self.tightElectrons[1].p4), DL_boosted_ee, EqBin(
                     35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLboostedEE_label),
-                Plot.make1D("DL_boosted_DR_leptons_mumu", op.deltaR(self.firstMuTightPair[0].p4, self.firstMuTightPair[1].p4), DL_boosted_mumu, EqBin(
+                Plot.make1D("DL_boosted_DR_leptons_mumu", op.deltaR(self.tightMuons[0].p4, self.tightMuons[1].p4), DL_boosted_mumu, EqBin(
                     35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLboostedMuMu_label),
-                Plot.make1D("DL_boosted_DR_leptons_emu", op.deltaR(self.firstEmuTightPair[0].p4, self.firstEmuTightPair[1].p4), DL_boosted_emu, EqBin(
+                Plot.make1D("DL_boosted_DR_leptons_emu", op.deltaR(self.tightElectrons[0].p4, self.tightMuons[0].p4), DL_boosted_emu, EqBin(
                     35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLboostedEMU_label),
 
                 # DR between leading lepton and ak8 jet
-                Plot.make1D("DL_boosted_DR_leadingleptonANDak8bjet_ee", op.deltaR(self.firstElTightPair[0].p4, self.ak8Jets[0].p4), DL_boosted_ee, EqBin(
+                Plot.make1D("DL_boosted_DR_leadingleptonANDak8bjet_ee", op.deltaR(self.tightElectrons[0].p4, self.ak8Jets[0].p4), DL_boosted_ee, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLboostedEE_label),
-                Plot.make1D("DL_boosted_DR_leadingleptonANDak8bjet_mumu", op.deltaR(self.firstMuTightPair[0].p4, self.ak8Jets[0].p4), DL_boosted_mumu, EqBin(
+                Plot.make1D("DL_boosted_DR_leadingleptonANDak8bjet_mumu", op.deltaR(self.tightMuons[0].p4, self.ak8Jets[0].p4), DL_boosted_mumu, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLboostedMuMu_label),
-                Plot.make1D("DL_boosted_DR_leadingleptonANDak8bjet_emu", op.deltaR(op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[0].p4, self.firstEmuTightPair[1].p4), self.ak8Jets[0].p4), DL_boosted_emu, EqBin(
+                Plot.make1D("DL_boosted_DR_leadingleptonANDak8bjet_emu", op.deltaR(op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightElectrons[0].p4, self.tightMuons[0].p4), self.ak8Jets[0].p4), DL_boosted_emu, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLboostedEMU_label),
 
                 # DR between subleading lepton and ak8 jet
-                Plot.make1D("DL_boosted_DR_subleadingleptonANDak8bjet_ee", op.deltaR(self.firstElTightPair[1].p4, self.ak8Jets[0].p4), DL_boosted_ee, EqBin(
+                Plot.make1D("DL_boosted_DR_subleadingleptonANDak8bjet_ee", op.deltaR(self.tightElectrons[1].p4, self.ak8Jets[0].p4), DL_boosted_ee, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLboostedEE_label),
-                Plot.make1D("DL_boosted_DR_subleadingleptonANDak8bjet_mumu", op.deltaR(self.firstMuTightPair[1].p4, self.ak8Jets[0].p4), DL_boosted_mumu, EqBin(
+                Plot.make1D("DL_boosted_DR_subleadingleptonANDak8bjet_mumu", op.deltaR(self.tightMuons[1].p4, self.ak8Jets[0].p4), DL_boosted_mumu, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLboostedMuMu_label),
-                Plot.make1D("DL_boosted_DR_subleadingleptonANDak8bjet_emu", op.deltaR(op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[1].p4, self.firstEmuTightPair[0].p4), self.ak8Jets[0].p4), DL_boosted_emu, EqBin(
+                Plot.make1D("DL_boosted_DR_subleadingleptonANDak8bjet_emu", op.deltaR(op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightMuons[0].p4, self.tightElectrons[0].p4), self.ak8Jets[0].p4), DL_boosted_emu, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLboostedEMU_label),
 
                 # number of electrons
@@ -419,31 +401,31 @@ class cutflowAnalysis(NanoBaseHHWWbb):
                     35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_2b_EMu_label),
 
                 # Invariant mass of leptons
-                Plot.make1D("DL_resolved_1b_InvM_ee", op.invariant_mass(self.firstElTightPair[0].p4, self.firstElTightPair[1].p4), DL_resolved_1b_ee, EqBin(
+                Plot.make1D("DL_resolved_1b_InvM_ee", op.invariant_mass(self.tightElectrons[0].p4, self.tightElectrons[1].p4), DL_resolved_1b_ee, EqBin(
                     100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DLresolved_1b_EE_label),
-                Plot.make1D("DL_resolved_1b_InvM_mumu", op.invariant_mass(self.firstMuTightPair[0].p4, self.firstMuTightPair[1].p4), DL_resolved_1b_mumu, EqBin(
+                Plot.make1D("DL_resolved_1b_InvM_mumu", op.invariant_mass(self.tightMuons[0].p4, self.tightMuons[1].p4), DL_resolved_1b_mumu, EqBin(
                     100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DLresolved_1b_MuMu_label),
-                Plot.make1D("DL_resolved_1b_InvM_emu", op.invariant_mass(self.firstEmuTightPair[0].p4, self.firstEmuTightPair[1].p4), DL_resolved_1b_emu, EqBin(
+                Plot.make1D("DL_resolved_1b_InvM_emu", op.invariant_mass(self.tightElectrons[0].p4, self.tightMuons[0].p4), DL_resolved_1b_emu, EqBin(
                     100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electron-muon pair (GeV/c^{2})", plotopts=DLresolved_1b_EMu_label),
-                Plot.make1D("DL_resolved_2b_InvM_ee", op.invariant_mass(self.firstElTightPair[0].p4, self.firstElTightPair[1].p4), DL_resolved_2b_ee, EqBin(
+                Plot.make1D("DL_resolved_2b_InvM_ee", op.invariant_mass(self.tightElectrons[0].p4, self.tightElectrons[1].p4), DL_resolved_2b_ee, EqBin(
                     100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electrons (GeV/c^{2})", plotopts=DLresolved_2b_EE_label),
-                Plot.make1D("DL_resolved_2b_InvM_mumu", op.invariant_mass(self.firstMuTightPair[0].p4, self.firstMuTightPair[1].p4), DL_resolved_2b_mumu, EqBin(
+                Plot.make1D("DL_resolved_2b_InvM_mumu", op.invariant_mass(self.tightMuons[0].p4, self.tightMuons[1].p4), DL_resolved_2b_mumu, EqBin(
                     100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of muons (GeV/c^{2})", plotopts=DLresolved_2b_MuMu_label),
-                Plot.make1D("DL_resolved_2b_InvM_emu", op.invariant_mass(self.firstEmuTightPair[0].p4, self.firstEmuTightPair[1].p4), DL_resolved_2b_emu, EqBin(
+                Plot.make1D("DL_resolved_2b_InvM_emu", op.invariant_mass(self.tightElectrons[0].p4, self.tightMuons[0].p4), DL_resolved_2b_emu, EqBin(
                     100, 0., 300.), title="InvM(ll)", xTitle="Invariant Mass of electron-muon pair (GeV/c^{2})", plotopts=DLresolved_2b_EMu_label),
 
                 # pt of the di-lepton
-                Plot.make1D("DL_resolved_1b_dileptonPt_ee", op.sum(self.firstElTightPair[0].pt, self.firstElTightPair[1].pt), DL_resolved_1b_ee, EqBin(
+                Plot.make1D("DL_resolved_1b_dileptonPt_ee", op.sum(self.tightElectrons[0].pt, self.tightElectrons[1].pt), DL_resolved_1b_ee, EqBin(
                     60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electrons (GeV/c^{2})", plotopts=DLresolved_1b_EE_label),
-                Plot.make1D("DL_resolved_1b_dileptonPt_mumu", op.sum(self.firstMuTightPair[0].pt, self.firstMuTightPair[1].pt), DL_resolved_1b_mumu, EqBin(
+                Plot.make1D("DL_resolved_1b_dileptonPt_mumu", op.sum(self.tightMuons[0].pt, self.tightMuons[1].pt), DL_resolved_1b_mumu, EqBin(
                     60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of muons  (GeV/c^{2})", plotopts=DLresolved_1b_MuMu_label),
-                Plot.make1D("DL_resolved_1b_dileptonPt_emu", op.sum(self.firstEmuTightPair[0].pt, self.firstEmuTightPair[1].pt), DL_resolved_1b_emu, EqBin(
+                Plot.make1D("DL_resolved_1b_dileptonPt_emu", op.sum(self.tightElectrons[0].pt, self.tightMuons[0].pt), DL_resolved_1b_emu, EqBin(
                     60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electron-muon pair  (GeV/c^{2})", plotopts=DLresolved_1b_EMu_label),
-                Plot.make1D("DL_resolved_2b_dileptonPt_ee", op.sum(self.firstElTightPair[0].pt, self.firstElTightPair[1].pt), DL_resolved_2b_ee, EqBin(
+                Plot.make1D("DL_resolved_2b_dileptonPt_ee", op.sum(self.tightElectrons[0].pt, self.tightElectrons[1].pt), DL_resolved_2b_ee, EqBin(
                     60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electrons (GeV/c^{2})", plotopts=DLresolved_2b_EE_label),
-                Plot.make1D("DL_resolved_2b_dileptonPt_mumu", op.sum(self.firstMuTightPair[0].pt, self.firstMuTightPair[1].pt), DL_resolved_2b_mumu, EqBin(
+                Plot.make1D("DL_resolved_2b_dileptonPt_mumu", op.sum(self.tightMuons[0].pt, self.tightMuons[1].pt), DL_resolved_2b_mumu, EqBin(
                     60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of muons  (GeV/c^{2})", plotopts=DLresolved_2b_MuMu_label),
-                Plot.make1D("DL_resolved_2b_dileptonPt_emu", op.sum(self.firstEmuTightPair[0].pt, self.firstEmuTightPair[1].pt), DL_resolved_2b_emu, EqBin(
+                Plot.make1D("DL_resolved_2b_dileptonPt_emu", op.sum(self.tightElectrons[0].pt, self.tightMuons[0].pt), DL_resolved_2b_emu, EqBin(
                     60, 0., 300.), title="InvM(ll)", xTitle="P_{T} of electron-muon pair  (GeV/c^{2})", plotopts=DLresolved_2b_EMu_label),
 
                 # MET pt
@@ -475,115 +457,115 @@ class cutflowAnalysis(NanoBaseHHWWbb):
                     7, -3.5, 3.5), title="pT(j2)", xTitle="MET phi (GeV/c)", plotopts=DLresolved_2b_EMu_label),
 
                 # total charge of leptons
-                Plot.make1D("DL_resolved_1b_totalCharge_ee", op.sum(self.firstElTightPair[0].charge, self.firstElTightPair[1].charge), DL_resolved_1b_ee, EqBin(
+                Plot.make1D("DL_resolved_1b_totalCharge_ee", op.sum(self.tightElectrons[0].charge, self.tightElectrons[1].charge), DL_resolved_1b_ee, EqBin(
                     5, -2.5, 2.5), title="total charge", xTitle="Total charge of electrons", plotopts=DLresolved_1b_EE_label),
-                Plot.make1D("DL_resolved_1b_totalCharge_mumu", op.sum(self.firstMuTightPair[0].charge, self.firstMuTightPair[1].charge), DL_resolved_1b_mumu, EqBin(
+                Plot.make1D("DL_resolved_1b_totalCharge_mumu", op.sum(self.tightMuons[0].charge, self.tightMuons[1].charge), DL_resolved_1b_mumu, EqBin(
                     5, -2.5, 2.5), title="total charge", xTitle="Total charge of muons", plotopts=DLresolved_1b_MuMu_label),
-                Plot.make1D("DL_resolved_1b_totalCharge_emu", op.sum(self.firstEmuTightPair[0].charge, self.firstEmuTightPair[1].charge), DL_resolved_1b_emu, EqBin(
+                Plot.make1D("DL_resolved_1b_totalCharge_emu", op.sum(self.tightElectrons[0].charge, self.tightMuons[0].charge), DL_resolved_1b_emu, EqBin(
                     5, -2.5, 2.5), title="total charge", xTitle="Total charge of electron-muon pair", plotopts=DLresolved_1b_EMu_label),
-                Plot.make1D("DL_resolved_2b_totalCharge_ee", op.sum(self.firstElTightPair[0].charge, self.firstElTightPair[1].charge), DL_resolved_2b_ee, EqBin(
+                Plot.make1D("DL_resolved_2b_totalCharge_ee", op.sum(self.tightElectrons[0].charge, self.tightElectrons[1].charge), DL_resolved_2b_ee, EqBin(
                     5, -2.5, 2.5), title="total charge", xTitle="Total charge of electrons", plotopts=DLresolved_2b_EE_label),
-                Plot.make1D("DL_resolved_2b_totalCharge_mumu", op.sum(self.firstMuTightPair[0].charge, self.firstMuTightPair[1].charge), DL_resolved_2b_mumu, EqBin(
+                Plot.make1D("DL_resolved_2b_totalCharge_mumu", op.sum(self.tightMuons[0].charge, self.tightMuons[1].charge), DL_resolved_2b_mumu, EqBin(
                     5, -2.5, 2.5), title="total charge", xTitle="Total charge of muons", plotopts=DLresolved_2b_MuMu_label),
-                Plot.make1D("DL_resolved_2b_totalCharge_emu", op.sum(self.firstEmuTightPair[0].charge, self.firstEmuTightPair[1].charge), DL_resolved_2b_emu, EqBin(
+                Plot.make1D("DL_resolved_2b_totalCharge_emu", op.sum(self.tightElectrons[0].charge, self.tightMuons[0].charge), DL_resolved_2b_emu, EqBin(
                     5, -2.5, 2.5), title="total charge", xTitle="Total charge of electron-muon pair", plotopts=DLresolved_2b_EMu_label),
 
                 # leading lepton pt
-                Plot.make1D("DL_resolved_1b_leadingLepton_pt_ee", self.firstElTightPair[0].pt, DL_resolved_1b_ee, EqBin(
+                Plot.make1D("DL_resolved_1b_leadingLepton_pt_ee", self.tightElectrons[0].pt, DL_resolved_1b_ee, EqBin(
                     100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolved_1b_EE_label),
-                Plot.make1D("DL_resolved_1b_leadingLepton_pt_mumu", self.firstMuTightPair[0].pt, DL_resolved_1b_mumu, EqBin(
+                Plot.make1D("DL_resolved_1b_leadingLepton_pt_mumu", self.tightMuons[0].pt, DL_resolved_1b_mumu, EqBin(
                     100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolved_1b_MuMu_label),
-                Plot.make1D("DL_resolved_1b_leadingLepton_pt_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[0].pt, self.firstEmuTightPair[1].pt), DL_resolved_1b_emu, EqBin(
+                Plot.make1D("DL_resolved_1b_leadingLepton_pt_emu", op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightElectrons[0].pt, self.tightMuons[0].pt), DL_resolved_1b_emu, EqBin(
                     100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolved_1b_EMu_label),
-                Plot.make1D("DL_resolved_2b_leadingLepton_pt_ee", self.firstElTightPair[0].pt, DL_resolved_2b_ee, EqBin(
+                Plot.make1D("DL_resolved_2b_leadingLepton_pt_ee", self.tightElectrons[0].pt, DL_resolved_2b_ee, EqBin(
                     100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolved_2b_EE_label),
-                Plot.make1D("DL_resolved_2b_leadingLepton_pt_mumu", self.firstMuTightPair[0].pt, DL_resolved_2b_mumu, EqBin(
+                Plot.make1D("DL_resolved_2b_leadingLepton_pt_mumu", self.tightMuons[0].pt, DL_resolved_2b_mumu, EqBin(
                     100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolved_2b_MuMu_label),
-                Plot.make1D("DL_resolved_2b_leadingLepton_pt_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[0].pt, self.firstEmuTightPair[1].pt), DL_resolved_2b_emu, EqBin(
+                Plot.make1D("DL_resolved_2b_leadingLepton_pt_emu", op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightElectrons[0].pt, self.tightMuons[0].pt), DL_resolved_2b_emu, EqBin(
                     100, 0., 300.), title="InvM(ll)", xTitle="p_{T} of the leading lepton (GeV/c)", plotopts=DLresolved_2b_EMu_label),
 
                 # sub-leading lepton pt
-                Plot.make1D("DL_resolved_1b_subleadingLepton_pt_ee", self.firstElTightPair[1].pt, DL_resolved_1b_ee, EqBin(
+                Plot.make1D("DL_resolved_1b_subleadingLepton_pt_ee", self.tightElectrons[1].pt, DL_resolved_1b_ee, EqBin(
                     50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolved_1b_EE_label),
-                Plot.make1D("DL_resolved_1b_subleadingLepton_pt_mumu", self.firstMuTightPair[1].pt, DL_resolved_1b_mumu, EqBin(
+                Plot.make1D("DL_resolved_1b_subleadingLepton_pt_mumu", self.tightMuons[1].pt, DL_resolved_1b_mumu, EqBin(
                     50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolved_1b_MuMu_label),
-                Plot.make1D("DL_resolved_1b_subleadingLepton_pt_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[1].pt, self.firstEmuTightPair[0].pt), DL_resolved_1b_emu, EqBin(
+                Plot.make1D("DL_resolved_1b_subleadingLepton_pt_emu", op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightMuons[0].pt, self.tightElectrons[0].pt), DL_resolved_1b_emu, EqBin(
                     50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolved_1b_EMu_label),
-                Plot.make1D("DL_resolved_2b_subleadingLepton_pt_ee", self.firstElTightPair[1].pt, DL_resolved_2b_ee, EqBin(
+                Plot.make1D("DL_resolved_2b_subleadingLepton_pt_ee", self.tightElectrons[1].pt, DL_resolved_2b_ee, EqBin(
                     50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolved_2b_EE_label),
-                Plot.make1D("DL_resolved_2b_subleadingLepton_pt_mumu", self.firstMuTightPair[1].pt, DL_resolved_2b_mumu, EqBin(
+                Plot.make1D("DL_resolved_2b_subleadingLepton_pt_mumu", self.tightMuons[1].pt, DL_resolved_2b_mumu, EqBin(
                     50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolved_2b_MuMu_label),
-                Plot.make1D("DL_resolved_2b_subleadingLepton_pt_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[1].pt, self.firstEmuTightPair[0].pt), DL_resolved_2b_emu, EqBin(
+                Plot.make1D("DL_resolved_2b_subleadingLepton_pt_emu", op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightMuons[0].pt, self.tightElectrons[0].pt), DL_resolved_2b_emu, EqBin(
                     50, 0., 200.), title="InvM(ll)", xTitle="p_{T} of the sub-leading lepton (GeV/c)", plotopts=DLresolved_2b_EMu_label),
 
                 # leading lepton eta
-                Plot.make1D("DL_resolved_1b_leadingLepton_eta_ee", self.firstElTightPair[0].eta, DL_resolved_1b_ee, EqBin(
+                Plot.make1D("DL_resolved_1b_leadingLepton_eta_ee", self.tightElectrons[0].eta, DL_resolved_1b_ee, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolved_1b_EE_label),
-                Plot.make1D("DL_resolved_1b_leadingLepton_eta_mumu", self.firstMuTightPair[0].eta, DL_resolved_1b_mumu, EqBin(
+                Plot.make1D("DL_resolved_1b_leadingLepton_eta_mumu", self.tightMuons[0].eta, DL_resolved_1b_mumu, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolved_1b_MuMu_label),
-                Plot.make1D("DL_resolved_1b_leadingLepton_eta_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[0].eta, self.firstEmuTightPair[1].eta), DL_resolved_1b_emu, EqBin(
+                Plot.make1D("DL_resolved_1b_leadingLepton_eta_emu", op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightElectrons[0].eta, self.tightMuons[0].eta), DL_resolved_1b_emu, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolved_1b_EMu_label),
-                Plot.make1D("DL_resolved_2b_leadingLepton_eta_ee", self.firstElTightPair[0].eta, DL_resolved_2b_ee, EqBin(
+                Plot.make1D("DL_resolved_2b_leadingLepton_eta_ee", self.tightElectrons[0].eta, DL_resolved_2b_ee, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolved_2b_EE_label),
-                Plot.make1D("DL_resolved_2b_leadingLepton_eta_mumu", self.firstMuTightPair[0].eta, DL_resolved_2b_mumu, EqBin(
+                Plot.make1D("DL_resolved_2b_leadingLepton_eta_mumu", self.tightMuons[0].eta, DL_resolved_2b_mumu, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolved_2b_MuMu_label),
-                Plot.make1D("DL_resolved_2b_leadingLepton_eta_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[0].eta, self.firstEmuTightPair[1].eta), DL_resolved_2b_emu, EqBin(
+                Plot.make1D("DL_resolved_2b_leadingLepton_eta_emu", op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightElectrons[0].eta, self.tightMuons[0].eta), DL_resolved_2b_emu, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the leading lepton", plotopts=DLresolved_2b_EMu_label),
 
                 # sub-leading lepton eta
-                Plot.make1D("DL_resolved_1b_subleadingLepton_eta_ee", self.firstElTightPair[1].eta, DL_resolved_1b_ee, EqBin(
+                Plot.make1D("DL_resolved_1b_subleadingLepton_eta_ee", self.tightElectrons[1].eta, DL_resolved_1b_ee, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolved_1b_EE_label),
-                Plot.make1D("DL_resolved_1b_subleadingLepton_eta_mumu", self.firstMuTightPair[1].eta, DL_resolved_1b_mumu, EqBin(
+                Plot.make1D("DL_resolved_1b_subleadingLepton_eta_mumu", self.tightMuons[1].eta, DL_resolved_1b_mumu, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolved_1b_MuMu_label),
-                Plot.make1D("DL_resolved_1b_subleadingLepton_eta_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[1].eta, self.firstEmuTightPair[0].eta), DL_resolved_1b_emu, EqBin(
+                Plot.make1D("DL_resolved_1b_subleadingLepton_eta_emu", op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightMuons[0].eta, self.tightElectrons[0].eta), DL_resolved_1b_emu, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolved_1b_EMu_label),
-                Plot.make1D("DL_resolved_2b_subleadingLepton_eta_ee", self.firstElTightPair[1].eta, DL_resolved_2b_ee, EqBin(
+                Plot.make1D("DL_resolved_2b_subleadingLepton_eta_ee", self.tightElectrons[1].eta, DL_resolved_2b_ee, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolved_2b_EE_label),
-                Plot.make1D("DL_resolved_2b_subleadingLepton_eta_mumu", self.firstMuTightPair[1].eta, DL_resolved_2b_mumu, EqBin(
+                Plot.make1D("DL_resolved_2b_subleadingLepton_eta_mumu", self.tightMuons[1].eta, DL_resolved_2b_mumu, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolved_2b_MuMu_label),
-                Plot.make1D("DL_resolved_2b_subleadingLepton_eta_emu", op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[1].eta, self.firstEmuTightPair[0].eta), DL_resolved_2b_emu, EqBin(
+                Plot.make1D("DL_resolved_2b_subleadingLepton_eta_emu", op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightMuons[0].eta, self.tightElectrons[0].eta), DL_resolved_2b_emu, EqBin(
                     30, -3, 3), title="InvM(ll)", xTitle="\eta of the sub-leading lepton", plotopts=DLresolved_2b_EMu_label),
 
                 # DR between leading and sub-leading lepton
-                Plot.make1D("DL_resolved_1b_DR_leptons_ee", op.deltaR(self.firstElTightPair[0].p4, self.firstElTightPair[1].p4), DL_resolved_1b_ee, EqBin(
+                Plot.make1D("DL_resolved_1b_DR_leptons_ee", op.deltaR(self.tightElectrons[0].p4, self.tightElectrons[1].p4), DL_resolved_1b_ee, EqBin(
                     35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_1b_EE_label),
-                Plot.make1D("DL_resolved_1b_DR_leptons_mumu", op.deltaR(self.firstMuTightPair[0].p4, self.firstMuTightPair[1].p4), DL_resolved_1b_mumu, EqBin(
+                Plot.make1D("DL_resolved_1b_DR_leptons_mumu", op.deltaR(self.tightMuons[0].p4, self.tightMuons[1].p4), DL_resolved_1b_mumu, EqBin(
                     35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_1b_MuMu_label),
-                Plot.make1D("DL_resolved_1b_DR_leptons_emu", op.deltaR(self.firstEmuTightPair[0].p4, self.firstEmuTightPair[1].p4), DL_resolved_1b_emu, EqBin(
+                Plot.make1D("DL_resolved_1b_DR_leptons_emu", op.deltaR(self.tightElectrons[0].p4, self.tightMuons[0].p4), DL_resolved_1b_emu, EqBin(
                     35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_1b_EMu_label),
-                Plot.make1D("DL_resolved_2b_DR_leptons_ee", op.deltaR(self.firstElTightPair[0].p4, self.firstElTightPair[1].p4), DL_resolved_2b_ee, EqBin(
+                Plot.make1D("DL_resolved_2b_DR_leptons_ee", op.deltaR(self.tightElectrons[0].p4, self.tightElectrons[1].p4), DL_resolved_2b_ee, EqBin(
                     35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_2b_EE_label),
-                Plot.make1D("DL_resolved_2b_DR_leptons_mumu", op.deltaR(self.firstMuTightPair[0].p4, self.firstMuTightPair[1].p4), DL_resolved_2b_mumu, EqBin(
+                Plot.make1D("DL_resolved_2b_DR_leptons_mumu", op.deltaR(self.tightMuons[0].p4, self.tightMuons[1].p4), DL_resolved_2b_mumu, EqBin(
                     35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_2b_MuMu_label),
-                Plot.make1D("DL_resolved_2b_DR_leptons_emu", op.deltaR(self.firstEmuTightPair[0].p4, self.firstEmuTightPair[1].p4), DL_resolved_2b_emu, EqBin(
+                Plot.make1D("DL_resolved_2b_DR_leptons_emu", op.deltaR(self.tightElectrons[0].p4, self.tightMuons[0].p4), DL_resolved_2b_emu, EqBin(
                     35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_2b_EMu_label),
 
                 # DR between leading lepton and ak4 b jet
-                Plot.make1D("DL_resolved_1b_DR_leadingleptonANDak4bjet_ee", op.deltaR(self.firstElTightPair[0].p4, self.ak4BJets[0].p4), DL_resolved_1b_ee, EqBin(
+                Plot.make1D("DL_resolved_1b_DR_leadingleptonANDak4bjet_ee", op.deltaR(self.tightElectrons[0].p4, self.ak4BJets[0].p4), DL_resolved_1b_ee, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_1b_EE_label),
-                Plot.make1D("DL_resolved_1b_DR_leadingleptonANDak4bjet_mumu", op.deltaR(self.firstMuTightPair[0].p4, self.ak4BJets[0].p4), DL_resolved_1b_mumu, EqBin(
+                Plot.make1D("DL_resolved_1b_DR_leadingleptonANDak4bjet_mumu", op.deltaR(self.tightMuons[0].p4, self.ak4BJets[0].p4), DL_resolved_1b_mumu, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_1b_MuMu_label),
-                Plot.make1D("DL_resolved_1b_DR_leadingleptonANDak4bjet_emu", op.deltaR(op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[0].p4, self.firstEmuTightPair[1].p4), self.ak4BJets[0].p4), DL_resolved_1b_emu, EqBin(
+                Plot.make1D("DL_resolved_1b_DR_leadingleptonANDak4bjet_emu", op.deltaR(op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightElectrons[0].p4, self.tightMuons[0].p4), self.ak4BJets[0].p4), DL_resolved_1b_emu, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_1b_EMu_label),
-                Plot.make1D("DL_resolved_2b_DR_leadingleptonANDak4bjet_ee", op.deltaR(self.firstElTightPair[0].p4, self.ak4BJets[0].p4), DL_resolved_2b_ee, EqBin(
+                Plot.make1D("DL_resolved_2b_DR_leadingleptonANDak4bjet_ee", op.deltaR(self.tightElectrons[0].p4, self.ak4BJets[0].p4), DL_resolved_2b_ee, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_2b_EE_label),
-                Plot.make1D("DL_resolved_2b_DR_leadingleptonANDak4bjet_mumu", op.deltaR(self.firstMuTightPair[0].p4, self.ak4BJets[0].p4), DL_resolved_2b_mumu, EqBin(
+                Plot.make1D("DL_resolved_2b_DR_leadingleptonANDak4bjet_mumu", op.deltaR(self.tightMuons[0].p4, self.ak4BJets[0].p4), DL_resolved_2b_mumu, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_2b_MuMu_label),
-                Plot.make1D("DL_resolved_2b_DR_leadingleptonANDak4bjet_emu", op.deltaR(op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[0].p4, self.firstEmuTightPair[1].p4), self.ak4BJets[0].p4), DL_resolved_2b_emu, EqBin(
+                Plot.make1D("DL_resolved_2b_DR_leadingleptonANDak4bjet_emu", op.deltaR(op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightElectrons[0].p4, self.tightMuons[0].p4), self.ak4BJets[0].p4), DL_resolved_2b_emu, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_2b_EMu_label),
 
                 # DR between sub-leading lepton and ak4 b jet
-                Plot.make1D("DL_resolved_1b_DR_subleadingleptonANDak4bjet_ee", op.deltaR(self.firstElTightPair[1].p4, self.ak4BJets[0].p4), DL_resolved_1b_ee, EqBin(
+                Plot.make1D("DL_resolved_1b_DR_subleadingleptonANDak4bjet_ee", op.deltaR(self.tightElectrons[1].p4, self.ak4BJets[0].p4), DL_resolved_1b_ee, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_1b_EE_label),
-                Plot.make1D("DL_resolved_1b_DR_subleadingleptonANDak4bjet_mumu", op.deltaR(self.firstMuTightPair[1].p4, self.ak4BJets[0].p4), DL_resolved_1b_mumu, EqBin(
+                Plot.make1D("DL_resolved_1b_DR_subleadingleptonANDak4bjet_mumu", op.deltaR(self.tightMuons[1].p4, self.ak4BJets[0].p4), DL_resolved_1b_mumu, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_1b_MuMu_label),
-                Plot.make1D("DL_resolved_1b_DR_subleadingleptonANDak4bjet_emu", op.deltaR(op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[1].p4, self.firstEmuTightPair[0].p4), self.ak4BJets[0].p4), DL_resolved_1b_emu, EqBin(
+                Plot.make1D("DL_resolved_1b_DR_subleadingleptonANDak4bjet_emu", op.deltaR(op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightMuons[0].p4, self.tightElectrons[0].p4), self.ak4BJets[0].p4), DL_resolved_1b_emu, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_1b_EMu_label),
-                Plot.make1D("DL_resolved_2b_DR_subleadingleptonANDak4bjet_ee", op.deltaR(self.firstElTightPair[1].p4, self.ak4BJets[0].p4), DL_resolved_2b_ee, EqBin(
+                Plot.make1D("DL_resolved_2b_DR_subleadingleptonANDak4bjet_ee", op.deltaR(self.tightElectrons[1].p4, self.ak4BJets[0].p4), DL_resolved_2b_ee, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_2b_EE_label),
-                Plot.make1D("DL_resolved_2b_DR_subleadingleptonANDak4bjet_mumu", op.deltaR(self.firstMuTightPair[1].p4, self.ak4BJets[0].p4), DL_resolved_2b_mumu, EqBin(
+                Plot.make1D("DL_resolved_2b_DR_subleadingleptonANDak4bjet_mumu", op.deltaR(self.tightMuons[1].p4, self.ak4BJets[0].p4), DL_resolved_2b_mumu, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_2b_MuMu_label),
-                Plot.make1D("DL_resolved_2b_DR_subleadingleptonANDak4bjet_emu", op.deltaR(op.switch((self.firstEmuTightPair[0].pt >= self.firstEmuTightPair[1].pt), self.firstEmuTightPair[1].p4, self.firstEmuTightPair[0].p4), self.ak4BJets[0].p4), DL_resolved_2b_emu, EqBin(
+                Plot.make1D("DL_resolved_2b_DR_subleadingleptonANDak4bjet_emu", op.deltaR(op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightMuons[0].p4, self.tightElectrons[0].p4), self.ak4BJets[0].p4), DL_resolved_2b_emu, EqBin(
                     35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_2b_EMu_label),
 
                 # number of electrons
