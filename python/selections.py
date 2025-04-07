@@ -6,30 +6,28 @@ from scalefactors import ScaleFactors as sf
 Zmass = 91.1876  # GeV
 
 
-def lowMllCut(dileptons) -> bool:
+def lowMllCut(lepton_collection) -> bool:
     " Minimum dilepton invariant mass cut of 12 GeV."
-    return op.NOT(op.rng_any(
-        dileptons, lambda dilep: op.invariant_mass(dilep[0].p4, dilep[1].p4) < 12.))
+    return op.NOT(op.invariant_mass(lepton_collection[0].p4, lepton_collection[1].p4) < 12.)
 
 
-def outZ(dileptons) -> bool:
+def outZ(lepton_collection) -> bool:
     "Reject events with same-flavoured dilepton mass around Z peak."
-    return op.NOT(op.rng_any(
-        dileptons, lambda dilep: op.abs(op.invariant_mass(dilep[0].p4, dilep[1].p4) - Zmass) < 10.))
+    return op.NOT(op.abs(op.invariant_mass(lepton_collection[0].p4, lepton_collection[1].p4) - Zmass) < 10.)
 
 
 # lepton Pt cuts : leading above 25 GeV and sub-leading above 15 GeV
 
 
-def ptCutSameFlavourPair(dilep) -> bool:
+def ptCutSameFlavourPair(lepton_collection) -> bool:
     """Minimum pT cut for the same flavour leptons.
     Leading lepton pT > 25 GeV and sub-leading lepton pT > 15 GeV.
     There is no need to check for the opposite order since we're taking
     the objects from the same collection that is already sorted by pt.
     """
     return op.AND(
-        dilep[0].pt > 25,
-        dilep[1].pt > 15,
+        lepton_collection[0].pt > 25,
+        lepton_collection[1].pt > 15,
     )
 
 
@@ -58,27 +56,6 @@ def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
     # call defined objects
     defs.defineObjects(self, tree)
 
-    # OS loose lepton pairs of same type to be vetoed around Z peak
-    elLoosePair = op.combine(
-        self.clElectrons, N=2, pred=lambda lep1, lep2: lep1.charge != lep2.charge)
-    muLoosePair = op.combine(
-        self.preMuons, N=2, pred=lambda lep1, lep2: lep1.charge != lep2.charge)
-    emuLoosePair = op.combine(
-        (self.clElectrons, self.preMuons), N=2, pred=lambda el, mu: el.charge != mu.charge)
-
-    # OS tight dilepton collections
-    elTightPair = op.combine(self.tightElectrons, N=2,
-                             pred=lambda lep1, lep2: lep1.charge != lep2.charge)
-    muTightPair = op.combine(self.tightMuons, N=2,
-                             pred=lambda lep1, lep2: lep1.charge != lep2.charge)
-    emuTightPair = op.combine((self.tightElectrons, self.tightMuons),
-                              N=2, pred=lambda el, mu: el.charge != mu.charge)
-
-    # the actual lepton pairs that will be used for the analysis
-    self.firstElTightPair = elTightPair[0]
-    self.firstMuTightPair = muTightPair[0]
-    self.firstEmuTightPair = emuTightPair[0]
-
     # top pT reweighting
     genPartBranch = tree.GenPart if self.is_MC else None
     sel = sf.top_pT_reweight(self, genPartBranch, sel, sample)
@@ -86,68 +63,55 @@ def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
     # Noise filters
     sel = sf.NoiseFilters(self, tree.Flag, sel)
 
-    # minimum pT cut : at least one lepton pair with leading lepton above 25 GeV
-    elPairMinPtSel = sel.refine(
-        'elPairMinPtSel', cut=[ptCutSameFlavourPair(self.firstElTightPair)])
-    muPairMinPtSel = sel.refine(
-        'muPairMinPtSel', cut=[ptCutSameFlavourPair(self.firstMuTightPair)])
-    emuPairMinPtSel = sel.refine(
-        'emuPairMinPtSel', cut=[ptCutDifferentFlavourPair(self.firstEmuTightPair)])
-
-    # low Mll cut : reject events with dilepton mass below 12 GeV
-    mllCut = op.AND(lowMllCut(elLoosePair), lowMllCut(
-        muLoosePair), lowMllCut(emuLoosePair))
-
-    # Z-veto : reject events with same flavour-lepton pair with mass around Z peak.
-    outZCut = op.AND(outZ(elLoosePair), outZ(muLoosePair))
-
-    outZelPairSel = elPairMinPtSel.refine(
-        'outZelPairSel', cut=op.AND(mllCut, outZCut))
-    outZmuPairSel = muPairMinPtSel.refine(
-        'outZmuPairSel', cut=op.AND(mllCut, outZCut))
-    outZemuPairSel = emuPairMinPtSel.refine(
-        'outZemuPairSel', cut=op.AND(mllCut, outZCut))
-
-    # di-lepton multiplicity cut
-    elPairMultiplicitySel = outZelPairSel.refine('elPairMultiplicitySel', cut=[op.AND(
-        op.rng_len(elTightPair) == 1,
-        op.rng_len(muTightPair) == 0,
-        op.rng_len(emuTightPair) == 0
-    )])
-    muPairMultiplicitySel = outZmuPairSel.refine('muPairMultiplicitySel', cut=[op.AND(
-        op.rng_len(elTightPair) == 0,
-        op.rng_len(muTightPair) == 1,
-        op.rng_len(emuTightPair) == 0
-    )])
-    emuPairMultiplicitySel = outZemuPairSel.refine('emuPairMultiplicitySel', cut=[op.AND(
-        op.rng_len(elTightPair) == 0,
-        op.rng_len(muTightPair) == 0,
-        op.rng_len(emuTightPair) == 1,
-    )])
+    # final states
+    elel_sel = sel.refine(
+        'eePairSel', cut=[
+            ptCutSameFlavourPair(self.tightElectrons),
+            op.rng_len(self.tightElectrons) == 2,
+            self.tightElectrons[0].charge != self.tightElectrons[1].charge,
+            op.NOT(op.invariant_mass(self.tightElectrons[0].p4, self.tightElectrons[1].p4) < 12.),
+            op.NOT(op.abs(op.invariant_mass(self.tightElectrons[0].p4, self.tightElectrons[1].p4) - Zmass) < 10.)
+            ])
+    mumu_sel = sel.refine(
+        'mumuPairSel', cut=[
+            ptCutSameFlavourPair(self.tightMuons),
+            op.rng_len(self.tightMuons) == 2,
+            self.tightMuons[0].charge != self.tightMuons[1].charge,
+            op.NOT(op.invariant_mass(self.tightMuons[0].p4, self.tightMuons[1].p4) < 12.),
+            op.NOT(op.abs(op.invariant_mass(self.tightMuons[0].p4, self.tightMuons[1].p4) - Zmass) < 10.)
+            ])
+    elmu_sel = sel.refine(
+        'emuPairSel', cut=[
+            op.rng_len(self.tightElectrons) == 1,
+            op.rng_len(self.tightMuons) == 1,
+            self.tightElectrons[0].charge != self.tightMuons[0].charge,
+            op.NOT(op.invariant_mass(self.tightElectrons[0].p4, self.tightMuons[0].p4) < 12.),
+            ])
 
     # lepton scale factors
-    muPairMultiplicitySel = sf.muonSF(self, muPairMultiplicitySel)
-    elPairMultiplicitySel = sf.electronSF(self, elPairMultiplicitySel)
-    emuPairMultiplicitySel = sf.muonSF(self, emuPairMultiplicitySel)
-    emuPairMultiplicitySel = sf.electronSF(self, emuPairMultiplicitySel)
+    elel_SF_sel = sf.elelSF(self, elel_sel)
+    mumu_SF_sel = sf.mumuSF(self, mumu_sel)
+    elmu_SF_sel = sf.elmuSF(self, elmu_sel)
 
     # DY Z pT reweighting
-    muPairMultiplicitySel = sf.Z_pT_reweight(self, muPairMultiplicitySel, sample, genPartBranch)
-    elPairMultiplicitySel = sf.Z_pT_reweight(self, elPairMultiplicitySel, sample, genPartBranch)
+    elel_SF_sel = sf.Z_pT_reweight_elel(
+        self, elel_SF_sel, sample, genPartBranch)
+    mumu_SF_sel = sf.Z_pT_reweight_mumu(
+        self, mumu_SF_sel, sample, genPartBranch)
 
     # boosted pre-final state selections for btag reweighting
-    DL_boosted_pre_ee = elPairMultiplicitySel.refine(
+    DL_boosted_pre_ee = elel_SF_sel.refine(
         'DL_boosted_pre_ee', cut=op.rng_len(self.ak8Jets) >= 1)
-    DL_boosted_pre_mumu = muPairMultiplicitySel.refine(
+    DL_boosted_pre_mumu = mumu_SF_sel.refine(
         'DL_boosted_pre_mumu', cut=op.rng_len(self.ak8Jets) >= 1)
-    DL_boosted_pre_emu = emuPairMultiplicitySel.refine(
+    DL_boosted_pre_emu = elmu_SF_sel.refine(
         'DL_boosted_pre_emu', cut=op.rng_len(self.ak8Jets) >= 1)
 
     self.yields.add(DL_boosted_pre_ee, 'DL boosted pre ee')
     self.yields.add(DL_boosted_pre_mumu, 'DL boosted pre mumu')
     self.yields.add(DL_boosted_pre_emu, 'DL boosted pre emu')
 
-    # btagging sf and reweighting for boosted to be done before
+    # btagging sf and reweighting - to be done before
     # any b-tagged jet selection
     DL_boosted_pre_ee_btagSF = sf.btagSF(
         self, DL_boosted_pre_ee, self.ak8Jets, jet_tagger="particleNet_XbbVsQCD", apply_reweighting=apply_btagReweight)
@@ -165,11 +129,11 @@ def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
         'DL_boosted_emu', cut=op.rng_len(self.ak8BJets) >= 1)
 
     # resolved pre-final state selections for btag reweighting
-    DL_resolved_pre_ee = elPairMultiplicitySel.refine(
+    DL_resolved_pre_ee = elel_SF_sel.refine(
         'DL_resolved_pre_ee', cut=[op.rng_len(self.ak4Jets) >= 2])
-    DL_resolved_pre_mumu = muPairMultiplicitySel.refine(
+    DL_resolved_pre_mumu = mumu_SF_sel.refine(
         'DL_resolved_pre_mumu', cut=[op.rng_len(self.ak4Jets) >= 2])
-    DL_resolved_pre_emu = emuPairMultiplicitySel.refine(
+    DL_resolved_pre_emu = elmu_SF_sel.refine(
         'DL_resolved_pre_emu', cut=[op.rng_len(self.ak4Jets) >= 2])
 
     self.yields.add(DL_resolved_pre_ee, 'DL resolved pre ee')

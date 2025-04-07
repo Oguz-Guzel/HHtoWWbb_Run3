@@ -39,6 +39,20 @@ DY_and_Recoil_JSONFiles = {
 class ScaleFactors():
     """Class to define scale factors"""
 
+    def NoiseFilters(self, FlagBranch, sel):
+        "https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2#Run_3_2022_and_2023_data_and_MC"
+        flags = [FlagBranch.goodVertices,
+                 FlagBranch.globalSuperTightHalo2016Filter,
+                 FlagBranch.EcalDeadCellTriggerPrimitiveFilter,
+                 FlagBranch.BadPFMuonFilter,
+                 FlagBranch.BadPFMuonDzFilter,
+                 FlagBranch.hfNoisyHitsFilter,
+                 FlagBranch.eeBadScFilter,
+                 FlagBranch.ecalBadCalibFilter]
+        sel = sel.refine('NoiseFilters', cut=flags)
+        self.yields.add(sel, 'Noise filters')
+        return sel
+
     def top_pT_reweight(self, GenPartBranch, sel, sample):
         """ Apply top p_T reweighting."""
         if sample.startswith("TT"):
@@ -100,13 +114,13 @@ class ScaleFactors():
 
         return sel
 
-    def muonSF(self, sel):
-        """Apply Muon SF"""
+    def mumuSF(self, sel):
+        """Apply lepton scalefactors for muon pair"""
         if self.is_MC:
             logger.info("Applying Muon SF for "+sel.name)
             # Muon ID SF
             systName = "syst"
-            muon_ID_sf = get_correction(
+            self.muon_ID_sf = get_correction(
                 MUON_SF_JSONFiles[self.era],
                 "NUM_MediumID_DEN_TrackerMuons",  # NUM_MediumPromptID_DEN_TrackerMuons, too ?
                 systVariations={"muonIdSFup": f"{systName}up",
@@ -116,11 +130,12 @@ class ScaleFactors():
                 systParam="scale_factors",
                 systNomName="nominal",
                 systName=systName,
+                defineOnFirstUse=False,
                 sel=sel
             )
 
             # Muon ISO SF
-            muon_ISO_sf = get_correction(
+            self.muon_ISO_sf = get_correction(
                 MUON_SF_JSONFiles[self.era],
                 # since muon iso is miniPFreliso and id is medium
                 "NUM_TightPFIso_DEN_MediumID",
@@ -132,62 +147,94 @@ class ScaleFactors():
                 systParam="scale_factors",
                 systNomName="nominal",
                 systName=systName,
+                defineOnFirstUse=False,
                 sel=sel
             )
 
             # Muon Trigger SF
-            muon_trigger_sf = get_correction(
+            self.muon_TRG_sf = get_correction(
                 MUON_SF_JSONFiles[self.era],
                 "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",
                 systVariations={"muonTrgSFup": f"{systName}up",
                                 "muonTrgSFdown": f"{systName}down"},
                 params={
-                    "pt": lambda mu: op.max(mu.pt, 26.0),
+                    "pt": lambda mu: mu.pt,
                     "eta": lambda mu: op.abs(mu.eta)
                 },
                 systParam="scale_factors",
                 systNomName="nominal",
                 systName=systName,
+                defineOnFirstUse=False,
                 sel=sel
             )
+            # if 'muPairMultiplicitySel' in sel.name:
+            # pt and eta cut here since correction are available only when pt >= 15 and |eta| < 2.4
+            sel = sel.refine('mumu_leading_ID_SF',
+                             weight=[op.switch(
+                                 op.AND(self.tightMuons[0].pt >= 15.,
+                                        op.abs(self.tightMuons[0].eta) < 2.4,),
+                                     self.muon_ID_sf(self.tightMuons[0]),
+                                     op.c_float(1.))]
+                             )
+            sel = sel.refine('mumu_subleading_ID_SF',
+                             weight=[op.switch(
+                                 op.AND(self.tightMuons[1].pt >= 15.,
+                                        op.abs(self.tightMuons[1].eta) < 2.4,),
+                                     self.muon_ID_sf(self.tightMuons[1]),
+                                     op.c_float(1.))]
+                             )
 
-            if sel.name == 'muPairMultiplicitySel':
-                # pt and eta cut here since correction are available only when pt >= 15 and |eta| < 2.4
-                sel = sel.refine(sel.name+"_muonSF", cut=[
-                    op.AND(self.firstMuTightPair[0].pt >= 15,
-                           self.firstMuTightPair[1].pt >= 15,
-                           op.abs(
-                        self.firstMuTightPair[0].eta) < 2.4,
-                        op.abs(
-                        self.firstMuTightPair[1].eta) < 2.4
-                    )],
-                    weight=[muon_ID_sf(self.firstMuTightPair[0]),
-                            muon_ID_sf(self.firstMuTightPair[1]),
-                            muon_trigger_sf(self.firstMuTightPair[0]),
-                            muon_trigger_sf(self.firstMuTightPair[1]),
-                            muon_ISO_sf(self.firstMuTightPair[0]),
-                            muon_ISO_sf(self.firstMuTightPair[1])]
-                )
-            elif sel.name == 'emuPairMultiplicitySel':
-                sel = sel.refine(sel.name+"_muonSF",
-                                 cut=[op.AND(self.firstEmuTightPair[1].pt >= 15,
-                                             op.abs(self.firstEmuTightPair[1].eta) < 2.4)],
-                                 weight=[muon_ID_sf(self.firstEmuTightPair[1]),
-                                         muon_trigger_sf(
-                                             self.firstEmuTightPair[1]),
-                                         muon_ISO_sf(self.firstEmuTightPair[1])]
-                                 )
-            else:
-                sel = sel.refine(sel.name+"_muonSF", weight=op.c_float(1.))
+            sel = sel.refine('mumu_leading_ISO_SF',
+                             weight=[op.switch(
+                                 op.AND(self.tightMuons[0].pt >= 15.,
+                                        op.abs(self.tightMuons[0].eta) < 2.4,),
+                                     self.muon_ISO_sf(self.tightMuons[0]),
+                                     op.c_float(1.))]
+                             )
+            sel = sel.refine('mumu_subleading_ISO_SF',
+                             weight=[op.switch(
+                                 op.AND(self.tightMuons[1].pt >= 15.,
+                                        op.abs(self.tightMuons[1].eta) < 2.4,),
+                                     self.muon_ISO_sf(self.tightMuons[1]),
+                                     op.c_float(1.))]
+                             )
+            sel = sel.refine('mumu_leading_TRG_SF',
+                             weight=[op.switch(
+                                 op.AND(self.tightMuons[0].pt >= 26.,
+                                        op.abs(self.tightMuons[0].eta) < 2.4,),
+                                     self.muon_TRG_sf(self.tightMuons[0]),
+                                     op.c_float(1.))]
+                             )
+            sel = sel.refine('mumu_subleading_TRG_SF',
+                             weight=[op.switch(
+                                 op.AND(self.tightMuons[1].pt >= 26.,
+                                        op.abs(self.tightMuons[1].eta) < 2.4,),
+                                     self.muon_TRG_sf(self.tightMuons[1]),
+                                     op.c_float(1.))]
+                             )
         else:
-            sel = sel.refine(sel.name+"_muonSF", weight=op.c_float(1.))
+            # followings are added to avoid cut-flow breaking because
+            # the selection yields are not shown when it's not available
+            # for any sample
+            sel = sel.refine("mumu_leading_ID_SF",
+                             weight=op.c_float(1.))
+            sel = sel.refine("mumu_subleading_ID_SF",
+                             weight=op.c_float(1.))
+            sel = sel.refine("mumu_leading_ISO_SF",
+                             weight=op.c_float(1.))
+            sel = sel.refine("mumu_subleading_ISO_SF",
+                             weight=op.c_float(1.))
+            sel = sel.refine("mumu_leading_TRG_SF",
+                             weight=op.c_float(1.))
+            sel = sel.refine("mumu_subleading_TRG_SF",
+                             weight=op.c_float(1.))
 
         self.yields.add(sel, sel.name)
 
         return sel
 
-    def electronSF(self, sel):
-        """Apply Electron SF"""
+    def elelSF(self, sel):
+        """Apply lepton scalefactors for electron pair"""
         if self.is_MC:
             logger.info("Applying Electron SF for "+sel.name)
 
@@ -202,7 +249,7 @@ class ScaleFactors():
 
             systName = "sf"
             # Electron ID SF
-            electron_ID_sf = get_correction(
+            self.el_ID_sf = get_correction(
                 EGamma_SF_JSONFiles[self.era][0],
                 "Electron-ID-SF",
                 systVariations={"elIdSFup": f"{systName}up",
@@ -210,11 +257,12 @@ class ScaleFactors():
                 params=params,
                 systParam="ValType",
                 systNomName=systName,
+                defineOnFirstUse=False,
                 sel=sel
             )
 
             # Electron Trigger SF
-            el_trigger_sf = get_correction(
+            self.el_TRG_sf = get_correction(
                 (EGamma_SF_JSONFiles[self.era][0]).replace(
                     "electron", "electronHlt"),
                 "Electron-HLT-SF",
@@ -227,68 +275,98 @@ class ScaleFactors():
                         },
                 systParam="ValType",
                 systNomName=systName,
+                defineOnFirstUse=False,
                 sel=sel
             )
-
-            if sel.name == 'elPairMultiplicitySel':
-                # pt cut here since correction's available only for pt >= 10
-                sel = sel.refine(sel.name+"_electron_ID_SF", cut=[
-                    op.AND(self.firstElTightPair[0].pt >= 10,
-                           self.firstElTightPair[1].pt >= 10
-                           )],
-                    weight=[
-                        el_trigger_sf(self.firstElTightPair[0]),
-                        electron_ID_sf(self.firstElTightPair[0]),
-                        electron_ID_sf(self.firstElTightPair[1])]
-                )
-
-            elif sel.name == 'emuPairMultiplicitySel':
-                sel = sel.refine(sel.name+"_electron_ID_SF",
-                                 cut=[self.firstEmuTightPair[0].pt >= 10],
-                                 weight=[
-                                     el_trigger_sf(self.firstElTightPair[0]),
-                                     electron_ID_sf(self.firstEmuTightPair[0])]
-                                 )
-
-            else:
-                sel = sel.refine(sel.name+"_electron_ID_SF",
-                                 weight=op.c_float(1.))
+            # pt cut here since ID correction is available only for pt >= 10
+            sel = sel.refine('elel_leading_ID_SF',
+                             weight=[op.switch(
+                                 self.tightElectrons[0].pt >= 10, self.el_ID_sf(
+                                     self.tightElectrons[0]),
+                                 op.c_float(1.))]
+                             )
+            sel = sel.refine('elel_subleading_ID_SF',
+                             weight=[op.switch(
+                                 self.tightElectrons[1].pt >= 10, self.el_ID_sf(
+                                     self.tightElectrons[1]),
+                                 op.c_float(1.))]
+                             )
+            sel = sel.refine('elel_leading_TRG_SF',
+                             weight=[op.switch(
+                                 self.tightElectrons[0].pt >= 25, self.el_TRG_sf(
+                                     self.tightElectrons[0]),
+                                 op.c_float(1.))]
+                             )
+            sel = sel.refine('elel_subleading_TRG_SF',
+                             weight=[op.switch(
+                                 self.tightElectrons[1].pt >= 25, self.el_TRG_sf(
+                                     self.tightElectrons[1]),
+                                 op.c_float(1.))]
+                             )
         else:
-            sel = sel.refine(sel.name+"_electron_ID_SF",
-                             weight=op.c_float(1.))
+            sel = sel.refine('elel_leading_ID_SF', weight=op.c_float(1.))
+            sel = sel.refine('elel_subleading_ID_SF', weight=op.c_float(1.))
+            sel = sel.refine('elel_leading_TRG_SF', weight=op.c_float(1.))
+            sel = sel.refine('elel_subleading_TRG_SF', weight=op.c_float(1.))
 
         self.yields.add(sel, sel.name)
 
         return sel
 
-    def NoiseFilters(self, FlagBranch, sel):
-        "https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2#Run_3_2022_and_2023_data_and_MC"
-        flags = [FlagBranch.goodVertices,
-                 FlagBranch.globalSuperTightHalo2016Filter,
-                 FlagBranch.EcalDeadCellTriggerPrimitiveFilter,
-                 FlagBranch.BadPFMuonFilter,
-                 FlagBranch.BadPFMuonDzFilter,
-                 FlagBranch.hfNoisyHitsFilter,
-                 FlagBranch.eeBadScFilter,
-                 FlagBranch.ecalBadCalibFilter]
-        sel = sel.refine('NoiseFilters', cut=flags)
-        self.yields.add(sel, 'Noise filters')
+    def elmuSF(self, sel):
+        """Apply lepton scalefactors for electron-muon pair."""
+        if self.is_MC:
+            logger.info("Applying Electron SF for "+sel.name)
+            sel = sel.refine('elmu_el_ID_SF',
+                            weight=[op.switch(
+                                self.tightElectrons[0].pt >= 10, self.el_ID_sf(
+                                    self.tightElectrons[0]),
+                                op.c_float(1.))]
+                            )
+            sel = sel.refine('elmu_mu_ID_SF',
+                            weight=[op.switch(
+                                op.AND(self.tightMuons[0].pt >= 15.,
+                                        op.abs(self.tightMuons[0].eta) < 2.4),
+                                self.muon_ID_sf(self.tightMuons[0]),
+                                op.c_float(1.))]
+                            )
+            sel = sel.refine('elmu_mu_ISO_SF',
+                            weight=[op.switch(
+                                op.AND(self.tightMuons[0].pt >= 15.,
+                                        op.abs(self.tightMuons[0].eta) < 2.4),
+                                self.muon_ISO_sf(self.tightMuons[0]),
+                                op.c_float(1.))]
+                            )
+            sel = sel.refine('elmu_el_TRG_SF',
+                            weight=[op.switch(
+                                self.tightElectrons[0].pt >= 25, self.el_TRG_sf(
+                                    self.tightElectrons[0]),
+                                op.c_float(1.))]
+                            )
+            sel = sel.refine('elmu_mu_TRG_SF',
+                            weight=[op.switch(
+                                op.AND(self.tightMuons[0].pt >= 26.,
+                                        op.abs(self.tightMuons[0].eta) < 2.4),
+                                self.muon_TRG_sf(self.tightMuons[0]),
+                                op.c_float(1.))]
+                            )
+        else:
+            sel = sel.refine('elmu_el_ID_SF', weight=op.c_float(1.))
+            sel = sel.refine('elmu_mu_ID_SF', weight=op.c_float(1.))
+            sel = sel.refine('elmu_mu_ISO_SF', weight=op.c_float(1.))
+            sel = sel.refine('elmu_el_TRG_SF', weight=op.c_float(1.))
+            sel = sel.refine('elmu_mu_TRG_SF', weight=op.c_float(1.))
         return sel
 
-    def Z_pT_reweight(self, sel, sample, GenPartBranch):
-        """Apply DY Z pT reweighting"""
+    def Z_pT_reweight_mumu(self, sel, sample, GenPartBranch):
+        """Apply DY Z pT reweighting for muon pair from Z boson"""
         if self.is_MC and sample.startswith("DY"):
             from bamboo.scalefactors import get_correction
             logger.info("Applying DY Z pT reweighting for " + sel.name)
 
             DY_and_Recoil_path = self.git_project_dir+"/data/hleprare/DYandRecoilCorrlib/"
 
-            N_unc = get_correction(
-                DY_and_Recoil_path + DY_and_Recoil_JSONFiles[self.era],
-                "DY_pTll_reweighting_N_uncertainty",
-                params={"order": 'NLO'},
-                sel=sel
-            ) # this returns 10 for NLO samples - consult the json file
+            # for N_unc - consult the json file
 
             N_unc = 10
 
@@ -297,12 +375,12 @@ class ScaleFactors():
             systVariations.update(
                 {f"ZpTdown{i}": f"down{i}" for i in range(1, N_unc+1)})
 
-            Z_pT_corr = get_correction(
+            get_Z_pT_corr = get_correction(
                 DY_and_Recoil_path + DY_and_Recoil_JSONFiles[self.era],
                 "DY_pTll_reweighting",
                 params={
                     "order": 'NLO',
-                    "ptll": lambda Zpt: Zpt,
+                    "ptll": lambda leptons: op.rng_sum(leptons, lambda l: l.pt),
                 },
                 systNomName="nom",
                 systVariations=systVariations,
@@ -310,31 +388,63 @@ class ScaleFactors():
                 sel=sel
             )
 
-            def getZptWeight(GenPartBranch):
-                electrons = op.select(
+            def get_gen_parts(GenPartBranch):
+                gen_leptons = op.sort(op.select(
                     GenPartBranch, lambda p: op.AND(
                         p.status == 1,
-                        op.abs(p.pdgId) == 11,
+                        op.abs(p.pdgId) == 13,  # muons
                         ((op.static_cast("int", p.statusFlags) << 8) & 1),
-                    ))
-                muons = op.select(
-                    GenPartBranch, lambda p: op.AND(
-                        p.status == 1,
-                        op.abs(p.pdgId) == 13,
-                        ((op.static_cast("int", p.statusFlags) << 8) & 1),
-                    ))
-
-                total_e_pt = op.rng_sum(electrons, lambda p: p.pt)
-                total_m_pt = op.rng_sum(muons, lambda p: p.pt)
-
-                Z_pT = op.sum(total_e_pt, total_m_pt)
-
-                weight = Z_pT_corr(Z_pT)
-
-                return weight
+                    )), lambda p: -p.pt)
+                return gen_leptons
 
             sel = sel.refine(
-                sel.name+"_ZpT", weight=getZptWeight(GenPartBranch))
+                sel.name+"_ZpT", weight=get_Z_pT_corr(get_gen_parts(GenPartBranch)))
+        else:
+            sel = sel.refine(sel.name+"_ZpT", weight=op.c_float(1.))
+        self.yields.add(sel, sel.name)
+        return sel
+
+    def Z_pT_reweight_elel(self, sel, sample, GenPartBranch):
+        """Apply DY Z pT reweighting for electron pair from Z boson"""
+        if self.is_MC and sample.startswith("DY"):
+            from bamboo.scalefactors import get_correction
+            logger.info("Applying DY Z pT reweighting for " + sel.name)
+
+            DY_and_Recoil_path = self.git_project_dir+"/data/hleprare/DYandRecoilCorrlib/"
+
+            # for N_unc - consult the json file
+
+            N_unc = 10
+
+            systVariations = {
+                f"ZpTup{i}": f"up{i}" for i in range(1, N_unc+1)}
+            systVariations.update(
+                {f"ZpTdown{i}": f"down{i}" for i in range(1, N_unc+1)})
+
+            get_Z_pT_corr = get_correction(
+                DY_and_Recoil_path + DY_and_Recoil_JSONFiles[self.era],
+                "DY_pTll_reweighting",
+                params={
+                    "order": 'NLO',
+                    "ptll": lambda leptons: op.rng_sum(leptons, lambda l: l.pt),
+                },
+                systNomName="nom",
+                systVariations=systVariations,
+                systParam="syst",
+                sel=sel
+            )
+
+            def get_gen_parts(GenPartBranch):
+                gen_leptons = op.sort(op.select(
+                    GenPartBranch, lambda p: op.AND(
+                        p.status == 1,
+                        op.abs(p.pdgId) == 11,  # electrons
+                        ((op.static_cast("int", p.statusFlags) << 8) & 1),
+                    )), lambda p: -p.pt)
+                return gen_leptons
+
+            sel = sel.refine(
+                sel.name+"_ZpT", weight=get_Z_pT_corr(get_gen_parts(GenPartBranch)))
         else:
             sel = sel.refine(sel.name+"_ZpT", weight=op.c_float(1.))
         self.yields.add(sel, sel.name)
