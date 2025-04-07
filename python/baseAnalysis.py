@@ -258,19 +258,19 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
                     eraMode, eras),
                 verbose=self.args.verbose)
         plotsDir = 'plots'
-        # # to be automatised soon
-        # # activate the following lines to combine signal samples
-        # # hadd signal files and create another plots.yml called plots_full.yml
-        # plotsDir = 'plots_full'
-        # import os
-        # import shutil
-        # outDir = os.path.join(resultsdir, "normalizedSummedSignal")
-        # if os.path.isdir(outDir):
-        #     shutil.rmtree(outDir)
-        # os.makedirs(outDir)
-        # utils.custom_Plotit(cfgName, workdir, resultsdir, outDir, self.readCounters,
-        #                     config, plotIt=self.args.plotIt, verbose=self.args.verbose)
-        # # end of merging signal samples
+        # to be automatised soon
+        # activate the following lines to combine signal samples
+        # hadd signal files and create another plots.yml called plots_full.yml
+        plotsDir = 'plots_full'
+        import os
+        import shutil
+        outDir = os.path.join(resultsdir, "normalizedSummedSignal")
+        if os.path.isdir(outDir):
+            shutil.rmtree(outDir)
+        os.makedirs(outDir)
+        utils.custom_Plotit(cfgName, workdir, resultsdir, outDir, self.readCounters,
+                            config, plotIt=self.args.plotIt, verbose=self.args.verbose)
+        # end of merging signal samples
 
         # create pdf presentation
         if not self.mvaModels and not self.args.sync:
