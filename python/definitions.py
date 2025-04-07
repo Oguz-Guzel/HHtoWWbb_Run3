@@ -473,7 +473,7 @@ def ml_input_features(self):
             (op.rng_len(self.ak4Jets) > 0,
                 getattr(self.ak4Jets[0], 'btagPNetB')),
             op.c_float(0)),
-        # "j1_pt": get_jet_tree_var('pt', 0),
+        # "j1_pt": get_jet_tree_var('pt', 0), # the followings give narrowing error from size_t to float, it could be due to the number of inputs that I give to the model since they are 3 more and the model expects 5 inputs for jets, possibly the same issue with leptons
         # "j1_eta": get_jet_tree_var('eta', 0),
         # "j1_N": op.switch(
         #     op.rng_len(self.ak8Jets) > 0, op.rng_len(self.ak8Jets),
