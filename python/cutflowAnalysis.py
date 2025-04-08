@@ -202,27 +202,27 @@ class cutflowAnalysis(NanoBaseHHWWbb):
 
                 # DR between leading and sub-leading lepton
                 Plot.make1D("DL_boosted_DR_leptons_ee", op.deltaR(self.tightElectrons[0].p4, self.tightElectrons[1].p4), DL_boosted_ee, EqBin(
-                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLboostedEE_label),
+                    70, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLboostedEE_label),
                 Plot.make1D("DL_boosted_DR_leptons_mumu", op.deltaR(self.tightMuons[0].p4, self.tightMuons[1].p4), DL_boosted_mumu, EqBin(
-                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLboostedMuMu_label),
+                    70, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLboostedMuMu_label),
                 Plot.make1D("DL_boosted_DR_leptons_emu", op.deltaR(self.tightElectrons[0].p4, self.tightMuons[0].p4), DL_boosted_emu, EqBin(
-                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLboostedEMU_label),
+                    70, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLboostedEMU_label),
 
                 # DR between leading lepton and ak8 jet
                 Plot.make1D("DL_boosted_DR_leadingleptonANDak8bjet_ee", op.deltaR(self.tightElectrons[0].p4, self.ak8Jets[0].p4), DL_boosted_ee, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLboostedEE_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLboostedEE_label),
                 Plot.make1D("DL_boosted_DR_leadingleptonANDak8bjet_mumu", op.deltaR(self.tightMuons[0].p4, self.ak8Jets[0].p4), DL_boosted_mumu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLboostedMuMu_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLboostedMuMu_label),
                 Plot.make1D("DL_boosted_DR_leadingleptonANDak8bjet_emu", op.deltaR(op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightElectrons[0].p4, self.tightMuons[0].p4), self.ak8Jets[0].p4), DL_boosted_emu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLboostedEMU_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLboostedEMU_label),
 
                 # DR between subleading lepton and ak8 jet
                 Plot.make1D("DL_boosted_DR_subleadingleptonANDak8bjet_ee", op.deltaR(self.tightElectrons[1].p4, self.ak8Jets[0].p4), DL_boosted_ee, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLboostedEE_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLboostedEE_label),
                 Plot.make1D("DL_boosted_DR_subleadingleptonANDak8bjet_mumu", op.deltaR(self.tightMuons[1].p4, self.ak8Jets[0].p4), DL_boosted_mumu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLboostedMuMu_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLboostedMuMu_label),
                 Plot.make1D("DL_boosted_DR_subleadingleptonANDak8bjet_emu", op.deltaR(op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightMuons[0].p4, self.tightElectrons[0].p4), self.ak8Jets[0].p4), DL_boosted_emu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLboostedEMU_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLboostedEMU_label),
 
                 # number of electrons
                 Plot.make1D("DL_boosted_nElectrons_ee", op.rng_len(self.tightElectrons), DL_boosted_ee, EqBin(
@@ -388,17 +388,17 @@ class cutflowAnalysis(NanoBaseHHWWbb):
 
                 # DR between leading and sub-leading jet
                 Plot.make1D("DL_resolved_1b_DR_jets_ee", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), DL_resolved_1b_ee, EqBin(
-                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_1b_EE_label),
+                    70, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_DR_jets_mumu", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), DL_resolved_1b_mumu, EqBin(
-                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_1b_MuMu_label),
+                    70, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_DR_jets_emu", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), DL_resolved_1b_emu, EqBin(
-                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_1b_EMu_label),
+                    70, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_DR_jets_ee", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), DL_resolved_2b_ee, EqBin(
-                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_2b_EE_label),
+                    70, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_DR_jets_mumu", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), DL_resolved_2b_mumu, EqBin(
-                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_2b_MuMu_label),
+                    70, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_DR_jets_emu", op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4), DL_resolved_2b_emu, EqBin(
-                    35, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_2b_EMu_label),
+                    70, 0, 7), title="DR(j1,j2)", xTitle="Angular distance between jets", plotopts=DLresolved_2b_EMu_label),
 
                 # Invariant mass of leptons
                 Plot.make1D("DL_resolved_1b_InvM_ee", op.invariant_mass(self.tightElectrons[0].p4, self.tightElectrons[1].p4), DL_resolved_1b_ee, EqBin(
@@ -528,45 +528,45 @@ class cutflowAnalysis(NanoBaseHHWWbb):
 
                 # DR between leading and sub-leading lepton
                 Plot.make1D("DL_resolved_1b_DR_leptons_ee", op.deltaR(self.tightElectrons[0].p4, self.tightElectrons[1].p4), DL_resolved_1b_ee, EqBin(
-                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_1b_EE_label),
+                    70, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_DR_leptons_mumu", op.deltaR(self.tightMuons[0].p4, self.tightMuons[1].p4), DL_resolved_1b_mumu, EqBin(
-                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_1b_MuMu_label),
+                    70, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_DR_leptons_emu", op.deltaR(self.tightElectrons[0].p4, self.tightMuons[0].p4), DL_resolved_1b_emu, EqBin(
-                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_1b_EMu_label),
+                    70, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_DR_leptons_ee", op.deltaR(self.tightElectrons[0].p4, self.tightElectrons[1].p4), DL_resolved_2b_ee, EqBin(
-                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_2b_EE_label),
+                    70, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_DR_leptons_mumu", op.deltaR(self.tightMuons[0].p4, self.tightMuons[1].p4), DL_resolved_2b_mumu, EqBin(
-                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_2b_MuMu_label),
+                    70, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_DR_leptons_emu", op.deltaR(self.tightElectrons[0].p4, self.tightMuons[0].p4), DL_resolved_2b_emu, EqBin(
-                    35, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_2b_EMu_label),
+                    70, 0, 7), title="DR(l1,l2)", xTitle="Angular distance between leptons", plotopts=DLresolved_2b_EMu_label),
 
                 # DR between leading lepton and ak4 b jet
                 Plot.make1D("DL_resolved_1b_DR_leadingleptonANDak4bjet_ee", op.deltaR(self.tightElectrons[0].p4, self.ak4BJets[0].p4), DL_resolved_1b_ee, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_1b_EE_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_DR_leadingleptonANDak4bjet_mumu", op.deltaR(self.tightMuons[0].p4, self.ak4BJets[0].p4), DL_resolved_1b_mumu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_1b_MuMu_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_DR_leadingleptonANDak4bjet_emu", op.deltaR(op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightElectrons[0].p4, self.tightMuons[0].p4), self.ak4BJets[0].p4), DL_resolved_1b_emu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_1b_EMu_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_DR_leadingleptonANDak4bjet_ee", op.deltaR(self.tightElectrons[0].p4, self.ak4BJets[0].p4), DL_resolved_2b_ee, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_2b_EE_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_DR_leadingleptonANDak4bjet_mumu", op.deltaR(self.tightMuons[0].p4, self.ak4BJets[0].p4), DL_resolved_2b_mumu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_2b_MuMu_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_DR_leadingleptonANDak4bjet_emu", op.deltaR(op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightElectrons[0].p4, self.tightMuons[0].p4), self.ak4BJets[0].p4), DL_resolved_2b_emu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_2b_EMu_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(leading-lepton, ak8bjet)", plotopts=DLresolved_2b_EMu_label),
 
                 # DR between sub-leading lepton and ak4 b jet
                 Plot.make1D("DL_resolved_1b_DR_subleadingleptonANDak4bjet_ee", op.deltaR(self.tightElectrons[1].p4, self.ak4BJets[0].p4), DL_resolved_1b_ee, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_1b_EE_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_1b_EE_label),
                 Plot.make1D("DL_resolved_1b_DR_subleadingleptonANDak4bjet_mumu", op.deltaR(self.tightMuons[1].p4, self.ak4BJets[0].p4), DL_resolved_1b_mumu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_1b_MuMu_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_1b_MuMu_label),
                 Plot.make1D("DL_resolved_1b_DR_subleadingleptonANDak4bjet_emu", op.deltaR(op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightMuons[0].p4, self.tightElectrons[0].p4), self.ak4BJets[0].p4), DL_resolved_1b_emu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_1b_EMu_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_DR_subleadingleptonANDak4bjet_ee", op.deltaR(self.tightElectrons[1].p4, self.ak4BJets[0].p4), DL_resolved_2b_ee, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_2b_EE_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_2b_EE_label),
                 Plot.make1D("DL_resolved_2b_DR_subleadingleptonANDak4bjet_mumu", op.deltaR(self.tightMuons[1].p4, self.ak4BJets[0].p4), DL_resolved_2b_mumu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_2b_MuMu_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_2b_MuMu_label),
                 Plot.make1D("DL_resolved_2b_DR_subleadingleptonANDak4bjet_emu", op.deltaR(op.switch((self.tightElectrons[0].pt >= self.tightMuons[0].pt), self.tightMuons[0].p4, self.tightElectrons[0].p4), self.ak4BJets[0].p4), DL_resolved_2b_emu, EqBin(
-                    35, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_2b_EMu_label),
+                    70, 0, 7), title="DR(l1,ak8)", xTitle="\Delta R(subleading-lepton, ak8bjet)", plotopts=DLresolved_2b_EMu_label),
 
                 # number of electrons
                 Plot.make1D("DL_resolved_1b_nElectrons_ee", op.rng_len(self.tightElectrons), DL_resolved_1b_ee, EqBin(
