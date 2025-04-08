@@ -68,6 +68,7 @@ def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
         'eePairSel', cut=[
             ptCutSameFlavourPair(self.tightElectrons),
             op.rng_len(self.tightElectrons) == 2,
+            op.rng_len(self.tightMuons) == 0,
             self.tightElectrons[0].charge != self.tightElectrons[1].charge,
             op.NOT(op.invariant_mass(self.tightElectrons[0].p4, self.tightElectrons[1].p4) < 12.),
             op.NOT(op.abs(op.invariant_mass(self.tightElectrons[0].p4, self.tightElectrons[1].p4) - Zmass) < 10.)
@@ -76,6 +77,7 @@ def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
         'mumuPairSel', cut=[
             ptCutSameFlavourPair(self.tightMuons),
             op.rng_len(self.tightMuons) == 2,
+            op.rng_len(self.tightElectrons) == 0,
             self.tightMuons[0].charge != self.tightMuons[1].charge,
             op.NOT(op.invariant_mass(self.tightMuons[0].p4, self.tightMuons[1].p4) < 12.),
             op.NOT(op.abs(op.invariant_mass(self.tightMuons[0].p4, self.tightMuons[1].p4) - Zmass) < 10.)
