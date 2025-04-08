@@ -359,11 +359,11 @@ class cutflowAnalysis(NanoBaseHHWWbb):
                     100, 0, 500), title="pT(j2)", xTitle="Sub-leading jet p_{T} (GeV/c)", plotopts=DLresolved_2b_EMu_label),
 
                 # sub-leading jet eta
-                Plot.make1D("DL_resolved_1b_subleadingJet_eta_ee", self.ak4BJets[1].eta, DL_resolved_1b_ee, EqBin(
+                Plot.make1D("DL_resolved_1b_subleadingJet_eta_ee", self.ak4Jets[1].eta, DL_resolved_1b_ee, EqBin(
                     30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_1b_EE_label),
-                Plot.make1D("DL_resolved_1b_subleadingJet_eta_mumu", self.ak4BJets[1].eta, DL_resolved_1b_mumu, EqBin(
+                Plot.make1D("DL_resolved_1b_subleadingJet_eta_mumu", self.ak4Jets[1].eta, DL_resolved_1b_mumu, EqBin(
                     30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_1b_MuMu_label),
-                Plot.make1D("DL_resolved_1b_subleadingJet_eta_emu", self.ak4BJets[1].eta, DL_resolved_1b_emu, EqBin(
+                Plot.make1D("DL_resolved_1b_subleadingJet_eta_emu", self.ak4Jets[1].eta, DL_resolved_1b_emu, EqBin(
                     30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_subleadingJet_eta_ee", self.ak4BJets[1].eta, DL_resolved_2b_ee, EqBin(
                     30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_2b_EE_label),
@@ -373,11 +373,11 @@ class cutflowAnalysis(NanoBaseHHWWbb):
                     30, -3, 3), title="eta(j2)", xTitle="Sub-leading jet \eta", plotopts=DLresolved_2b_EMu_label),
 
                 # btagging score of the jet
-                Plot.make1D("DL_resolved_1b_subleadingJet_btagScore_ee", self.ak4BJets[1].btagPNetB, DL_resolved_1b_ee, EqBin(
+                Plot.make1D("DL_resolved_1b_subleadingJet_btagScore_ee", self.ak4Jets[1].btagPNetB, DL_resolved_1b_ee, EqBin(
                     100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolved_1b_EE_label),
-                Plot.make1D("DL_resolved_1b_subleadingJet_btagScore_mumu", self.ak4BJets[1].btagPNetB, DL_resolved_1b_mumu, EqBin(
+                Plot.make1D("DL_resolved_1b_subleadingJet_btagScore_mumu", self.ak4Jets[1].btagPNetB, DL_resolved_1b_mumu, EqBin(
                     100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolved_1b_MuMu_label),
-                Plot.make1D("DL_resolved_1b_subleadingJet_btagScore_emu", self.ak4BJets[1].btagPNetB, DL_resolved_1b_emu, EqBin(
+                Plot.make1D("DL_resolved_1b_subleadingJet_btagScore_emu", self.ak4Jets[1].btagPNetB, DL_resolved_1b_emu, EqBin(
                     100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolved_1b_EMu_label),
                 Plot.make1D("DL_resolved_2b_subleadingJet_btagScore_ee", self.ak4BJets[1].btagPNetB, DL_resolved_2b_ee, EqBin(
                     100, 0, 1), title="btagScore(ak4jet)", xTitle="B-tagging score of the subleadingJet jet", plotopts=DLresolved_2b_EE_label),
