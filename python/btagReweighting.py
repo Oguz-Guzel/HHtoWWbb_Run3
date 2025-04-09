@@ -129,7 +129,7 @@ class btagReweighting(_base):
         plots.append(self.yields)
 
         pre_sels = makeDLSelection(
-            self, noSel, tree, sample, apply_btagReweight=False)
+            self, noSel, tree, sample, btagReweightStudy=True)
 
 
         for preSel, btagSel in pre_sels.values():

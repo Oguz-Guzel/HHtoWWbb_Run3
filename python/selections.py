@@ -43,7 +43,7 @@ def ptCutDifferentFlavourPair(dilep) -> bool:
     )
 
 
-def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
+def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False):
     """Creates a list of selection objects for the Dilepton final state.
 
     Args:
@@ -116,11 +116,11 @@ def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
     # btagging sf and reweighting - to be done before
     # any b-tagged jet selection
     DL_boosted_pre_ee_btagSF = sf.btagSF(
-        self, DL_boosted_pre_ee, self.ak8Jets, jet_tagger="particleNet_XbbVsQCD", apply_reweighting=apply_btagReweight)
+        self, DL_boosted_pre_ee, self.ak8Jets, jet_tagger="particleNet_XbbVsQCD", btagReweightStudy=btagReweightStudy)
     DL_boosted_pre_mumu_btagSF = sf.btagSF(
-        self, DL_boosted_pre_mumu, self.ak8Jets, jet_tagger="particleNet_XbbVsQCD", apply_reweighting=apply_btagReweight)
+        self, DL_boosted_pre_mumu, self.ak8Jets, jet_tagger="particleNet_XbbVsQCD", btagReweightStudy=btagReweightStudy)
     DL_boosted_pre_emu_btagSF = sf.btagSF(
-        self, DL_boosted_pre_emu, self.ak8Jets, jet_tagger="particleNet_XbbVsQCD", apply_reweighting=apply_btagReweight)
+        self, DL_boosted_pre_emu, self.ak8Jets, jet_tagger="particleNet_XbbVsQCD", btagReweightStudy=btagReweightStudy)
 
     # boosted -> at least one b-tagged ak8 jet
     DL_boosted_ee = DL_boosted_pre_ee_btagSF.refine(
@@ -145,11 +145,11 @@ def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
     # btagging sf for resolved.
     # default jet_tagger is btagPNetB, hence we're using that here
     DL_resolved_pre_ee_btagSF = sf.btagSF(
-        self, DL_resolved_pre_ee, self.ak4Jets, apply_reweighting=apply_btagReweight)
+        self, DL_resolved_pre_ee, self.ak4Jets, btagReweightStudy=btagReweightStudy)
     DL_resolved_pre_mumu_btagSF = sf.btagSF(
-        self, DL_resolved_pre_mumu, self.ak4Jets, apply_reweighting=apply_btagReweight)
+        self, DL_resolved_pre_mumu, self.ak4Jets, btagReweightStudy=btagReweightStudy)
     DL_resolved_pre_emu_btagSF = sf.btagSF(
-        self, DL_resolved_pre_emu, self.ak4Jets, apply_reweighting=apply_btagReweight)
+        self, DL_resolved_pre_emu, self.ak4Jets, btagReweightStudy=btagReweightStudy)
 
     # resolved -> and at least two ak4 jets with 1 or at least 2 b-tagged jets and no ak8 jets
     DL_resolved_1b_ee = DL_resolved_pre_ee_btagSF.refine(
@@ -256,4 +256,4 @@ def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
     self.yields.add(DL_VBF_resolved_emu, 'DL VBF resolved emu')
     self.yields.add(DL_VBF_boosted_emu, 'DL VBF boosted emu')
 
-    return pre_final_state_sels if not apply_btagReweight else DL_selections
+    return pre_final_state_sels if btagReweightStudy else DL_selections

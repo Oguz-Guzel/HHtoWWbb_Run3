@@ -81,7 +81,7 @@ class ScaleFactors():
 
         return sel
 
-    def btagSF(self, sel, jets, json_tagger="particleNet", jet_tagger="btagPNetB", apply_reweighting=True):
+    def btagSF(self, sel, jets, json_tagger="particleNet", jet_tagger="btagPNetB", btagReweightStudy=False):
         """Apply btagging SF"""
         if self.is_MC:
             from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
@@ -89,7 +89,7 @@ class ScaleFactors():
             def btvSF(flav): return get_bTagSF_itFit(
                 BTV_SF_JSONFiles[self.era], json_tagger, jet_tagger, flav, sel=sel, decorr_eras=True, era=self.era)
             btvWeight = makeBtagWeightItFit(jets, btvSF)
-            if apply_reweighting:
+            if not btagReweightStudy:
                 btag_corr = get_correction(
                     f"{self.git_project_dir}/data/{self.era[:4]}_btagSF_reweight.json.gz",
                     "Ratio_btagSF_shape",
