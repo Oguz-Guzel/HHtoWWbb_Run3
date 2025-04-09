@@ -128,7 +128,7 @@ class btagReweighting(_base):
         # cutflow report
         plots.append(self.yields)
 
-        _, pre_sels = makeDLSelection(
+        pre_sels = makeDLSelection(
             self, noSel, tree, sample, apply_btagReweight=False)
 
 

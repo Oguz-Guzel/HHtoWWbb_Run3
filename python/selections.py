@@ -256,4 +256,4 @@ def makeDLSelection(self, sel, tree, sample, apply_btagReweight=True):
     self.yields.add(DL_VBF_resolved_emu, 'DL VBF resolved emu')
     self.yields.add(DL_VBF_boosted_emu, 'DL VBF boosted emu')
 
-    return DL_selections, pre_final_state_sels
+    return pre_final_state_sels if not apply_btagReweight else DL_selections

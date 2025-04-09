@@ -29,7 +29,7 @@ class cutflowAnalysis(NanoBaseHHWWbb):
          DL_resolved_1b_ee, DL_resolved_1b_mumu, DL_resolved_1b_emu,
          DL_resolved_2b_ee, DL_resolved_2b_mumu, DL_resolved_2b_emu,
          DL_VBF_resolved_ee, DL_VBF_resolved_mumu, DL_VBF_resolved_emu,
-         DL_VBF_boosted_ee, DL_VBF_boosted_mumu, DL_VBF_boosted_emu], _ = makeDLSelection(
+         DL_VBF_boosted_ee, DL_VBF_boosted_mumu, DL_VBF_boosted_emu] = makeDLSelection(
             self, noSel, tree, sample)
 
         event_selections = [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu,
