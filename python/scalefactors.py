@@ -241,7 +241,7 @@ class ScaleFactors():
             params = {"pt": lambda e: e.pt,
                       "eta": lambda e: e.eta,
                       "year": EGamma_SF_JSONFiles[self.era][1],
-                      "WorkingPoint": "wp90noiso"}
+                      "WorkingPoint": "wp90iso"}
 
             # add phi for 2023 and 2023BPix
             if self.era in ['2023', '2023BPix']:
