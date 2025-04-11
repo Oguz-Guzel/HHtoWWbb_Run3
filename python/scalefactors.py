@@ -108,8 +108,8 @@ class ScaleFactors():
             btvWeight = op.c_float(1.)
             btag_reweight = op.c_float(1.)
 
-        sel = sel.refine(sel.name+"_btagSF", weight=btvWeight*btag_reweight)
-
+        sel = sel.refine(sel.name+"_btagSF", weight=btvWeight)
+        sel = sel.refine(sel.name+"_btagRW", weight=btag_reweight)
         self.yields.add(sel, sel.name)
 
         return sel
