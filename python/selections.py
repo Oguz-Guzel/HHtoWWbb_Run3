@@ -92,11 +92,11 @@ def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, DYestimati
         ])
 
     if not DYestimation:
-        elel_sel = sel.refine('eePairZpeakSel', cut=[
+        elel_sel = elel_sel.refine('eePairZpeakSel', cut=[
             op.NOT(op.abs(op.invariant_mass(
                 self.tightElectrons[0].p4, self.tightElectrons[1].p4) - Zmass) < 10.)
         ])
-        mumu_sel = sel.refine('mumuPairZpeakSel', cut=[
+        mumu_sel = mumu_sel.refine('mumuPairZpeakSel', cut=[
             op.NOT(op.abs(op.invariant_mass(
                 self.tightMuons[0].p4, self.tightMuons[1].p4) - Zmass) < 10.)
         ])
