@@ -135,7 +135,7 @@ def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, DYestimati
 
     if DYestimation:
         Z_peak_selections = []
-        # boosted
+        # no b-jets
         DL_boosted_ee = DL_boosted_pre_ee_btagSF.refine(
             'DL_boosted_ee', cut=op.rng_len(self.ak8BJets) == 0)
         DL_boosted_mumu = DL_boosted_pre_mumu_btagSF.refine(
@@ -175,7 +175,7 @@ def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, DYestimati
         self, DL_resolved_pre_emu, self.ak4Jets, btagReweightStudy=btagReweightStudy)
 
     if DYestimation:
-        # resolved
+        # no b-jets
         DL_resolved_ee = DL_resolved_pre_ee_btagSF.refine(
             'DL_resolved_ee',
             cut=(op.AND(
@@ -186,13 +186,13 @@ def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, DYestimati
             'DL_resolved_mumu',
             cut=(op.AND(
                 op.rng_len(self.ak4BJets) == 0,
-                op.rng_len(self.ak8Jets) == 0))  # hence no ak8 b-jet
+                op.rng_len(self.ak8Jets) == 0))
         )
         DL_resolved_emu = DL_resolved_pre_emu_btagSF.refine(
             'DL_resolved_emu',
             cut=(op.AND(
                 op.rng_len(self.ak4BJets) == 0,
-                op.rng_len(self.ak8Jets) == 0))  # hence no ak8 b-jet
+                op.rng_len(self.ak8Jets) == 0))
         )
         Z_peak_selections.extend(
             [DL_resolved_ee, DL_resolved_mumu, DL_resolved_emu])
