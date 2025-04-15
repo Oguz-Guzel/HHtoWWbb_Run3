@@ -366,6 +366,28 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022EE:
   legend: 'HH\rightarrow bbll\nu\nu'
 
 # ### BSM ###
+ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022:
+  type: signal
+  era: '2022'
+  db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-0p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv13-133X_mcRun3_2022_realistic_ForNanov13_v1-v2/NANOAODSIM
+  cross-section: 0.0653 # from XSDB
+  branching-ratio: 0.027669886574221
+  generated-events: genEventSumw
+  split: *signal_split
+  line-color: 4
+  legend: 'HH\rightarrow bbll\nu\nu kl 2p45'
+
+ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022EE:
+  type: signal
+  era: '2022EE'
+  db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-0p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv13-133X_mcRun3_2022_realistic_postEE_ForNanov13_v1-v1/NANOAODSIM
+  cross-section: 0.0653 # from XSDB
+  branching-ratio: 0.027669886574221
+  generated-events: genEventSumw
+  split: *signal_split
+  line-color: 4
+  legend: 'HH\rightarrow bbll\nu\nu kl 2p45'
+
 ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022:
   type: signal
   era: '2022'
@@ -374,7 +396,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022:
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
   split: *signal_split
-  line-color: 4
+  line-color: 5
   legend: 'HH\rightarrow bbll\nu\nu kl 2p45'
 
 ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022EE:
@@ -385,7 +407,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022EE:
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
   split: *signal_split
-  line-color: 4
+  line-color: 5
   legend: 'HH\rightarrow bbll\nu\nu kl 2p45'
 
 ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022:
@@ -396,18 +418,18 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022:
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
   split: *signal_split
-  line-color: 5
+  line-color: 6
   legend: 'HH\rightarrow bbll\nu\nu kl 5p00'
 
 ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022EE:
   type: signal
   era: '2022EE'
-  db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-5p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv13-133X_mcRun3_2022_realistic_ForNanov13_v1-v2/NANOAODSIM
+  db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-5p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv13-133X_mcRun3_2022_realistic_postEE_ForNanov13_v1-v2/NANOAODSIM
   cross-section: 0.08349
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
   split: *signal_split
-  line-color: 5
+  line-color: 6
   legend: 'HH\rightarrow bbll\nu\nu kl 5p00'
 
 # VBF SM signal
