@@ -91,7 +91,7 @@ class ScaleFactors():
             btvWeight = makeBtagWeightItFit(jets, btvSF)
             if not btagReweightStudy:
                 btag_corr = get_correction(
-                    f"{self.git_project_dir}/data/{self.era[:4]}_btagSF_reweight.json.gz",
+                    f"{self.git_project_dir}/data/{self.era[:4]}_btagSF_reweight_v1_2_3.json.gz",
                     "Ratio_btagSF_shape",
                     params={
                         "year": self.era,
@@ -373,9 +373,9 @@ class ScaleFactors():
             N_unc = 10
 
             systVariations = {
-                f"ZpTup{i}": f"up{i}" for i in range(1, N_unc+1)}
+                f"ZpT{i}up": f"up{i}" for i in range(1, N_unc+1)}
             systVariations.update(
-                {f"ZpTdown{i}": f"down{i}" for i in range(1, N_unc+1)})
+                {f"ZpT{i}down": f"down{i}" for i in range(1, N_unc+1)})
 
             get_Z_pT_corr = get_correction(
                 DY_and_Recoil_path + DY_and_Recoil_JSONFiles[self.era],
@@ -419,9 +419,9 @@ class ScaleFactors():
             N_unc = 10
 
             systVariations = {
-                f"ZpTup{i}": f"up{i}" for i in range(1, N_unc+1)}
+                f"ZpT{i}up": f"up{i}" for i in range(1, N_unc+1)}
             systVariations.update(
-                {f"ZpTdown{i}": f"down{i}" for i in range(1, N_unc+1)})
+                {f"ZpT{i}down": f"down{i}" for i in range(1, N_unc+1)})
 
             get_Z_pT_corr = get_correction(
                 DY_and_Recoil_path + DY_and_Recoil_JSONFiles[self.era],
