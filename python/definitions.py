@@ -76,7 +76,7 @@ def elePreSel(electrons):
         op.abs(el.dz) <= 0.1,
         el.sip3d <= 8,
         el.miniPFRelIso_all <= 0.4,
-        el.mvaIso_WP90,  # no mvaNoIso_WPL for run3 signal, using this instead
+        el.mvaNoIso_WP80,  # no mvaNoIso_WPL for run3 signal, using this instead
         el.lostHits <= 1
     ))
 
