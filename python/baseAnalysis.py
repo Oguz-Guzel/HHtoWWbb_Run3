@@ -190,22 +190,12 @@ class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
             except AttributeError:
                 print("Couldn't find branch tree.HLT.%s, cross check!" % HLT)
 
-        if self.era == '2022':
-            if sample.startswith("SingleMuon_") or sample.startswith("DoubleMuon_"):
-                addHLTPath("DoubleMuon_",
-                           "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
-                addHLTPath("SingleMuon_", "IsoMu24")
-            else:
-                addHLTPath("Muon_",
-                           "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
-                addHLTPath("Muon_", "IsoMu24")
-
-        else:
             addHLTPath("Muon_", "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
             addHLTPath("Muon_", "IsoMu24")
-
         addHLTPath("EGamma_", "Ele30_WPTight_Gsf")
         addHLTPath("EGamma_", "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL")
+        addHLTPath("EGamma_", "DoubleEle33_CaloIdL_MW")
+        addHLTPath("EGamma_", "Ele50_CaloIdVT_GsfTrkIdT_PFJet165")
         addHLTPath("MuonEG_", "Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
         addHLTPath("MuonEG_", "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
         addHLTPath("MuonEG_", "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL")
