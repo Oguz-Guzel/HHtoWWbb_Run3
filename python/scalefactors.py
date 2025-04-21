@@ -360,8 +360,8 @@ class ScaleFactors():
             sel = sel.refine('elmu_mu_TRG_SF', weight=op.c_float(1.))
         return sel
 
-    def Z_pT_reweight_mumu(self, sel, sample, GenPartBranch):
-        """Apply DY Z pT reweighting for muon pair from Z boson"""
+    def Z_pT_reweight(self, sel, sample, GenPartBranch, pdgId):
+        """Apply DY Z pT reweighting for given lepton pair."""
         if self.is_MC and sample.startswith("DY"):
             from bamboo.scalefactors import get_correction
             logger.info("Applying DY Z pT reweighting for " + sel.name)
@@ -390,63 +390,17 @@ class ScaleFactors():
                 sel=sel
             )
 
-            def get_gen_parts(GenPartBranch):
+            def get_gen_parts(GenPartBranch, pdgId):
                 gen_leptons = op.sort(op.select(
                     GenPartBranch, lambda p: op.AND(
                         p.status == 1,
-                        op.abs(p.pdgId) == 13,  # muons
+                        op.abs(p.pdgId) == pdgId,
                         ((op.static_cast("int", p.statusFlags) << 8) & 1),
                     )), lambda p: -p.pt)
                 return gen_leptons
 
             sel = sel.refine(
-                sel.name+"_ZpT", weight=get_Z_pT_corr(get_gen_parts(GenPartBranch)))
-        else:
-            sel = sel.refine(sel.name+"_ZpT", weight=op.c_float(1.))
-        self.yields.add(sel, sel.name)
-        return sel
-
-    def Z_pT_reweight_elel(self, sel, sample, GenPartBranch):
-        """Apply DY Z pT reweighting for electron pair from Z boson"""
-        if self.is_MC and sample.startswith("DY"):
-            from bamboo.scalefactors import get_correction
-            logger.info("Applying DY Z pT reweighting for " + sel.name)
-
-            DY_and_Recoil_path = self.git_project_dir+"/data/hleprare/DYandRecoilCorrlib/"
-
-            # for N_unc - consult the json file
-
-            N_unc = 10
-
-            systVariations = {
-                f"ZpT{i}up": f"up{i}" for i in range(1, N_unc+1)}
-            systVariations.update(
-                {f"ZpT{i}down": f"down{i}" for i in range(1, N_unc+1)})
-
-            get_Z_pT_corr = get_correction(
-                DY_and_Recoil_path + DY_and_Recoil_JSONFiles[self.era],
-                "DY_pTll_reweighting",
-                params={
-                    "order": 'NLO',
-                    "ptll": lambda leptons: op.rng_sum(leptons, lambda l: l.pt),
-                },
-                systNomName="nom",
-                systVariations=systVariations,
-                systParam="syst",
-                sel=sel
-            )
-
-            def get_gen_parts(GenPartBranch):
-                gen_leptons = op.sort(op.select(
-                    GenPartBranch, lambda p: op.AND(
-                        p.status == 1,
-                        op.abs(p.pdgId) == 11,  # electrons
-                        ((op.static_cast("int", p.statusFlags) << 8) & 1),
-                    )), lambda p: -p.pt)
-                return gen_leptons
-
-            sel = sel.refine(
-                sel.name+"_ZpT", weight=get_Z_pT_corr(get_gen_parts(GenPartBranch)))
+                sel.name+"_ZpT", weight=get_Z_pT_corr(get_gen_parts(GenPartBranch, pdgId)))
         else:
             sel = sel.refine(sel.name+"_ZpT", weight=op.c_float(1.))
         self.yields.add(sel, sel.name)

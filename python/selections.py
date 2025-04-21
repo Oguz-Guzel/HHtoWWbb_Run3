@@ -107,10 +107,10 @@ def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, DYestimati
     elmu_SF_sel = sf.elmuSF(self, elmu_sel)
 
     # DY Z pT reweighting
-    elel_SF_sel = sf.Z_pT_reweight_elel(
-        self, elel_SF_sel, sample, genPartBranch)
-    mumu_SF_sel = sf.Z_pT_reweight_mumu(
-        self, mumu_SF_sel, sample, genPartBranch)
+    elel_SF_sel = sf.Z_pT_reweight(
+        self, elel_SF_sel, sample, genPartBranch, pdgId=11)
+    mumu_SF_sel = sf.Z_pT_reweight(
+        self, mumu_SF_sel, sample, genPartBranch, pdgId=13)
 
     # boosted pre-final state selections for btag reweighting
     DL_boosted_pre_ee = elel_SF_sel.refine(
