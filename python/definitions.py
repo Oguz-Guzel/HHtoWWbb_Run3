@@ -1,4 +1,5 @@
 from bamboo import treefunctions as op
+from bamboo.treeproxies import BoolProxy
 
 
 # Lepton functions
@@ -34,6 +35,19 @@ def lepton_associatedJetLessThanTightBtag(lep, era):
     """Check if the lepton's associated jet has btag score less than tight WP"""
     return op.OR(
         op.NOT(hasAssociatedJet(lep)), lep.jet.btagPNetB <= ak4TightBtagWP(era))
+
+
+def jetIdCorrection(j):
+    """Correction for jet tight Id in nanoAOD v12.
+    https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID13p6TeV#nanoAOD_Flags"""
+    passJetIdTight: BoolProxy = (j.jetId & op.c_int(1 << 1)) > 0
+    return op.multiSwitch(
+        (op.abs(j.eta) <= 2.7,
+            passJetIdTight),
+        (op.AND(op.abs(j.eta) > 2.7, op.abs(j.eta) <= 3.0),
+            op.AND(passJetIdTight, j.neHEF < 0.99)),
+        op.AND(passJetIdTight, j.neEmEF < 0.4)
+    )
 
 # Object definitions
 
@@ -118,8 +132,7 @@ def elTightSel(electrons):
 def ak4jetDef(jets):
     """AK4 jet selection"""
     return op.select(jets, lambda jet: op.AND(
-        (jet.jetId >> 1 & 0x1) == 1,  # tight
-        (jet.jetId >> 2 & 0x1) == 1,  # tightleptveto
+        jetIdCorrection(jet),
         jet.pt >= 25.,
         op.abs(jet.eta) <= 2.4,
         jet.btagPNetB >= 0,  # due to some events having negative value for this
@@ -250,8 +263,7 @@ def cleaningWithRespectToLeadingLeptons(electrons, muons, DR):
 def VBFjetDef(jets):
     """VBF jet selection"""
     return op.select(jets, lambda jet: op.AND(
-        (jet.jetId >> 1 & 0x1) == 1,  # tight
-        (jet.jetId >> 2 & 0x1) == 1,  # tightleptveto
+        jetIdCorrection(jet),
         jet.pt >= 30.,
         op.abs(jet.eta) <= 4.7,
         op.OR(
