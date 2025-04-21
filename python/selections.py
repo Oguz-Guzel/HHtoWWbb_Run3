@@ -43,7 +43,7 @@ def ptCutDifferentFlavourPair(dilep) -> bool:
     )
 
 
-def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, DYestimation=False):
+def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, DYControlRegion=False, TTbarControlRegion=False):
     """Creates a list of selection objects for the Dilepton final state.
 
     Args:
@@ -91,14 +91,32 @@ def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, DYestimati
                 self.tightElectrons[0].p4, self.tightMuons[0].p4) < 12.),
         ])
 
-    if not DYestimation:
+    if DYControlRegion:
         elel_sel = elel_sel.refine('eePairZpeakSel', cut=[
-            op.NOT(op.abs(op.invariant_mass(
-                self.tightElectrons[0].p4, self.tightElectrons[1].p4) - Zmass) < 10.)
+            op.abs(op.invariant_mass(
+                self.tightElectrons[0].p4, self.tightElectrons[1].p4) - Zmass) <= 10.
         ])
         mumu_sel = mumu_sel.refine('mumuPairZpeakSel', cut=[
-            op.NOT(op.abs(op.invariant_mass(
-                self.tightMuons[0].p4, self.tightMuons[1].p4) - Zmass) < 10.)
+            op.abs(op.invariant_mass(
+                self.tightMuons[0].p4, self.tightMuons[1].p4) - Zmass) <= 10.
+        ])
+    elif TTbarControlRegion:
+        elel_sel = elel_sel.refine('eePairZpeakSel', cut=[
+            op.invariant_mass(
+                self.tightElectrons[0].p4, self.tightElectrons[1].p4) > (Zmass + 10.)
+        ])
+        mumu_sel = mumu_sel.refine('mumuPairZpeakSel', cut=[
+            op.invariant_mass(
+                self.tightMuons[0].p4, self.tightMuons[1].p4) > (Zmass + 10.)
+        ])
+    else:
+        elel_sel = elel_sel.refine('eePairZpeakSel', cut=[
+            op.invariant_mass(
+                self.tightElectrons[0].p4, self.tightElectrons[1].p4) < (Zmass - 10.)
+        ])
+        mumu_sel = mumu_sel.refine('mumuPairZpeakSel', cut=[
+            op.invariant_mass(
+                self.tightMuons[0].p4, self.tightMuons[1].p4) < (Zmass - 10.)
         ])
 
     # lepton scale factors
@@ -133,7 +151,7 @@ def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, DYestimati
     DL_boosted_pre_emu_btagSF = sf.btagSF(
         self, DL_boosted_pre_emu, self.ak8Jets, jet_tagger="particleNet_XbbVsQCD", btagReweightStudy=btagReweightStudy)
 
-    if DYestimation:
+    if DYControlRegion:
         Z_peak_selections = []
         # no b-jets
         DL_boosted_ee = DL_boosted_pre_ee_btagSF.refine(
@@ -174,7 +192,7 @@ def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, DYestimati
     DL_resolved_pre_emu_btagSF = sf.btagSF(
         self, DL_resolved_pre_emu, self.ak4Jets, btagReweightStudy=btagReweightStudy)
 
-    if DYestimation:
+    if DYControlRegion:
         # no b-jets
         DL_resolved_ee = DL_resolved_pre_ee_btagSF.refine(
             'DL_resolved_ee',
@@ -304,7 +322,7 @@ def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, DYestimati
 
     if btagReweightStudy:
         return pre_final_state_sels
-    elif DYestimation:
+    elif DYControlRegion:
         return Z_peak_selections
     else:
         return DL_signal_region_selections
