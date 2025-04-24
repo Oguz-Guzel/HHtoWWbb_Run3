@@ -57,7 +57,10 @@ class ScaleFactors():
         """ Apply top p_T reweighting."""
         if sample.startswith("TT"):
             def top_pt_weight(pt):
-                return op.exp(-2.02274e-01 + 1.09734e-04*pt + -1.30088e-07*pt**2 + (5.83494e+01/(pt+1.96252e+02)))
+                return op.exp(-2.02274e-01
+                              + 1.09734e-04*pt
+                              + -1.30088e-07*op.pow(pt, 2)
+                              + (5.83494e+01/(pt+1.96252e+02)))
 
             def getTopPtWeight(GenPart):
                 lastCopy = op.select(
