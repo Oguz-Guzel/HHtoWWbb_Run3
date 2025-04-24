@@ -212,8 +212,8 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
             except AttributeError:
                 print("Couldn't find branch tree.HLT.%s, cross check!" % HLT)
 
-            addHLTPath("Muon_", "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
-            addHLTPath("Muon_", "IsoMu24")
+        addHLTPath("Muon_", "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
+        addHLTPath("Muon_", "IsoMu24")
         addHLTPath("EGamma_", "Ele30_WPTight_Gsf")
         addHLTPath("EGamma_", "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL")
         addHLTPath("EGamma_", "DoubleEle33_CaloIdL_MW")
