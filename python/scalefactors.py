@@ -252,16 +252,16 @@ class ScaleFactors():
             if self.era in ['2023', '2023BPix']:
                 params["phi"] = lambda e: e.phi
 
-            systName = "sf"
+            systNomName = "sf"
             # Electron ID SF
             self.el_ID_sf = get_correction(
                 EGamma_SF_JSONFiles[self.era][0],
                 "Electron-ID-SF",
-                systVariations={"elIdSFup": f"{systName}up",
-                                "elIdSFdown": f"{systName}down"},
+                systVariations={"elIdSFup": f"{systNomName}up",
+                                "elIdSFdown": f"{systNomName}down"},
                 params=params,
                 systParam="ValType",
-                systNomName=systName,
+                systNomName=systNomName,
                 defineOnFirstUse=False,
                 sel=sel
             )
@@ -271,19 +271,19 @@ class ScaleFactors():
                 (EGamma_SF_JSONFiles[self.era][0]).replace(
                     "electron", "electronHlt"),
                 "Electron-HLT-SF",
-                systVariations={"elTrgSFup": f"{systName}up",
-                                "elTrgSFdown": f"{systName}down"},
+                systVariations={"elTrgSFup": f"{systNomName}up",
+                                "elTrgSFdown": f"{systNomName}down"},
                 params={"pt": lambda el: el.pt,
                         "eta": lambda el: el.eta,
                         "Path": "HLT_SF_Ele30_MVAiso90ID",
                         "year": EGamma_SF_JSONFiles[self.era][1]
                         },
                 systParam="ValType",
-                systNomName=systName,
+                systNomName=systNomName,
                 defineOnFirstUse=False,
                 sel=sel
             )
-            # pt cut here since ID correction is available only for pt >= 10
+            # pt cut here since corrections are available for certain ranges
             sel = sel.refine('elel_leading_ID_SF',
                              weight=[op.switch(
                                  self.tightElectrons[0].pt >= 10, self.el_ID_sf(
@@ -323,43 +323,43 @@ class ScaleFactors():
         if self.is_MC:
             logger.info("Applying Electron SF for "+sel.name)
             sel = sel.refine('elmu_el_ID_SF',
-                            weight=[op.switch(
-                                self.tightElectrons[0].pt >= 10, self.el_ID_sf(
-                                    self.tightElectrons[0]),
-                                op.c_float(1.))]
-                            )
-            sel = sel.refine('elmu_mu_ID_SF',
-                            weight=[op.switch(
-                                op.AND(self.tightMuons[0].pt >= 15.,
-                                        op.abs(self.tightMuons[0].eta) < 2.4),
-                                self.muon_ID_sf(self.tightMuons[0]),
-                                op.c_float(1.))]
-                            )
-            sel = sel.refine('elmu_mu_ISO_SF',
-                            weight=[op.switch(
-                                op.AND(self.tightMuons[0].pt >= 15.,
-                                        op.abs(self.tightMuons[0].eta) < 2.4),
-                                self.muon_ISO_sf(self.tightMuons[0]),
-                                op.c_float(1.))]
-                            )
+                             weight=[op.switch(
+                                 self.tightElectrons[0].pt >= 10, self.el_ID_sf(
+                                     self.tightElectrons[0]),
+                                 op.c_float(1.))]
+                             )
             sel = sel.refine('elmu_el_TRG_SF',
-                            weight=[op.switch(
-                                self.tightElectrons[0].pt >= 25, self.el_TRG_sf(
-                                    self.tightElectrons[0]),
-                                op.c_float(1.))]
-                            )
-            sel = sel.refine('elmu_mu_TRG_SF',
-                            weight=[op.switch(
-                                op.AND(self.tightMuons[0].pt >= 26.,
+                             weight=[op.switch(
+                                 self.tightElectrons[0].pt >= 25, self.el_TRG_sf(
+                                     self.tightElectrons[0]),
+                                 op.c_float(1.))]
+                             )
+            sel = sel.refine('elmu_mu_ID_SF',
+                             weight=[op.switch(
+                                 op.AND(self.tightMuons[0].pt >= 15.,
                                         op.abs(self.tightMuons[0].eta) < 2.4),
-                                self.muon_TRG_sf(self.tightMuons[0]),
-                                op.c_float(1.))]
-                            )
+                                 self.muon_ID_sf(self.tightMuons[0]),
+                                 op.c_float(1.))]
+                             )
+            sel = sel.refine('elmu_mu_ISO_SF',
+                             weight=[op.switch(
+                                 op.AND(self.tightMuons[0].pt >= 15.,
+                                        op.abs(self.tightMuons[0].eta) < 2.4),
+                                 self.muon_ISO_sf(self.tightMuons[0]),
+                                 op.c_float(1.))]
+                             )
+            sel = sel.refine('elmu_mu_TRG_SF',
+                             weight=[op.switch(
+                                 op.AND(self.tightMuons[0].pt >= 26.,
+                                        op.abs(self.tightMuons[0].eta) < 2.4),
+                                 self.muon_TRG_sf(self.tightMuons[0]),
+                                 op.c_float(1.))]
+                             )
         else:
             sel = sel.refine('elmu_el_ID_SF', weight=op.c_float(1.))
+            sel = sel.refine('elmu_el_TRG_SF', weight=op.c_float(1.))
             sel = sel.refine('elmu_mu_ID_SF', weight=op.c_float(1.))
             sel = sel.refine('elmu_mu_ISO_SF', weight=op.c_float(1.))
-            sel = sel.refine('elmu_el_TRG_SF', weight=op.c_float(1.))
             sel = sel.refine('elmu_mu_TRG_SF', weight=op.c_float(1.))
         return sel
 
