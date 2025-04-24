@@ -5,7 +5,7 @@ from itertools import chain
 
 from bamboo import treefunctions as op
 from bamboo.analysisutils import makeMultiPrimaryDatasetTriggerSelection
-from bamboo.analysismodules import NanoAODModule, HistogramsModule
+from bamboo.analysismodules import NanoAODHistoModule
 
 import utils
 
@@ -72,7 +72,7 @@ def getDataRunEra(sample):
     return result.group(1) if result else None
 
 
-class NanoBaseHHWWbb(NanoAODModule, HistogramsModule):
+class NanoBaseHHWWbb(NanoAODHistoModule):
     """ Base module for HH->WWbb analysis """
 
     def addArgs(self, parser):
