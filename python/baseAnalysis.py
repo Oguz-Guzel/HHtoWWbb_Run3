@@ -65,6 +65,13 @@ JEC_JSONFiles = {
         "AK8": jsonPathBase + "JME/2023_Summer23BPix/fatJet_jerc.json.gz"},
 }
 
+EGamma_SS_SF_JSONFiles = {
+    "2022": (jsonPathBase + "EGM/2022_Summer22/electronSS_EtDependent.json.gz", "EGMScale_Compound_Ele_2022preEE", "EGMSmearAndSyst_ElePTsplit_2022preEE"),
+    "2022EE": (jsonPathBase + "EGM/2022_Summer22EE/electronSS_EtDependent.json.gz", "EGMScale_Compound_Ele_2022postEE", "EGMSmearAndSyst_ElePTsplit_2022postEE"),
+    "2023": (jsonPathBase + "EGM/2023_Summer23/electronSS_EtDependent.json.gz", "EGMScale_Compound_Ele_2023preBPIX", "EGMSmearAndSyst_ElePTsplit_2023preBPIX"),
+    "2023BPix": (jsonPathBase + "EGM/2023_Summer23BPix/electronSS_EtDependent.json.gz", "EGMScale_Compound_Ele_2023postBPIX", "EGMSmearAndSyst_ElePTsplit_2023postBPIX"),
+}
+
 
 def getDataRunEra(sample):
     """Return run era (A/B/...) and the following digits for data sample"""
@@ -113,7 +120,8 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
         nanoJetMETCalc_data = CalcCollectionsGroups(
             Jet=("pt", "mass"), changes={metName: (f"{metName}T1",)},
             **{metName: ("pt", "phi")})
-        systVariations = (([nanoFatJetCalc])
+        nanoElectronCalc = CalcCollectionsGroups(Electron=("nElectron"))
+        systVariations = (([nanoFatJetCalc, nanoElectronCalc])
                           + [nanoJetMETCalc_both if self.is_MC else nanoJetMETCalc_data])
         tree, noSel, be, lumiArgs = super().prepareTree(
             tree, sample=sample, sampleCfg=sampleCfg,
@@ -141,20 +149,34 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
             "backend": be,
         }
 
-        from bamboo.analysisutils import configureJets, configureType1MET
+        from bamboo.analysisutils import configureJets, configureType1MET, configureElectrons
         configureJets(tree._Jet, jetType="AK4PFPuppi", **jecArgs)
+
         metName = "PuppiMET"
         configureType1MET(
             getattr(tree, f"_{metName}T1"),
             enableSystematics=(
                 (lambda v: not v.startswith("jer")) if self.is_MC else None),
             **jecArgs)
+
         jecArgs.update({"jsonFile": JEC_JSONFiles[self.era]["AK8"], })
         jecArgs.update({"jetAlgoSubjet": "AK4PFPuppi", })
         jecArgs.update({"jecSubjet": jecTag, })
         jecArgs.update({"jsonFileSubjet": JEC_JSONFiles[self.era]["AK4"], })
         configureJets(tree._FatJet, jetType="AK8PFPuppi", **jecArgs)
         logger.info("Applying Jet energy and resolution corrections")
+
+        jsonFileRandomGenerator = os.path.join(self.git_project_dir,
+                                               "../bamboo/tests/data/randomNumbers.json.gz")
+        configureElectrons(tree._Electron,
+                           paramsFile=EGamma_SS_SF_JSONFiles[self.era][0],
+                           scale=EGamma_SS_SF_JSONFiles[self.era][1],
+                           smearing=EGamma_SS_SF_JSONFiles[self.era][2],
+                           jsonFileRandomGenerator=jsonFileRandomGenerator,
+                           addSystematics=True if self.is_MC else False,
+                           isMC=self.is_MC,
+                           backend=be)
+        logger.info("Applying Electron scale and smear (SS) corrections")
 
         # Number of events before any processing
         self.yields.add(noSel, "noSel")
