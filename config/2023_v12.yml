@@ -36,6 +36,7 @@ plotIt:
     blinded-range-fill-color: "#29556270"
     yields-table-align: v
     yields-table-text-align: l
+    book-keeping-file: plots.root
   legend:
     position: [0.7, 0.75, 0.91, 0.91]
   groups:
