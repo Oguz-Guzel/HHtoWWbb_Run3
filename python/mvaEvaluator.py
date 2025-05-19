@@ -55,9 +55,9 @@ class mvaEvaluator(NanoBaseHHWWbb):
         # load the model file
         models_dir = os.path.join(self.git_project_dir, self.mvaModels)
         model_file_even = os.path.join(
-            models_dir, "even_model/model_simplified.onnx")
+            models_dir, "v1.2.3_even_model/model.onnx")
         model_file_odd = os.path.join(
-            models_dir, "odd_model/model_simplified.onnx")
+            models_dir, "v1.2.3_odd_model/model.onnx")
         logger.info(
             f"Using the following directory for ML models: {models_dir}"
         )
@@ -65,12 +65,12 @@ class mvaEvaluator(NanoBaseHHWWbb):
         # evaluate the model
         ml_evaluator_even = op.mvaEvaluator(
             model_file_even, otherArgs='output')
-        
+
         ml_evaluator_odd = op.mvaEvaluator(
             model_file_odd, otherArgs='output')
-        
-        ml_output = op.switch(tree.event % 2 == 1, ml_evaluator_even(
-            l1, l2, j1, j2, met), ml_evaluator_odd(l1, l2, j1, j2, met))
+
+        ml_output = op.switch(tree.event % 2 == 0, ml_evaluator_odd(
+            l1, l2, j1, j2, met), ml_evaluator_even(l1, l2, j1, j2, met))
 
         signal_node = ml_output[0]
 
@@ -235,9 +235,12 @@ class mvaEvaluator(NanoBaseHHWWbb):
         #     )
 
         # need to add at least one plot to the list of plots
-        plots.append(
+        plots.extend([
             Plot.make1D("DL_resolved_1b_leadingJet_eta_ee", self.ak4BJets[0].eta, DL_resolved_1b_ee, EqBin(
-                30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta")
+                30, -3, 3), title="eta(j1)", xTitle="Leading jet \eta"),
+                Plot.make1D("event_mod_2", (tree.event % 2), noSel, EqBin(
+                2, 0, 2), title="event mod 2", xTitle="event mod 2")
+                ]
         )
 
         return plots

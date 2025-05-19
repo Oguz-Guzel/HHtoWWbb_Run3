@@ -13,16 +13,58 @@ samples:
     cross-section: 0.03413
     branching-ratio: 0.10614564 # BR(W->LNu)^2=(3*10.86/100)^2
     generated-events: genEventSumw
-    split: 1
     line-color: 3
     legend: 'HH\rightarrow bbll\nu\nu'
 
   TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8:
-    files:
-      - root://cms-xrd-global.cern.ch//store/mc/Run3Summer22NanoAODv12/TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_v5-v2/40000/0128d2f0-f489-4eed-80d0-7240071b9314.root
     type: mc
-    group: "TTbar"
+    era: "2022"
+    files:
+      - root://cms-xrd-global.cern.ch///store/mc/Run3Summer22NanoAODv12/TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_v5-v2/2520000/66b834d6-61f7-4109-b5ae-54a150d4814b.root
     cross-section: 98.036113
     generated-events: genEventSumw
-    split: 1
-    era: "2022"
+
+
+plotIt:
+  configuration:
+    width: 800
+    height: 600
+    margin-left: 0.2
+    margin-right: 0.03
+    margin-top: 0.05
+    margin-bottom: 0.15
+    luminosity-label: '%1$.2f fb^{-1} (13.6 TeV)'
+    experiment: CMS
+    extra-label: Run 3 (2022) - Work in progress
+    luminosity-error: 0.014 # https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun3
+    show-overflow: true
+    error-fill-style: 3154
+    error-fill-color: "#ee556270"
+    ratio-fit-error-fill-style: 1001
+    ratio-fit-error-fill-color: "#aa556270"
+    ratio-fit-line-color: "#0B486B"
+    y-axis-format: "%1% / %2$.2f"
+    blinded-range-fill-style: 1001
+    blinded-range-fill-color: "#29556270"
+    yields-table-align: v
+    yields-table-text-align: l
+    book-keeping-file: plots.root
+  legend:
+    position: [0.7, 0.75, 0.91, 0.91]
+  groups:
+    data:
+      legend: Data
+    TTbar:
+      legend: 't#bar{t}'
+      fill-color: "#fff3b0"
+  plotdefaults:
+    normalized: False
+    y-axis: Events
+    log-y: both
+    y-axis-show-zero: True
+    save-extensions: [pdf]
+    show-ratio: True
+    sort-by-yields: True
+    legend-columns: 4
+    ratio-y-axis: '#frac{Data}{MC}'
+    ratio-y-axis-range: [0.75, 1.25] # [0.5, 1.5] is the default

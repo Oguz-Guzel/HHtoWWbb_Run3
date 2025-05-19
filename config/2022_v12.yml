@@ -36,6 +36,7 @@ plotIt:
     blinded-range-fill-color: "#29556270"
     yields-table-align: v
     yields-table-text-align: l
+    book-keeping-file: plots.root
   legend:
     position: [0.7, 0.75, 0.91, 0.91]
   groups:
@@ -67,3 +68,41 @@ plotIt:
     legend-columns: 4
     ratio-y-axis: '#frac{Data}{MC}'
     ratio-y-axis-range: [0.75, 1.25] # [0.5, 1.5] is the default
+
+  # systematics:
+  #   - btagSF_shape_cferr1
+  #   - btagSF_shape_lfstats1_2022
+  #   - btagSF_shape_lfstats1_2022EE
+  #   - pileup
+  #   - btagSF_shape_hfstats2_2022
+  #   - btagSF_shape_hfstats2_2022EE
+  #   - btagSF_shape_lfstats2_2022
+  #   - btagSF_shape_cferr2
+  #   - btagSF_shape_lfstats2_2022EE
+  #   - jesTotal
+  #   - btagSF_shape_hfstats1_2022
+  #   - btagSF_shape_hfstats1_2022EE
+  #   - btagSF_shape_hf
+  #   - btagSF_shape_lf
+  #   - jer0
+  #   - jer1
+  #   - jer2
+  #   - jer3
+  #   - jer4
+  #   - jer5
+  #   - elIdSF
+  #   - elTrgSF
+  #   - muonIdSF
+  #   - muonIsoSF
+  #   - muonTrgSF
+  #   - pileup
+  #   - ZpT1
+  #   - ZpT2
+  #   - ZpT3
+  #   - ZpT4
+  #   - ZpT5
+  #   - ZpT6
+  #   - ZpT7
+  #   - ZpT8
+  #   - ZpT9
+  #   - ZpT10

@@ -1,4 +1,5 @@
 from bamboo import treefunctions as op
+from bamboo.treeproxies import BoolProxy
 
 
 # Lepton functions
@@ -35,18 +36,31 @@ def lepton_associatedJetLessThanTightBtag(lep, era):
     return op.OR(
         op.NOT(hasAssociatedJet(lep)), lep.jet.btagPNetB <= ak4TightBtagWP(era))
 
+
+def jetIdCorrection(j):
+    """Correction for jet tight Id in nanoAOD v12.
+    https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID13p6TeV#nanoAOD_Flags"""
+    passJetIdTight: BoolProxy = (j.jetId & op.c_int(1 << 1)) > 0
+    return op.multiSwitch(
+        (op.abs(j.eta) <= 2.7,
+            passJetIdTight),
+        (op.AND(op.abs(j.eta) > 2.7, op.abs(j.eta) <= 3.0),
+            op.AND(passJetIdTight, j.neHEF < 0.99)),
+        op.AND(passJetIdTight, j.neEmEF < 0.4)
+    )
+
 # Object definitions
 
 
 def muonPreSel(muons):
     """Muon preselection"""
     return op.select(muons, lambda mu: op.AND(
-        mu.pt >= 7.,
-        op.abs(mu.eta) <= 2.4,
-        op.abs(mu.dxy) <= 0.05,
-        op.abs(mu.dz) <= 0.1,
+        mu.pt > 5.,
+        op.abs(mu.eta) < 2.4,
+        op.abs(mu.dxy) < 0.05,
+        op.abs(mu.dz) < 0.1,
         mu.miniPFRelIso_all <= 0.4,
-        mu.sip3d <= 8,
+        mu.sip3d < 8,
         mu.looseId
     ))
 
@@ -54,7 +68,7 @@ def muonPreSel(muons):
 def muonFakeSel(muons, era):
     """Muon fakeable selection"""
     return op.select(muons, lambda mu: op.AND(
-        mu.pt >= 10.,
+        mu.pt > 10.,
         op.OR(lepton_associatedJetLessThanMediumBtag(mu, era), op.AND(mu.jetRelIso < 0.8, muon_pNetInterpIfMvaFailed(mu))))
     )
 
@@ -70,13 +84,13 @@ def muonTightSel(muons):
 def elePreSel(electrons):
     """Electron preselection"""
     return op.select(electrons, lambda el: op.AND(
-        el.pt >= 5.,
-        op.abs(el.eta) <= 2.5,
-        op.abs(el.dxy) <= 0.05,
-        op.abs(el.dz) <= 0.1,
-        el.sip3d <= 8,
+        el.pt > 5.,
+        op.abs(el.eta) < 2.5,
+        op.abs(el.dxy) < 0.05,
+        op.abs(el.dz) < 0.1,
+        el.sip3d < 8,
         el.miniPFRelIso_all <= 0.4,
-        el.mvaIso_WP90,  # no mvaNoIso_WPL for run3 signal, using this instead
+        op.OR(el.mvaNoIso_WP80, el.mvaIso_WP80),
         el.lostHits <= 1
     ))
 
@@ -118,8 +132,7 @@ def elTightSel(electrons):
 def ak4jetDef(jets):
     """AK4 jet selection"""
     return op.select(jets, lambda jet: op.AND(
-        (jet.jetId >> 1 & 0x1) == 1,  # tight
-        (jet.jetId >> 2 & 0x1) == 1,  # tightleptveto
+        jetIdCorrection(jet),
         jet.pt >= 25.,
         op.abs(jet.eta) <= 2.4,
         jet.btagPNetB >= 0,  # due to some events having negative value for this
@@ -250,8 +263,7 @@ def cleaningWithRespectToLeadingLeptons(electrons, muons, DR):
 def VBFjetDef(jets):
     """VBF jet selection"""
     return op.select(jets, lambda jet: op.AND(
-        (jet.jetId >> 1 & 0x1) == 1,  # tight
-        (jet.jetId >> 2 & 0x1) == 1,  # tightleptveto
+        jetIdCorrection(jet),
         jet.pt >= 30.,
         op.abs(jet.eta) <= 4.7,
         op.OR(

@@ -1,3 +1,6 @@
+from bamboo import treefunctions as op
+
+
 def fillSampleTemplate(template, selEras=None):
     from copy import deepcopy
     outTemplate = {}
@@ -239,3 +242,49 @@ def ml_input_var_binning(var_name):
     elif "InvM_" in var_name:
         N, mn, mx = 100, 0, 1000
     return EqBin(N, mn, mx)
+
+
+def electron_sc_eta(el_eta, el_phi, PV_x, PV_y, PV_z):
+    """Derivation of the super cluster eta, taken from
+    https://twiki.cern.ch/twiki/bin/view/CMS/EgammaNanoAOD#How_to_get_photon_supercluster_e.
+    Starting from nanoAOD v15 the variable is made available in the tree
+    and for v12 it's calculated as
+    electron_sc_eta = electron.eta + electron.deltaEtaSC"""
+    electron_isScEtaEB = op.switch(el_eta < 1.479, op.c_bool(1), op.c_bool(
+        0)) # double check this since isScEtaEB branch is only available for photons
+    electron_isScEtaEE = op.switch(op.in_range(
+        1.479, el_eta, 3.), op.c_bool(1), op.c_bool(0)) 
+    # double check this since isScEtaEE branch is only available for photons
+    tg_theta_over_2 = op.exp(-el_eta)
+    tg_theta = 2 * tg_theta_over_2 / (1 - op.pow(tg_theta_over_2, 2))
+    pi = 3.14159265359
+    R = 130
+    angle_x0_y0 = op.multiSwitch(
+        (PV_x > 0, op.atan(PV_y / PV_x)),
+        (PV_x < 0, pi + op.atan(PV_y / PV_x)),
+        (PV_y > 0, pi / 2),
+        -pi / 2
+    )
+    alpha = angle_x0_y0 + (pi - el_phi)
+    sin_beta = op.sqrt(op.pow(PV_x, 2) + op.pow(PV_y, 2)) / R * op.sin(alpha)
+    beta = op.abs(op.asin(sin_beta))
+    gamma = pi / 2 - alpha - beta
+    l = op.sqrt(op.pow(R, 2) + op.pow(PV_x, 2) + op.pow(PV_y, 2) - 2 * R *
+                op.sqrt(op.pow(PV_x, 2) + op.pow(PV_y, 2)) * op.cos(gamma))
+    z0_zSC = l / tg_theta
+    intersection_z = op.switch(el_eta > 0, 310, -310)
+    base = intersection_z - PV_z
+    r = base * tg_theta
+    crystalX = PV_x + r * op.cos(el_phi)
+    crystalY = PV_y + r * op.sin(el_phi)
+    tg_sctheta = op.multiSwitch(
+        (electron_isScEtaEB, R / (PV_z + z0_zSC)),
+        (electron_isScEtaEE, op.sqrt(op.pow(crystalX, 2) +
+         op.pow(crystalY, 2)) / intersection_z),
+        op.c_float(1.0)
+    )
+    sctheta = op.atan(tg_sctheta)
+    sctheta = op.switch(sctheta < 0, sctheta+pi, sctheta)
+    tg_sctheta_over_2 = op.tan(sctheta / 2)
+    SCEta = -op.log(tg_sctheta_over_2)
+    return op.switch(op.OR(electron_isScEtaEB, electron_isScEtaEE), SCEta, el_eta)

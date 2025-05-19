@@ -57,7 +57,10 @@ class ScaleFactors():
         """ Apply top p_T reweighting."""
         if sample.startswith("TT"):
             def top_pt_weight(pt):
-                return op.exp(-2.02274e-01 + 1.09734e-04*pt + -1.30088e-07*pt**2 + (5.83494e+01/(pt+1.96252e+02)))
+                return op.exp(-2.02274e-01
+                              + 1.09734e-04*pt
+                              + -1.30088e-07*op.pow(pt, 2)
+                              + (5.83494e+01/(pt+1.96252e+02)))
 
             def getTopPtWeight(GenPart):
                 lastCopy = op.select(
@@ -91,7 +94,7 @@ class ScaleFactors():
             btvWeight = makeBtagWeightItFit(jets, btvSF)
             if not btagReweightStudy:
                 btag_corr = get_correction(
-                    f"{self.git_project_dir}/data/{self.era[:4]}_btagSF_reweight.json.gz",
+                    f"{self.git_project_dir}/data/{self.era[:4]}_btagSF_reweight_v1_2_3.json.gz",
                     "Ratio_btagSF_shape",
                     params={
                         "year": self.era,
@@ -249,16 +252,16 @@ class ScaleFactors():
             if self.era in ['2023', '2023BPix']:
                 params["phi"] = lambda e: e.phi
 
-            systName = "sf"
+            systNomName = "sf"
             # Electron ID SF
             self.el_ID_sf = get_correction(
                 EGamma_SF_JSONFiles[self.era][0],
                 "Electron-ID-SF",
-                systVariations={"elIdSFup": f"{systName}up",
-                                "elIdSFdown": f"{systName}down"},
+                systVariations={"elIdSFup": f"{systNomName}up",
+                                "elIdSFdown": f"{systNomName}down"},
                 params=params,
                 systParam="ValType",
-                systNomName=systName,
+                systNomName=systNomName,
                 defineOnFirstUse=False,
                 sel=sel
             )
@@ -268,19 +271,19 @@ class ScaleFactors():
                 (EGamma_SF_JSONFiles[self.era][0]).replace(
                     "electron", "electronHlt"),
                 "Electron-HLT-SF",
-                systVariations={"elTrgSFup": f"{systName}up",
-                                "elTrgSFdown": f"{systName}down"},
+                systVariations={"elTrgSFup": f"{systNomName}up",
+                                "elTrgSFdown": f"{systNomName}down"},
                 params={"pt": lambda el: el.pt,
                         "eta": lambda el: el.eta,
                         "Path": "HLT_SF_Ele30_MVAiso90ID",
                         "year": EGamma_SF_JSONFiles[self.era][1]
                         },
                 systParam="ValType",
-                systNomName=systName,
+                systNomName=systNomName,
                 defineOnFirstUse=False,
                 sel=sel
             )
-            # pt cut here since ID correction is available only for pt >= 10
+            # pt cut here since corrections are available for certain ranges
             sel = sel.refine('elel_leading_ID_SF',
                              weight=[op.switch(
                                  self.tightElectrons[0].pt >= 10, self.el_ID_sf(
@@ -320,48 +323,48 @@ class ScaleFactors():
         if self.is_MC:
             logger.info("Applying Electron SF for "+sel.name)
             sel = sel.refine('elmu_el_ID_SF',
-                            weight=[op.switch(
-                                self.tightElectrons[0].pt >= 10, self.el_ID_sf(
-                                    self.tightElectrons[0]),
-                                op.c_float(1.))]
-                            )
-            sel = sel.refine('elmu_mu_ID_SF',
-                            weight=[op.switch(
-                                op.AND(self.tightMuons[0].pt >= 15.,
-                                        op.abs(self.tightMuons[0].eta) < 2.4),
-                                self.muon_ID_sf(self.tightMuons[0]),
-                                op.c_float(1.))]
-                            )
-            sel = sel.refine('elmu_mu_ISO_SF',
-                            weight=[op.switch(
-                                op.AND(self.tightMuons[0].pt >= 15.,
-                                        op.abs(self.tightMuons[0].eta) < 2.4),
-                                self.muon_ISO_sf(self.tightMuons[0]),
-                                op.c_float(1.))]
-                            )
+                             weight=[op.switch(
+                                 self.tightElectrons[0].pt >= 10, self.el_ID_sf(
+                                     self.tightElectrons[0]),
+                                 op.c_float(1.))]
+                             )
             sel = sel.refine('elmu_el_TRG_SF',
-                            weight=[op.switch(
-                                self.tightElectrons[0].pt >= 25, self.el_TRG_sf(
-                                    self.tightElectrons[0]),
-                                op.c_float(1.))]
-                            )
-            sel = sel.refine('elmu_mu_TRG_SF',
-                            weight=[op.switch(
-                                op.AND(self.tightMuons[0].pt >= 26.,
+                             weight=[op.switch(
+                                 self.tightElectrons[0].pt >= 25, self.el_TRG_sf(
+                                     self.tightElectrons[0]),
+                                 op.c_float(1.))]
+                             )
+            sel = sel.refine('elmu_mu_ID_SF',
+                             weight=[op.switch(
+                                 op.AND(self.tightMuons[0].pt >= 15.,
                                         op.abs(self.tightMuons[0].eta) < 2.4),
-                                self.muon_TRG_sf(self.tightMuons[0]),
-                                op.c_float(1.))]
-                            )
+                                 self.muon_ID_sf(self.tightMuons[0]),
+                                 op.c_float(1.))]
+                             )
+            sel = sel.refine('elmu_mu_ISO_SF',
+                             weight=[op.switch(
+                                 op.AND(self.tightMuons[0].pt >= 15.,
+                                        op.abs(self.tightMuons[0].eta) < 2.4),
+                                 self.muon_ISO_sf(self.tightMuons[0]),
+                                 op.c_float(1.))]
+                             )
+            sel = sel.refine('elmu_mu_TRG_SF',
+                             weight=[op.switch(
+                                 op.AND(self.tightMuons[0].pt >= 26.,
+                                        op.abs(self.tightMuons[0].eta) < 2.4),
+                                 self.muon_TRG_sf(self.tightMuons[0]),
+                                 op.c_float(1.))]
+                             )
         else:
             sel = sel.refine('elmu_el_ID_SF', weight=op.c_float(1.))
+            sel = sel.refine('elmu_el_TRG_SF', weight=op.c_float(1.))
             sel = sel.refine('elmu_mu_ID_SF', weight=op.c_float(1.))
             sel = sel.refine('elmu_mu_ISO_SF', weight=op.c_float(1.))
-            sel = sel.refine('elmu_el_TRG_SF', weight=op.c_float(1.))
             sel = sel.refine('elmu_mu_TRG_SF', weight=op.c_float(1.))
         return sel
 
-    def Z_pT_reweight_mumu(self, sel, sample, GenPartBranch):
-        """Apply DY Z pT reweighting for muon pair from Z boson"""
+    def Z_pT_reweight(self, sel, sample, GenPartBranch, pdgId):
+        """Apply DY Z pT reweighting for given lepton pair."""
         if self.is_MC and sample.startswith("DY"):
             from bamboo.scalefactors import get_correction
             logger.info("Applying DY Z pT reweighting for " + sel.name)
@@ -373,9 +376,9 @@ class ScaleFactors():
             N_unc = 10
 
             systVariations = {
-                f"ZpTup{i}": f"up{i}" for i in range(1, N_unc+1)}
+                f"ZpT{i}up": f"up{i}" for i in range(1, N_unc+1)}
             systVariations.update(
-                {f"ZpTdown{i}": f"down{i}" for i in range(1, N_unc+1)})
+                {f"ZpT{i}down": f"down{i}" for i in range(1, N_unc+1)})
 
             get_Z_pT_corr = get_correction(
                 DY_and_Recoil_path + DY_and_Recoil_JSONFiles[self.era],
@@ -390,63 +393,17 @@ class ScaleFactors():
                 sel=sel
             )
 
-            def get_gen_parts(GenPartBranch):
+            def get_gen_parts(GenPartBranch, pdgId):
                 gen_leptons = op.sort(op.select(
                     GenPartBranch, lambda p: op.AND(
                         p.status == 1,
-                        op.abs(p.pdgId) == 13,  # muons
+                        op.abs(p.pdgId) == pdgId,
                         ((op.static_cast("int", p.statusFlags) << 8) & 1),
                     )), lambda p: -p.pt)
                 return gen_leptons
 
             sel = sel.refine(
-                sel.name+"_ZpT", weight=get_Z_pT_corr(get_gen_parts(GenPartBranch)))
-        else:
-            sel = sel.refine(sel.name+"_ZpT", weight=op.c_float(1.))
-        self.yields.add(sel, sel.name)
-        return sel
-
-    def Z_pT_reweight_elel(self, sel, sample, GenPartBranch):
-        """Apply DY Z pT reweighting for electron pair from Z boson"""
-        if self.is_MC and sample.startswith("DY"):
-            from bamboo.scalefactors import get_correction
-            logger.info("Applying DY Z pT reweighting for " + sel.name)
-
-            DY_and_Recoil_path = self.git_project_dir+"/data/hleprare/DYandRecoilCorrlib/"
-
-            # for N_unc - consult the json file
-
-            N_unc = 10
-
-            systVariations = {
-                f"ZpTup{i}": f"up{i}" for i in range(1, N_unc+1)}
-            systVariations.update(
-                {f"ZpTdown{i}": f"down{i}" for i in range(1, N_unc+1)})
-
-            get_Z_pT_corr = get_correction(
-                DY_and_Recoil_path + DY_and_Recoil_JSONFiles[self.era],
-                "DY_pTll_reweighting",
-                params={
-                    "order": 'NLO',
-                    "ptll": lambda leptons: op.rng_sum(leptons, lambda l: l.pt),
-                },
-                systNomName="nom",
-                systVariations=systVariations,
-                systParam="syst",
-                sel=sel
-            )
-
-            def get_gen_parts(GenPartBranch):
-                gen_leptons = op.sort(op.select(
-                    GenPartBranch, lambda p: op.AND(
-                        p.status == 1,
-                        op.abs(p.pdgId) == 11,  # electrons
-                        ((op.static_cast("int", p.statusFlags) << 8) & 1),
-                    )), lambda p: -p.pt)
-                return gen_leptons
-
-            sel = sel.refine(
-                sel.name+"_ZpT", weight=get_Z_pT_corr(get_gen_parts(GenPartBranch)))
+                sel.name+"_ZpT", weight=get_Z_pT_corr(get_gen_parts(GenPartBranch, pdgId)))
         else:
             sel = sel.refine(sel.name+"_ZpT", weight=op.c_float(1.))
         self.yields.add(sel, sel.name)
