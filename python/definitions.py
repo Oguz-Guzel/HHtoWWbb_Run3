@@ -55,12 +55,12 @@ def jetIdCorrection(j):
 def muonPreSel(muons):
     """Muon preselection"""
     return op.select(muons, lambda mu: op.AND(
-        mu.pt >= 7.,
-        op.abs(mu.eta) <= 2.4,
-        op.abs(mu.dxy) <= 0.05,
-        op.abs(mu.dz) <= 0.1,
+        mu.pt > 5.,
+        op.abs(mu.eta) < 2.4,
+        op.abs(mu.dxy) < 0.05,
+        op.abs(mu.dz) < 0.1,
         mu.miniPFRelIso_all <= 0.4,
-        mu.sip3d <= 8,
+        mu.sip3d < 8,
         mu.looseId
     ))
 
@@ -68,7 +68,7 @@ def muonPreSel(muons):
 def muonFakeSel(muons, era):
     """Muon fakeable selection"""
     return op.select(muons, lambda mu: op.AND(
-        mu.pt >= 10.,
+        mu.pt > 10.,
         op.OR(lepton_associatedJetLessThanMediumBtag(mu, era), op.AND(mu.jetRelIso < 0.8, muon_pNetInterpIfMvaFailed(mu))))
     )
 
@@ -84,13 +84,13 @@ def muonTightSel(muons):
 def elePreSel(electrons):
     """Electron preselection"""
     return op.select(electrons, lambda el: op.AND(
-        el.pt >= 5.,
-        op.abs(el.eta) <= 2.5,
-        op.abs(el.dxy) <= 0.05,
-        op.abs(el.dz) <= 0.1,
-        el.sip3d <= 8,
+        el.pt > 5.,
+        op.abs(el.eta) < 2.5,
+        op.abs(el.dxy) < 0.05,
+        op.abs(el.dz) < 0.1,
+        el.sip3d < 8,
         el.miniPFRelIso_all <= 0.4,
-        el.mvaNoIso_WP80,  # no mvaNoIso_WPL for run3 signal, using this instead
+        op.OR(el.mvaNoIso_WP80, el.mvaIso_WP80),
         el.lostHits <= 1
     ))
 
