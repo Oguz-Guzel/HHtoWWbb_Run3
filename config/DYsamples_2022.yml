@@ -1,0 +1,300 @@
+tree: Events
+
+eras:
+  '2022':
+    luminosity: 7875. # pb^-1
+  '2022EE':
+    luminosity: 26337.
+
+dbcache: dascache
+
+samples:
+
+  ### DATA ###
+  Muon_Run2022C:
+    era: '2022'
+    type: data
+    group: data
+    db: das:/Muon/Run2022C-22Sep2023-v1/NANOAOD
+    run_range: &runs_22C [355794, 357486]
+    certified_lumi_file: &lumi_cert_22 https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions22/Cert_Collisions2022_355100_362760_Golden.json
+    split: &nsplit -2
+
+  Muon_Run2022D:
+    era: '2022'
+    type: data
+    group: data
+    db: das:/Muon/Run2022D-22Sep2023-v1/NANOAOD
+    run_range: &runs_22D [357487, 357733]
+    certified_lumi_file: *lumi_cert_22
+    split: *nsplit
+
+  Muon_Run2022E:
+    era: '2022EE'
+    type: data
+    group: data
+    db: das:/Muon/Run2022E-22Sep2023-v1/NANOAOD
+    run_range: &runs_22E [359022, 360331]
+    certified_lumi_file: *lumi_cert_22
+    split: *nsplit
+
+  Muon_Run2022F:
+    era: '2022EE'
+    type: data
+    group: data
+    db: das:/Muon/Run2022F-22Sep2023-v2/NANOAOD
+    run_range: &runs_22F [360332, 362180]
+    certified_lumi_file: *lumi_cert_22
+    split: *nsplit
+
+  Muon_Run2022G:
+    era: '2022EE'
+    type: data
+    group: data
+    db: das:/Muon/Run2022G-22Sep2023-v1/NANOAOD
+    run_range: &runs_22G [362350, 362760]
+    certified_lumi_file: *lumi_cert_22
+    split: *nsplit
+
+  EGamma_Run2022C:
+    era: '2022'
+    type: data
+    group: data
+    db: das:/EGamma/Run2022C-22Sep2023-v1/NANOAOD
+    run_range: *runs_22C
+    certified_lumi_file: *lumi_cert_22
+    split: *nsplit
+
+  EGamma_Run2022D:
+    era: '2022'
+    type: data
+    group: data
+    db: das:/EGamma/Run2022D-22Sep2023-v1/NANOAOD
+    run_range: *runs_22D
+    certified_lumi_file: *lumi_cert_22
+    split: *nsplit
+
+  EGamma_Run2022E:
+    era: '2022EE'
+    type: data
+    group: data
+    db: das:/EGamma/Run2022E-22Sep2023-v1/NANOAOD
+    run_range: *runs_22E
+    certified_lumi_file: *lumi_cert_22
+    split: *nsplit
+
+  EGamma_Run2022F:
+    era: '2022EE'
+    type: data
+    group: data
+    db: das:/EGamma/Run2022F-22Sep2023-v1/NANOAOD
+    run_range: *runs_22F
+    certified_lumi_file: *lumi_cert_22
+    split: *nsplit
+
+  EGamma_Run2022G:
+    era: '2022EE'
+    type: data
+    group: data
+    db: das:/EGamma/Run2022G-22Sep2023-v2/NANOAOD
+    run_range: *runs_22G
+    certified_lumi_file: *lumi_cert_22
+    split: *nsplit
+
+
+  MuonEG_Run2022C:
+    era: '2022'
+    type: data
+    group: data
+    db: das:/MuonEG/Run2022C-22Sep2023-v1/NANOAOD
+    run_range: *runs_22C
+    certified_lumi_file: *lumi_cert_22
+    split: *nsplit
+
+  MuonEG_Run2022D:
+    era: '2022'
+    type: data
+    group: data
+    db: das:/MuonEG/Run2022D-22Sep2023-v1/NANOAOD
+    run_range: *runs_22D
+    certified_lumi_file: *lumi_cert_22
+    split: *nsplit
+
+  MuonEG_Run2022E:
+    era: '2022EE'
+    type: data
+    group: data
+    db: das:/MuonEG/Run2022E-22Sep2023-v1/NANOAOD
+    run_range: *runs_22E
+    certified_lumi_file: *lumi_cert_22
+    split: *nsplit
+
+  MuonEG_Run2022F:
+    era: '2022EE'
+    type: data
+    group: data
+    db: das:/MuonEG/Run2022F-22Sep2023-v1/NANOAOD
+    run_range: *runs_22F
+    certified_lumi_file: *lumi_cert_22
+    split: *nsplit
+
+  MuonEG_Run2022G:
+    era: '2022EE'
+    type: data
+    group: data
+    db: das:/MuonEG/Run2022G-22Sep2023-v1/NANOAOD
+    run_range: *runs_22G
+    certified_lumi_file: *lumi_cert_22
+    split: *nsplit
+
+  ### MC SAMPLES ###
+  DYto2L-2Jets_MLL-50_2022:
+    era: '2022'
+    db: das:/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
+    type: mc
+    group: "DY_50"
+    cross-section: 6.735e+03
+    generated-events: genEventSumw
+    split: *nsplit
+
+  DYto2L-2Jets_MLL-50_2022EE:
+    era: '2022EE'
+    db: das:/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM
+    type: mc
+    group: "DY_50"
+    cross-section: 6.735e+03
+    generated-events: genEventSumw
+    split: *nsplit
+
+  DYto2L-2Jets_MLL-10to50_2022:
+    era: '2022'
+    db: das:/DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
+    type: mc
+    group: "DY_10_50"
+    cross-section: 19982.5
+    generated-events: genEventSumw
+    split: *nsplit
+
+  DYto2L-2Jets_MLL-10to50_2022EE:
+    era: '2022EE'
+    db: das:/DYto2L-2Jets_MLL-10to50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM
+    type: mc
+    group: "DY_10_50"
+    cross-section: 19982.5
+    generated-events: genEventSumw
+    split: *nsplit
+  
+  DYto2L-2Jets_MLL-4to10_2022:
+    era: '2022'
+    db: das:/DYto2L-2Jets_MLL-4to10_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
+    type: mc
+    group: "DY_4_10"
+    cross-section: 19982.5
+    generated-events: genEventSumw
+    split: *nsplit
+
+  DYto2L-2Jets_MLL-4to10_2022EE:
+    era: '2022EE'
+    db: das:/DYto2L-2Jets_MLL-4to10_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6_ext1-v2/NANOAODSIM
+    type: mc
+    group: "DY_4_10"
+    cross-section: 1.413e+05
+    generated-events: genEventSumw
+    split: *nsplit
+
+  DYto2L-2Jets_MLL-4to10_2022EE:
+    era: '2022EE'
+    db: das:/DYto2L-2Jets_MLL-4to10_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM
+    type: mc
+    group: "DY_4_10"
+    cross-section: 1.413e+05
+    generated-events: genEventSumw
+    split: *nsplit
+
+plotIt:
+  configuration:
+    width: 800
+    height: 600
+    margin-left: 0.2
+    margin-right: 0.03
+    margin-top: 0.05
+    margin-bottom: 0.15
+    luminosity-label: '%1$.2f fb^{-1} (13.6 TeV)'
+    experiment: CMS
+    extra-label: Run 3 (2022) - Work in progress
+    luminosity-error: 0.014 # https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun3
+    show-overflow: true
+    error-fill-style: 3154
+    error-fill-color: "#ee556270"
+    ratio-fit-error-fill-style: 1001
+    ratio-fit-error-fill-color: "#aa556270"
+    ratio-fit-line-color: "#0B486B"
+    y-axis-format: "%1% / %2$.2f"
+    blinded-range-fill-style: 1001
+    blinded-range-fill-color: "#29556270"
+    yields-table-align: v
+    yields-table-text-align: l
+    book-keeping-file: plots.root
+  legend:
+    position: [0.7, 0.75, 0.91, 0.91]
+  groups:
+    data:
+      legend: Data
+    DY_50:
+      legend: 'DY 50'
+      fill-color: "#9e2a2b"
+    DY_10_50:
+      legend: 'DY 10-50'
+      fill-color: "#F1FF33"
+    DY_4_10:
+      legend: 'DY 4-10'
+      fill-color: "#61FF33"
+  plotdefaults:
+    normalized: False
+    y-axis: Events
+    log-y: both
+    y-axis-show-zero: True
+    save-extensions: [pdf]
+    show-ratio: True
+    sort-by-yields: True
+    legend-columns: 4
+    ratio-y-axis: '#frac{Data}{MC}'
+    ratio-y-axis-range: [0.75, 1.25] # [0.5, 1.5] is the default
+
+  # systematics:
+  #   - btagSF_shape_cferr1
+  #   - btagSF_shape_lfstats1_2022
+  #   - btagSF_shape_lfstats1_2022EE
+  #   - pileup
+  #   - btagSF_shape_hfstats2_2022
+  #   - btagSF_shape_hfstats2_2022EE
+  #   - btagSF_shape_lfstats2_2022
+  #   - btagSF_shape_cferr2
+  #   - btagSF_shape_lfstats2_2022EE
+  #   - jesTotal
+  #   - btagSF_shape_hfstats1_2022
+  #   - btagSF_shape_hfstats1_2022EE
+  #   - btagSF_shape_hf
+  #   - btagSF_shape_lf
+  #   - jer0
+  #   - jer1
+  #   - jer2
+  #   - jer3
+  #   - jer4
+  #   - jer5
+  #   - elIdSF
+  #   - elTrgSF
+  #   - muonIdSF
+  #   - muonIsoSF
+  #   - muonTrgSF
+  #   - pileup
+  #   - ZpT1
+  #   - ZpT2
+  #   - ZpT3
+  #   - ZpT4
+  #   - ZpT5
+  #   - ZpT6
+  #   - ZpT7
+  #   - ZpT8
+  #   - ZpT9
+  #   - ZpT10
