@@ -537,7 +537,7 @@ def ml_input_features(self):
             (op.rng_len(self.tightMuons) == 2, op.invariant_mass(
                 self.tightMuons[0].p4, self.tightMuons[1].p4)),
             (op.invariant_mass(
-                self.tightElectrons[0].p4, self.tightMuons[1].p4))
+                self.tightElectrons[0].p4, self.tightMuons[0].p4))
         ),
     }
 
