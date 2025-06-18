@@ -14,7 +14,7 @@ Muon_Run2022D:
   type: data
   group: data
   db: das:/Muon/Run2022D-22Sep2023-v1/NANOAOD
-  run_range: &runs_22D [357487, 357733]
+  run_range: &runs_22D [357487, 359021]
   certified_lumi_file: *lumi_cert_22
   split: *nsplit
 
