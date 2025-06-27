@@ -51,11 +51,9 @@ class cutflowAnalysis(NanoBaseHHWWbb):
         DLresolved_2b_MuMu_label = labeler('DL resolved 2b MuMu')
         DLresolved_2b_EMu_label = labeler('DL resolved 2b EMu')
 
-        ml_vars = {
-            "event_no": tree.event,
-            "weight": noSel.weight,
-        }
         ml_vars = ml_input_features(self)
+        ml_vars["event_no"] = tree.event
+        ml_vars["weight"] = noSel.weight
 
         # add skims that hold variables for the ML model
         for sel in event_selections:
