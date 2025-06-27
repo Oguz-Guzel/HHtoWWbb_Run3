@@ -5,7 +5,7 @@ from bamboo.plots import Plot, SummedPlot, Skim
 from bamboo.plots import EquidistantBinning as EqBin
 from bamboo import treefunctions as op
 
-import definitions as defs
+from definitions import ml_input_features
 from baseAnalysis import NanoBaseHHWWbb
 from selections import makeDLSelection
 from utils import labeler, ml_input_var_binning
@@ -35,16 +35,9 @@ class mvaEvaluator(NanoBaseHHWWbb):
             DL_VBF_boosted_ee, DL_VBF_boosted_mumu, DL_VBF_boosted_emu] = makeDLSelection(
             self, noSel, tree, sample)
 
-        # fetch and prepare the input for the model evaluation
-        l1, l2, j1, j2, met, _ = defs.ml_input_features(self)
-
-        ml_vars = {
-            "event_no": tree.event,
-            "weight": noSel.weight,
-        }
-        ml_vars = ml_vars | l1 | l2 | j1 | j2 | met
-        # line above is equivalent to the following (concetanation of dictionaries in dim=0)
-        # ml_vars =  {**ml_vars, **l1, **l2, **j1, **j2, **met}
+        ml_vars = ml_input_features(self)
+        ml_vars["event_no"] = tree.event
+        ml_vars["weight"] = noSel.weight
 
         l1 = op.array('float', *l1.values())
         l2 = op.array('float', *l2.values())
