@@ -55,9 +55,7 @@ class cutflowAnalysis(NanoBaseHHWWbb):
             "event_no": tree.event,
             "weight": noSel.weight,
         }
-        l1, l2, j1, j2, met, _ = ml_input_features(self)
-
-        ml_vars = ml_vars | l1 | l2 | j1 | j2 | met
+        ml_vars = ml_input_features(self)
 
         # add skims that hold variables for the ML model
         for sel in event_selections:

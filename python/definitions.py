@@ -408,138 +408,67 @@ def ml_input_features(self):
                 op.static_cast('float', getattr(self.tightMuons[idx], var)))
              ))
 
-    def get_jet_callable(var, idx):
+    def get_jet_callable(var, idx, jet):
         """Get jet callable based on the topology.
             Priority is given to AK8 jets."""
-        return op.multiSwitch(
-            (
-                op.rng_len(self.VBFjetPairsBoosted) > 0,
-                getattr(self.VBFjetPairsBoosted[0][idx].p4, var)()
-            ),
-            (
-                op.rng_len(self.VBFjetPairsResolved) > 0,
-                getattr(self.VBFjetPairsResolved[0][idx].p4, var)()
-            ),
-            (op.rng_len(self.ak8Jets) > idx, getattr(
-                self.ak8Jets[idx].p4, var)()),
-            (op.rng_len(self.ak4Jets) > idx, getattr(
-                self.ak4Jets[idx].p4, var)()),
+        return op.switch(
+            op.rng_len(jet) > idx,
+            getattr(jet[idx].p4, var)(),
             op.c_float(0)
         )
 
-    def get_jet_tree_var(var, idx):
+    def get_jet_tree_var(var, idx, jet):
         "Similar to get_jet_callable but returns the tree variable"
-        return op.multiSwitch(
-            (
-                op.rng_len(self.VBFjetPairsBoosted) > 0,
-                getattr(self.VBFjetPairsBoosted[0][idx], var)
-            ),
-            (
-                op.rng_len(self.VBFjetPairsResolved) > 0,
-                getattr(self.VBFjetPairsResolved[0][idx], var)
-            ),
-            (op.rng_len(self.ak8Jets) > idx,
-                getattr(self.ak8Jets[idx], var)),
-            (op.rng_len(self.ak4Jets) > idx,
-                getattr(self.ak4Jets[idx], var)),
+        return op.switch(
+            op.rng_len(jet) > idx,
+            getattr(jet[idx], var),
             op.c_float(0)
         )
 
-    # if you add new items in the following dictionaries, make sure to
-    # add correspoding binnings in `ml_input_var_binning` function in the utils.py file
-    # and arrange inputs to the ML model if you're running with a previously trained model
-    lepton1_vars = {"l1_Px": get_lepton_callable('Px', 0),
-                    "l1_Py": get_lepton_callable('Py', 0),
-                    "l1_Pz": get_lepton_callable('Pz', 0),
-                    "l1_E": get_lepton_callable('E', 0),
-                    "l1_pdgId": get_lepton_tree_var('pdgId', 0),
-                    "l1_charge": get_lepton_tree_var('charge', 0),
-                    # "l1_pt": get_lepton_callable('pt', 0),
-                    # "l1_eta": get_lepton_callable('eta', 0),
-                    # "l1_N": op.static_cast('float', op.rng_len(self.tightElectrons))
-                    }
-
-    lepton2_vars = {"l2_Px": get_lepton_callable('Px', 1),
-                    "l2_Py": get_lepton_callable('Py', 1),
-                    "l2_Pz": get_lepton_callable('Pz', 1),
-                    "l2_E": get_lepton_callable('E', 1),
-                    "l2_pdgId": get_lepton_tree_var('pdgId', 1),
-                    "l2_charge": get_lepton_tree_var('charge', 1),
-                    # "l2_pt": get_lepton_callable('pt', 1),
-                    # "l2_eta": get_lepton_callable('eta', 1),
-                    # "l2_N": op.static_cast('float', op.rng_len(self.tightMuons))
-                    }
-
-    jet1_vars = {
-        "j1_Px": get_jet_callable('Px', 0),
-        "j1_Py": get_jet_callable('Py', 0),
-        "j1_Pz": get_jet_callable('Pz', 0),
-        "j1_E": get_jet_callable('E', 0),
-        "j1_btag": op.multiSwitch(
-            (op.rng_len(self.VBFjetPairsBoosted) > 0,
-                getattr(self.VBFjetPairsBoosted[0][0], 'btagPNetB')),
-            (op.rng_len(self.VBFjetPairsResolved) > 0,
-                getattr(self.VBFjetPairsResolved[0][0], 'btagPNetB')),
-            (op.rng_len(self.ak8Jets) > 0,
-                getattr(self.ak8Jets[0], 'particleNet_XbbVsQCD')),
-            (op.rng_len(self.ak4Jets) > 0,
-                getattr(self.ak4Jets[0], 'btagPNetB')),
-            op.c_float(0)),
-        # "j1_pt": get_jet_tree_var('pt', 0), # the followings give narrowing error from size_t to float, it could be due to the number of inputs that I give to the model since they are 3 more and the model expects 5 inputs for jets, possibly the same issue with leptons
-        # "j1_eta": get_jet_tree_var('eta', 0),
-        # "j1_N": op.switch(
-        #     op.rng_len(self.ak8Jets) > 0, op.rng_len(self.ak8Jets),
-        #     op.rng_len(self.ak4Jets)
-        # )
-    }
-
-    jet2_vars = {
-        "j2_Px": get_jet_callable('Px', 1),
-        "j2_Py": get_jet_callable('Py', 1),
-        "j2_Pz": get_jet_callable('Pz', 1),
-        "j2_E": get_jet_callable('E', 1),
-        "j2_btag": op.multiSwitch(
-            (op.rng_len(self.VBFjetPairsBoosted) > 0,
-                getattr(self.VBFjetPairsBoosted[0][1], 'btagPNetB')),
-            (op.rng_len(self.VBFjetPairsResolved) > 0,
-                getattr(self.VBFjetPairsResolved[0][1], 'btagPNetB')),
-            (op.rng_len(self.ak8Jets) > 1,
-                getattr(self.ak8Jets[1], 'particleNet_XbbVsQCD')),
-            (op.rng_len(self.ak4Jets) > 1,
-                getattr(self.ak4Jets[1], 'btagPNetB')),
-            op.c_float(0)),
-        # "j2_pt": get_jet_tree_var('pt', 1),
-        # "j2_eta": get_jet_tree_var('eta', 1),
-        # "j2_N": op.switch(
-        #     op.rng_len(self.ak8Jets) > 0, op.rng_len(self.ak8Jets),
-        #     op.rng_len(self.ak4Jets)
-        # )
-    }
-
-    met_vars = {
+    ml_vars = {
+        # leptons
+        "l1_Px": get_lepton_callable('Px', 0),
+        "l1_Py": get_lepton_callable('Py', 0),
+        "l1_Pz": get_lepton_callable('Pz', 0),
+        "l1_E": get_lepton_callable('E', 0),
+        "l1_pdgId": get_lepton_tree_var('pdgId', 0),
+        "l1_charge": get_lepton_tree_var('charge', 0),
+        "l2_Px": get_lepton_callable('Px', 1),
+        "l2_Py": get_lepton_callable('Py', 1),
+        "l2_Pz": get_lepton_callable('Pz', 1),
+        "l2_E": get_lepton_callable('E', 1),
+        "l2_pdgId": get_lepton_tree_var('pdgId', 1),
+        "l2_charge": get_lepton_tree_var('charge', 1),
+        # jets
+        "j1_Px": get_jet_callable('Px', 0, self.ak4Jets),
+        "j1_Py": get_jet_callable('Py', 0, self.ak4Jets),
+        "j1_Pz": get_jet_callable('Pz', 0, self.ak4Jets),
+        "j1_E": get_jet_callable('E', 0, self.ak4Jets),
+        "j1_btag": get_jet_tree_var('btagPNetB', 0, self.ak4Jets),
+        "j2_Px": get_jet_callable('Px', 1, self.ak4Jets),
+        "j2_Py": get_jet_callable('Py', 1, self.ak4Jets),
+        "j2_Pz": get_jet_callable('Pz', 1, self.ak4Jets),
+        "j2_E": get_jet_callable('E', 1, self.ak4Jets),
+        "j2_btag": get_jet_tree_var('btagPNetB', 1, self.ak4Jets),
+        "j3_Px": get_jet_callable('Px', 2, self.ak4Jets),
+        "j3_Py": get_jet_callable('Py', 2, self.ak4Jets),
+        "j3_Pz": get_jet_callable('Pz', 2, self.ak4Jets),
+        "j3_E": get_jet_callable('E', 2, self.ak4Jets),
+        "j3_btag": get_jet_tree_var('btagPNetB', 2, self.ak4Jets),
+        "j4_Px": get_jet_callable('Px', 3, self.ak4Jets),
+        "j4_Py": get_jet_callable('Py', 3, self.ak4Jets),
+        "j4_Pz": get_jet_callable('Pz', 3, self.ak4Jets),
+        "j4_E": get_jet_callable('E', 3, self.ak4Jets),
+        "j4_btag": get_jet_tree_var('btagPNetB', 3, self.ak4Jets),
+        "j8_Px": get_jet_callable('Px', 0, self.ak8Jets),
+        "j8_Py": get_jet_callable('Py', 0, self.ak8Jets),
+        "j8_Pz": get_jet_callable('Pz', 0, self.ak8Jets),
+        "j8_E": get_jet_callable('E', 0, self.ak8Jets),
+        "j8_btag": get_jet_tree_var('particleNet_XbbVsQCD', 0, self.ak8Jets),
+        # met
         "met_Px": op.product(self.met.pt, op.cos(self.met.phi)),
         "met_Py": op.product(self.met.pt, op.sin(self.met.phi)),
         "met_E": self.met.pt
     }
 
-    misc = {
-        'dR_l1_l2': op.multiSwitch(
-            (op.rng_len(self.tightElectrons) == 2, op.deltaR(
-                self.tightElectrons[0].p4, self.tightElectrons[1].p4)),
-            (op.rng_len(self.tightMuons) == 2, op.deltaR(
-                self.tightMuons[0].p4, self.tightMuons[1].p4)),
-            (op.deltaR(self.tightElectrons[0].p4, self.tightMuons[1].p4))),
-        'dR_ak4b1_ak4b2': op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4),
-        'InvM_ak4b1_ak4b2': op.invariant_mass(self.ak4Jets[0].p4, self.ak4Jets[1].p4),
-        'InvM_l1_l2': op.multiSwitch(
-            (op.rng_len(self.tightElectrons) == 2, op.invariant_mass(
-                self.tightElectrons[0].p4, self.tightElectrons[1].p4)),
-            (op.rng_len(self.tightMuons) == 2, op.invariant_mass(
-                self.tightMuons[0].p4, self.tightMuons[1].p4)),
-            (op.invariant_mass(
-                self.tightElectrons[0].p4, self.tightMuons[0].p4))
-        ),
-    }
-
-    # return lepton1_vars, lepton2_vars, jet1_vars, jet2_vars, VBFjet1_vars, VBFjet2_vars, met_vars, misc
-    return lepton1_vars, lepton2_vars, jet1_vars, jet2_vars, met_vars, misc
+    return ml_vars
