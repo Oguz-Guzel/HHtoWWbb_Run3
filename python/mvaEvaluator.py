@@ -39,11 +39,17 @@ class mvaEvaluator(NanoBaseHHWWbb):
         ml_vars["event_no"] = tree.event
         ml_vars["weight"] = noSel.weight
 
-        l1 = op.array('float', *l1.values())
-        l2 = op.array('float', *l2.values())
-        j1 = op.array('float', *j1.values())
-        j2 = op.array('float', *j2.values())
-        met = op.array('float', *met.values())
+        l1 = [ml_vars[l] for l in ml_vars if l.startswith('l1_')]
+        l2 = [ml_vars[l] for l in ml_vars if l.startswith('l2_')]
+        j1 = [ml_vars[j] for j in ml_vars if j.startswith('j1_')]
+        j2 = [ml_vars[j] for j in ml_vars if j.startswith('j2_')]
+        met = [ml_vars[m] for m in ml_vars if m.startswith('met_')]
+
+        l1 = op.array('float', *l1)
+        l2 = op.array('float', *l2)
+        j1 = op.array('float', *j1)
+        j2 = op.array('float', *j2)
+        met = op.array('float', *met)
 
         # load the model file
         models_dir = os.path.join(self.git_project_dir, self.mvaModels)
