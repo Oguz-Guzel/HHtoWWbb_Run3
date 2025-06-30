@@ -92,7 +92,7 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
         parser.add_argument("--mvaModels",
                             dest="mvaModels",
                             type=str,
-                            default="./TransformerMulti/",
+                            default="./TransformerMulti/models/",
                             help="Path to MVA models and Evaluate DNN")
         parser.add_argument("--backend", type=str, default="dataframe",
                             help="Backend to use, 'dataframe' (default), 'lazy', or 'compiled'")
