@@ -41,22 +41,32 @@ class mvaEvaluator(NanoBaseHHWWbb):
 
         l1 = [ml_vars[l] for l in ml_vars if l.startswith('l1_')]
         l2 = [ml_vars[l] for l in ml_vars if l.startswith('l2_')]
+
         j1 = [ml_vars[j] for j in ml_vars if j.startswith('j1_')]
         j2 = [ml_vars[j] for j in ml_vars if j.startswith('j2_')]
+        j3 = [ml_vars[j] for j in ml_vars if j.startswith('j3_')]
+        j4 = [ml_vars[j] for j in ml_vars if j.startswith('j4_')]
+        j8 = [ml_vars[j] for j in ml_vars if j.startswith('j8_')]
+        
         met = [ml_vars[m] for m in ml_vars if m.startswith('met_')]
 
         l1 = op.array('float', *l1)
         l2 = op.array('float', *l2)
+        
         j1 = op.array('float', *j1)
         j2 = op.array('float', *j2)
+        j3 = op.array('float', *j3)
+        j4 = op.array('float', *j4)
+        
+        j8 = op.array('float', *j8)
         met = op.array('float', *met)
 
         # load the model file
         models_dir = os.path.join(self.git_project_dir, self.mvaModels)
         model_file_even = os.path.join(
-            models_dir, "v1.2.3_even_model/model.onnx")
+            models_dir, "v1.3.0_even_model/model.onnx")
         model_file_odd = os.path.join(
-            models_dir, "v1.2.3_odd_model/model.onnx")
+            models_dir, "v1.3.0_odd_model/model.onnx")
         logger.info(
             f"Using the following directory for ML models: {models_dir}"
         )
@@ -69,7 +79,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             model_file_odd, otherArgs='output')
 
         ml_output = op.switch(tree.event % 2 == 0, ml_evaluator_odd(
-            l1, l2, j1, j2, met), ml_evaluator_even(l1, l2, j1, j2, met))
+            l1, l2, j1, j2, j3, j4, j8, met), ml_evaluator_even(l1, l2, j1, j2, j3, j4, j8, met))
 
         signal_node = ml_output[0]
 
