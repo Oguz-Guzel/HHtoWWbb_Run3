@@ -92,8 +92,8 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
         parser.add_argument("--mvaModels",
                             dest="mvaModels",
                             type=str,
-                            default="../transformer-full/",
-                            help="Path to MVA models and Evaluate DNN")
+                            default="./TransformerBinary/",
+                            help="Path to ML models directory containing even and odd models")
         parser.add_argument("--backend", type=str, default="dataframe",
                             help="Backend to use, 'dataframe' (default), 'lazy', or 'compiled'")
         parser.add_argument("--sync", action="store_true", default=False,
