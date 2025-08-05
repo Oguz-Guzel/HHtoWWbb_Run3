@@ -6,3 +6,5 @@ config/dascache/*
 __pycache__/
 *.cc
 texput.log
+
+.ipynb_checkpoints/*
