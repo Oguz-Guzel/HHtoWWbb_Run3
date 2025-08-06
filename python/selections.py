@@ -60,6 +60,10 @@ def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, DYControlR
     genPartBranch = tree.GenPart if self.is_MC else None
     sel = sf.top_pT_reweight(self, genPartBranch, sel, sample)
 
+    # V+Jets sample stitching
+    LHEBranch = tree.LHE if ( self.is_MC and sample.startswith("DY") ) else None
+    sel = sf.V_Jets_Stitching(self, LHEBranch, sel, sample)
+
     # Noise filters
     sel = sf.NoiseFilters(self, tree.Flag, sel)
 
@@ -125,10 +129,8 @@ def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, DYControlR
     elmu_SF_sel = sf.elmuSF(self, elmu_sel)
 
     # DY Z pT reweighting
-    elel_SF_sel = sf.Z_pT_reweight(
-        self, elel_SF_sel, sample, genPartBranch, pdgId=11)
-    mumu_SF_sel = sf.Z_pT_reweight(
-        self, mumu_SF_sel, sample, genPartBranch, pdgId=13)
+    elel_SF_sel = sf.Z_pT_reweight(self, elel_SF_sel, sample, genPartBranch, pdgId=11)
+    mumu_SF_sel = sf.Z_pT_reweight(self, mumu_SF_sel, sample, genPartBranch, pdgId=13)
 
     # boosted pre-final state selections for btag reweighting
     DL_boosted_pre_ee = elel_SF_sel.refine(

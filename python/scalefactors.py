@@ -35,6 +35,55 @@ DY_and_Recoil_JSONFiles = {
     "2023BPix": "DY_pTll_recoil_corrections_2023postBPix_v2.json.gz",
 }
 
+sampleNumDict = {
+        "WtoLNu-2Jets": 150,
+
+        "WtoLNu-2Jets_PTLNu-40to100_1J": 151,
+        "WtoLNu-2Jets_PTLNu-40to100_2J": 152,
+        "WtoLNu-2Jets_PTLNu-100to200_1J": 153,
+        "WtoLNu-2Jets_PTLNu-100to200_2J": 154,
+        "WtoLNu-2Jets_PTLNu-200to400_1J": 155,
+        "WtoLNu-2Jets_PTLNu-200to400_2J": 156,
+        "WtoLNu-2Jets_PTLNu-400to600_1J": 157,
+        "WtoLNu-2Jets_PTLNu-400to600_2J": 158,
+
+        "WtoLNu-2Jets_PTLNu-600_1J": 159,
+        "WtoLNu-2Jets_PTLNu-600_2J": 160,
+
+        "WtoLNu-2Jets_0J": 161,
+        "WtoLNu-2Jets_1J": 162,
+        "WtoLNu-2Jets_2J": 163,
+
+        "DYto2L-2Jets_MLL-50": 170,
+
+        "DYto2L-2Jets_MLL-50_PTLL-40to100_1J": 171,
+        "DYto2L-2Jets_MLL-50_PTLL-40to100_2J": 172,
+        "DYto2L-2Jets_MLL-50_PTLL-100to200_1J": 173,
+        "DYto2L-2Jets_MLL-50_PTLL-100to200_2J": 174,
+        "DYto2L-2Jets_MLL-50_PTLL-200to400_1J": 175,
+        "DYto2L-2Jets_MLL-50_PTLL-200to400_2J": 176,
+        "DYto2L-2Jets_MLL-50_PTLL-400to600_1J": 177,
+        "DYto2L-2Jets_MLL-50_PTLL-400to600_2J": 178,
+        "DYto2L-2Jets_MLL-50_PTLL-600_1J": 179,
+        "DYto2L-2Jets_MLL-50_PTLL-600_2J": 180,
+
+        "DYto2L-2Jets_MLL-50_0J": 181,
+        "DYto2L-2Jets_MLL-50_1J": 182,
+        "DYto2L-2Jets_MLL-50_2J": 183,
+
+        "Zto2Nu-2Jets_PTNuNu-40to100_1J": 191,
+        "Zto2Nu-2Jets_PTNuNu-40to100_2J": 192,
+        "Zto2Nu-2Jets_PTNuNu-100to200_1J": 193,
+        "Zto2Nu-2Jets_PTNuNu-100to200_2J": 194,
+        "Zto2Nu-2Jets_PTNuNu-200to400_1J": 195,
+        "Zto2Nu-2Jets_PTNuNu-200to400_2J": 196,
+        "Zto2Nu-2Jets_PTNuNu-400to600_1J": 197,
+        "Zto2Nu-2Jets_PTNuNu-400to600_2J": 198,
+        "Zto2Nu-2Jets_PTNuNu-600_1J": 199,
+        "Zto2Nu-2Jets_PTNuNu-600_2J": 200,
+
+}
+
 
 class ScaleFactors():
     """Class to define scale factors"""
@@ -407,4 +456,68 @@ class ScaleFactors():
         else:
             sel = sel.refine(sel.name+"_ZpT", weight=op.c_float(1.))
         self.yields.add(sel, sel.name)
+        return sel
+
+    def V_Jets_Stitching(self, LHEBranch, sel, sample):
+        """Apply V+Jets stitching for MC samples DY MLL > 50. pT binned, Jet multiplicity binned and inclusive."""
+        if self.is_MC and sample.startswith("DY"):
+            logger.info("Applying V+Jets stitching for " + sel.name)
+            stitch_map_json = f"{self.git_project_dir}/data/Run3NLOStitching.json"
+
+            # Get the base sample name and corresponding sample number
+            base_sample = sample.rsplit(f"_{self.era}", 1)[0]
+            sampleNum = sampleNumDict.get(base_sample, None)
+
+            _weight = op.c_float(1.)
+            if sampleNum is None:
+                logger.warning(f"Warning! Sample {base_sample} not found in sampleNumDict for stitching")
+            else:
+                # Use get_correction for the stitching weights
+                era_key_map = {
+                    "2022": "NLO_stitch_22",
+                    "2022EE": "NLO_stitch_22EE", 
+                    "2023": "NLO_stitch_23",
+                    "2023BPix": "NLO_stitch_23BPix"
+                }
+                
+                era_key = era_key_map.get(self.era)
+                if era_key is None:
+                    logger.warning(f"Warning! Era {self.era} is not valid for stitching")
+                else:
+                    LHE_NpNLO = LHEBranch.NpNLO
+                    LHE_VpT = LHEBranch.Vpt
+                    
+                    # Define VpT bin edges and corresponding bin indices using op.multiSwitch
+                    def get_vpt_bin(vpt):
+                        return op.multiSwitch(
+                            (vpt <= 0, 0.0),
+                            (vpt <= 40, 1.0),
+                            (vpt <= 100, 2.0),
+                            (vpt <= 200, 3.0),
+                            (vpt <= 400, 4.0),
+                            (vpt <= 600, 5.0),
+                            6.0
+                        )
+                    
+                    vpt_bin = get_vpt_bin(LHE_VpT)
+                    binVal = vpt_bin + op.c_float(LHE_NpNLO) * 7.0
+
+                    # Use get_correction with the stitching JSON
+                    stitching_corr = get_correction(
+                        stitch_map_json,
+                        era_key,
+                        params={
+                            "axis0": float(sampleNum),
+                            "axis1": lambda obj: binVal
+                        },
+                        sel=sel
+                    )
+                    
+                    _weight = stitching_corr(None)
+
+            sel = sel.refine(sel.name+"_VJetsStitching", weight=_weight)
+        else:
+            # If not MC or not DY, just return the selection without changes
+            logger.info("No V+Jets stitching applied for " + sel.name)
+            sel = sel.refine(sel.name+"_VJetsStitching", weight=op.c_float(1.))
         return sel
