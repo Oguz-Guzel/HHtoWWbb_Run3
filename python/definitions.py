@@ -519,12 +519,30 @@ def ml_input_features(self):
         "l1_E": get_lepton_callable("E", 0),
         "l1_pdgId": get_lepton_tree_var("pdgId", 0),
         "l1_charge": get_lepton_tree_var("charge", 0),
+        "leading_lepton_pt": op.multiSwitch(
+            (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[0].pt),
+            (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].pt),
+            op.switch(
+                self.tightElectrons[0].pt > self.tightMuons[0].pt,
+                self.tightElectrons[0].pt,
+                self.tightMuons[0].pt,
+            ),
+        ),
         "l2_Px": get_lepton_callable("Px", 1),
         "l2_Py": get_lepton_callable("Py", 1),
         "l2_Pz": get_lepton_callable("Pz", 1),
         "l2_E": get_lepton_callable("E", 1),
         "l2_pdgId": get_lepton_tree_var("pdgId", 1),
         "l2_charge": get_lepton_tree_var("charge", 1),
+        "subleading_lepton_pt": op.multiSwitch(
+            (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[1].pt),
+            (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].pt),
+            op.switch(
+                self.tightElectrons[0].pt > self.tightMuons[0].pt,
+                self.tightElectrons[1].pt,
+                self.tightMuons[1].pt,
+            ),
+        ),
         # jets
         "j1_Px": get_jet_callable("Px", 0, self.ak4Jets),
         "j1_Py": get_jet_callable("Py", 0, self.ak4Jets),
@@ -551,10 +569,272 @@ def ml_input_features(self):
         "j8_Pz": get_jet_callable("Pz", 0, self.ak8Jets),
         "j8_E": get_jet_callable("E", 0, self.ak8Jets),
         "j8_btag": get_jet_tree_var("particleNet_XbbVsQCD", 0, self.ak8Jets),
+        "j8_tau1": get_jet_tree_var("tau1", 0, self.ak8Jets),
+        "j8_tau2": get_jet_tree_var("tau2", 0, self.ak8Jets),
+        "j8_tau3": get_jet_tree_var("tau3", 0, self.ak8Jets),
+        "j8_tau4": get_jet_tree_var("tau4", 0, self.ak8Jets),
+        "j8_msoftdrop": get_jet_tree_var("msoftdrop", 0, self.ak8Jets),
         # met
         "met_Px": op.product(self.met.pt, op.cos(self.met.phi)),
         "met_Py": op.product(self.met.pt, op.sin(self.met.phi)),
-        "met_E": self.met.pt
+        "met_E": self.met.pt,
+        # "HT": HT, include these
+        # "met_LD": op.product(0.6, self.met.pt) + op.product(0.4, HT),
+        # mask for objects presence
     }
+
+    def zero_p4():
+        # Px, Py, Pz, E all zero
+        return op.withMass(
+            op.construct(
+                "ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiM4D<float> >",
+                [
+                    op.c_float(0.0),  # Px
+                    op.c_float(0.0),  # Py
+                    op.c_float(0.0),  # Pz
+                    op.c_float(0.0),  # E
+                ],
+            ),
+            op.c_float(0.0),  # mass
+        )
+
+    dilepton = op.multiSwitch(
+        (
+            op.rng_len(self.tightElectrons) == 2,
+            self.tightElectrons[0].p4 + self.tightElectrons[1].p4,
+        ),
+        (
+            op.rng_len(self.tightMuons) == 2,
+            self.tightMuons[0].p4 + self.tightMuons[1].p4,
+        ),
+        self.tightElectrons[0].p4 + self.tightMuons[0].p4,
+    )
+    dilepton_phi = op.multiSwitch(
+        (
+            op.rng_len(self.tightElectrons) == 2,
+            op.static_cast(
+                "float",
+                (self.tightElectrons[0].p4 + self.tightElectrons[1].p4).Phi(),
+            ),
+        ),
+        (
+            op.rng_len(self.tightMuons) == 2,
+            op.static_cast(
+                "float", (self.tightMuons[0].p4 + self.tightMuons[1].p4).Phi()
+            ),
+        ),
+        op.static_cast(
+            "float", (self.tightElectrons[0].p4 + self.tightMuons[0].p4).Phi()
+        ),
+    )
+    bjets = op.combine(self.ak4BJets, N=2, pred=lambda j1, j2: op.c_bool(1))
+    dijet = op.switch(
+        op.rng_len(self.ak4Jets) > 1,
+        self.ak4Jets[0].p4 + self.ak4Jets[1].p4,
+        zero_p4(),
+    )
+    di_bjet = op.switch(
+        op.rng_len(self.ak4BJets) > 1,
+        self.ak4BJets[0].p4 + self.ak4BJets[1].p4,
+        zero_p4(),
+    )
+    di_bjet_phi = op.switch(
+        op.rng_len(self.ak4BJets) > 1,
+        op.static_cast("float", (self.ak4BJets[0].p4 + self.ak4BJets[1].p4).Phi()),
+        op.c_float(0.0),
+    )
+
+    def delta_phi(phi1, phi2):
+        """Calculate delta phi between two angles"""
+        dphi = op.abs(phi1 - phi2)
+        return op.switch(
+            dphi <= op.c_float(3.14159), dphi, op.c_float(2 * 3.14159) - dphi
+        )
+    
+    ml_vars.update(
+        {
+            "dR_l1_l2": op.multiSwitch(
+                (
+                    op.rng_len(self.tightElectrons) == 2,
+                    op.deltaR(self.tightElectrons[0].p4, self.tightElectrons[1].p4),
+                ),
+                (
+                    op.rng_len(self.tightMuons) == 2,
+                    op.deltaR(self.tightMuons[0].p4, self.tightMuons[1].p4),
+                ),
+                (op.deltaR(self.tightElectrons[0].p4, self.tightMuons[0].p4)),
+            ),
+            "dR_j1_j2": op.switch(
+                op.rng_len(self.ak4Jets) > 1,
+                op.deltaR(self.ak4Jets[0].p4, self.ak4Jets[1].p4),
+                op.c_float(0),
+            ),
+            "dR_dilepton_dijet": op.switch(
+                op.rng_len(self.ak4Jets) > 1,
+                op.deltaR(dilepton, dijet),
+                op.c_float(0.0),
+            ),
+            "dR_dilepton_dibjet": op.switch(
+                op.rng_len(self.ak4BJets) > 1,
+                op.deltaR(dilepton, di_bjet),
+                op.c_float(0),
+            ),
+            "abs_dphi_met_dilepton": delta_phi(self.met.phi, dilepton_phi),
+            # "abs_dphi_met_dibjet": op.switch(
+            #     op.rng_len(self.ak4BJets) > 1,
+            #     op.abs(delta_phi(self.met.phi, di_bjet_phi)),
+            #     op.c_float(0),
+            # ),
+            "min_dR_l1_ak4jets": op.switch(
+                op.rng_len(self.ak4Jets) > 0,
+                op.rng_min(
+                    self.ak4Jets,
+                    lambda jet: op.deltaR(
+                        op.multiSwitch(
+                            (
+                                op.rng_len(self.tightElectrons) == 2,
+                                self.tightElectrons[0].p4,
+                            ),
+                            (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].p4),
+                            (
+                                op.switch(
+                                    self.tightElectrons[0].pt > self.tightMuons[0].pt,
+                                    self.tightElectrons[0].p4,
+                                    self.tightMuons[0].p4,
+                                )
+                            ),
+                        ),
+                        jet.p4,
+                    ),
+                ),
+                op.c_float(0),
+            ),
+            "min_dR_l2_ak4jets": op.switch(
+                op.rng_len(self.ak4Jets) > 0,
+                op.rng_min(
+                    self.ak4Jets,
+                    lambda jet: op.deltaR(
+                        op.multiSwitch(
+                            (
+                                op.rng_len(self.tightElectrons) == 2,
+                                self.tightElectrons[1].p4,
+                            ),
+                            (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].p4),
+                            (
+                                op.switch(
+                                    self.tightElectrons[0].pt > self.tightMuons[0].pt,
+                                    self.tightElectrons[1].p4,
+                                    self.tightMuons[1].p4,
+                                )
+                            ),
+                        ),
+                        jet.p4,
+                    ),
+                ),
+                op.c_float(0),
+            ),
+            "min_dR_lead_bjet_leptons": op.switch(
+                op.rng_len(self.ak4BJets) > 0,
+                op.multiSwitch(
+                    (
+                        op.rng_len(self.tightElectrons) == 2,
+                        op.rng_min(
+                            op.map(self.tightElectrons, lambda lep: op.deltaR(self.ak4BJets[0].p4, lep.p4)),
+                            lambda dR: dR,
+                        ),
+                    ),
+                    (
+                        op.rng_len(self.tightMuons) == 2,
+                        op.rng_min(
+                            op.map(self.tightMuons, lambda lep: op.deltaR(self.ak4BJets[0].p4, lep.p4)),
+                            lambda dR: dR,
+                        ),
+                    ),
+                    op.min(
+                        op.deltaR(self.ak4BJets[0].p4, self.tightElectrons[0].p4),
+                        op.deltaR(self.ak4BJets[0].p4, self.tightMuons[0].p4)
+                    ),
+                ),
+                op.c_float(0),
+            ),
+            "min_dR_sublead_bjet_leptons": op.switch(
+                op.rng_len(self.ak4BJets) > 1,
+                op.multiSwitch(
+                    (
+                        op.rng_len(self.tightElectrons) == 2,
+                        op.rng_min(
+                            op.map(self.tightElectrons, lambda lep: op.deltaR(self.ak4BJets[1].p4, lep.p4)),
+                            lambda dR: dR,
+                        ),
+                    ),
+                    (
+                        op.rng_len(self.tightMuons) == 2,
+                        op.rng_min(
+                            op.map(self.tightMuons, lambda lep: op.deltaR(self.ak4BJets[1].p4, lep.p4)),
+                            lambda dR: dR,
+                        ),
+                    ),
+                    op.min(
+                        op.deltaR(self.ak4BJets[1].p4, self.tightElectrons[0].p4),
+                        op.deltaR(self.ak4BJets[1].p4, self.tightMuons[0].p4)
+                    ),
+                ),
+                op.c_float(0),
+            ),
+            "min_dR_ak4jets": op.switch(
+                op.rng_len(self.ak4Jets) > 1,
+                op.rng_min(
+                    op.combine(self.ak4Jets, N=2),
+                    lambda pair: op.deltaR(pair[0].p4, pair[1].p4),
+                ),
+                op.c_float(0),
+            ),
+            "min_abs_dphi_ak4jets": op.switch(
+                op.rng_len(self.ak4Jets) > 1,
+                op.rng_min(
+                    op.combine(self.ak4Jets, N=2),
+                    lambda pair: delta_phi(pair[0].phi, pair[1].phi),
+                ),
+                op.c_float(0),
+            ),
+            "di_bjet_mass": op.switch(
+                op.rng_len(self.ak4BJets) > 1,
+                op.invariant_mass(self.ak4BJets[0].p4, self.ak4BJets[1].p4),
+                op.c_float(0),
+            ),
+            "di_lepton_mass": op.multiSwitch(
+                (
+                    op.rng_len(self.tightElectrons) == 2,
+                    op.invariant_mass(
+                        self.tightElectrons[0].p4, self.tightElectrons[1].p4
+                    ),
+                ),
+                (
+                    op.rng_len(self.tightMuons) == 2,
+                    op.invariant_mass(self.tightMuons[0].p4, self.tightMuons[1].p4),
+                ),
+                (op.invariant_mass(self.tightElectrons[0].p4, self.tightMuons[0].p4)),
+            ),
+            "di_lepton_met_mass": op.invariant_mass(dilepton, self.met.p4),
+            # "di_lepton_dijet_met_mass": op.invariant_mass(
+            #     dilepton + dijet, self.met.p4
+            # ),
+            "VBF_tag": op.OR(
+                op.rng_len(self.VBFjetPairsResolved) > 0,
+                op.rng_len(self.VBFjetPairsBoosted) > 0,
+            ),
+            "boosted_tag": op.AND(
+                op.rng_len(self.ak8Jets) > 0,
+                op.rng_any(
+                    self.ak8Jets,
+                    lambda jet: op.OR(
+                        jet.subJet1.btagDeepB >= ak4MediumBtagWP(self.era),
+                        jet.subJet2.btagDeepB >= ak4MediumBtagWP(self.era),
+                    ),
+                ),
+            ),
+            "run_year": op.c_int(int(self.era[:4])),
+        }
+    )
 
     return ml_vars
