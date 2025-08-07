@@ -47,52 +47,30 @@ class mvaEvaluator(NanoBaseHHWWbb):
         ] = makeDLSelection(self, noSel, tree, sample)
 
         ml_vars = ml_input_features(self)
-        ml_vars["event_no"] = tree.event
-        ml_vars["weight"] = noSel.weight
+        # ml_vars["event_no"] = tree.event
+        # ml_vars["weight"] = noSel.weight
 
-        l1 = [ml_vars[l] for l in ml_vars if l.startswith('l1_')]
-        l2 = [ml_vars[l] for l in ml_vars if l.startswith('l2_')]
+        # prepare the input variables for the ML model
+        inputs = ml_vars.values()
 
-        j1 = [ml_vars[j] for j in ml_vars if j.startswith('j1_')]
-        j2 = [ml_vars[j] for j in ml_vars if j.startswith('j2_')]
-        j3 = [ml_vars[j] for j in ml_vars if j.startswith('j3_')]
-        j4 = [ml_vars[j] for j in ml_vars if j.startswith('j4_')]
-        j8 = [ml_vars[j] for j in ml_vars if j.startswith('j8_')]
-        
-        met = [ml_vars[m] for m in ml_vars if m.startswith('met_')]
+        cast_inputs = []
+        for var in inputs:
+            cast_inputs.append(op.static_cast("float", var))
 
-        l1 = op.array('float', *l1)
-        l2 = op.array('float', *l2)
-        
-        j1 = op.array('float', *j1)
-        j2 = op.array('float', *j2)
-        j3 = op.array('float', *j3)
-        j4 = op.array('float', *j4)
-        
-        j8 = op.array('float', *j8)
-        met = op.array('float', *met)
+        inputs = op.array("float", *cast_inputs)
 
         # load the model file
         models_dir = os.path.join(self.git_project_dir, self.mvaModels)
-        model_file_even = os.path.join(
-            models_dir, "v1.3.0_even_model/model.onnx")
-        model_file_odd = os.path.join(
-            models_dir, "v1.3.0_odd_model/model.onnx")
-        logger.info(
-            f"Using the following directory for ML models: {models_dir}"
-        )
+        logger.info(f"Using the following directory for ML models: {models_dir}")
 
-        # evaluate the model
-        ml_evaluator_even = op.mvaEvaluator(
-            model_file_even, otherArgs='output')
+        model_file = os.path.join(models_dir, "model.onnx")
 
-        ml_evaluator_odd = op.mvaEvaluator(
-            model_file_odd, otherArgs='output')
+        ml_evaluator = op.mvaEvaluator(model_file, otherArgs="probabilities")
 
-        ml_output = op.switch(tree.event % 2 == 0, ml_evaluator_odd(
-            l1, l2, j1, j2, j3, j4, j8, met), ml_evaluator_even(l1, l2, j1, j2, j3, j4, j8, met))
+        ml_output = ml_evaluator(inputs)
 
-        signal_node = ml_output[0]
+        # get the ML scores
+        signal_node = ml_output[1]
 
         # prepare the labels
         DL_label = {**labeler("DL ML score - blinded"), "blinded-range": [0.25, 0.999]}
