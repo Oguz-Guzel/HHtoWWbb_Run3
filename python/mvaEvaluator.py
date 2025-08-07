@@ -69,6 +69,29 @@ class mvaEvaluator(NanoBaseHHWWbb):
 
         ml_output = ml_evaluator(inputs)
 
+
+        # # The following code is an example of how to print stuff to the terminal
+        # # It is not necessary for the functionality of the code, but it can be useful for
+        # # debugging or logging purposes.
+        # # It uses the bamboo ROOT library to declare a function that prints the entry number,
+        # # event number, and the ML output to the terminal.
+
+        # from bamboo.root import gbl
+        # from bamboo.analysisutils import addPrintout
+
+        # gbl.gInterpreter.Declare("""
+        #     bool bamboo_printEntry(long entry, long event, const std::vector<float>& ml_output) {
+        #         std::cout << "Processing entry #" << entry << ": event " << event << " ml score [";
+        #         for (size_t i = 0; i < ml_output.size(); ++i) {
+        #             std::cout << ml_output[i];
+        #             if (i < ml_output.size() - 1) std::cout << ", ";
+        #         }
+        #         std::cout << "]" << std::endl;
+        #         return true;
+        #     }
+        # """)
+        # addPrintout(DL_resolved_1b_ee, "bamboo_printEntry", op.extVar("ULong_t", "rdfentry_"), tree.event, ml_output)
+
         # get the ML scores
         signal_node = ml_output[1]
 
