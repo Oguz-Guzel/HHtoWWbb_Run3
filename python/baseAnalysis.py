@@ -45,14 +45,13 @@ JECTags = {
         "G": "Summer22EE_22Sep2023_RunG_V2_DATA",
     },
     "2023": {
-        "MC": "Summer23Prompt23_V1_MC",
-        "Cv123": "Summer23Prompt23_RunCv123_V1_DATA",
-        "Cv4": "Summer23Prompt23_RunCv4_V1_DATA"
+        "MC": "Summer23Prompt23_V2_MC",
+        "C": "Summer23Prompt23_V2_DATA",
     },
     "2023BPix": {
-        "MC": "Summer23BPixPrompt23_V1_MC",
-        "D": "Summer23BPixPrompt23_RunD_V1_DATA"
-    }
+        "MC": "Summer23BPixPrompt23_V3_MC",
+        "D": "Summer23BPixPrompt23_V3_DATA",
+    },
 }
 
 JERTags = {
