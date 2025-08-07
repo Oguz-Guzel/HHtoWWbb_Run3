@@ -1,22 +1,13 @@
 # ### DATA ###
 
-Muon_Run2023Cv123:
+Muon_Run2023C:
   era: '2023'
   type: data
   group: data
-  db: [das:/Muon0/Run2023C-22Sep2023_v1-v1/NANOAOD, das:/Muon0/Run2023C-22Sep2023_v2-v1/NANOAOD, das:/Muon0/Run2023C-22Sep2023_v3-v1/NANOAOD, das:/Muon1/Run2023C-22Sep2023_v1-v1/NANOAOD, das:/Muon1/Run2023C-22Sep2023_v2-v1/NANOAOD, das:/Muon1/Run2023C-22Sep2023_v3-v1/NANOAOD]
+  db: [das:/Muon0/Run2023C-22Sep2023_v1-v1/NANOAOD, das:/Muon0/Run2023C-22Sep2023_v2-v1/NANOAOD, das:/Muon0/Run2023C-22Sep2023_v3-v1/NANOAOD, das:/Muon1/Run2023C-22Sep2023_v1-v1/NANOAOD, das:/Muon1/Run2023C-22Sep2023_v2-v1/NANOAOD, das:/Muon1/Run2023C-22Sep2023_v3-v1/NANOAOD, das:/Muon0/Run2023C-22Sep2023_v4-v1/NANOAOD, das:/Muon1/Run2023C-22Sep2023_v4-v2/NANOAOD]
   run_range: &runs_23C [367080, 369802]
   certified_lumi_file: &lumi_cert_23 https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions23/Cert_Collisions2023_366442_370790_Golden.json
   split: &nsplit -2
-
-Muon_Run2023Cv4:
-  era: '2023'
-  type: data
-  group: data
-  db: [das:/Muon0/Run2023C-22Sep2023_v4-v1/NANOAOD, das:/Muon1/Run2023C-22Sep2023_v4-v2/NANOAOD]
-  run_range: *runs_23C
-  certified_lumi_file: *lumi_cert_23
-  split: *nsplit
 
 Muon_Run2023D:
   era: '2023BPix'
@@ -27,20 +18,11 @@ Muon_Run2023D:
   certified_lumi_file: *lumi_cert_23
   split: *nsplit
 
-EGamma_Run2023Cv123:
+EGamma_Run2023C:
   era: '2023'
   type: data
   group: data
-  db: [das:/EGamma0/Run2023C-22Sep2023_v1-v1/NANOAOD, das:/EGamma0/Run2023C-22Sep2023_v2-v1/NANOAOD, das:/EGamma0/Run2023C-22Sep2023_v3-v1/NANOAOD, das:/EGamma1/Run2023C-22Sep2023_v1-v1/NANOAOD, das:/EGamma1/Run2023C-22Sep2023_v2-v1/NANOAOD, das:/EGamma1/Run2023C-22Sep2023_v3-v1/NANOAOD]
-  run_range: *runs_23C
-  certified_lumi_file: *lumi_cert_23
-  split: *nsplit
-
-EGamma_Run2023Cv4:
-  era: '2023'
-  type: data
-  group: data
-  db: [das:/EGamma0/Run2023C-22Sep2023_v4-v1/NANOAOD, das:/EGamma1/Run2023C-22Sep2023_v4-v1/NANOAOD]
+  db: [das:/EGamma0/Run2023C-22Sep2023_v1-v1/NANOAOD, das:/EGamma0/Run2023C-22Sep2023_v2-v1/NANOAOD, das:/EGamma0/Run2023C-22Sep2023_v3-v1/NANOAOD, das:/EGamma1/Run2023C-22Sep2023_v1-v1/NANOAOD, das:/EGamma1/Run2023C-22Sep2023_v2-v1/NANOAOD, das:/EGamma1/Run2023C-22Sep2023_v3-v1/NANOAOD, das:/EGamma0/Run2023C-22Sep2023_v4-v1/NANOAOD, das:/EGamma1/Run2023C-22Sep2023_v4-v1/NANOAOD]
   run_range: *runs_23C
   certified_lumi_file: *lumi_cert_23
   split: *nsplit
@@ -54,20 +36,11 @@ EGamma_Run2023D:
   certified_lumi_file: *lumi_cert_23
   split: *nsplit
 
-MuonEG_Run2023Cv123:
+MuonEG_Run2023C:
   era: '2023'
   type: data
   group: data
-  db: [das:/MuonEG/Run2023C-22Sep2023_v1-v1/NANOAOD, das:/MuonEG/Run2023C-22Sep2023_v2-v1/NANOAOD, das:/MuonEG/Run2023C-22Sep2023_v3-v1/NANOAOD]
-  run_range: *runs_23C
-  certified_lumi_file: *lumi_cert_23
-  split: *nsplit
-
-MuonEG_Run2023Cv4:
-  era: '2023'
-  type: data
-  group: data
-  db: [das:/MuonEG/Run2023C-22Sep2023_v4-v1/NANOAOD]
+  db: [das:/MuonEG/Run2023C-22Sep2023_v1-v1/NANOAOD, das:/MuonEG/Run2023C-22Sep2023_v2-v1/NANOAOD, das:/MuonEG/Run2023C-22Sep2023_v3-v1/NANOAOD, das:/MuonEG/Run2023C-22Sep2023_v4-v1/NANOAOD]
   run_range: *runs_23C
   certified_lumi_file: *lumi_cert_23
   split: *nsplit
