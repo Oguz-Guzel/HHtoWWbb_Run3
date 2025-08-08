@@ -125,10 +125,9 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
         )
         parser.add_argument(
             "--mvaModels",
-            dest="mvaModels",
+            dest="mvaModel",
             type=str,
-            default="/afs/cern.ch/work/a/aguzel/private/bamboo_105/HHtoWWbb_Run3/XGBoost/full_XGB_condor",
-            help="Path to ML models directory containing even and odd models",
+            help="Path to ML models directory containing XGBoost model.)",
         )
         parser.add_argument(
             "--backend",

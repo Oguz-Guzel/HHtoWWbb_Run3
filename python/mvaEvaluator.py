@@ -19,7 +19,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
     def __init__(self, args):
         super().__init__(args)
         self.channel = self.args.channel
-        self.mvaModels = self.args.mvaModels
+        self.mvaModel = self.args.mvaModel
 
     def definePlots(self, tree, noSel, sample=None, sampleCfg=None):
         plots = []
@@ -60,10 +60,8 @@ class mvaEvaluator(NanoBaseHHWWbb):
         inputs = op.array("float", *cast_inputs)
 
         # load the model file
-        models_dir = os.path.join(self.git_project_dir, self.mvaModels)
-        logger.info(f"Using the following directory for ML models: {models_dir}")
-
-        model_file = os.path.join(models_dir, "model.onnx")
+        model_file = self.mvaModel
+        logger.info(f"Using the ML model: {model_file}")
 
         ml_evaluator = op.mvaEvaluator(model_file, otherArgs="probabilities")
 
