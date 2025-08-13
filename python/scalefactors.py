@@ -298,7 +298,7 @@ class ScaleFactors:
             sel = sel.refine("mumu_leading_TRG_SF", weight=op.c_float(1.0))
             sel = sel.refine("mumu_subleading_TRG_SF", weight=op.c_float(1.0))
 
-        self.yields.add(sel, sel.name)
+        self.yields.add(sel, "MuMu ID ISO TRG SF")
 
         return sel
 
@@ -400,7 +400,7 @@ class ScaleFactors:
             sel = sel.refine("elel_leading_TRG_SF", weight=op.c_float(1.0))
             sel = sel.refine("elel_subleading_TRG_SF", weight=op.c_float(1.0))
 
-        self.yields.add(sel, sel.name)
+        self.yields.add(sel, "ElEl ID TRG SF")
 
         return sel
 
@@ -473,6 +473,8 @@ class ScaleFactors:
             sel = sel.refine("elmu_mu_ID_SF", weight=op.c_float(1.0))
             sel = sel.refine("elmu_mu_ISO_SF", weight=op.c_float(1.0))
             sel = sel.refine("elmu_mu_TRG_SF", weight=op.c_float(1.0))
+        
+        self.yields.add(sel, "ElMu ID ISO TRG SF")
         return sel
 
     def Z_pT_reweight(self, sel, sample, GenPartBranch, pdgId):
