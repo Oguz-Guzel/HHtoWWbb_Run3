@@ -185,6 +185,9 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
             backend=backend,
         )
 
+        # Number of events before any processing
+        self.yields.add(noSel, "noSel")
+
         # JEC/JER
         jecTag = JECTags[self.era]["MC" if self.is_MC else getDataRunEra(sample)]
         logger.info(f"JEC tag for sample {sample} is {jecTag}")
@@ -246,9 +249,6 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
             backend=be,
         )
         logger.info("Applying Electron scale and smear (SS) corrections")
-
-        # Number of events before any processing
-        self.yields.add(noSel, "noSel")
 
         # MC weight
         if self.is_MC:
