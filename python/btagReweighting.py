@@ -180,6 +180,8 @@ class btagReweighting(_base):
         return plots
 
     def postProcess(self, taskList, config=None, workdir=None, resultsdir=None):
+        from bamboo.plots import Skim
+
         super().postProcess(
             taskList, config=config, workdir=workdir, resultsdir=resultsdir
         )
