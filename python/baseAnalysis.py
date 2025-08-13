@@ -124,10 +124,11 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
             help="Channel to be selected between SL and DL",
         )
         parser.add_argument(
-            "--mvaModels",
+            "--mvaModel",
             dest="mvaModel",
             type=str,
-            help="Path to ML models directory containing XGBoost model.)",
+            default=None,
+            help="Path to XGBoost model.)",
         )
         parser.add_argument(
             "--backend",
@@ -395,7 +396,7 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
         # end of merging signal samples
 
         # create pdf presentation
-        if not self.mvaModels and not self.args.sync:
+        if not self.mvaModel and not self.args.sync:
             try:
                 for era in eras:
                     os.system(
