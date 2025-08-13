@@ -216,41 +216,6 @@ def ak8Btag(fatjet):
     )
 
 
-def tauDef(taus):
-    """Tau selection"""
-    return op.select(
-        taus,
-        lambda tau: op.AND(
-            tau.pt > 20.0,
-            op.abs(tau.eta) < 2.3,
-            op.abs(tau.dxy) <= 1000.0,
-            op.abs(tau.dz) <= 0.2,
-            tau.idDecayModeOldDMs,
-            op.OR(
-                tau.decayMode == 0,
-                tau.decayMode == 1,
-                tau.decayMode == 2,
-                tau.decayMode == 10,
-                tau.decayMode == 11,
-            ),
-            (tau.idDeepTau2017v2p1VSjet >> 4 & 0x1) == 1,
-            (tau.idDeepTau2017v2p1VSe >> 0 & 0x1) == 1,
-            (tau.idDeepTau2017v2p1VSmu >> 0 & 0x1) == 1,
-        ),
-    )
-
-
-def cleanTaus(taus, electrons, muons):
-    """Remove taus within a cone of DR<0.3 of electrons and muons"""
-    return op.select(
-        taus,
-        lambda tau: op.AND(
-            op.NOT(op.rng_any(electrons, lambda el: op.deltaR(tau.p4, el.p4) <= 0.3)),
-            op.NOT(op.rng_any(muons, lambda mu: op.deltaR(tau.p4, mu.p4) <= 0.3)),
-        ),
-    )
-
-
 # remove jets within cone of DR<0.4 of leading leptons at each channel
 
 
@@ -392,10 +357,6 @@ def defineObjects(self, tree):
     # tight leptons
     self.tightMuons = muonTightSel(self.fakeMuons)
     self.tightElectrons = elTightSel(self.fakeElectrons)
-
-    # Taus
-    taus = tauDef(tree.Tau)
-    self.cleanedTaus = cleanTaus(taus, self.fakeElectrons, self.fakeMuons)
 
     # clean jets wrt leptons
     cleanAk4Jets_lambda = cleaningWithRespectToLeadingLeptons(
@@ -649,7 +610,7 @@ def ml_input_features(self):
         return op.switch(
             dphi <= op.c_float(3.14159), dphi, op.c_float(2 * 3.14159) - dphi
         )
-    
+
     ml_vars.update(
         {
             "dR_l1_l2": op.multiSwitch(
@@ -738,20 +699,26 @@ def ml_input_features(self):
                     (
                         op.rng_len(self.tightElectrons) == 2,
                         op.rng_min(
-                            op.map(self.tightElectrons, lambda lep: op.deltaR(self.ak4BJets[0].p4, lep.p4)),
+                            op.map(
+                                self.tightElectrons,
+                                lambda lep: op.deltaR(self.ak4BJets[0].p4, lep.p4),
+                            ),
                             lambda dR: dR,
                         ),
                     ),
                     (
                         op.rng_len(self.tightMuons) == 2,
                         op.rng_min(
-                            op.map(self.tightMuons, lambda lep: op.deltaR(self.ak4BJets[0].p4, lep.p4)),
+                            op.map(
+                                self.tightMuons,
+                                lambda lep: op.deltaR(self.ak4BJets[0].p4, lep.p4),
+                            ),
                             lambda dR: dR,
                         ),
                     ),
                     op.min(
                         op.deltaR(self.ak4BJets[0].p4, self.tightElectrons[0].p4),
-                        op.deltaR(self.ak4BJets[0].p4, self.tightMuons[0].p4)
+                        op.deltaR(self.ak4BJets[0].p4, self.tightMuons[0].p4),
                     ),
                 ),
                 op.c_float(0),
@@ -762,20 +729,26 @@ def ml_input_features(self):
                     (
                         op.rng_len(self.tightElectrons) == 2,
                         op.rng_min(
-                            op.map(self.tightElectrons, lambda lep: op.deltaR(self.ak4BJets[1].p4, lep.p4)),
+                            op.map(
+                                self.tightElectrons,
+                                lambda lep: op.deltaR(self.ak4BJets[1].p4, lep.p4),
+                            ),
                             lambda dR: dR,
                         ),
                     ),
                     (
                         op.rng_len(self.tightMuons) == 2,
                         op.rng_min(
-                            op.map(self.tightMuons, lambda lep: op.deltaR(self.ak4BJets[1].p4, lep.p4)),
+                            op.map(
+                                self.tightMuons,
+                                lambda lep: op.deltaR(self.ak4BJets[1].p4, lep.p4),
+                            ),
                             lambda dR: dR,
                         ),
                     ),
                     op.min(
                         op.deltaR(self.ak4BJets[1].p4, self.tightElectrons[0].p4),
-                        op.deltaR(self.ak4BJets[1].p4, self.tightMuons[0].p4)
+                        op.deltaR(self.ak4BJets[1].p4, self.tightMuons[0].p4),
                     ),
                 ),
                 op.c_float(0),
