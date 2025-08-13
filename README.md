@@ -48,7 +48,7 @@ Instead of passing `--envConfig config/cern.ini` everytime, you can copy the con
 using the skims in the root files that re in the results directory of bamboo output `./outputDir/`, you can perform machine learning applications. Once you get the output from your machine learning (preferably in onnx format), you can evaluate that on the datasets by
 
 ```sh
-bambooRun -m python/mvaEvaluator.py config/<2022 or 2023>_v12.yml -o ./outputDir/ --envConfig config/cern.ini  --distributed driver
+bambooRun -m python/mvaEvaluator.py config/<2022 or 2023>_v12.yml -o ./outputDir/ --envConfig config/cern.ini  --distributed driver --mvaModel <path to your ML model in onnx format>
 ```
 where you get the ML score applied on the analysis.
 
