@@ -578,9 +578,8 @@ def ml_input_features(self):
         "met_Px": op.product(self.met.pt, op.cos(self.met.phi)),
         "met_Py": op.product(self.met.pt, op.sin(self.met.phi)),
         "met_E": self.met.pt,
-        # "HT": HT, include these
-        # "met_LD": op.product(0.6, self.met.pt) + op.product(0.4, HT),
-        # mask for objects presence
+        "HT": HT,
+        "met_LD": op.product(0.6, self.met.pt) + op.product(0.4, HT),
     }
 
     def zero_p4():
@@ -680,11 +679,11 @@ def ml_input_features(self):
                 op.c_float(0),
             ),
             "abs_dphi_met_dilepton": delta_phi(self.met.phi, dilepton_phi),
-            # "abs_dphi_met_dibjet": op.switch(
-            #     op.rng_len(self.ak4BJets) > 1,
-            #     op.abs(delta_phi(self.met.phi, di_bjet_phi)),
-            #     op.c_float(0),
-            # ),
+            "abs_dphi_met_dibjet": op.switch(
+                op.rng_len(self.ak4BJets) > 1,
+                op.abs(delta_phi(self.met.phi, di_bjet_phi)),
+                op.c_float(0),
+            ),
             "min_dR_l1_ak4jets": op.switch(
                 op.rng_len(self.ak4Jets) > 0,
                 op.rng_min(
@@ -816,9 +815,9 @@ def ml_input_features(self):
                 (op.invariant_mass(self.tightElectrons[0].p4, self.tightMuons[0].p4)),
             ),
             "di_lepton_met_mass": op.invariant_mass(dilepton, self.met.p4),
-            # "di_lepton_dijet_met_mass": op.invariant_mass(
-            #     dilepton + dijet, self.met.p4
-            # ),
+            "di_lepton_dijet_met_mass": op.invariant_mass(
+                dilepton + dijet, self.met.p4
+            ),
             "VBF_tag": op.OR(
                 op.rng_len(self.VBFjetPairsResolved) > 0,
                 op.rng_len(self.VBFjetPairsBoosted) > 0,
