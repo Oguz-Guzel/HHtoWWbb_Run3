@@ -56,3 +56,12 @@ To produce sync skim
 ```sh
 bambooRun -m python/syncSkimmer.py config/2022_v12_sync.yml -o output/syncTest --sync
 ```
+
+To produce trigger efficiency plots, you can run the following command:
+```sh
+bambooRun -m python/trigger_eff.py config/<2022 or 2023>_v12.yml -o ./outputDir/
+```
+To convert the trigger efficiency histograms to JSON format, you can run:
+```sh
+python python/trg_eff_to_json.py --bamboo_results <path to the results directory of bamboo output>>
+``` 
