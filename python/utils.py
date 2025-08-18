@@ -69,9 +69,12 @@ def custom_Plotit(cfgName, workdir, inDir, outDir, counterReader, config, plotIt
         mergedHists = {}
 
         if smpCfg.get("group") in _gp:
-            print(f"Copying {smp}.root to {outDir}")
-            shutil.copyfile(os.path.join(
-                inDir, f"{smp}.root"), os.path.join(outDir, f"{smp}.root"))
+            if not os.path.exists(os.path.join(inDir, f"{smp}.root")):
+                print(f"Copying {smp}.root to {outDir}")
+                shutil.copyfile(
+                    os.path.join(inDir, f"{smp}.root"),
+                    os.path.join(outDir, f"{smp}.root"),
+                )
             keep_cfg[smp] = smpCfg
         else:
             resultsFile = openFileAndGet(
