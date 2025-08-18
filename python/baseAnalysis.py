@@ -372,17 +372,14 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
                 verbose=self.args.verbose,
             )
         plotsDir = "plots"
-        # to be automatised soon
-        # activate the following lines to combine signal samples
         # hadd signal files and create another plots.yml called plots_full.yml
         plotsDir = "plots_full"
         import os
         import shutil
 
         outDir = os.path.join(resultsdir, "normalizedSummedSignal")
-        if os.path.isdir(outDir):
-            shutil.rmtree(outDir)
-        os.makedirs(outDir)
+        if not os.path.exists(outDir):
+            os.makedirs(outDir)
         utils.custom_Plotit(
             cfgName,
             workdir,
@@ -393,7 +390,7 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
             plotIt=self.args.plotIt,
             verbose=self.args.verbose,
         )
-        # end of merging signal samples
+        # end of merging signal samples and plotting
 
         # create pdf presentation
         if not self.mvaModel and not self.args.sync:
