@@ -192,7 +192,7 @@ class ScaleFactors:
             )
 
             # Muon Trigger SF
-            self.muon_TRG_sf = get_correction(
+            self.single_muon_TRG_SF = get_correction(
                 MUON_SF_JSONFiles[self.era],
                 "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",
                 systVariations={
@@ -269,7 +269,7 @@ class ScaleFactors:
                             self.tightMuons[0].pt >= 26.0,
                             op.abs(self.tightMuons[0].eta) < 2.4,
                         ),
-                        self.muon_TRG_sf(self.tightMuons[0]),
+                        self.single_muon_TRG_sf(self.tightMuons[0]),
                         op.c_float(1.0),
                     )
                 ],
@@ -282,7 +282,7 @@ class ScaleFactors:
                             self.tightMuons[1].pt >= 26.0,
                             op.abs(self.tightMuons[1].eta) < 2.4,
                         ),
-                        self.muon_TRG_sf(self.tightMuons[1]),
+                        self.single_muon_TRG_sf(self.tightMuons[1]),
                         op.c_float(1.0),
                     )
                 ],
@@ -462,7 +462,7 @@ class ScaleFactors:
                             self.tightMuons[0].pt >= 26.0,
                             op.abs(self.tightMuons[0].eta) < 2.4,
                         ),
-                        self.muon_TRG_sf(self.tightMuons[0]),
+                        self.single_muon_TRG_SF(self.tightMuons[0]),
                         op.c_float(1.0),
                     )
                 ],
