@@ -1,6 +1,7 @@
 import os
 import ROOT
 import json
+import shutil
 import argparse
 
 # Run ROOT in batch mode (no GUI) to avoid display issues
@@ -18,6 +19,7 @@ def parse_args():
 
 
 def calculate_2d_scale_factors_and_export(
+    bamboo_results,
     data_files,
     mc_files,
     num_hist_name,
@@ -272,7 +274,9 @@ def calculate_2d_scale_factors_and_export(
     # Write JSON
     with open(output_json_name, "w") as f:
         json.dump(correction_json, f, indent=2)
-    print(f"\n  Scale factors JSON saved as: {output_json_name}")
+
+    shutil.move(output_json_name, os.path.join(bamboo_results, "..", output_json_name))
+    print(f"\n  Scale factors JSON saved as: {output_json_name} in {bamboo_results}")
 
     # Return first channel histos for any downstream plotting that expects single hists
     ch0 = first_channel_for_return or channels[0]
@@ -313,6 +317,9 @@ def create_comparison_plots(h_data, h_mc, h_sf, output_name="comparison.png"):
 
     canvas.SaveAs(output_name)
 
+    shutil.move(output_name, os.path.join(bamboo_results, "..", output_name))
+    print(f"\n  Comparison plots saved as: {output_name} in {bamboo_results}")
+
 
 # Example usage
 if __name__ == "__main__":
@@ -338,5 +345,14 @@ if __name__ == "__main__":
     den_hist = ["den_ee", "den_mumu", "den_emu"]  # Denominator histogram names
 
     h_scale_factors, h_eff_data, h_eff_mc = calculate_2d_scale_factors_and_export(
-        data_files, mc_files, num_hist, den_hist, "trigger_scale_factors_run3.json"
+        bamboo_results,
+        data_files,
+        mc_files,
+        num_hist,
+        den_hist,
+        "trigger_scale_factors_run3.json",
+    )
+
+    create_comparison_plots(
+        h_eff_data, h_eff_mc, h_scale_factors, "trigger_comparison.png"
     )
