@@ -151,7 +151,7 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
 
         from bamboo.plots import CutFlowReport
 
-        self.yields = CutFlowReport("yields", recursive=True, printInLog=True)
+        self.yields = CutFlowReport("yields", recursive=True, printInLog=False)
 
         # Decorate the tree
         from bamboo.treedecorators import (
