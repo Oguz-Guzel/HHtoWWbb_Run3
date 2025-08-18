@@ -43,7 +43,7 @@ def ptCutDifferentFlavourPair(dilep) -> bool:
     )
 
 
-def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, DYControlRegion=False, TTbarControlRegion=False):
+def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, triggerStudy=False, DYControlRegion=False, TTbarControlRegion=False):
     """Creates a list of selection objects for the Dilepton final state.
 
     Args:
@@ -120,9 +120,9 @@ def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, DYControlR
         ])
 
     # lepton scale factors
-    elel_SF_sel = sf.elelSF(self, elel_sel)
-    mumu_SF_sel = sf.mumuSF(self, mumu_sel)
-    elmu_SF_sel = sf.elmuSF(self, elmu_sel)
+    elel_SF_sel = sf.elelSF(self, elel_sel, triggerStudy)
+    mumu_SF_sel = sf.mumuSF(self, mumu_sel, triggerStudy)
+    elmu_SF_sel = sf.elmuSF(self, elmu_sel, triggerStudy)
 
     # DY Z pT reweighting
     elel_SF_sel = sf.Z_pT_reweight(
@@ -324,5 +324,7 @@ def makeDLSelection(self, sel, tree, sample, btagReweightStudy=False, DYControlR
         return pre_final_state_sels
     elif DYControlRegion:
         return Z_peak_selections
+    elif triggerStudy:
+        return [elel_SF_sel, mumu_SF_sel, elmu_SF_sel]
     else:
         return DL_signal_region_selections
