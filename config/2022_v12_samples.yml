@@ -335,7 +335,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022:
   generated-events: genEventSumw
   split: &signal_split -5
   line-color: 3
-  legend: 'HH\rightarrow bbll\nu\nu'
+  legend: 'HH\rightarrow bbll\nu\nu kl=1'
 
 ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022EE:
   type: signal
@@ -346,7 +346,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022EE:
   generated-events: genEventSumw
   split: *signal_split
   line-color: 3
-  legend: 'HH\rightarrow bbll\nu\nu'
+  legend: 'HH\rightarrow bbll\nu\nu kl=1'
 
 # ### BSM ###
 ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022:
@@ -358,7 +358,7 @@ ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022:
   generated-events: genEventSumw
   split: *signal_split
   line-color: 4
-  legend: 'HH\rightarrow bbll\nu\nu kl 2p45'
+  legend: 'HH\rightarrow bbll\nu\nu kl=0'
 
 ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022EE:
   type: signal
@@ -369,7 +369,7 @@ ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022EE:
   generated-events: genEventSumw
   split: *signal_split
   line-color: 4
-  legend: 'HH\rightarrow bbll\nu\nu kl 2p45'
+  legend: 'HH\rightarrow bbll\nu\nu kl=0'
 
 ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022:
   type: signal
@@ -380,7 +380,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022:
   generated-events: genEventSumw
   split: *signal_split
   line-color: 5
-  legend: 'HH\rightarrow bbll\nu\nu kl 2p45'
+  legend: 'HH\rightarrow bbll\nu\nu kl=2.45'
 
 ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022EE:
   type: signal
@@ -391,7 +391,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022EE:
   generated-events: genEventSumw
   split: *signal_split
   line-color: 5
-  legend: 'HH\rightarrow bbll\nu\nu kl 2p45'
+  legend: 'HH\rightarrow bbll\nu\nu kl=2.45'
 
 ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022:
   type: signal
@@ -402,7 +402,7 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022:
   generated-events: genEventSumw
   split: *signal_split
   line-color: 6
-  legend: 'HH\rightarrow bbll\nu\nu kl 5p00'
+  legend: 'HH\rightarrow bbll\nu\nu kl=5'
 
 ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022EE:
   type: signal
@@ -413,7 +413,7 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022EE:
   generated-events: genEventSumw
   split: *signal_split
   line-color: 6
-  legend: 'HH\rightarrow bbll\nu\nu kl 5p00'
+  legend: 'HH\rightarrow bbll\nu\nu kl=5'
 
 # VBF SM signal
 
