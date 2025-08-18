@@ -293,15 +293,16 @@ class TriggerEff(_base):
     def definePlots(self, tree, noSel, sample=None, sampleCfg=None):
         from bamboo.plots import Plot
         import definitions as defs
+        from selections import makeDLSelection
 
         # call defined objects
         defs.defineObjects(self, tree)
 
         # get DL selections
 
-        # (elel_SF_sel, mumu_SF_sel, elmu_SF_sel) = makeDLSelection(
-        #     self, noSel, tree, sample, triggerStudy=True
-        # )
+        (elel_SF_sel, mumu_SF_sel, elmu_SF_sel) = makeDLSelection(
+            self, noSel, tree, sample, triggerStudy=True
+        )
 
         # Triggers
         self.triggers_per_PD = {}
@@ -330,14 +331,9 @@ class TriggerEff(_base):
                 sample, self.triggers_per_PD
             )
 
-        # trg_ee_sel = elel_SF_sel.refine("triggers_ee", cut=trigger_cut)
-        # trg_mumu_sel = mumu_SF_sel.refine("triggers_mumu", cut=trigger_cut)
-        # trg_emu_sel = elmu_SF_sel.refine("triggers_emu", cut=trigger_cut)
-
-        trg_sel = noSel.refine(
-            "triggers",
-            cut=trigger_cut,
-        )
+        trg_ee_sel = elel_SF_sel.refine("triggers_ee", cut=trigger_cut)
+        trg_mumu_sel = mumu_SF_sel.refine("triggers_mumu", cut=trigger_cut)
+        trg_emu_sel = elmu_SF_sel.refine("triggers_emu", cut=trigger_cut)
 
         plots = []
 
@@ -345,13 +341,11 @@ class TriggerEff(_base):
         pt_bins_l1 = EqBin(40, 0, 200)  # 5 GeV bins up to 200 GeV
         pt_bins_l2 = EqBin(40, 0, 200)
 
-        lep1, lep2 = self.tightElectrons[0], self.tightElectrons[1]
-
         plots.append(
             Plot.make2D(
                 "den_ee",
                 [lep1.pt, lep2.pt],
-                noSel,
+                elel_SF_sel,
                 [pt_bins_l1, pt_bins_l2],
                 title="EE Denominator: leading vs subleading pT",
             )
@@ -361,7 +355,7 @@ class TriggerEff(_base):
             Plot.make2D(
                 "num_ee",
                 [lep1.pt, lep2.pt],
-                trg_sel,
+                trg_ee_sel,
                 [pt_bins_l1, pt_bins_l2],
                 title="EE Numerator: leading vs subleading pT (after trigger)",
             )
@@ -372,7 +366,7 @@ class TriggerEff(_base):
             Plot.make2D(
                 "den_mumu",
                 [lep1.pt, lep2.pt],
-                noSel,
+                mumu_SF_sel,
                 [pt_bins_l1, pt_bins_l2],
                 title="MUMU Denominator: leading vs subleading pT",
             )
@@ -381,7 +375,7 @@ class TriggerEff(_base):
             Plot.make2D(
                 "num_mumu",
                 [lep1.pt, lep2.pt],
-                trg_sel,
+                trg_mumu_sel,
                 [pt_bins_l1, pt_bins_l2],
                 title="MUMU Numerator: leading vs subleading pT (after trigger)",
             )
@@ -392,7 +386,7 @@ class TriggerEff(_base):
             Plot.make2D(
                 "den_emu",
                 [lep1.pt, lep2.pt],
-                noSel,
+                elmu_SF_sel,
                 [pt_bins_l1, pt_bins_l2],
                 title="EMU Denominator: leading vs subleading pT",
             )
@@ -402,7 +396,7 @@ class TriggerEff(_base):
             Plot.make2D(
                 "num_emu",
                 [lep1.pt, lep2.pt],
-                trg_sel,
+                trg_emu_sel,
                 [pt_bins_l1, pt_bins_l2],
                 title="EMU Numerator: leading vs subleading pT (after trigger)",
             )
