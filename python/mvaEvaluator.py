@@ -94,7 +94,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
         signal_node = ml_output[1]
 
         # prepare the labels
-        DL_label = {**labeler("DL ML score - blinded"), "blinded-range": [0.25, 0.999]}
+        DL_label = {"blinded-range": [0.25, 0.999]}
         DL_ee_label = {
             **labeler("DL ML score EE - blinded"),
             "blinded-range": [0.25, 0.999],
@@ -321,7 +321,8 @@ class mvaEvaluator(NanoBaseHHWWbb):
                 *VBF_boosted_ml_score_plots,
             ],
             title="DL ML score",
-            plotopts=DL_label,
+            xTitle="ggF/HH Binary Score Distribution",
+            # plotopts=DL_label,
         )
         plots.extend(
             [
