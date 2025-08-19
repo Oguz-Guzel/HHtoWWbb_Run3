@@ -350,7 +350,7 @@ if __name__ == "__main__":
         mc_files,
         num_hist,
         den_hist,
-        "trigger_scale_factors_run3.json",
+        "di_lepton_trigger_scale_factors.json",
     )
 
     create_comparison_plots(
