@@ -229,31 +229,24 @@ class ScaleFactors:
                 sel=sel,
             )
             # di-lepton trigger SF for muons
-            self.mumu_double_TRG_SF = get_correction(
-                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][0],
-                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][1],
-                systVariations={},
-                params={
-                    "channel": "mumu",
-                    "pt_leading": self.parent.tightMuons[0].pt,
-                    "pt_subleading": self.parent.tightMuons[1].pt,
-                },
-                defineOnFirstUse=False,
-                sel=sel,
-            )
-            # uncertainty for di-lepton trigger SF for muons
-            self.mumu_double_TRG_SF_unc = get_correction(
-                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][0],
-                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][1] + "_unc",
-                systVariations={},
-                params={
-                    "channel": "mumu",
-                    "pt_leading": self.parent.tightMuons[0].pt,
-                    "pt_subleading": self.parent.tightMuons[1].pt,
-                },
-                defineOnFirstUse=False,
-                sel=sel,
-            )
+            if not triggerStudy:
+                self.mumu_double_TRG_SF = get_correction(
+                    self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][0],
+                    self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][1],
+                    systParam="systematic",
+                    systVariations={
+                        "mumu_diTRG_up": "up",
+                        "mumu_diTRG_down": "down",
+                    },
+                    systNomName="nominal",
+                    params={
+                        "channel": "mumu",
+                        "pt_leading": self.parent.tightMuons[0].pt,
+                        "pt_subleading": self.parent.tightMuons[1].pt,
+                    },
+                    defineOnFirstUse=False,
+                    sel=sel,
+                )
             # pt and eta cut here since correction are available only when pt >= 15 and |eta| < 2.4
             sel = sel.refine(
                 "mumu_leading_ID_SF",
@@ -413,31 +406,24 @@ class ScaleFactors:
                 sel=sel,
             )
             # di-lepton trigger SF for electrons
-            self.elel_double_TRG_SF = get_correction(
-                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][0],
-                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][1],
-                systVariations={},
-                params={
-                    "channel": "ee",
-                    "pt_leading": self.parent.tightElectrons[0].pt,
-                    "pt_subleading": self.parent.tightElectrons[1].pt,
-                },
-                defineOnFirstUse=False,
-                sel=sel,
-            )
-            # uncertainty for di-lepton trigger SF for muons
-            self.elel_double_TRG_SF_unc = get_correction(
-                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][0],
-                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][1] + "_unc",
-                systVariations={},
-                params={
-                    "channel": "ee",
-                    "pt_leading": self.parent.tightElectrons[0].pt,
-                    "pt_subleading": self.parent.tightElectrons[1].pt,
-                },
-                defineOnFirstUse=False,
-                sel=sel,
-            )
+            if not triggerStudy:
+                self.elel_double_TRG_SF = get_correction(
+                    self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][0],
+                    self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][1],
+                    systParam="systematic",
+                    systVariations={
+                        "elel_diTRG_up": "up",
+                        "elel_diTRG_down": "down",
+                    },
+                    systNomName="nominal",
+                    params={
+                        "channel": "ee",
+                        "pt_leading": self.parent.tightElectrons[0].pt,
+                        "pt_subleading": self.parent.tightElectrons[1].pt,
+                    },
+                    defineOnFirstUse=False,
+                    sel=sel,
+                )
             # pt cut here since corrections are available for certain ranges
             sel = sel.refine(
                 "elel_leading_ID_SF",
@@ -515,31 +501,24 @@ class ScaleFactors:
                 self.parent.tightElectrons[1].pt,
                 self.parent.tightMuons[1].pt,
             )
-            self.elmu_double_TRG_SF = get_correction(
-                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][0],
-                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][1],
-                systVariations={},
-                params={
-                    "channel": "emu",
-                    "pt_leading": leading_lepton_pt,
-                    "pt_subleading": subleading_lepton_pt,
-                },
-                defineOnFirstUse=False,
-                sel=sel,
-            )
-            # uncertainty for di-lepton trigger SF for muons
-            self.elmu_double_TRG_SF_unc = get_correction(
-                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][0],
-                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][1] + "_unc",
-                systVariations={},
-                params={
-                    "channel": "emu",
-                    "pt_leading": leading_lepton_pt,
-                    "pt_subleading": subleading_lepton_pt,
-                },
-                defineOnFirstUse=False,
-                sel=sel,
-            )
+            if not triggerStudy:
+                self.elmu_double_TRG_SF = get_correction(
+                    self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][0],
+                    self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][1],
+                    systParam="systematic",
+                    systVariations={
+                        "elmu_diTRG_up": "up",
+                        "elmu_diTRG_down": "down",
+                    },
+                    systNomName="nominal",
+                    params={
+                        "channel": "emu",
+                        "pt_leading": leading_lepton_pt,
+                        "pt_subleading": subleading_lepton_pt,
+                    },
+                    defineOnFirstUse=False,
+                    sel=sel,
+                )
             sel = sel.refine(
                 "elmu_el_ID_SF",
                 weight=[

@@ -201,12 +201,17 @@ def calculate_2d_scale_factors_and_export(
             {
                 "name": "trigger_scale_factors_2d",
                 "version": 1,
-                "description": "2D trigger scale factors by channel (leading/subleading lepton pT)",
+                "description": "2D trigger scale factors by channel with systematic variations",
                 "inputs": [
                     {
                         "name": "channel",
                         "type": "string",
                         "description": "ee, mumu, emu",
+                    },
+                    {
+                        "name": "systematic",
+                        "type": "string",
+                        "description": "Systematic variation (nominal, up, down)",
                     },
                     {
                         "name": "pt_leading",
@@ -228,47 +233,29 @@ def calculate_2d_scale_factors_and_export(
                     "nodetype": "category",
                     "input": "channel",
                     "content": [
-                        {"key": ch, "value": make_xy_node(results[ch]["values"])}
+                        {
+                            "key": ch,
+                            "value": {
+                                "nodetype": "category",
+                                "input": "systematic",
+                                "content": [
+                                    {"key": "nominal", "value": make_xy_node(results[ch]["values"])},
+                                    {"key": "up", "value": make_xy_node([
+                                        [min(v + e, 1.5) for v, e in zip(row_v, row_e)]
+                                        for row_v, row_e in zip(results[ch]["values"], results[ch]["errors"])
+                                    ])},
+                                    {"key": "down", "value": make_xy_node([
+                                        [max(v - e, 0.5) for v, e in zip(row_v, row_e)]
+                                        for row_v, row_e in zip(results[ch]["values"], results[ch]["errors"])
+                                    ])}
+                                ]
+                            }
+                        }
                         for ch in channels
                     ],
                 },
-            },
-            {
-                "name": "trigger_scale_factors_2d_unc",
-                "version": 1,
-                "description": "Absolute uncertainty for 2D trigger scale factors by channel",
-                "inputs": [
-                    {
-                        "name": "channel",
-                        "type": "string",
-                        "description": "ee, mumu, emu",
-                    },
-                    {
-                        "name": "pt_leading",
-                        "type": "real",
-                        "description": "Leading lepton pT [GeV]",
-                    },
-                    {
-                        "name": "pt_subleading",
-                        "type": "real",
-                        "description": "Subleading lepton pT [GeV]",
-                    },
-                ],
-                "output": {
-                    "name": "uncertainty",
-                    "type": "real",
-                    "description": "Absolute uncertainty on SF",
-                },
-                "data": {
-                    "nodetype": "category",
-                    "input": "channel",
-                    "content": [
-                        {"key": ch, "value": make_xy_node(results[ch]["errors"])}
-                        for ch in channels
-                    ],
-                },
-            },
-        ],
+            }
+        ]
     }
 
     # Write JSON
