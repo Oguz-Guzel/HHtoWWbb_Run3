@@ -263,7 +263,7 @@ def calculate_2d_scale_factors_and_export(
         json.dump(correction_json, f, indent=2)
 
     shutil.move(output_json_name, os.path.join(bamboo_results, "..", output_json_name))
-    print(f"\n  Scale factors JSON saved as: {output_json_name} in {bamboo_results}")
+    print(f"\n  Scale factors JSON saved as: {os.path.join(bamboo_results, '..', output_json_name)}")
 
     # Return first channel histos for any downstream plotting that expects single hists
     ch0 = first_channel_for_return or channels[0]
@@ -305,7 +305,7 @@ def create_comparison_plots(h_data, h_mc, h_sf, output_name="comparison.png"):
     canvas.SaveAs(output_name)
 
     shutil.move(output_name, os.path.join(bamboo_results, "..", output_name))
-    print(f"\n  Comparison plots saved as: {output_name} in {bamboo_results}")
+    print(f"\n  Comparison plots saved as: {os.path.join(bamboo_results, '..', output_name)}")
 
 
 # Example usage
