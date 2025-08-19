@@ -1,3 +1,4 @@
+import os
 import logging
 
 from bamboo import treefunctions as op
@@ -45,6 +46,27 @@ DY_and_Recoil_JSONFiles = {
 class ScaleFactors:
     """Class to define scale factors"""
 
+    def __init__(self, parent=None):
+        self.parent = parent
+        self.di_lepton_trigger_JSONFiles = {
+            "2022": (
+                os.path.join(
+                    self.parent.git_project_dir,
+                    "data",
+                    "2022_di_lepton_trigger_scale_factors.json",
+                ),
+                "trigger_scale_factors_2d",
+            ),
+            "2023": (
+                os.path.join(
+                    self.parent.git_project_dir,
+                    "data",
+                    "2023_di_lepton_trigger_scale_factors.json",
+                ),
+                "trigger_scale_factors_2d",
+            ),
+        }
+
     def NoiseFilters(self, FlagBranch, sel):
         "https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2#Run_3_2022_and_2023_data_and_MC"
         flags = [
@@ -58,7 +80,7 @@ class ScaleFactors:
             FlagBranch.ecalBadCalibFilter,
         ]
         sel = sel.refine("NoiseFilters", cut=flags)
-        self.yields.add(sel, "Noise filters")
+        self.parent.yields.add(sel, "Noise filters")
         return sel
 
     def top_pT_reweight(self, GenPartBranch, sel, sample):
@@ -93,7 +115,7 @@ class ScaleFactors:
             )
         else:
             sel = sel.refine("topPt", weight=op.c_float(1.0))
-        self.yields.add(sel, "topPt reweighting")
+        self.parent.yields.add(sel, "topPt reweighting")
 
         return sel
 
@@ -106,29 +128,29 @@ class ScaleFactors:
         btagReweightStudy=False,
     ):
         """Apply btagging SF"""
-        if self.is_MC:
+        if self.parent.is_MC:
             from bamboo.scalefactors import get_bTagSF_itFit, makeBtagWeightItFit
 
             logger.info("Applying btagging SF for " + sel.name)
 
             def btvSF(flav):
                 return get_bTagSF_itFit(
-                    BTV_SF_JSONFiles[self.era],
+                    BTV_SF_JSONFiles[self.parent.era],
                     json_tagger,
                     jet_tagger,
                     flav,
                     sel=sel,
                     decorr_eras=True,
-                    era=self.era,
+                    era=self.parent.era,
                 )
 
             btvWeight = makeBtagWeightItFit(jets, btvSF)
             if not btagReweightStudy:
                 btag_corr = get_correction(
-                    f"{self.git_project_dir}/data/{self.era[:4]}_btagSF_reweight.json.gz",
+                    f"{self.parent.git_project_dir}/data/{self.parent.era[:4]}_btagSF_reweight.json.gz",
                     "Ratio_btagSF_shape",
                     params={
-                        "year": self.era,
+                        "year": self.parent.era,
                         # 1. to make it a float
                         "jet_multiplicity": 1.0 * op.rng_len(jets),
                     },
@@ -143,21 +165,21 @@ class ScaleFactors:
             btag_reweight = op.c_float(1.0)
 
         sel = sel.refine(sel.name + "_btagSF", weight=btvWeight)
-        self.yields.add(sel, sel.name)
+        self.parent.yields.add(sel, sel.name)
 
         sel = sel.refine(sel.name + "_btagRW", weight=btag_reweight)
-        self.yields.add(sel, sel.name)
+        self.parent.yields.add(sel, sel.name)
 
         return sel
 
-    def mumuSF(self, sel):
+    def mumuSF(self, sel, triggerStudy):
         """Apply lepton scalefactors for muon pair"""
-        if self.is_MC:
+        if self.parent.is_MC:
             logger.info("Applying Muon SF for " + sel.name)
             # Muon ID SF
             systName = "syst"
             self.muon_ID_sf = get_correction(
-                MUON_SF_JSONFiles[self.era],
+                MUON_SF_JSONFiles[self.parent.era],
                 "NUM_MediumID_DEN_TrackerMuons",  # NUM_MediumPromptID_DEN_TrackerMuons, too ?
                 systVariations={
                     "muonIdSFup": f"{systName}up",
@@ -173,7 +195,7 @@ class ScaleFactors:
 
             # Muon ISO SF
             self.muon_ISO_sf = get_correction(
-                MUON_SF_JSONFiles[self.era],
+                MUON_SF_JSONFiles[self.parent.era],
                 # since muon iso is miniPFreliso and id is medium
                 "NUM_TightPFIso_DEN_MediumID",
                 systVariations={
@@ -192,8 +214,8 @@ class ScaleFactors:
             )
 
             # Muon Trigger SF
-            self.single_muon_TRG_SF = get_correction(
-                MUON_SF_JSONFiles[self.era],
+            self.muon_single_TRG_SF = get_correction(
+                MUON_SF_JSONFiles[self.parent.era],
                 "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",
                 systVariations={
                     "muonTrgSFup": f"{systName}up",
@@ -206,17 +228,42 @@ class ScaleFactors:
                 defineOnFirstUse=False,
                 sel=sel,
             )
-
+            # di-lepton trigger SF for muons
+            self.mumu_double_TRG_SF = get_correction(
+                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][0],
+                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][1],
+                systVariations={},
+                params={
+                    "channel": "mumu",
+                    "pt_leading": self.parent.tightMuons[0].pt,
+                    "pt_subleading": self.parent.tightMuons[1].pt,
+                },
+                defineOnFirstUse=False,
+                sel=sel,
+            )
+            # uncertainty for di-lepton trigger SF for muons
+            self.mumu_double_TRG_SF_unc = get_correction(
+                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][0],
+                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][1] + "_unc",
+                systVariations={},
+                params={
+                    "channel": "mumu",
+                    "pt_leading": self.parent.tightMuons[0].pt,
+                    "pt_subleading": self.parent.tightMuons[1].pt,
+                },
+                defineOnFirstUse=False,
+                sel=sel,
+            )
             # pt and eta cut here since correction are available only when pt >= 15 and |eta| < 2.4
             sel = sel.refine(
                 "mumu_leading_ID_SF",
                 weight=[
                     op.switch(
                         op.AND(
-                            self.tightMuons[0].pt >= 15.0,
-                            op.abs(self.tightMuons[0].eta) < 2.4,
+                            self.parent.tightMuons[0].pt >= 15.0,
+                            op.abs(self.parent.tightMuons[0].eta) < 2.4,
                         ),
-                        self.muon_ID_sf(self.tightMuons[0]),
+                        self.muon_ID_sf(self.parent.tightMuons[0]),
                         op.c_float(1.0),
                     )
                 ],
@@ -226,10 +273,10 @@ class ScaleFactors:
                 weight=[
                     op.switch(
                         op.AND(
-                            self.tightMuons[1].pt >= 15.0,
-                            op.abs(self.tightMuons[1].eta) < 2.4,
+                            self.parent.tightMuons[1].pt >= 15.0,
+                            op.abs(self.parent.tightMuons[1].eta) < 2.4,
                         ),
-                        self.muon_ID_sf(self.tightMuons[1]),
+                        self.muon_ID_sf(self.parent.tightMuons[1]),
                         op.c_float(1.0),
                     )
                 ],
@@ -240,10 +287,10 @@ class ScaleFactors:
                 weight=[
                     op.switch(
                         op.AND(
-                            self.tightMuons[0].pt >= 15.0,
-                            op.abs(self.tightMuons[0].eta) < 2.4,
+                            self.parent.tightMuons[0].pt >= 15.0,
+                            op.abs(self.parent.tightMuons[0].eta) < 2.4,
                         ),
-                        self.muon_ISO_sf(self.tightMuons[0]),
+                        self.muon_ISO_sf(self.parent.tightMuons[0]),
                         op.c_float(1.0),
                     )
                 ],
@@ -253,10 +300,10 @@ class ScaleFactors:
                 weight=[
                     op.switch(
                         op.AND(
-                            self.tightMuons[1].pt >= 15.0,
-                            op.abs(self.tightMuons[1].eta) < 2.4,
+                            self.parent.tightMuons[1].pt >= 15.0,
+                            op.abs(self.parent.tightMuons[1].eta) < 2.4,
                         ),
-                        self.muon_ISO_sf(self.tightMuons[1]),
+                        self.muon_ISO_sf(self.parent.tightMuons[1]),
                         op.c_float(1.0),
                     )
                 ],
@@ -266,10 +313,10 @@ class ScaleFactors:
                 weight=[
                     op.switch(
                         op.AND(
-                            self.tightMuons[0].pt >= 26.0,
-                            op.abs(self.tightMuons[0].eta) < 2.4,
+                            self.parent.tightMuons[0].pt >= 26.0,
+                            op.abs(self.parent.tightMuons[0].eta) < 2.4,
                         ),
-                        self.single_muon_TRG_sf(self.tightMuons[0]),
+                        self.muon_single_TRG_SF(self.parent.tightMuons[0]),
                         op.c_float(1.0),
                     )
                 ],
@@ -279,49 +326,59 @@ class ScaleFactors:
                 weight=[
                     op.switch(
                         op.AND(
-                            self.tightMuons[1].pt >= 26.0,
-                            op.abs(self.tightMuons[1].eta) < 2.4,
+                            self.parent.tightMuons[1].pt >= 26.0,
+                            op.abs(self.parent.tightMuons[1].eta) < 2.4,
                         ),
-                        self.single_muon_TRG_sf(self.tightMuons[1]),
+                        self.muon_single_TRG_SF(self.parent.tightMuons[1]),
                         op.c_float(1.0),
                     )
                 ],
             )
+            if not triggerStudy:
+                sel = sel.refine(
+                    "mumu_di_lepton_TRG_SF", weight=self.mumu_double_TRG_SF(None)
+                )
+                sel = sel.refine(
+                    "mumu_di_lepton_TRG_SF_unc",
+                    weight=self.mumu_double_TRG_SF_unc(None),
+                )
         else:
             # followings are added to avoid cut-flow breaking because
             # the selection yields are not shown when it's not available
-            # for any sample
             sel = sel.refine("mumu_leading_ID_SF", weight=op.c_float(1.0))
             sel = sel.refine("mumu_subleading_ID_SF", weight=op.c_float(1.0))
             sel = sel.refine("mumu_leading_ISO_SF", weight=op.c_float(1.0))
             sel = sel.refine("mumu_subleading_ISO_SF", weight=op.c_float(1.0))
             sel = sel.refine("mumu_leading_TRG_SF", weight=op.c_float(1.0))
             sel = sel.refine("mumu_subleading_TRG_SF", weight=op.c_float(1.0))
+            if not triggerStudy:
+                sel = sel.refine("mumu_di_lepton_TRG_SF", weight=op.c_float(1.0))
+                sel = sel.refine("mumu_di_lepton_TRG_SF_unc", weight=op.c_float(1.0))
 
-        self.yields.add(sel, "MuMu ID ISO TRG SF")
+        self.parent.yields.add(sel, "MuMu ID ISO TRG SF")
 
         return sel
 
-    def elelSF(self, sel):
+    def elelSF(self, sel, triggerStudy):
         """Apply lepton scalefactors for electron pair"""
-        if self.is_MC:
+        if self.parent.is_MC:
             logger.info("Applying Electron SF for " + sel.name)
 
             params = {
                 "pt": lambda e: e.pt,
                 "eta": lambda e: e.eta,
-                "year": EGamma_SF_JSONFiles[self.era][1],
+                "year": EGamma_SF_JSONFiles[self.parent.era][1],
                 "WorkingPoint": "wp90iso",
             }
 
             # add phi for 2023 and 2023BPix
-            if self.era in ["2023", "2023BPix"]:
+            if self.parent.era in ["2023", "2023BPix"]:
                 params["phi"] = lambda e: e.phi
 
             systNomName = "sf"
             # Electron ID SF
             self.el_ID_sf = get_correction(
-                EGamma_SF_JSONFiles[self.era][0],
+                EGamma_SF_JSONFiles[self.parent.era][0],
                 "Electron-ID-SF",
                 systVariations={
                     "elIdSFup": f"{systNomName}up",
@@ -336,7 +393,9 @@ class ScaleFactors:
 
             # Electron Trigger SF
             self.el_TRG_sf = get_correction(
-                (EGamma_SF_JSONFiles[self.era][0]).replace("electron", "electronHlt"),
+                (EGamma_SF_JSONFiles[self.parent.era][0]).replace(
+                    "electron", "electronHlt"
+                ),
                 "Electron-HLT-SF",
                 systVariations={
                     "elTrgSFup": f"{systNomName}up",
@@ -346,10 +405,36 @@ class ScaleFactors:
                     "pt": lambda el: el.pt,
                     "eta": lambda el: el.eta,
                     "Path": "HLT_SF_Ele30_MVAiso90ID",
-                    "year": EGamma_SF_JSONFiles[self.era][1],
+                    "year": EGamma_SF_JSONFiles[self.parent.era][1],
                 },
                 systParam="ValType",
                 systNomName=systNomName,
+                defineOnFirstUse=False,
+                sel=sel,
+            )
+            # di-lepton trigger SF for electrons
+            self.elel_double_TRG_SF = get_correction(
+                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][0],
+                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][1],
+                systVariations={},
+                params={
+                    "channel": "ee",
+                    "pt_leading": self.parent.tightElectrons[0].pt,
+                    "pt_subleading": self.parent.tightElectrons[1].pt,
+                },
+                defineOnFirstUse=False,
+                sel=sel,
+            )
+            # uncertainty for di-lepton trigger SF for muons
+            self.elel_double_TRG_SF_unc = get_correction(
+                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][0],
+                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][1] + "_unc",
+                systVariations={},
+                params={
+                    "channel": "ee",
+                    "pt_leading": self.parent.tightElectrons[0].pt,
+                    "pt_subleading": self.parent.tightElectrons[1].pt,
+                },
                 defineOnFirstUse=False,
                 sel=sel,
             )
@@ -358,8 +443,8 @@ class ScaleFactors:
                 "elel_leading_ID_SF",
                 weight=[
                     op.switch(
-                        self.tightElectrons[0].pt >= 10,
-                        self.el_ID_sf(self.tightElectrons[0]),
+                        self.parent.tightElectrons[0].pt >= 10,
+                        self.el_ID_sf(self.parent.tightElectrons[0]),
                         op.c_float(1.0),
                     )
                 ],
@@ -368,8 +453,8 @@ class ScaleFactors:
                 "elel_subleading_ID_SF",
                 weight=[
                     op.switch(
-                        self.tightElectrons[1].pt >= 10,
-                        self.el_ID_sf(self.tightElectrons[1]),
+                        self.parent.tightElectrons[1].pt >= 10,
+                        self.el_ID_sf(self.parent.tightElectrons[1]),
                         op.c_float(1.0),
                     )
                 ],
@@ -378,8 +463,8 @@ class ScaleFactors:
                 "elel_leading_TRG_SF",
                 weight=[
                     op.switch(
-                        self.tightElectrons[0].pt >= 25,
-                        self.el_TRG_sf(self.tightElectrons[0]),
+                        self.parent.tightElectrons[0].pt >= 25,
+                        self.el_TRG_sf(self.parent.tightElectrons[0]),
                         op.c_float(1.0),
                     )
                 ],
@@ -388,32 +473,79 @@ class ScaleFactors:
                 "elel_subleading_TRG_SF",
                 weight=[
                     op.switch(
-                        self.tightElectrons[1].pt >= 25,
-                        self.el_TRG_sf(self.tightElectrons[1]),
+                        self.parent.tightElectrons[1].pt >= 25,
+                        self.el_TRG_sf(self.parent.tightElectrons[1]),
                         op.c_float(1.0),
                     )
                 ],
             )
+            if not triggerStudy:
+                sel = sel.refine(
+                    "elel_di_lepton_TRG_SF", weight=self.elel_double_TRG_SF(None)
+                )
+                sel = sel.refine(
+                    "elel_di_lepton_TRG_SF_unc",
+                    weight=self.elel_double_TRG_SF_unc(None),
+                )
         else:
             sel = sel.refine("elel_leading_ID_SF", weight=op.c_float(1.0))
             sel = sel.refine("elel_subleading_ID_SF", weight=op.c_float(1.0))
             sel = sel.refine("elel_leading_TRG_SF", weight=op.c_float(1.0))
             sel = sel.refine("elel_subleading_TRG_SF", weight=op.c_float(1.0))
+            if not triggerStudy:
+                sel = sel.refine("elel_di_lepton_TRG_SF", weight=op.c_float(1.0))
+                sel = sel.refine("elel_di_lepton_TRG_SF_unc", weight=op.c_float(1.0))
 
-        self.yields.add(sel, "ElEl ID TRG SF")
+        self.parent.yields.add(sel, "ElEl ID TRG SF")
 
         return sel
 
-    def elmuSF(self, sel):
+    def elmuSF(self, sel, triggerStudy):
         """Apply lepton scalefactors for electron-muon pair."""
-        if self.is_MC:
+        if self.parent.is_MC:
             logger.info("Applying Electron SF for " + sel.name)
+            # di-lepton trigger SF for el-mu pair
+            leading_lepton_pt = op.switch(
+                self.parent.tightElectrons[0].pt > self.parent.tightMuons[0].pt,
+                self.parent.tightElectrons[0].pt,
+                self.parent.tightMuons[0].pt,
+            )
+            subleading_lepton_pt = op.switch(
+                self.parent.tightElectrons[1].pt > self.parent.tightMuons[1].pt,
+                self.parent.tightElectrons[1].pt,
+                self.parent.tightMuons[1].pt,
+            )
+            self.elmu_double_TRG_SF = get_correction(
+                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][0],
+                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][1],
+                systVariations={},
+                params={
+                    "channel": "emu",
+                    "pt_leading": leading_lepton_pt,
+                    "pt_subleading": subleading_lepton_pt,
+                },
+                defineOnFirstUse=False,
+                sel=sel,
+            )
+            # uncertainty for di-lepton trigger SF for muons
+            self.elmu_double_TRG_SF_unc = get_correction(
+                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][0],
+                self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][1] + "_unc",
+                systVariations={},
+                params={
+                    "channel": "emu",
+                    "pt_leading": leading_lepton_pt,
+                    "pt_subleading": subleading_lepton_pt,
+                },
+                defineOnFirstUse=False,
+                sel=sel,
+            )
             sel = sel.refine(
                 "elmu_el_ID_SF",
                 weight=[
                     op.switch(
-                        self.tightElectrons[0].pt >= 10,
-                        self.el_ID_sf(self.tightElectrons[0]),
+                        self.parent.tightElectrons[0].pt >= 10,
+                        self.el_ID_sf(self.parent.tightElectrons[0]),
                         op.c_float(1.0),
                     )
                 ],
@@ -422,8 +554,8 @@ class ScaleFactors:
                 "elmu_el_TRG_SF",
                 weight=[
                     op.switch(
-                        self.tightElectrons[0].pt >= 25,
-                        self.el_TRG_sf(self.tightElectrons[0]),
+                        self.parent.tightElectrons[0].pt >= 25,
+                        self.el_TRG_sf(self.parent.tightElectrons[0]),
                         op.c_float(1.0),
                     )
                 ],
@@ -433,10 +565,10 @@ class ScaleFactors:
                 weight=[
                     op.switch(
                         op.AND(
-                            self.tightMuons[0].pt >= 15.0,
-                            op.abs(self.tightMuons[0].eta) < 2.4,
+                            self.parent.tightMuons[0].pt >= 15.0,
+                            op.abs(self.parent.tightMuons[0].eta) < 2.4,
                         ),
-                        self.muon_ID_sf(self.tightMuons[0]),
+                        self.muon_ID_sf(self.parent.tightMuons[0]),
                         op.c_float(1.0),
                     )
                 ],
@@ -446,10 +578,10 @@ class ScaleFactors:
                 weight=[
                     op.switch(
                         op.AND(
-                            self.tightMuons[0].pt >= 15.0,
-                            op.abs(self.tightMuons[0].eta) < 2.4,
+                            self.parent.tightMuons[0].pt >= 15.0,
+                            op.abs(self.parent.tightMuons[0].eta) < 2.4,
                         ),
-                        self.muon_ISO_sf(self.tightMuons[0]),
+                        self.muon_ISO_sf(self.parent.tightMuons[0]),
                         op.c_float(1.0),
                     )
                 ],
@@ -459,33 +591,44 @@ class ScaleFactors:
                 weight=[
                     op.switch(
                         op.AND(
-                            self.tightMuons[0].pt >= 26.0,
-                            op.abs(self.tightMuons[0].eta) < 2.4,
+                            self.parent.tightMuons[0].pt >= 26.0,
+                            op.abs(self.parent.tightMuons[0].eta) < 2.4,
                         ),
-                        self.single_muon_TRG_SF(self.tightMuons[0]),
+                        self.muon_single_TRG_SF(self.parent.tightMuons[0]),
                         op.c_float(1.0),
                     )
                 ],
             )
+            if not triggerStudy:
+                sel = sel.refine(
+                    "elmu_di_lepton_TRG_SF", weight=self.elmu_double_TRG_SF(None)
+                )
+                sel = sel.refine(
+                    "elmu_di_lepton_TRG_SF_unc",
+                    weight=self.elmu_double_TRG_SF_unc(None),
+                )
         else:
             sel = sel.refine("elmu_el_ID_SF", weight=op.c_float(1.0))
             sel = sel.refine("elmu_el_TRG_SF", weight=op.c_float(1.0))
             sel = sel.refine("elmu_mu_ID_SF", weight=op.c_float(1.0))
             sel = sel.refine("elmu_mu_ISO_SF", weight=op.c_float(1.0))
             sel = sel.refine("elmu_mu_TRG_SF", weight=op.c_float(1.0))
-        
-        self.yields.add(sel, "ElMu ID ISO TRG SF")
+            if not triggerStudy:
+                sel = sel.refine("elmu_di_lepton_TRG_SF", weight=op.c_float(1.0))
+                sel = sel.refine("elmu_di_lepton_TRG_SF_unc", weight=op.c_float(1.0))
+
+        self.parent.yields.add(sel, "ElMu ID ISO TRG SF")
         return sel
 
     def Z_pT_reweight(self, sel, sample, GenPartBranch, pdgId):
         """Apply DY Z pT reweighting for given lepton pair."""
-        if self.is_MC and sample.startswith("DY"):
+        if self.parent.is_MC and sample.startswith("DY"):
             from bamboo.scalefactors import get_correction
 
             logger.info("Applying DY Z pT reweighting for " + sel.name)
 
             DY_and_Recoil_path = (
-                self.git_project_dir + "/data/hleprare/DYandRecoilCorrlib/"
+                self.parent.git_project_dir + "/data/hleprare/DYandRecoilCorrlib/"
             )
 
             # for N_unc - consult the json file
@@ -498,7 +641,7 @@ class ScaleFactors:
             )
 
             get_Z_pT_corr = get_correction(
-                DY_and_Recoil_path + DY_and_Recoil_JSONFiles[self.era],
+                DY_and_Recoil_path + DY_and_Recoil_JSONFiles[self.parent.era],
                 "DY_pTll_reweighting",
                 params={
                     "order": "NLO",
@@ -530,5 +673,5 @@ class ScaleFactors:
             )
         else:
             sel = sel.refine(sel.name + "_ZpT", weight=op.c_float(1.0))
-        self.yields.add(sel, sel.name)
+        self.parent.yields.add(sel, sel.name)
         return sel
