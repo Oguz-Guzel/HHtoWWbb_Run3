@@ -341,6 +341,7 @@ class TriggerEff(_base):
         pt_bins_l1 = EqBin(40, 0, 200)  # 5 GeV bins up to 200 GeV
         pt_bins_l2 = EqBin(40, 0, 200)
 
+        lep1, lep2 = self.tightElectrons[0], self.tightElectrons[1]
         plots.append(
             Plot.make2D(
                 "den_ee",
