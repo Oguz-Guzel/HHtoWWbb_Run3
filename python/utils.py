@@ -72,14 +72,15 @@ def custom_Plotit(
         smpNm = smp.split(era)[0]
         mergedHists = {}
 
+        file_to_copy = os.path.join(outDir, f"{smp}.root")
         if smpCfg.get("group") in _gp:
-            if not os.path.exists(os.path.join(inDir, f"{smp}.root")):
-                print(f"Copying {smp}.root to {outDir}")
-                shutil.copyfile(
-                    os.path.join(inDir, f"{smp}.root"),
-                    os.path.join(outDir, f"{smp}.root"),
-                )
             keep_cfg[smp] = smpCfg
+            if os.path.isfile(file_to_copy):
+                continue
+            print(f"Copying {smp}.root to {outDir}")
+            shutil.copyfile(os.path.join(
+                inDir, f"{smp}.root"), os.path.join(outDir, f"{smp}.root"))
+
         else:
             resultsFile = openFileAndGet(
                 os.path.join(inDir, f"{smp}.root"), mode="READ"
