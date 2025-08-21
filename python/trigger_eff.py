@@ -118,28 +118,10 @@ class _base(NanoAODHistoModule):
     def addArgs(self, parser):
         super().addArgs(parser)
         parser.add_argument(
-            "-c",
-            "--channel",
-            dest="channel",
-            type=str,
-            default="DL",
-            help="Channel to be selected between SL and DL",
-        )
-        parser.add_argument(
-            "--mvaModel",
-            dest="mvaModel",
-            type=str,
-            default=None,
-            help="Path to XGBoost model.)",
-        )
-        parser.add_argument(
             "--backend",
             type=str,
             default="dataframe",
             help="Backend to use, 'dataframe' (default), 'lazy', or 'compiled'",
-        )
-        parser.add_argument(
-            "--sync", action="store_true", default=False, help="Run synchronisation"
         )
 
     def prepareTree(self, tree, sample=None, sampleCfg=None, backend=None):
