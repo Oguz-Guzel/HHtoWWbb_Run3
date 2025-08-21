@@ -364,7 +364,7 @@ class TriggerEff(_base):
             )
         )
 
-        lep1, lep2 = self.tightElectrons[0], self.tightMuons[1]
+        lep1, lep2 = self.tightElectrons[0], self.tightMuons[0]
         plots.append(
             Plot.make2D(
                 "den_emu",
