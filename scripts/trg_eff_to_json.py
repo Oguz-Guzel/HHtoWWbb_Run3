@@ -17,6 +17,22 @@ def parse_args():
     )
     return parser.parse_args()
 
+def mean2D(h, nonempty_only=True):
+    """Compute mean of 2D histogram bin contents.
+    If nonempty_only=True, use bins with content>0 or error>0."""
+    s = 0.0
+    n = 0
+    for i in range(1, h.GetNbinsX() + 1):
+        for j in range(1, h.GetNbinsY() + 1):
+            c = h.GetBinContent(i, j)
+            if nonempty_only:
+                if c > 0.0 or h.GetBinError(i, j) > 0.0:
+                    s += c
+                    n += 1
+            else:
+                s += c
+                n += 1
+    return (s / n if n else 0.0, n)
 
 def calculate_2d_scale_factors_and_export(
     bamboo_results,
@@ -94,45 +110,91 @@ def calculate_2d_scale_factors_and_export(
     for idx, ch in enumerate(channels):
         nname = num_names[idx]
         dname = den_names[idx]
-        print(f"\n-- Channel '{ch}' using histograms: {nname} / {dname}")
+        # print(f"\n-- Channel '{ch}' using histograms: {nname} / {dname}")
 
         # Sum data and MC histograms over files
         h_data_num, h_data_den = sum_histograms(data_files, nname, dname)
         h_mc_num, h_mc_den = sum_histograms(mc_files, nname, dname)
 
-        if not h_data_num or not h_data_den:
-            raise ValueError(
-                f"[{ch}] Could not find required histograms in any DATA files"
-            )
-        if not h_mc_num or not h_mc_den:
-            raise ValueError(
-                f"[{ch}] Could not find required histograms in any MC files"
-            )
-
-        # Stabilize denominators
+        # Stabilize denominators and sanitize MC negative bins
+        neg_mc_bins = 0
         for i in range(1, h_data_den.GetNbinsX() + 1):
             for j in range(1, h_data_den.GetNbinsY() + 1):
+                # Clamp denominators to avoid 0 division
                 if h_data_den.GetBinContent(i, j) < min_denominator:
                     h_data_den.SetBinContent(i, j, min_denominator)
                 if h_mc_den.GetBinContent(i, j) < min_denominator:
                     h_mc_den.SetBinContent(i, j, min_denominator)
+                # Zero-out negative MC numerator bins (from negative weights)
+                if h_mc_num.GetBinContent(i, j) < 0:
+                    h_mc_num.SetBinContent(i, j, 0.0)
+                    neg_mc_bins += 1
+        # if neg_mc_bins:
+        #     print(f"  [{ch}] MC negative numerator bins set to 0: {neg_mc_bins}")
 
         # Efficiencies
         h_eff_data = h_data_num.Clone(f"h_efficiency_data_{ch}")
+        # Binomial stats OK for data (integer counts)
         h_eff_data.Divide(h_data_num, h_data_den, 1, 1, "B")
+
         h_eff_mc = h_mc_num.Clone(f"h_efficiency_mc_{ch}")
-        h_eff_mc.Divide(h_mc_num, h_mc_den, 1, 1, "B")
+        # Using standard ratio for MC (weights/negative weights incompatible with 'B')
+        # h_mc_num.Sumw2(True)
+        # h_mc_den.Sumw2(True)
+        # h_eff_mc.Sumw2(True)
+        h_eff_mc.Divide(h_mc_num, h_mc_den, 1.0, 1.0, "")  # no 'B'
+
+        # Clip MC efficiency to physical range [0,1]
+        clipped = 0
+        for i in range(1, h_eff_mc.GetNbinsX() + 1):
+            for j in range(1, h_eff_mc.GetNbinsY() + 1):
+                v = h_eff_mc.GetBinContent(i, j)
+                if v < 0:
+                    h_eff_mc.SetBinContent(i, j, 0.0)
+                    clipped += 1
+                elif v > 1:
+                    h_eff_mc.SetBinContent(i, j, 1.0)
+                    clipped += 1
+        # if clipped:
+            # print(f"  [{ch}] MC efficiency bins clipped to [0,1]: {clipped}")
 
         # Scale factors
         h_sf = h_eff_data.Clone(f"h_scale_factors_{ch}")
         h_sf.Divide(h_eff_data, h_eff_mc, 1, 1)
 
-        print(f"  [{ch}] Data eff mean: {h_eff_data.GetMean():.4f}")
-        print(f"  [{ch}] MC eff mean:   {h_eff_mc.GetMean():.4f}")
-        print(f"  [{ch}] SF mean:       {h_sf.GetMean():.4f}")
+        # Print means for this channel
+        mean_data, n_data = mean2D(h_eff_data)
+        mean_mc, n_mc = mean2D(h_eff_mc)
+        mean_sf, n_sf = mean2D(h_sf)
+        print(
+            f"  [{ch}] Means (non-empty bins): \n"
+            f"         Data eff = {mean_data:.4f} (N={n_data}), \n"
+            f"         MC eff = {mean_mc:.4f} (N={n_mc}), \n"
+            f"         SF = {mean_sf:.4f} (N={n_sf})"
+        )
 
         nbx = h_sf.GetNbinsX()
         nby = h_sf.GetNbinsY()
+
+        # compute mean of bin contents and propagated error (simple sum / N)
+        # def bin_content_mean_and_err(h):
+        #     s = 0.0
+        #     n = 0
+        #     for i in range(1, h.GetNbinsX() + 1):
+        #         for j in range(1, h.GetNbinsY() + 1):
+        #             c = h.GetBinContent(i, j)
+        #             s += c
+        #             n += 1
+        #     mean = s / n if n else 0.0
+        #     return mean
+
+        # mean_data = bin_content_mean_and_err(h_eff_data)
+        # mean_mc = bin_content_mean_and_err(h_eff_mc)
+        # mean_sf = bin_content_mean_and_err(h_sf)
+
+        # print(f"  [{ch}] Data eff mean (bin-avg): {mean_data:.4f}")
+        # print(f"  [{ch}] MC eff mean   (bin-avg): {mean_mc:.4f}")
+        # print(f"  [{ch}] SF mean       (bin-avg): {mean_sf:.4f}")
 
         # Set common bin edges (assume consistent binning across channels)
         if x_edges is None or y_edges is None:
@@ -151,10 +213,11 @@ def calculate_2d_scale_factors_and_export(
             for j in range(1, nby + 1):
                 v = h_sf.GetBinContent(i, j)
                 e = h_sf.GetBinError(i, j)
-                if v <= 0 or v > 1.5 or e < 0 or e > 0.5:
-                    suspicious += 1
-                    v = 1.0
-                    e = 0.0
+                # # Restrict SFs to a reasonable range and errors to sensible values
+                # if not (0.9 <= v <= 1.1) or e < 0 or e > 0.01:
+                #     suspicious += 1
+                #     v = min(max(v, 0.9), 1.1) if v > 0 else 1.0
+                #     e = 0.0
                 row_v.append(float(v))
                 row_e.append(float(e))
             vals.append(row_v)
@@ -239,23 +302,48 @@ def calculate_2d_scale_factors_and_export(
                                 "nodetype": "category",
                                 "input": "systematic",
                                 "content": [
-                                    {"key": "nominal", "value": make_xy_node(results[ch]["values"])},
-                                    {"key": "up", "value": make_xy_node([
-                                        [min(v + e, 1.5) for v, e in zip(row_v, row_e)]
-                                        for row_v, row_e in zip(results[ch]["values"], results[ch]["errors"])
-                                    ])},
-                                    {"key": "down", "value": make_xy_node([
-                                        [max(v - e, 0.5) for v, e in zip(row_v, row_e)]
-                                        for row_v, row_e in zip(results[ch]["values"], results[ch]["errors"])
-                                    ])}
-                                ]
-                            }
+                                    {
+                                        "key": "nominal",
+                                        "value": make_xy_node(results[ch]["values"]),
+                                    },
+                                    {
+                                        "key": "up",
+                                        "value": make_xy_node(
+                                            [
+                                                [
+                                                    min(v + e, 1.5)
+                                                    for v, e in zip(row_v, row_e)
+                                                ]
+                                                for row_v, row_e in zip(
+                                                    results[ch]["values"],
+                                                    results[ch]["errors"],
+                                                )
+                                            ]
+                                        ),
+                                    },
+                                    {
+                                        "key": "down",
+                                        "value": make_xy_node(
+                                            [
+                                                [
+                                                    max(v - e, 0.0)
+                                                    for v, e in zip(row_v, row_e)
+                                                ]
+                                                for row_v, row_e in zip(
+                                                    results[ch]["values"],
+                                                    results[ch]["errors"],
+                                                )
+                                            ]
+                                        ),
+                                    },
+                                ],
+                            },
                         }
                         for ch in channels
                     ],
                 },
             }
-        ]
+        ],
     }
 
     # Write JSON
@@ -263,7 +351,9 @@ def calculate_2d_scale_factors_and_export(
         json.dump(correction_json, f, indent=2)
 
     shutil.move(output_json_name, os.path.join(bamboo_results, "..", output_json_name))
-    print(f"\n  Scale factors JSON saved as: {os.path.join(bamboo_results, '..', output_json_name)}")
+    print(
+        f"\n  Scale factors JSON saved as: {os.path.join(bamboo_results, '..', output_json_name)}"
+    )
 
     # Return first channel histos for any downstream plotting that expects single hists
     ch0 = first_channel_for_return or channels[0]
@@ -282,7 +372,7 @@ def create_comparison_plots(h_data, h_mc, h_sf, output_name="comparison.png"):
     h_data.SetMinimum(0.0)
     h_data.SetMaximum(1.0)
     h_data.SetStats(0)
-    h_data.Draw("COLZ")  # no TEXT for speed
+    h_data.Draw("COLZ")
 
     canvas.cd(2)
     h_mc.SetTitle(
@@ -305,7 +395,10 @@ def create_comparison_plots(h_data, h_mc, h_sf, output_name="comparison.png"):
     canvas.SaveAs(output_name)
 
     shutil.move(output_name, os.path.join(bamboo_results, "..", output_name))
-    print(f"\n  Comparison plots saved as: {os.path.join(bamboo_results, '..', output_name)}")
+    print(
+        f"\n  Comparison plots saved as: {os.path.join(bamboo_results, '..', output_name)}"
+    )
+
 
 
 # Example usage
@@ -321,7 +414,7 @@ if __name__ == "__main__":
         if f.startswith("Muon") or f.startswith("EGamma")
     ]
     mc_files = [
-        f for f in os.listdir(bamboo_results) if f not in data_files and f[:2] != "__"
+        f for f in os.listdir(bamboo_results) if f not in data_files and f[:2] != "__" and not f.startswith("ggH")
     ]
     # add bamboo_results to file paths
     data_files = [os.path.join(bamboo_results, f) for f in data_files]
