@@ -13,16 +13,6 @@ def lowMllCut(lepton_collection) -> bool:
     )
 
 
-def outZ(lepton_collection) -> bool:
-    "Reject events with same-flavoured dilepton mass around Z peak."
-    return op.NOT(
-        op.abs(
-            op.invariant_mass(lepton_collection[0].p4, lepton_collection[1].p4) - Zmass
-        )
-        < 10.0
-    )
-
-
 # lepton Pt cuts : leading above 25 GeV and sub-leading above 15 GeV
 
 
@@ -90,7 +80,9 @@ def makeDLSelection(
             op.rng_len(analysis.tightMuons) == 0,
             analysis.tightElectrons[0].charge != analysis.tightElectrons[1].charge,
             op.NOT(
-                op.invariant_mass(analysis.tightElectrons[0].p4, analysis.tightElectrons[1].p4)
+                op.invariant_mass(
+                    analysis.tightElectrons[0].p4, analysis.tightElectrons[1].p4
+                )
                 < 12.0
             ),
         ],
@@ -103,7 +95,8 @@ def makeDLSelection(
             op.rng_len(analysis.tightElectrons) == 0,
             analysis.tightMuons[0].charge != analysis.tightMuons[1].charge,
             op.NOT(
-                op.invariant_mass(analysis.tightMuons[0].p4, analysis.tightMuons[1].p4) < 12.0
+                op.invariant_mass(analysis.tightMuons[0].p4, analysis.tightMuons[1].p4)
+                < 12.0
             ),
         ],
     )
@@ -114,7 +107,9 @@ def makeDLSelection(
             op.rng_len(analysis.tightMuons) == 1,
             analysis.tightElectrons[0].charge != analysis.tightMuons[0].charge,
             op.NOT(
-                op.invariant_mass(analysis.tightElectrons[0].p4, analysis.tightMuons[0].p4)
+                op.invariant_mass(
+                    analysis.tightElectrons[0].p4, analysis.tightMuons[0].p4
+                )
                 < 12.0
             ),
         ],
@@ -137,7 +132,9 @@ def makeDLSelection(
             "mumuPairZpeakSel",
             cut=[
                 op.abs(
-                    op.invariant_mass(analysis.tightMuons[0].p4, analysis.tightMuons[1].p4)
+                    op.invariant_mass(
+                        analysis.tightMuons[0].p4, analysis.tightMuons[1].p4
+                    )
                     - Zmass
                 )
                 <= 10.0
@@ -147,7 +144,9 @@ def makeDLSelection(
         elel_sel = elel_sel.refine(
             "eePairZpeakSel",
             cut=[
-                op.invariant_mass(analysis.tightElectrons[0].p4, analysis.tightElectrons[1].p4)
+                op.invariant_mass(
+                    analysis.tightElectrons[0].p4, analysis.tightElectrons[1].p4
+                )
                 > (Zmass + 10.0)
             ],
         )
@@ -162,7 +161,9 @@ def makeDLSelection(
         elel_sel = elel_sel.refine(
             "eePairZpeakSel",
             cut=[
-                op.invariant_mass(analysis.tightElectrons[0].p4, analysis.tightElectrons[1].p4)
+                op.invariant_mass(
+                    analysis.tightElectrons[0].p4, analysis.tightElectrons[1].p4
+                )
                 < (Zmass - 10.0)
             ],
         )
@@ -280,16 +281,29 @@ def makeDLSelection(
         DL_resolved_ee = DL_resolved_pre_ee_btagSF.refine(
             "DL_resolved_ee",
             cut=(
-                op.AND(op.rng_len(analysis.ak4BJets) == 0, op.rng_len(analysis.ak8Jets) == 0)
+                op.AND(
+                    op.rng_len(analysis.ak4BJets) == 0,
+                    op.rng_len(analysis.ak8Jets) == 0,
+                )
             ),  # hence no ak8 b-jet
         )
         DL_resolved_mumu = DL_resolved_pre_mumu_btagSF.refine(
             "DL_resolved_mumu",
-            cut=(op.AND(op.rng_len(analysis.ak4BJets) == 0, op.rng_len(analysis.ak8Jets) == 0)),
+            cut=(
+                op.AND(
+                    op.rng_len(analysis.ak4BJets) == 0,
+                    op.rng_len(analysis.ak8Jets) == 0,
+                )
+            ),
         )
         DL_resolved_emu = DL_resolved_pre_emu_btagSF.refine(
             "DL_resolved_emu",
-            cut=(op.AND(op.rng_len(analysis.ak4BJets) == 0, op.rng_len(analysis.ak8Jets) == 0)),
+            cut=(
+                op.AND(
+                    op.rng_len(analysis.ak4BJets) == 0,
+                    op.rng_len(analysis.ak8Jets) == 0,
+                )
+            ),
         )
         Z_peak_selections.extend([DL_resolved_ee, DL_resolved_mumu, DL_resolved_emu])
     else:
@@ -297,42 +311,60 @@ def makeDLSelection(
         DL_resolved_1b_ee = DL_resolved_pre_ee_btagSF.refine(
             "DL_resolved_1b_ee",
             cut=(
-                op.AND(op.rng_len(analysis.ak4BJets) == 1, op.rng_len(analysis.ak8BJets) == 0)
+                op.AND(
+                    op.rng_len(analysis.ak4BJets) == 1,
+                    op.rng_len(analysis.ak8BJets) == 0,
+                )
             ),
         )
 
         DL_resolved_2b_ee = DL_resolved_pre_ee_btagSF.refine(
             "DL_resolved_2b_ee",
             cut=(
-                op.AND(op.rng_len(analysis.ak4BJets) >= 2, op.rng_len(analysis.ak8BJets) == 0)
+                op.AND(
+                    op.rng_len(analysis.ak4BJets) >= 2,
+                    op.rng_len(analysis.ak8BJets) == 0,
+                )
             ),
         )
 
         DL_resolved_1b_mumu = DL_resolved_pre_mumu_btagSF.refine(
             "DL_resolved_1b_mumu",
             cut=(
-                op.AND(op.rng_len(analysis.ak4BJets) == 1, op.rng_len(analysis.ak8BJets) == 0)
+                op.AND(
+                    op.rng_len(analysis.ak4BJets) == 1,
+                    op.rng_len(analysis.ak8BJets) == 0,
+                )
             ),
         )
 
         DL_resolved_2b_mumu = DL_resolved_pre_mumu_btagSF.refine(
             "DL_resolved_2b_mumu",
             cut=(
-                op.AND(op.rng_len(analysis.ak4BJets) >= 2, op.rng_len(analysis.ak8BJets) == 0)
+                op.AND(
+                    op.rng_len(analysis.ak4BJets) >= 2,
+                    op.rng_len(analysis.ak8BJets) == 0,
+                )
             ),
         )
 
         DL_resolved_1b_emu = DL_resolved_pre_emu_btagSF.refine(
             "DL_resolved_1b_emu",
             cut=(
-                op.AND(op.rng_len(analysis.ak4BJets) == 1, op.rng_len(analysis.ak8BJets) == 0)
+                op.AND(
+                    op.rng_len(analysis.ak4BJets) == 1,
+                    op.rng_len(analysis.ak8BJets) == 0,
+                )
             ),
         )
 
         DL_resolved_2b_emu = DL_resolved_pre_emu_btagSF.refine(
             "DL_resolved_2b_emu",
             cut=(
-                op.AND(op.rng_len(analysis.ak4BJets) >= 2, op.rng_len(analysis.ak8BJets) == 0)
+                op.AND(
+                    op.rng_len(analysis.ak4BJets) >= 2,
+                    op.rng_len(analysis.ak8BJets) == 0,
+                )
             ),
         )
 
