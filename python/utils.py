@@ -31,7 +31,7 @@ def fillSampleTemplate(template, selEras=None):
 
 
 def labeler(label):
-    return {"labels": [{"text": label, "position": [0.235, 0.9], "size": 24}]}
+    return {"labels": [{"text": label, "position": [0.16, 0.91], "size": 20}]}
 
 
 def custom_Plotit(
@@ -77,9 +77,10 @@ def custom_Plotit(
             keep_cfg[smp] = smpCfg
             if os.path.isfile(file_to_copy):
                 continue
-            print(f"Copying {smp}.root to {outDir}")
-            shutil.copyfile(os.path.join(
-                inDir, f"{smp}.root"), os.path.join(outDir, f"{smp}.root"))
+            logger.info(f"Copying {smp}.root to {outDir}")
+            shutil.copyfile(
+                os.path.join(inDir, f"{smp}.root"), os.path.join(outDir, f"{smp}.root")
+            )
 
         else:
             resultsFile = openFileAndGet(
