@@ -240,7 +240,7 @@ WtoLNu-2Jets_2022:
   era: '2022'
   db: das:/WtoLNu-2Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
   type: mc
-  group: "WJets"
+  group: "other"
   cross-section: 5.557e+04
   generated-events: genEventSumw
   split: *nsplit
@@ -249,7 +249,7 @@ WtoLNu-2Jets_2022EE:
   era: '2022EE'
   db: das:/WtoLNu-2Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RO/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
   type: mc
-  group: "WJets"
+  group: "other"
   cross-section: 5.557e+04
   generated-events: genEventSumw
   split: *nsplit
@@ -281,7 +281,7 @@ TbarWplusto2L2Nu_2022:
       # das:/TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5_ext1-v2/NANOAODSIM,
     ]
   type: mc
-  group: "TW"
+  group: "ST"
   cross-section: 4.6651009 # xsec(TW) / 2 (since t and tbar is included) x BR(W->l nu)^2 x 2 (since there are two W bosons) = 87.9 / 2 x 0.3259^2 x 2
   generated-events: genEventSumw
   split: *nsplit
@@ -293,7 +293,7 @@ TbarWplusto2L2Nu_2022EE:
       # das:/TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6_ext1-v2/NANOAODSIM,
     ]
   type: mc
-  group: "TW"
+  group: "ST"
   cross-section: 4.6651009 # xsec(TW) / 2 (since t and tbar is included) x BR(W->l nu)^2 x 2 (since there are two W bosons) = 87.9 / 2 x 0.3259^2 x 2
   generated-events: genEventSumw
   split: *nsplit
@@ -306,7 +306,7 @@ TWminusto2L2Nu_2022:
       # das:/TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5_ext1-v2/NANOAODSIM,
     ]
   type: mc
-  group: "TW"
+  group: "ST"
   cross-section: 4.6651009
   generated-events: genEventSumw
   split: *nsplit
@@ -319,7 +319,7 @@ TWminusto2L2Nu_2022EE:
       das:/TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6_ext1-v2/NANOAODSIM,
     ]
   type: mc
-  group: "TW"
+  group: "ST"
   cross-section: 4.6651009
   generated-events: genEventSumw
   split: *nsplit
@@ -334,8 +334,8 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022:
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
   split: &signal_split -5
-  line-color: 3
-  legend: 'HH\rightarrow bbll\nu\nu kl=1'
+  line-color: 4
+  legend: 'HH_{ggf}^{\kappa_\lambda=1}\rightarrow bbWW'
 
 ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022EE:
   type: signal
@@ -345,8 +345,30 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022EE:
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
   split: *signal_split
-  line-color: 3
-  legend: 'HH\rightarrow bbll\nu\nu kl=1'
+  line-color: 4
+  legend: 'HH_{ggf}^{\kappa_\lambda=1}\rightarrow bbWW'
+
+VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2022:
+  type: signal
+  era: '2022'
+  db: das:/VBFHHto2B2Vto2L2Nu_CV_1_C2V_1_C3_1_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
+  cross-section: 0.001898 # from XSDB
+  branching-ratio: 0.027669886574221
+  generated-events: genEventSumw
+  split: *signal_split
+  line-color: 2
+  legend: 'HH_{vbf}^{SM}\rightarrow bbWW'
+
+VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2022EE:
+  type: signal
+  era: '2022EE'
+  db: das:/VBFHHto2B2Vto2L2Nu_CV_1_C2V_1_C3_1_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v1/NANOAODSIM
+  cross-section: 0.001898
+  branching-ratio: 0.027669886574221
+  generated-events: genEventSumw
+  split: *signal_split
+  line-color: 2
+  legend: 'HH_{vbf}^{SM}\rightarrow bbWW'
 
 # ### BSM ###
 ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022:
@@ -357,7 +379,7 @@ ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022:
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
   split: *signal_split
-  line-color: 4
+  line-color: 3
   legend: 'HH\rightarrow bbll\nu\nu kl=0'
 
 ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022EE:
@@ -368,7 +390,7 @@ ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022EE:
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
   split: *signal_split
-  line-color: 4
+  line-color: 3
   legend: 'HH\rightarrow bbll\nu\nu kl=0'
 
 ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022:
@@ -379,7 +401,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022:
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
   split: *signal_split
-  line-color: 5
+  line-color: 8
   legend: 'HH\rightarrow bbll\nu\nu kl=2.45'
 
 ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022EE:
@@ -390,7 +412,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022EE:
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
   split: *signal_split
-  line-color: 5
+  line-color: 8
   legend: 'HH\rightarrow bbll\nu\nu kl=2.45'
 
 ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022:
@@ -414,27 +436,3 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022EE:
   split: *signal_split
   line-color: 6
   legend: 'HH\rightarrow bbll\nu\nu kl=5'
-
-# VBF SM signal
-
-VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2022:
-  type: signal
-  era: '2022'
-  db: das:/VBFHHto2B2Vto2L2Nu_CV_1_C2V_1_C3_1_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
-  cross-section: 0.001898 # from XSDB
-  branching-ratio: 0.027669886574221
-  generated-events: genEventSumw
-  split: *signal_split
-  line-color: 7
-  legend: 'VBF HH\rightarrow bbll\nu\nu'
-
-VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2022EE:
-  type: signal
-  era: '2022EE'
-  db: das:/VBFHHto2B2Vto2L2Nu_CV_1_C2V_1_C3_1_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v1/NANOAODSIM
-  cross-section: 0.001898
-  branching-ratio: 0.027669886574221
-  generated-events: genEventSumw
-  split: *signal_split
-  line-color: 7
-  legend: 'VBF HH\rightarrow bbll\nu\nu'
