@@ -213,7 +213,7 @@ class ScaleFactors:
                 sel=sel,
             )
 
-            # Muon Trigger SF
+            # single muon Trigger SF
             self.muon_single_TRG_SF = get_correction(
                 MUON_SF_JSONFiles[self.parent.era],
                 "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",
@@ -317,21 +317,7 @@ class ScaleFactors:
                     )
                 ],
             )
-            self.parent.yields.add(sel, "MuMu leading single TRG SF")
-            sel = sel.refine(
-                "mumu_subleading_TRG_SF",
-                weight=[
-                    op.switch(
-                        op.AND(
-                            self.parent.tightMuons[1].pt >= 26.0,
-                            op.abs(self.parent.tightMuons[1].eta) < 2.4,
-                        ),
-                        self.muon_single_TRG_SF(self.parent.tightMuons[1]),
-                        op.c_float(1.0),
-                    )
-                ],
-            )
-            self.parent.yields.add(sel, "MuMu sub-leading single TRG SF")
+            self.parent.yields.add(sel, "MuMu single TRG SF")
             if not triggerStudy:
                 sel = sel.refine(
                     "mumu_di_lepton_TRG_SF", weight=self.mumu_double_TRG_SF(None)
@@ -349,9 +335,7 @@ class ScaleFactors:
             sel = sel.refine("mumu_subleading_ISO_SF", weight=op.c_float(1.0))
             self.parent.yields.add(sel, "MuMu sub-leading ISO SF")
             sel = sel.refine("mumu_leading_TRG_SF", weight=op.c_float(1.0))
-            self.parent.yields.add(sel, "MuMu leading single TRG SF")
-            sel = sel.refine("mumu_subleading_TRG_SF", weight=op.c_float(1.0))
-            self.parent.yields.add(sel, "MuMu sub-leading single TRG SF")
+            self.parent.yields.add(sel, "MuMu single TRG SF")
             if not triggerStudy:
                 sel = sel.refine("mumu_di_lepton_TRG_SF", weight=op.c_float(1.0))
                 self.parent.yields.add(sel, "MuMu di-lepton TRG SF")
@@ -390,7 +374,7 @@ class ScaleFactors:
                 sel=sel,
             )
 
-            # Electron Trigger SF
+            # single electron trigger SF
             self.elel_single_TRG_SF = get_correction(
                 (EGamma_SF_JSONFiles[self.parent.era][0]).replace(
                     "electron", "electronHlt"
@@ -463,18 +447,7 @@ class ScaleFactors:
                     )
                 ],
             )
-            self.parent.yields.add(sel, "ElEl leading TRG SF")
-            sel = sel.refine(
-                "elel_subleading_TRG_SF",
-                weight=[
-                    op.switch(
-                        self.parent.tightElectrons[1].pt >= 25,
-                        self.elel_single_TRG_SF(self.parent.tightElectrons[1]),
-                        op.c_float(1.0),
-                    )
-                ],
-            )
-            self.parent.yields.add(sel, "ElEl subleading TRG SF")
+            self.parent.yields.add(sel, "ElEl single TRG SF")
             if not triggerStudy:
                 sel = sel.refine(
                     "elel_di_lepton_TRG_SF", weight=self.elel_double_TRG_SF(None)
@@ -486,9 +459,7 @@ class ScaleFactors:
             sel = sel.refine("elel_subleading_ID_SF", weight=op.c_float(1.0))
             self.parent.yields.add(sel, "ElEl subleading ID SF")
             sel = sel.refine("elel_leading_TRG_SF", weight=op.c_float(1.0))
-            self.parent.yields.add(sel, "ElEl leading TRG SF")
-            sel = sel.refine("elel_subleading_TRG_SF", weight=op.c_float(1.0))
-            self.parent.yields.add(sel, "ElEl subleading TRG SF")
+            self.parent.yields.add(sel, "ElEl single TRG SF")
             if not triggerStudy:
                 sel = sel.refine("elel_di_lepton_TRG_SF", weight=op.c_float(1.0))
                 self.parent.yields.add(sel, "ElEl dilepton TRG SF")
@@ -506,9 +477,9 @@ class ScaleFactors:
                 self.parent.tightMuons[0].pt,
             )
             subleading_lepton_pt = op.switch(
-                self.parent.tightElectrons[1].pt > self.parent.tightMuons[1].pt,
-                self.parent.tightElectrons[1].pt,
-                self.parent.tightMuons[1].pt,
+                self.parent.tightElectrons[0].pt > self.parent.tightMuons[0].pt,
+                self.parent.tightMuons[0].pt,
+                self.parent.tightElectrons[0].pt,
             )
             if not triggerStudy:
                 self.elmu_double_TRG_SF = get_correction(
@@ -549,7 +520,7 @@ class ScaleFactors:
                     )
                 ],
             )
-            self.parent.yields.add(sel, "ElMu el TRG SF")
+            self.parent.yields.add(sel, "ElMu el single TRG SF")
             sel = sel.refine(
                 "elmu_mu_ID_SF",
                 weight=[
@@ -591,7 +562,7 @@ class ScaleFactors:
                     )
                 ],
             )
-            self.parent.yields.add(sel, "ElMu mu TRG SF")
+            self.parent.yields.add(sel, "ElMu mu single TRG SF")
             if not triggerStudy:
                 sel = sel.refine(
                     "elmu_di_lepton_TRG_SF", weight=self.elmu_double_TRG_SF(None)

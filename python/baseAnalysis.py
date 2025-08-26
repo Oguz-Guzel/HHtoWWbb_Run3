@@ -294,6 +294,11 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
         addHLTPath("MuonEG_", "Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
         addHLTPath("MuonEG_", "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
         addHLTPath("MuonEG_", "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL")
+        addHLTPath("MuonEG_", "IsoMu24")
+        addHLTPath("MuonEG_", "Ele30_WPTight_Gsf")
+        addHLTPath("MuonEG_", "Ele50_CaloIdVT_GsfTrkIdT_PFJet165")
+
+        
 
         if self.is_MC:
             noSel = noSel.refine(
