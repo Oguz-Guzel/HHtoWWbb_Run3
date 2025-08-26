@@ -16,7 +16,7 @@ samples:
 plotIt:
   configuration:
     width: 800
-    height: 800
+    height: 1000
     margin-left: 0.125
     margin-right: 0.03
     margin-top: 0.05
@@ -41,8 +41,8 @@ plotIt:
     position: [0.55, 0.65, 0.92, 0.9]
   groups:
     data:
-      legend: Data
-    TTbar:
+      legend: "Data"
+    TT:
       legend: "t#bar{t}"
       fill-color: "#bd1f01"
     DY:

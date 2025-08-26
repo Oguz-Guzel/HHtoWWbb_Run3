@@ -16,7 +16,7 @@ samples:
 plotIt:
   configuration:
     width: 800
-    height: 1000
+    height: 800
     margin-left: 0.125
     margin-right: 0.03
     margin-top: 0.05
@@ -41,8 +41,8 @@ plotIt:
     position: [0.5, 0.65, 0.92, 0.9]
   groups:
     data:
-      legend: Data
-    TTbar:
+      legend: "Data"
+    TT:
       legend: "t#bar{t}"
       fill-color: "#bd1f01"
     DY:
@@ -58,7 +58,7 @@ plotIt:
       legend: "other"
       fill-color: "#94a4a2"
   plotdefaults:
-    y-axis-range: [0.00001, 50000000]
+    # y-axis-range: [0.00001, 50000000]
     normalized: False
     y-axis: "Events"
     log-y: both

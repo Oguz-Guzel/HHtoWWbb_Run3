@@ -146,7 +146,7 @@ TTto2L2Nu_2022:
       # das:/TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5_ext1-v2/NANOAODSIM,
     ]
   type: mc
-  group: "TTbar"
+  group: "TT"
   cross-section: 98.036113
   generated-events: genEventSumw
   split: *nsplit
@@ -159,7 +159,7 @@ TTto2L2Nu_2022EE:
       # das:/TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6_ext1-v2/NANOAODSIM,
     ]
   type: mc
-  group: "TTbar"
+  group: "TT"
   cross-section: 98.036113
   generated-events: genEventSumw
   split: *nsplit
@@ -380,7 +380,7 @@ ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022:
   generated-events: genEventSumw
   split: *signal_split
   line-color: 3
-  legend: 'HH\rightarrow bbll\nu\nu kl=0'
+  legend: 'HH_{ggf}^{\kappa_\lambda=0}\rightarrow bbWW'
 
 ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022EE:
   type: signal
@@ -391,7 +391,7 @@ ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022EE:
   generated-events: genEventSumw
   split: *signal_split
   line-color: 3
-  legend: 'HH\rightarrow bbll\nu\nu kl=0'
+  legend: 'HH_{ggf}^{\kappa_\lambda=0}\rightarrow bbWW'
 
 ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022:
   type: signal
@@ -402,7 +402,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022:
   generated-events: genEventSumw
   split: *signal_split
   line-color: 8
-  legend: 'HH\rightarrow bbll\nu\nu kl=2.45'
+  legend: 'HH_{ggf}^{\kappa_\lambda=2.45}\rightarrow bbWW'
 
 ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022EE:
   type: signal
@@ -413,7 +413,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022EE:
   generated-events: genEventSumw
   split: *signal_split
   line-color: 8
-  legend: 'HH\rightarrow bbll\nu\nu kl=2.45'
+  legend: 'HH_{ggf}^{\kappa_\lambda=2.45}\rightarrow bbWW'
 
 ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022:
   type: signal
@@ -424,7 +424,7 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022:
   generated-events: genEventSumw
   split: *signal_split
   line-color: 6
-  legend: 'HH\rightarrow bbll\nu\nu kl=5'
+  legend: 'HH_{ggf}^{\kappa_\lambda=5}\rightarrow bbWW'
 
 ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022EE:
   type: signal
@@ -435,4 +435,4 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022EE:
   generated-events: genEventSumw
   split: *signal_split
   line-color: 6
-  legend: 'HH\rightarrow bbll\nu\nu kl=5'
+  legend: 'HH_{ggf}^{\kappa_\lambda=5}\rightarrow bbWW'
