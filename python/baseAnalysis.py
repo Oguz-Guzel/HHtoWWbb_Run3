@@ -371,26 +371,25 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
                 eras=(eraMode, eras),
                 verbose=self.args.verbose,
             )
-        plotsDir = "plots"
-        # hadd signal files and create another plots.yml called plots_full.yml
-        plotsDir = "plots_full"
-        import os
-        import shutil
+            # hadd signal files and create another plots.yml called plots_full.yml
+            plotsDir = "plots_full"
+            import os
+            import shutil
 
-        outDir = os.path.join(resultsdir, "normalizedSummedSignal")
-        if not os.path.exists(outDir):
-            os.makedirs(outDir)
-        utils.custom_Plotit(
-            cfgName,
-            workdir,
-            resultsdir,
-            outDir,
-            self.readCounters,
-            config,
-            plotIt=self.args.plotIt,
-            verbose=self.args.verbose,
-        )
-        # end of merging signal samples and plotting
+            outDir = os.path.join(resultsdir, "normalizedSummedSignal")
+            if not os.path.exists(outDir):
+                os.makedirs(outDir)
+            utils.custom_Plotit(
+                cfgName,
+                workdir,
+                resultsdir,
+                outDir,
+                self.readCounters,
+                config,
+                plotIt=self.args.plotIt,
+                verbose=self.args.verbose,
+            )
+            # end of merging signal samples and plotting
 
         # create pdf presentation
         if not self.mvaModel and not self.args.sync:
@@ -407,7 +406,7 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
                         workdir=workdir, channel=self.args.channel, plotsDir=plotsDir
                     )
                 )
-                logger.info(f"PDF presentation created for all eras combined.\n")
+                logger.info(f"PDF presentation created for all eras combined.")
             except Exception as e:
                 logger.info(e)
 
