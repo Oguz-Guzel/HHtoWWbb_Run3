@@ -45,7 +45,7 @@ def makeDLSelection(
     tree,
     sample,
     btagReweightStudy=False,
-    triggerStudy=False,
+    trigger_study=False,
     DYControlRegion=False,
     TTbarControlRegion=False,
 ):
@@ -176,9 +176,9 @@ def makeDLSelection(
         )
 
     # lepton scale factors
-    elel_SF_sel = scale_factors.elelSF(elel_sel, triggerStudy)
-    mumu_SF_sel = scale_factors.mumuSF(mumu_sel, triggerStudy)
-    elmu_SF_sel = scale_factors.elmuSF(elmu_sel, triggerStudy)
+    elel_SF_sel = scale_factors.elelSF(elel_sel, trigger_study)
+    mumu_SF_sel = scale_factors.mumuSF(mumu_sel, trigger_study)
+    elmu_SF_sel = scale_factors.elmuSF(elmu_sel, trigger_study)
 
     # DY Z pT reweighting
     elel_SF_sel = scale_factors.Z_pT_reweight(
@@ -418,6 +418,9 @@ def makeDLSelection(
             DL_VBF_boosted_mumu,
             DL_VBF_boosted_emu,
         ]
+        if not trigger_study:
+            for sel in DL_signal_region_selections:
+                sel = scale_factors.dilepton_trg_sf(sel)
 
         # cutflow reports for the final states
         analysis.yields.add(DL_boosted_ee, "DL boosted ee")
@@ -440,7 +443,7 @@ def makeDLSelection(
         return pre_final_state_sels
     elif DYControlRegion:
         return Z_peak_selections
-    elif triggerStudy:
+    elif trigger_study:
         return [elel_SF_sel, mumu_SF_sel, elmu_SF_sel]
     else:
         return DL_signal_region_selections

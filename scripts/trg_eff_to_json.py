@@ -13,9 +13,12 @@ def parse_args():
         description="Calculate 2D trigger scale factors and export to JSON"
     )
     parser.add_argument(
-        "--bamboo_results", required=True, help="Path to bamboo results directory"
+        "--bamboo_output",
+        required=True,
+        help="Path to bamboo directory (don't point to results dir, it will be added automatically.)",
     )
     return parser.parse_args()
+
 
 def mean2D(h, nonempty_only=True):
     """Compute mean of 2D histogram bin contents.
@@ -34,12 +37,11 @@ def mean2D(h, nonempty_only=True):
                 n += 1
     return (s / n if n else 0.0, n)
 
+
 def calculate_2d_scale_factors_and_export(
-    bamboo_results,
+    bamboo_output,
     data_files,
     mc_files,
-    num_hist_name,
-    den_hist_name,
     output_json_name="trigger_scale_factors.json",
 ):
     """
@@ -48,28 +50,9 @@ def calculate_2d_scale_factors_and_export(
     Parameters:
     - data_files: list of paths to data ROOT files
     - mc_files: list of paths to MC ROOT files
-    - num_hist_name: name(s) of numerator histogram(s) (str or list[str], e.g. ["num_ee","num_mumu","num_emu"])
-    - den_hist_name: name(s) of denominator histogram(s) (str or list[str]), same as num_hist_name
     - output_json_name: output JSON filename
     """
     print(f"\nProcessing {len(data_files)} data files and {len(mc_files)} MC files...")
-
-    # Normalize inputs to lists of equal length
-    if isinstance(num_hist_name, str):
-        num_names = [num_hist_name]
-    else:
-        num_names = list(num_hist_name)
-
-    # Derive channel labels from numerator names: "num_ee" -> "ee"
-    channels = [n.replace("num_", "") for n in num_names]
-
-    if isinstance(den_hist_name, list):
-        den_names = list(den_hist_name)
-    else:
-        den_names = list(den_hist_name)
-
-    if len(den_names) != len(num_names):
-        raise ValueError("num_hist_name and den_hist_name must have the same length")
 
     # Helper to sum histograms across files for a given pair of names
     def sum_histograms(files, hnum_name, hden_name):
@@ -106,6 +89,18 @@ def calculate_2d_scale_factors_and_export(
     first_channel_for_return = None
 
     min_denominator = 1e-6  # avoid division by zero
+
+    # get numerator and denominator histogram names from the first data file
+    first_file = ROOT.TFile.Open(data_files[0])
+    num_names = [
+        hist.GetName()
+        for hist in first_file.GetListOfKeys()
+        if hist.GetName().startswith("num")
+    ]
+    den_names = [den.replace("num_", "den_") for den in num_names]
+
+    # Derive channel labels from numerator names: "num_ee" -> "ee"
+    channels = [n.replace("num_", "") for n in num_names]
 
     for idx, ch in enumerate(channels):
         nname = num_names[idx]
@@ -156,7 +151,7 @@ def calculate_2d_scale_factors_and_export(
                     h_eff_mc.SetBinContent(i, j, 1.0)
                     clipped += 1
         # if clipped:
-            # print(f"  [{ch}] MC efficiency bins clipped to [0,1]: {clipped}")
+        # print(f"  [{ch}] MC efficiency bins clipped to [0,1]: {clipped}")
 
         # Scale factors
         h_sf = h_eff_data.Clone(f"h_scale_factors_{ch}")
@@ -167,7 +162,7 @@ def calculate_2d_scale_factors_and_export(
         mean_mc, n_mc = mean2D(h_eff_mc)
         mean_sf, n_sf = mean2D(h_sf)
         print(
-            f"  [{ch}] Means (non-empty bins): \n"
+            f"  [{ch}] Means: \n"
             f"         Data eff = {mean_data:.4f} (N={n_data}), \n"
             f"         MC eff = {mean_mc:.4f} (N={n_mc}), \n"
             f"         SF = {mean_sf:.4f} (N={n_sf})"
@@ -175,26 +170,6 @@ def calculate_2d_scale_factors_and_export(
 
         nbx = h_sf.GetNbinsX()
         nby = h_sf.GetNbinsY()
-
-        # compute mean of bin contents and propagated error (simple sum / N)
-        # def bin_content_mean_and_err(h):
-        #     s = 0.0
-        #     n = 0
-        #     for i in range(1, h.GetNbinsX() + 1):
-        #         for j in range(1, h.GetNbinsY() + 1):
-        #             c = h.GetBinContent(i, j)
-        #             s += c
-        #             n += 1
-        #     mean = s / n if n else 0.0
-        #     return mean
-
-        # mean_data = bin_content_mean_and_err(h_eff_data)
-        # mean_mc = bin_content_mean_and_err(h_eff_mc)
-        # mean_sf = bin_content_mean_and_err(h_sf)
-
-        # print(f"  [{ch}] Data eff mean (bin-avg): {mean_data:.4f}")
-        # print(f"  [{ch}] MC eff mean   (bin-avg): {mean_mc:.4f}")
-        # print(f"  [{ch}] SF mean       (bin-avg): {mean_sf:.4f}")
 
         # Set common bin edges (assume consistent binning across channels)
         if x_edges is None or y_edges is None:
@@ -213,11 +188,6 @@ def calculate_2d_scale_factors_and_export(
             for j in range(1, nby + 1):
                 v = h_sf.GetBinContent(i, j)
                 e = h_sf.GetBinError(i, j)
-                # # Restrict SFs to a reasonable range and errors to sensible values
-                # if not (0.9 <= v <= 1.1) or e < 0 or e > 0.01:
-                #     suspicious += 1
-                #     v = min(max(v, 0.9), 1.1) if v > 0 else 1.0
-                #     e = 0.0
                 row_v.append(float(v))
                 row_e.append(float(e))
             vals.append(row_v)
@@ -269,7 +239,7 @@ def calculate_2d_scale_factors_and_export(
                     {
                         "name": "channel",
                         "type": "string",
-                        "description": "ee, mumu, emu",
+                        "description": "final state",
                     },
                     {
                         "name": "systematic",
@@ -350,18 +320,43 @@ def calculate_2d_scale_factors_and_export(
     with open(output_json_name, "w") as f:
         json.dump(correction_json, f, indent=2)
 
-    shutil.move(output_json_name, os.path.join(bamboo_results, "..", output_json_name))
+    shutil.move(output_json_name, os.path.join(bamboo_output, output_json_name))
     print(
-        f"\n  Scale factors JSON saved as: {os.path.join(bamboo_results, '..', output_json_name)}"
+        f"\n  Scale factors JSON saved as: {os.path.join(bamboo_output, output_json_name)}"
     )
 
-    # Return first channel histos for any downstream plotting that expects single hists
-    ch0 = first_channel_for_return or channels[0]
-    return results[ch0]["h_sf"], results[ch0]["h_eff_data"], results[ch0]["h_eff_mc"]
+    # Return all histos for any downstream plotting
+    h_sf_plt = []
+    h_eff_data_plt = []
+    h_eff_mc_plt = []
+    for ch in channels:
+        h_sf_plt.append(results[ch]["h_sf"])
+        h_eff_data_plt.append(results[ch]["h_eff_data"])
+        h_eff_mc_plt.append(results[ch]["h_eff_mc"])
+    return h_sf_plt, h_eff_data_plt, h_eff_mc_plt
 
 
-def create_comparison_plots(h_data, h_mc, h_sf, output_name="comparison.png"):
+def create_comparison_plots(
+    bamboo_output, h_data_list, h_mc_list, h_sf_list, output_name="comparison.png"
+):
     """Create comparison plots for data efficiency, MC efficiency, and scale factors"""
+    if not all([h_data_list, h_mc_list, h_sf_list]):
+        print("Warning: Empty histogram list provided to create_comparison_plots.")
+        return
+
+    # Clone the first histogram to have a base for summation
+    h_data = h_data_list[0].Clone("h_data_combined")
+    h_mc = h_mc_list[0].Clone("h_mc_combined")
+    h_sf = h_sf_list[0].Clone("h_sf_combined")
+
+    # Add the rest of the histograms in the lists
+    for i in range(1, len(h_data_list)):
+        h_data.Add(h_data_list[i])
+    for i in range(1, len(h_mc_list)):
+        h_mc.Add(h_mc_list[i])
+    for i in range(1, len(h_sf_list)):
+        h_sf.Add(h_sf_list[i])
+
     canvas = ROOT.TCanvas("c_comparison", "Trigger Efficiency Comparison", 1200, 800)
     canvas.Divide(3, 1)
 
@@ -394,45 +389,46 @@ def create_comparison_plots(h_data, h_mc, h_sf, output_name="comparison.png"):
 
     canvas.SaveAs(output_name)
 
-    shutil.move(output_name, os.path.join(bamboo_results, "..", output_name))
-    print(
-        f"\n  Comparison plots saved as: {os.path.join(bamboo_results, '..', output_name)}"
-    )
-
+    shutil.move(output_name, os.path.join(bamboo_output, output_name))
+    print(f"\n  Comparison plots saved as: {os.path.join(bamboo_output, output_name)}")
 
 
 # Example usage
 if __name__ == "__main__":
 
     args = parse_args()
-    bamboo_results = args.bamboo_results
+    bamboo_output_dir = args.bamboo_output
+    bamboo_results_dir = os.path.join(bamboo_output_dir, "results")
 
     # List ROOT files in the bamboo results directory
     data_files = [
         f
-        for f in os.listdir(bamboo_results)
-        if f.startswith("Muon") or f.startswith("EGamma")
+        for f in os.listdir(bamboo_results_dir)
+        if (f.startswith("Muon") or f.startswith("EGamma")) and f.endswith(".root")
     ]
     mc_files = [
-        f for f in os.listdir(bamboo_results) if f not in data_files and f[:2] != "__" and not f.startswith("ggH")
+        f
+        for f in os.listdir(bamboo_results_dir)
+        if f not in data_files
+        and f[:2] != "__"
+        and not f.startswith("ggH")
+        and f.endswith(".root")
     ]
-    # add bamboo_results to file paths
-    data_files = [os.path.join(bamboo_results, f) for f in data_files]
-    mc_files = [os.path.join(bamboo_results, f) for f in mc_files]
-
-    # Histogram names (should be same in both files)
-    num_hist = ["num_ee", "num_mumu", "num_emu"]  # Numerator histogram names
-    den_hist = ["den_ee", "den_mumu", "den_emu"]  # Denominator histogram names
+    # add bamboo_results_dir to file paths
+    data_files = [os.path.join(bamboo_results_dir, f) for f in data_files]
+    mc_files = [os.path.join(bamboo_results_dir, f) for f in mc_files]
 
     h_scale_factors, h_eff_data, h_eff_mc = calculate_2d_scale_factors_and_export(
-        bamboo_results,
+        bamboo_output_dir,
         data_files,
         mc_files,
-        num_hist,
-        den_hist,
         "di_lepton_trigger_scale_factors.json",
     )
 
     create_comparison_plots(
-        h_eff_data, h_eff_mc, h_scale_factors, "trigger_comparison.png"
+        bamboo_output_dir,
+        h_eff_data,
+        h_eff_mc,
+        h_scale_factors,
+        "trigger_comparison.png",
     )

@@ -282,9 +282,7 @@ class TriggerEff(_base):
 
         # get DL selections
 
-        (elel_SF_sel, mumu_SF_sel, elmu_SF_sel) = makeDLSelection(
-            self, noSel, tree, sample, triggerStudy=True
-        )
+        final_state_selections = makeDLSelection(self, noSel, tree, sample, trigger_study=True)
 
         # Triggers
         self.triggers_per_PD = {}
@@ -313,76 +311,45 @@ class TriggerEff(_base):
                 sample, self.triggers_per_PD
             )
 
-        trg_ee_sel = elel_SF_sel.refine("triggers_ee", cut=trigger_cut)
-        trg_mumu_sel = mumu_SF_sel.refine("triggers_mumu", cut=trigger_cut)
-        trg_emu_sel = elmu_SF_sel.refine("triggers_emu", cut=trigger_cut)
-
         plots = []
 
         # --- add leading/subleading pT 2D efficiency histograms ---
-        pt_bins_l1 = EqBin(40, 0, 200)  # 5 GeV bins up to 200 GeV
-        pt_bins_l2 = EqBin(40, 0, 200)
+        pt_bins_l1 = EqBin(20, 0, 300)  # 20 GeV bins up to 300 GeV
+        pt_bins_l2 = EqBin(20, 0, 300)
+        binning = (pt_bins_l1, pt_bins_l2)
 
-        lep1, lep2 = self.tightElectrons[0], self.tightElectrons[1]
-        plots.append(
-            Plot.make2D(
-                "den_ee",
-                [lep1.pt, lep2.pt],
-                elel_SF_sel,
-                [pt_bins_l1, pt_bins_l2],
-                title="EE Denominator: leading vs subleading pT",
-            )
-        )
+        el1, el2 = self.tightElectrons[0], self.tightElectrons[1]
+        mu1, mu2 = self.tightMuons[0], self.tightMuons[1]
 
-        plots.append(
-            Plot.make2D(
-                "num_ee",
-                [lep1.pt, lep2.pt],
-                trg_ee_sel,
-                [pt_bins_l1, pt_bins_l2],
-                title="EE Numerator: leading vs subleading pT (after trigger)",
-            )
-        )
+        emu_leading_pt = op.switch(el1.pt > mu1.pt, el1.pt, mu1.pt)
+        emu_subleading_pt = op.switch(el1.pt > mu1.pt, mu1.pt, el1.pt)
 
-        lep1, lep2 = self.tightMuons[0], self.tightMuons[1]
-        plots.append(
-            Plot.make2D(
-                "den_mumu",
-                [lep1.pt, lep2.pt],
-                mumu_SF_sel,
-                [pt_bins_l1, pt_bins_l2],
-                title="MUMU Denominator: leading vs subleading pT",
-            )
-        )
-        plots.append(
-            Plot.make2D(
-                "num_mumu",
-                [lep1.pt, lep2.pt],
-                trg_mumu_sel,
-                [pt_bins_l1, pt_bins_l2],
-                title="MUMU Numerator: leading vs subleading pT (after trigger)",
-            )
-        )
-
-        lep1, lep2 = self.tightElectrons[0], self.tightMuons[0]
-        plots.append(
-            Plot.make2D(
-                "den_emu",
-                [lep1.pt, lep2.pt],
-                elmu_SF_sel,
-                [pt_bins_l1, pt_bins_l2],
-                title="EMU Denominator: leading vs subleading pT",
-            )
-        )
-
-        plots.append(
-            Plot.make2D(
-                "num_emu",
-                [lep1.pt, lep2.pt],
-                trg_emu_sel,
-                [pt_bins_l1, pt_bins_l2],
-                title="EMU Numerator: leading vs subleading pT (after trigger)",
-            )
-        )
+        di_leptons = {
+            "_ee": (el1.pt, el2.pt),
+            "_mumu": (mu1.pt, mu2.pt),
+            "_emu": (emu_leading_pt, emu_subleading_pt),
+        }
+        fs = ""
+        for v in ["den", "num"]:
+            for selection in final_state_selections:
+                for fs in di_leptons.keys():
+                    if fs in selection.name:
+                        fs = fs
+                        break
+                plots.append(
+                    Plot.make2D(
+                        f"{v}_{selection.name}",
+                        di_leptons[fs],
+                        (
+                            selection
+                            if v == "den"
+                            else selection.refine(
+                                f"{selection.name}_triggers{fs}", cut=trigger_cut
+                            )
+                        ),
+                        binning,
+                        title=f"{fs} " + "Denominator" if v == "den" else "Numerator",
+                    )
+                )
 
         return plots
