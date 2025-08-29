@@ -68,7 +68,7 @@ plotIt:
     sort-by-yields: True
     legend-columns: 4
     ratio-y-axis: "Data / MC"
-    ratio-y-axis-range: [0.8, 1.2]
+    ratio-y-axis-range: [0.5, 1.5]
 
   systematics:
     - btagSF_shape_cferr1
