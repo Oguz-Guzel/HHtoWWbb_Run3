@@ -84,7 +84,8 @@ class ScaleFactors:
         return sel
 
     def top_pT_reweight(self, GenPartBranch, sel, sample):
-        """Apply top p_T reweighting."""
+        """Apply top p_T reweighting. Check for more
+        https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting#TOP_PAG_corrections_based_on_the"""
         if sample.startswith("TT"):
 
             def top_pt_weight(pt):
@@ -97,22 +98,39 @@ class ScaleFactors:
 
             def getTopPtWeight(GenPart):
                 lastCopy = op.select(
-                    GenPart, lambda p: (op.static_cast("int", p.statusFlags) >> 13) & 1
+                    GenPart, lambda p: (op.static_cast(
+                        "int", p.statusFlags) >> 13) & 1
                 )
                 tops = op.select(lastCopy, lambda p: p.pdgId == 6)
                 antitops = op.select(lastCopy, lambda p: p.pdgId == -6)
                 weight = op.switch(
                     op.AND(op.rng_len(tops) >= 1, op.rng_len(antitops) >= 1),
-                    op.sqrt(top_pt_weight(tops[0].pt) * top_pt_weight(antitops[0].pt)),
+                    op.sqrt(top_pt_weight(tops[0].pt)
+                            * top_pt_weight(antitops[0].pt)),
                     1.0,
                 )
                 return weight
 
-            logger.info("Applying Top Pt reweighting (only for TTbar samples)")
+            logger.info("Applying Top Pt reweighting (only to TTbar samples)")
+
+            w = getTopPtWeight(GenPartBranch)
+
+            # nominal, up, down definitions
+            # Systematics are symmetric in log-weight space; also makes the full effect the 1\sigma.
+            w_nom = op.c_float(1.0)
+            w_up = w
+            w_down = 1.0 / w
 
             sel = sel.refine(
-                "topPt", weight=op.systematic(getTopPtWeight(GenPartBranch))
+                "topPt",
+                weight=op.systematic(
+                    w_nom,
+                    "topPtRW",
+                    up=w_up,
+                    down=w_down,
+                ),
             )
+
         else:
             sel = sel.refine("topPt", weight=op.c_float(1.0))
         self.parent.yields.add(sel, "topPt reweighting")
