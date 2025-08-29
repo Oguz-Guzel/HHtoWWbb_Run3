@@ -176,9 +176,9 @@ def makeDLSelection(
         )
 
     # lepton scale factors
-    elel_SF_sel = scale_factors.elelSF(elel_sel, trigger_study)
-    mumu_SF_sel = scale_factors.mumuSF(mumu_sel, trigger_study)
-    elmu_SF_sel = scale_factors.elmuSF(elmu_sel, trigger_study)
+    elel_SF_sel = scale_factors.elelSF(elel_sel)
+    mumu_SF_sel = scale_factors.mumuSF(mumu_sel)
+    elmu_SF_sel = scale_factors.elmuSF(elmu_sel)
 
     # DY Z pT reweighting
     elel_SF_sel = scale_factors.Z_pT_reweight(
