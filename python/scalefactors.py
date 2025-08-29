@@ -511,9 +511,9 @@ class ScaleFactors:
 
             N_unc = 10
 
-            systVariations = {f"ZpT{i}up": f"up{i}" for i in range(1, N_unc + 1)}
+            systVariations = {f"ZpTup": f"up{i}" for i in range(1, N_unc + 1)}
             systVariations.update(
-                {f"ZpT{i}down": f"down{i}" for i in range(1, N_unc + 1)}
+                {f"ZpTdown": f"down{i}" for i in range(1, N_unc + 1)}
             )
 
             get_Z_pT_corr = get_correction(
