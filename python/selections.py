@@ -68,6 +68,10 @@ def makeDLSelection(
     genPartBranch = tree.GenPart if analysis.is_MC else None
     sel = scale_factors.top_pT_reweight(genPartBranch, sel, sample)
 
+    # V+Jets sample stitching
+    LHEBranch = tree.LHE if ( self.is_MC and sample.startswith("DY") ) else None
+    sel = scale_factors.V_Jets_Stitching(self, LHEBranch, sel, sample)
+
     # Noise filters
     sel = scale_factors.NoiseFilters(tree.Flag, sel)
 
