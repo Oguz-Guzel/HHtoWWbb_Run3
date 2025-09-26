@@ -70,7 +70,7 @@ def makeDLSelection(
 
     # V+Jets sample stitching
     LHEBranch = tree.LHE if ( self.is_MC and sample.startswith("DY") ) else None
-    sel = sf.V_Jets_Stitching(self, LHEBranch, sel, sample)
+    sel = scale_factors.V_Jets_Stitching(self, LHEBranch, sel, sample)
 
     # Noise filters
     sel = scale_factors.NoiseFilters(tree.Flag, sel)
