@@ -7,6 +7,8 @@ from bamboo import treefunctions as op
 from bamboo.analysisutils import makeMultiPrimaryDatasetTriggerSelection
 from bamboo.analysismodules import NanoAODHistoModule
 
+from bamboo.plots import EquidistantBinning as EqBin
+
 import utils
 
 logger = logging.getLogger(__name__)
@@ -110,34 +112,16 @@ def getDataRunEra(sample):
     return result.group(1) if result else None
 
 
-class NanoBaseHHWWbb(NanoAODHistoModule):
+class _base(NanoAODHistoModule):
     """Base module for HH->WWbb analysis"""
 
     def addArgs(self, parser):
         super().addArgs(parser)
         parser.add_argument(
-            "-c",
-            "--channel",
-            dest="channel",
-            type=str,
-            default="DL",
-            help="Channel to be selected between SL and DL",
-        )
-        parser.add_argument(
-            "--mvaModel",
-            dest="mvaModel",
-            type=str,
-            default=None,
-            help="Path to XGBoost model.)",
-        )
-        parser.add_argument(
             "--backend",
             type=str,
             default="dataframe",
             help="Backend to use, 'dataframe' (default), 'lazy', or 'compiled'",
-        )
-        parser.add_argument(
-            "--sync", action="store_true", default=False, help="Run synchronisation"
         )
 
     def prepareTree(self, tree, sample=None, sampleCfg=None, backend=None):
@@ -274,6 +258,32 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
             noSel = noSel.refine("puWeight", weight=op.c_float(1.0))
         self.yields.add(noSel, "puWeight")
 
+        return tree, noSel, be, lumiArgs
+
+
+class TriggerEff(_base):
+    """
+    Trigger efficiency module for di-lepton triggers in Run 3.
+    This module calculates the trigger efficiency for di-lepton events
+    and produces scale factors that can be used to correct event weights.
+    It supports multiple lepton channels (ee, mumu, emu).
+    """
+
+    def __init__(self, args):
+        super().__init__(args)
+
+    def definePlots(self, tree, noSel, sample=None, sampleCfg=None):
+        from bamboo.plots import Plot
+        import definitions as defs
+        from selections import makeDLSelection
+
+        # call defined objects
+        defs.defineObjects(self, tree)
+
+        # get DL selections
+
+        final_state_selections = makeDLSelection(self, noSel, tree, sample, trigger_study=True)
+
         # Triggers
         self.triggers_per_PD = {}
 
@@ -286,183 +296,60 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
                 print("Couldn't find branch tree.HLT.%s, cross check!" % HLT)
 
         addHLTPath("Muon_", "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8")
-        addHLTPath("Muon_", "IsoMu24")
-        addHLTPath("EGamma_", "Ele30_WPTight_Gsf")
         addHLTPath("EGamma_", "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL")
         addHLTPath("EGamma_", "DoubleEle33_CaloIdL_MW")
-        addHLTPath("EGamma_", "Ele50_CaloIdVT_GsfTrkIdT_PFJet165")
         addHLTPath("MuonEG_", "Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
         addHLTPath("MuonEG_", "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ")
         addHLTPath("MuonEG_", "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL")
-        addHLTPath("MuonEG_", "IsoMu24")
-        addHLTPath("MuonEG_", "Ele30_WPTight_Gsf")
-        addHLTPath("MuonEG_", "Ele50_CaloIdVT_GsfTrkIdT_PFJet165")
 
-        
+        from bamboo.analysisutils import makeMultiPrimaryDatasetTriggerSelection
 
         if self.is_MC:
-            noSel = noSel.refine(
-                "triggers",
-                cut=(op.OR(*chain.from_iterable(self.triggers_per_PD.values()))),
-            )
+            trigger_cut = op.OR(*chain.from_iterable(self.triggers_per_PD.values()))
         else:
-            noSel = noSel.refine(
-                "triggers",
-                cut=makeMultiPrimaryDatasetTriggerSelection(
-                    sample, self.triggers_per_PD
-                ),
+            trigger_cut = makeMultiPrimaryDatasetTriggerSelection(
+                sample, self.triggers_per_PD
             )
 
-        self.yields.add(noSel, "triggers")
+        plots = []
 
-        return tree, noSel, be, lumiArgs
+        # --- add leading/subleading pT 2D efficiency histograms ---
+        pt_bins_l1 = EqBin(20, 0, 300)  # 20 GeV bins up to 300 GeV
+        pt_bins_l2 = EqBin(20, 0, 300)
+        binning = (pt_bins_l1, pt_bins_l2)
 
-    def postProcess(self, taskList, config=None, workdir=None, resultsdir=None):
-        """Postprocess: run plotIt
+        el1, el2 = self.tightElectrons[0], self.tightElectrons[1]
+        mu1, mu2 = self.tightMuons[0], self.tightMuons[1]
 
-        The list of plots is created if needed (from a representative file,
-        this enables rerunning the postprocessing step on the results files),
-        and then plotIt is executed
-        """
-        import os
+        emu_leading_pt = op.switch(el1.pt > mu1.pt, el1.pt, mu1.pt)
+        emu_subleading_pt = op.switch(el1.pt > mu1.pt, mu1.pt, el1.pt)
 
-        if not self.plotList:
-            self.plotList = self.getPlotList(resultsdir=resultsdir, config=config)
-        from bamboo.plots import Plot, DerivedPlot, CutFlowReport
-
-        plotList_cutflowreport = [
-            ap for ap in self.plotList if isinstance(ap, CutFlowReport)
-        ]
-        plotList_plotIt = [
-            ap
-            for ap in self.plotList
-            if (isinstance(ap, Plot) or isinstance(ap, DerivedPlot))
-            and len(ap.binnings) == 1
-        ]
-        eraMode, eras = self.args.eras
-        if eras is None:
-            eras = list(config["eras"].keys())
-        if plotList_cutflowreport:
-            from bamboo.analysisutils import printCutFlowReports
-
-            printCutFlowReports(
-                config,
-                plotList_cutflowreport,
-                workdir=workdir,
-                resultsdir=resultsdir,
-                readCounters=self.readCounters,
-                eras=(eraMode, eras),
-                verbose=self.args.verbose,
-            )
-        if plotList_plotIt and not self.args.sync:
-            from bamboo.analysisutils import writePlotIt, runPlotIt
-
-            cfgName = os.path.join(workdir, "plots.yml")
-            writePlotIt(
-                config,
-                plotList_plotIt,
-                cfgName,
-                eras=eras,
-                workdir=workdir,
-                resultsdir=resultsdir,
-                readCounters=self.readCounters,
-                plotDefaults=self.plotDefaults,
-                vetoFileAttributes=self.__class__.CustomSampleAttributes,
-            )
-            runPlotIt(
-                cfgName,
-                workdir=workdir,
-                plotIt=self.args.plotIt,
-                eras=(eraMode, eras),
-                verbose=self.args.verbose,
-            )
-            # hadd signal files and create another plots.yml called plots_full.yml
-            plotsDir = "plots_full"
-            import os
-            import shutil
-
-            outDir = os.path.join(resultsdir, "normalizedSummedSignal")
-            if not os.path.exists(outDir):
-                os.makedirs(outDir)
-            utils.custom_Plotit(
-                cfgName,
-                workdir,
-                resultsdir,
-                outDir,
-                self.readCounters,
-                config,
-                plotIt=self.args.plotIt,
-                verbose=self.args.verbose,
-            )
-            # end of merging signal samples and plotting
-
-        # create pdf presentation
-        if not self.mvaModel and not self.args.sync:
-            try:
-                for era in eras:
-                    os.system(
-                        utils.runPDF(
-                            workdir=workdir, channel=self.args.channel, era=era
-                        )
-                    )
-                    logger.info(f"PDF presentation created for era {era}.\n")
-                os.system(
-                    utils.runPDF(
-                        workdir=workdir, channel=self.args.channel, plotsDir=plotsDir
+        di_leptons = {
+            "_ee": (el1.pt, el2.pt),
+            "_mumu": (mu1.pt, mu2.pt),
+            "_emu": (emu_leading_pt, emu_subleading_pt),
+        }
+        fs = ""
+        for v in ["den", "num"]:
+            for selection in final_state_selections:
+                for fs in di_leptons.keys():
+                    if fs in selection.name:
+                        fs = fs
+                        break
+                plots.append(
+                    Plot.make2D(
+                        f"{v}_{selection.name}",
+                        di_leptons[fs],
+                        (
+                            selection
+                            if v == "den"
+                            else selection.refine(
+                                f"{selection.name}_triggers{fs}", cut=trigger_cut
+                            )
+                        ),
+                        binning,
+                        title=f"{fs} " + "Denominator" if v == "den" else "Numerator",
                     )
                 )
-                logger.info(f"PDF presentation created for all eras combined.")
-            except Exception as e:
-                logger.info(e)
 
-        from bamboo.plots import Skim
-
-        skims = [ap for ap in self.plotList if isinstance(ap, Skim)]
-
-        from bamboo.analysisutils import loadPlotIt
-
-        _, samples, _, _, _ = loadPlotIt(
-            config,
-            [],
-            eras=self.args.eras[1],
-            workdir=workdir,
-            resultsdir=resultsdir,
-            readCounters=self.readCounters,
-            vetoFileAttributes=self.__class__.CustomSampleAttributes,
-        )
-
-        # create sync skims if asked
-        if self.args.sync:
-            if skims:
-                from bamboo.root import gbl
-                import pandas as pd
-
-                sync_dfs = []
-                for skim in skims:
-                    frames = []
-                    for smp in samples:
-                        for cb in smp.files if hasattr(smp, "files") else [smp]:
-                            tree = cb.tFile.Get(skim.treeName)
-                            if not tree:
-                                logger.info(
-                                    "WARNING: skim tree %s not found in file %s"
-                                    % (skim.treeName, cb.tFile.GetName())
-                                )
-                                logger.info("         skipping...")
-                            else:
-                                N = tree.GetEntries()
-                                cols = gbl.ROOT.RDataFrame(tree).AsNumpy()
-                                if "sync" not in skim.name:
-                                    cols["weight"] *= cb.scale
-                                    cols["process"] = [smp.name] * len(cols["weight"])
-                                frames.append(pd.DataFrame(cols))
-                    df = pd.concat(frames)
-                    df = df[self.order]
-                    sync_dfs.append(df)
-                df = pd.concat(sync_dfs)
-                df = df.sort_values(by="event_no")
-                syncFileName = f"{self.channel}_sync.csv"
-                df.to_csv(os.path.join(resultsdir, syncFileName))
-                logger.info(f"Saved dataframe for sync to {syncFileName}")
-            else:
-                logger.warning("No skims are found, hence sync file is not produced.")
+        return plots
