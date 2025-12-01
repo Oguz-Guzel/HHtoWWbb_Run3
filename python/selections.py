@@ -9,7 +9,8 @@ Zmass = 91.1876  # GeV
 def lowMllCut(lepton_collection) -> bool:
     "Minimum dilepton invariant mass cut of 12 GeV."
     return op.NOT(
-        op.invariant_mass(lepton_collection[0].p4, lepton_collection[1].p4) < 12.0
+        op.invariant_mass(
+            lepton_collection[0].p4, lepton_collection[1].p4) < 12.0
     )
 
 
@@ -35,7 +36,8 @@ def ptCutDifferentFlavourPair(dilep) -> bool:
     the objects from different collections hence we don't know which one has a higher pT.
     """
     return op.AND(
-        dilep[0].pt > 15, dilep[1].pt > 15, op.OR(dilep[0].pt > 25, dilep[1].pt > 25)
+        dilep[0].pt > 15, dilep[1].pt > 15, op.OR(
+            dilep[0].pt > 25, dilep[1].pt > 25)
     )
 
 
@@ -69,8 +71,8 @@ def makeDLSelection(
     sel = scale_factors.top_pT_reweight(genPartBranch, sel, sample)
 
     # V+Jets sample stitching
-    LHEBranch = tree.LHE if ( self.is_MC and sample.startswith("DY") ) else None
-    sel = scale_factors.V_Jets_Stitching(self, LHEBranch, sel, sample)
+    LHEBranch = tree.LHE if (analysis.is_MC and sample.startswith("DY")) else None
+    sel = scale_factors.V_Jets_Stitching(LHEBranch, sel, sample)
 
     # Noise filters
     sel = scale_factors.NoiseFilters(tree.Flag, sel)
@@ -99,7 +101,8 @@ def makeDLSelection(
             op.rng_len(analysis.tightElectrons) == 0,
             analysis.tightMuons[0].charge != analysis.tightMuons[1].charge,
             op.NOT(
-                op.invariant_mass(analysis.tightMuons[0].p4, analysis.tightMuons[1].p4)
+                op.invariant_mass(
+                    analysis.tightMuons[0].p4, analysis.tightMuons[1].p4)
                 < 12.0
             ),
         ],
@@ -157,7 +160,8 @@ def makeDLSelection(
         mumu_sel = mumu_sel.refine(
             "mumuPairZpeakSel",
             cut=[
-                op.invariant_mass(analysis.tightMuons[0].p4, analysis.tightMuons[1].p4)
+                op.invariant_mass(
+                    analysis.tightMuons[0].p4, analysis.tightMuons[1].p4)
                 > (Zmass + 10.0)
             ],
         )
@@ -174,7 +178,8 @@ def makeDLSelection(
         mumu_sel = mumu_sel.refine(
             "mumuPairZpeakSel",
             cut=[
-                op.invariant_mass(analysis.tightMuons[0].p4, analysis.tightMuons[1].p4)
+                op.invariant_mass(
+                    analysis.tightMuons[0].p4, analysis.tightMuons[1].p4)
                 < (Zmass - 10.0)
             ],
         )
@@ -240,7 +245,8 @@ def makeDLSelection(
         DL_boosted_emu = DL_boosted_pre_emu_btagSF.refine(
             "DL_boosted_emu", cut=op.rng_len(analysis.ak8BJets) == 0
         )
-        Z_peak_selections.extend([DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu])
+        Z_peak_selections.extend(
+            [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu])
     else:
         # boosted -> at least one b-tagged ak8 jet
         DL_boosted_ee = DL_boosted_pre_ee_btagSF.refine(
@@ -309,7 +315,8 @@ def makeDLSelection(
                 )
             ),
         )
-        Z_peak_selections.extend([DL_resolved_ee, DL_resolved_mumu, DL_resolved_emu])
+        Z_peak_selections.extend(
+            [DL_resolved_ee, DL_resolved_mumu, DL_resolved_emu])
     else:
         # resolved -> and at least two ak4 jets with 1 or at least 2 b-tagged jets and no ak8 jets
         DL_resolved_1b_ee = DL_resolved_pre_ee_btagSF.refine(

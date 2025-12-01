@@ -43,51 +43,51 @@ DY_and_Recoil_JSONFiles = {
 }
 
 sampleNumDict = {
-        "WtoLNu-2Jets": 150,
+    "WtoLNu-2Jets": 150,
 
-        "WtoLNu-2Jets_PTLNu-40to100_1J": 151,
-        "WtoLNu-2Jets_PTLNu-40to100_2J": 152,
-        "WtoLNu-2Jets_PTLNu-100to200_1J": 153,
-        "WtoLNu-2Jets_PTLNu-100to200_2J": 154,
-        "WtoLNu-2Jets_PTLNu-200to400_1J": 155,
-        "WtoLNu-2Jets_PTLNu-200to400_2J": 156,
-        "WtoLNu-2Jets_PTLNu-400to600_1J": 157,
-        "WtoLNu-2Jets_PTLNu-400to600_2J": 158,
+    "WtoLNu-2Jets_PTLNu-40to100_1J": 151,
+    "WtoLNu-2Jets_PTLNu-40to100_2J": 152,
+    "WtoLNu-2Jets_PTLNu-100to200_1J": 153,
+    "WtoLNu-2Jets_PTLNu-100to200_2J": 154,
+    "WtoLNu-2Jets_PTLNu-200to400_1J": 155,
+    "WtoLNu-2Jets_PTLNu-200to400_2J": 156,
+    "WtoLNu-2Jets_PTLNu-400to600_1J": 157,
+    "WtoLNu-2Jets_PTLNu-400to600_2J": 158,
 
-        "WtoLNu-2Jets_PTLNu-600_1J": 159,
-        "WtoLNu-2Jets_PTLNu-600_2J": 160,
+    "WtoLNu-2Jets_PTLNu-600_1J": 159,
+    "WtoLNu-2Jets_PTLNu-600_2J": 160,
 
-        "WtoLNu-2Jets_0J": 161,
-        "WtoLNu-2Jets_1J": 162,
-        "WtoLNu-2Jets_2J": 163,
+    "WtoLNu-2Jets_0J": 161,
+    "WtoLNu-2Jets_1J": 162,
+    "WtoLNu-2Jets_2J": 163,
 
-        "DYto2L-2Jets_MLL-50": 170,
+    "DYto2L-2Jets_MLL-50": 170,
 
-        "DYto2L-2Jets_MLL-50_PTLL-40to100_1J": 171,
-        "DYto2L-2Jets_MLL-50_PTLL-40to100_2J": 172,
-        "DYto2L-2Jets_MLL-50_PTLL-100to200_1J": 173,
-        "DYto2L-2Jets_MLL-50_PTLL-100to200_2J": 174,
-        "DYto2L-2Jets_MLL-50_PTLL-200to400_1J": 175,
-        "DYto2L-2Jets_MLL-50_PTLL-200to400_2J": 176,
-        "DYto2L-2Jets_MLL-50_PTLL-400to600_1J": 177,
-        "DYto2L-2Jets_MLL-50_PTLL-400to600_2J": 178,
-        "DYto2L-2Jets_MLL-50_PTLL-600_1J": 179,
-        "DYto2L-2Jets_MLL-50_PTLL-600_2J": 180,
+    "DYto2L-2Jets_MLL-50_PTLL-40to100_1J": 171,
+    "DYto2L-2Jets_MLL-50_PTLL-40to100_2J": 172,
+    "DYto2L-2Jets_MLL-50_PTLL-100to200_1J": 173,
+    "DYto2L-2Jets_MLL-50_PTLL-100to200_2J": 174,
+    "DYto2L-2Jets_MLL-50_PTLL-200to400_1J": 175,
+    "DYto2L-2Jets_MLL-50_PTLL-200to400_2J": 176,
+    "DYto2L-2Jets_MLL-50_PTLL-400to600_1J": 177,
+    "DYto2L-2Jets_MLL-50_PTLL-400to600_2J": 178,
+    "DYto2L-2Jets_MLL-50_PTLL-600_1J": 179,
+    "DYto2L-2Jets_MLL-50_PTLL-600_2J": 180,
 
-        "DYto2L-2Jets_MLL-50_0J": 181,
-        "DYto2L-2Jets_MLL-50_1J": 182,
-        "DYto2L-2Jets_MLL-50_2J": 183,
+    "DYto2L-2Jets_MLL-50_0J": 181,
+    "DYto2L-2Jets_MLL-50_1J": 182,
+    "DYto2L-2Jets_MLL-50_2J": 183,
 
-        "Zto2Nu-2Jets_PTNuNu-40to100_1J": 191,
-        "Zto2Nu-2Jets_PTNuNu-40to100_2J": 192,
-        "Zto2Nu-2Jets_PTNuNu-100to200_1J": 193,
-        "Zto2Nu-2Jets_PTNuNu-100to200_2J": 194,
-        "Zto2Nu-2Jets_PTNuNu-200to400_1J": 195,
-        "Zto2Nu-2Jets_PTNuNu-200to400_2J": 196,
-        "Zto2Nu-2Jets_PTNuNu-400to600_1J": 197,
-        "Zto2Nu-2Jets_PTNuNu-400to600_2J": 198,
-        "Zto2Nu-2Jets_PTNuNu-600_1J": 199,
-        "Zto2Nu-2Jets_PTNuNu-600_2J": 200,
+    "Zto2Nu-2Jets_PTNuNu-40to100_1J": 191,
+    "Zto2Nu-2Jets_PTNuNu-40to100_2J": 192,
+    "Zto2Nu-2Jets_PTNuNu-100to200_1J": 193,
+    "Zto2Nu-2Jets_PTNuNu-100to200_2J": 194,
+    "Zto2Nu-2Jets_PTNuNu-200to400_1J": 195,
+    "Zto2Nu-2Jets_PTNuNu-200to400_2J": 196,
+    "Zto2Nu-2Jets_PTNuNu-400to600_1J": 197,
+    "Zto2Nu-2Jets_PTNuNu-400to600_2J": 198,
+    "Zto2Nu-2Jets_PTNuNu-600_1J": 199,
+    "Zto2Nu-2Jets_PTNuNu-600_2J": 200,
 
 }
 
@@ -252,7 +252,8 @@ class ScaleFactors:
                     "muonIdSFup": f"{systName}up",
                     "muonIdSFdown": f"{systName}down",
                 },
-                params={"pt": lambda mu: mu.pt, "eta": lambda mu: op.abs(mu.eta)},
+                params={"pt": lambda mu: mu.pt,
+                        "eta": lambda mu: op.abs(mu.eta)},
                 systParam="scale_factors",
                 systNomName="nominal",
                 systName=systName,
@@ -288,7 +289,8 @@ class ScaleFactors:
                     "muonTrgSFup": f"{systName}up",
                     "muonTrgSFdown": f"{systName}down",
                 },
-                params={"pt": lambda mu: mu.pt, "eta": lambda mu: op.abs(mu.eta)},
+                params={"pt": lambda mu: mu.pt,
+                        "eta": lambda mu: op.abs(mu.eta)},
                 systParam="scale_factors",
                 systNomName="nominal",
                 systName=systName,
@@ -668,33 +670,35 @@ class ScaleFactors:
 
     def V_Jets_Stitching(self, LHEBranch, sel, sample):
         """Apply V+Jets stitching for MC samples DY MLL > 50. pT binned, Jet multiplicity binned and inclusive."""
-        if self.is_MC and sample.startswith("DY"):
+        if LHEBranch is not None:
             logger.info("Applying V+Jets stitching for " + sel.name)
-            stitch_map_json = f"{self.git_project_dir}/data/Run3NLOStitching.json"
+            stitch_map_json = f"{self.parent.git_project_dir}/data/Run3NLOStitching.json"
 
             # Get the base sample name and corresponding sample number
-            base_sample = sample.rsplit(f"_{self.era}", 1)[0]
+            base_sample = sample.rsplit(f"_{self.parent.era}", 1)[0]
             sampleNum = sampleNumDict.get(base_sample, None)
 
             _weight = op.c_float(1.)
             if sampleNum is None:
-                logger.warning(f"Warning! Sample {base_sample} not found in sampleNumDict for stitching")
+                logger.warning(
+                    f"Warning! Sample {base_sample} not found in sampleNumDict for stitching")
             else:
                 # Use get_correction for the stitching weights
                 era_key_map = {
                     "2022": "NLO_stitch_22",
-                    "2022EE": "NLO_stitch_22EE", 
+                    "2022EE": "NLO_stitch_22EE",
                     "2023": "NLO_stitch_23",
                     "2023BPix": "NLO_stitch_23BPix"
                 }
-                
-                era_key = era_key_map.get(self.era)
+
+                era_key = era_key_map.get(self.parent.era)
                 if era_key is None:
-                    logger.warning(f"Warning! Era {self.era} is not valid for stitching")
+                    logger.warning(
+                        f"Warning! Era {self.parent.era} is not valid for stitching")
                 else:
                     LHE_NpNLO = LHEBranch.NpNLO
                     LHE_VpT = LHEBranch.Vpt
-                    
+
                     # Define VpT bin edges and corresponding bin indices using op.multiSwitch
                     def get_vpt_bin(vpt):
                         return op.multiSwitch(
@@ -706,7 +710,7 @@ class ScaleFactors:
                             (vpt <= 600, 5.0),
                             6.0
                         )
-                    
+
                     vpt_bin = get_vpt_bin(LHE_VpT)
                     binVal = vpt_bin + op.c_float(LHE_NpNLO) * 7.0
 
@@ -720,12 +724,10 @@ class ScaleFactors:
                         },
                         sel=sel
                     )
-                    
+
                     _weight = stitching_corr(None)
 
             sel = sel.refine(sel.name+"_VJetsStitching", weight=_weight)
         else:
-            # If not MC or not DY, just return the selection without changes
-            logger.info("No V+Jets stitching applied for " + sel.name)
             sel = sel.refine(sel.name+"_VJetsStitching", weight=op.c_float(1.))
         return sel
