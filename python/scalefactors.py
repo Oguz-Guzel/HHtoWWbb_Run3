@@ -42,6 +42,13 @@ DY_and_Recoil_JSONFiles = {
     "2023BPix": "DY_pTll_recoil_corrections_2023postBPix_v2.json.gz",
 }
 
+JetVeto_JSONFiles = {
+    "2022": (jsonPathBase + "JME/2022_Summer22/jetvetomaps.json.gz", "Summer22_23Sep2023_RunCD_V1"),
+    "2022EE": (jsonPathBase + "JME/2022_Summer22EE/jetvetomaps.json.gz", "Summer22EE_23Sep2023_RunEFG_V1",),
+    "2023": (jsonPathBase + "JME/2023_Summer23/jetvetomaps.json.gz", "Summer23Prompt23_RunC_V1"),
+    "2023BPix": (jsonPathBase + "JME/2023_Summer23BPix/jetvetomaps.json.gz", "Summer23BPixPrompt23_V3"),
+}
+
 sampleNumDict = {
     "WtoLNu-2Jets": 150,
 
@@ -95,7 +102,7 @@ sampleNumDict = {
 class ScaleFactors:
     """Class to define scale factors"""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         self.parent = parent
         self.di_lepton_trigger_JSONFiles = {
             "2022": (
@@ -115,6 +122,37 @@ class ScaleFactors:
                 "trigger_scale_factors_2d",
             ),
         }
+
+    def jet_veto_map(self, tree, sel):
+        # https://cms-jerc.web.cern.ch/Recommendations/#run-3
+        logger.info("Applying JetVeto")
+        corr = get_correction(
+            JetVeto_JSONFiles[self.parent.era][0],
+            JetVeto_JSONFiles[self.parent.era][1],
+            params={
+                "type": "jetvetomap",
+                "eta": lambda j: j.eta,
+                "phi": lambda j: j.phi,
+            },
+            sel=sel
+        )
+    
+        jets_to_veto = op.select(
+            tree.Jet, lambda j:
+            op.AND(j.pt > 15,
+                   (j.jetId & 8) != 0,
+                   (j.chEmEF + j.neEmEF) < 0.9)
+        )
+    
+        veto_cuts = op.rng_any(
+            jets_to_veto, lambda j: corr(j) != 0
+        )
+    
+        sel = sel.refine("JetVetoMaps", cut=veto_cuts)
+    
+        self.parent.yields.add(sel, "JetVetoMaps")
+    
+        return sel
 
     def NoiseFilters(self, FlagBranch, sel):
         "https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2#Run_3_2022_and_2023_data_and_MC"
@@ -566,11 +604,12 @@ class ScaleFactors:
         return sel
 
     def Z_pT_reweight(self, sel, sample, GenPartBranch, pdgId):
-        """Apply DY Z pT reweighting for given lepton pair."""
+        """Apply DY ptll and recoil corrections  for given lepton pair."""
         if self.parent.is_MC and sample.startswith("DY"):
             from bamboo.scalefactors import get_correction
 
-            logger.info("Applying DY Z pT reweighting for " + sel.name)
+            logger.info(
+                "Applying DY ptll and recoil corrections for " + sel.name)
 
             DY_and_Recoil_path = (
                 self.parent.git_project_dir + "/data/hleprare/DYandRecoilCorrlib/"
@@ -578,11 +617,11 @@ class ScaleFactors:
 
             # for N_unc - consult the json file
 
-            N_unc = 10
+            N_unc = 1
 
-            systVariations = {f"ZpT{i}up": f"up{i}" for i in range(1, N_unc + 1)}
+            systVariations = {f"ZpTup": f"up{i}" for i in range(1, N_unc + 1)}
             systVariations.update(
-                {f"ZpT{i}down": f"down{i}" for i in range(1, N_unc + 1)}
+                {f"ZpTdown": f"down{i}" for i in range(1, N_unc + 1)}
             )
 
             get_Z_pT_corr = get_correction(

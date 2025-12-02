@@ -66,6 +66,9 @@ def makeDLSelection(
     # call scale factors
     scale_factors = ScaleFactors(analysis)
 
+    # jet veto maps correction
+    sel = scale_factors.jet_veto_map(tree, sel)
+
     # top pT reweighting
     genPartBranch = tree.GenPart if analysis.is_MC else None
     sel = scale_factors.top_pT_reweight(genPartBranch, sel, sample)
