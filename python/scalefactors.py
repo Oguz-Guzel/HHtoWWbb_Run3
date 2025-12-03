@@ -136,22 +136,23 @@ class ScaleFactors:
             },
             sel=sel
         )
-    
+
         jets_to_veto = op.select(
             tree.Jet, lambda j:
             op.AND(j.pt > 15,
-                   (j.jetId & 8) != 0,
-                   (j.chEmEF + j.neEmEF) < 0.9)
+                   #    (j.jetId & 8) != 0, # killing all events, investigate !
+                   (j.chEmEF + j.neEmEF) < 0.9
+                   )
         )
-    
+
         veto_cuts = op.rng_any(
-            jets_to_veto, lambda j: corr(j) != 0
+            jets_to_veto, lambda j: corr(j) == 0
         )
-    
+
         sel = sel.refine("JetVetoMaps", cut=veto_cuts)
-    
+
         self.parent.yields.add(sel, "JetVetoMaps")
-    
+
         return sel
 
     def NoiseFilters(self, FlagBranch, sel):
