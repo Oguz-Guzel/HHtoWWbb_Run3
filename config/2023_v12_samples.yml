@@ -76,7 +76,7 @@ TTto2L2Nu_2023BPix:
 
 DYto2L-2Jets_MLL-50_2023:
   era: '2023'
-  db: das:/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v1/NANOAODSIM
+  db: das:/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v2/NANOAODSIM
   type: mc
   group: "DY"
   cross-section: 6.735e+03
@@ -85,7 +85,7 @@ DYto2L-2Jets_MLL-50_2023:
 
 DYto2L-2Jets_MLL-50_2023BPix:
   era: '2023BPix'
-  db: das:/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v3/NANOAODSIM
+  db: das:/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v4/NANOAODSIM
   type: mc
   group: "DY"
   cross-section: 6.735e+03
