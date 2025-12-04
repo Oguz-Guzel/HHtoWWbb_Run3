@@ -4,9 +4,9 @@ tree: Events
 
 eras:
   '2022':
-    luminosity: 7875. # pb^-1
+    luminosity: 7980.4 # pb^-1
   '2022EE':
-    luminosity: 26337.
+    luminosity: 26671.7
 
 dbcache: dascache
 

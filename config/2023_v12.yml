@@ -4,9 +4,9 @@ tree: Events
 
 eras:
   '2023':
-    luminosity: 17794. # pb^-1
+    luminosity: 18063. # pb^-1
   '2023BPix':
-    luminosity: 9451.
+    luminosity: 9693.
 
 dbcache: dascache
 
