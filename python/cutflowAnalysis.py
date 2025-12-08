@@ -1,5 +1,5 @@
 
-from bamboo.plots import Plot, Skim, SummedPlot
+from bamboo.plots import Plot, Skim
 from bamboo.plots import EquidistantBinning as EqBin
 from bamboo import treefunctions as op
 
@@ -7,7 +7,7 @@ from baseAnalysis import NanoBaseHHWWbb
 from selections import makeDLSelection
 
 from definitions import ml_input_features
-from utils import labeler, ml_input_var_binning
+from utils import labeler
 
 
 class cutflowAnalysis(NanoBaseHHWWbb):

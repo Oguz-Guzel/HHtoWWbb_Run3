@@ -1,41 +1,10 @@
+from bamboo.analysismodules import NanoAODModule, HistogramsModule
+from bamboo import treefunctions as op
 import os
 from itertools import chain
 import logging
 
 logger = logging.getLogger(__name__)
-
-from bamboo import treefunctions as op
-
-from bamboo.analysismodules import NanoAODModule, HistogramsModule
-
-
-jsonPathBase = "/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/"
-
-PU_JSONFiles = {
-    "2022": (
-        jsonPathBase + "LUM/2022_Summer22/puWeights.json.gz",
-        "Collisions2022_355100_357900_eraBCD_GoldenJson",
-    ),
-    "2022EE": (
-        jsonPathBase + "LUM/2022_Summer22EE/puWeights.json.gz",
-        "Collisions2022_359022_362760_eraEFG_GoldenJson",
-    ),
-    "2023": (
-        jsonPathBase + "LUM/2023_Summer23/puWeights.json.gz",
-        "Collisions2023_366403_369802_eraBC_GoldenJson",
-    ),
-    "2023BPix": (
-        jsonPathBase + "LUM/2023_Summer23BPix/puWeights.json.gz",
-        "Collisions2023_369803_370790_eraD_GoldenJson",
-    ),
-}
-
-BTV_SF_JSONFiles = {
-    "2022": jsonPathBase + "BTV/2022_Summer22/btagging.json.gz",
-    "2022EE": jsonPathBase + "BTV/2022_Summer22EE/btagging.json.gz",
-    "2023": jsonPathBase + "BTV/2023_Summer23/btagging.json.gz",
-    "2023BPix": jsonPathBase + "BTV/2023_Summer23BPix/btagging.json.gz",
-}
 
 
 class _base(NanoAODModule, HistogramsModule):
@@ -147,7 +116,8 @@ class btagReweighting(_base):
         # cutflow report
         plots.append(self.yields)
 
-        pre_sels = makeDLSelection(self, noSel, tree, sample, btagReweightStudy=True)
+        pre_sels = makeDLSelection(
+            self, noSel, tree, sample, btagReweightStudy=True)
 
         for preSel, btagSel in pre_sels.values():
             # add weights before btagSF
@@ -187,7 +157,8 @@ class btagReweighting(_base):
         )
 
         if not self.plotList:
-            self.plotList = self.getPlotList(resultsdir=resultsdir, config=config)
+            self.plotList = self.getPlotList(
+                resultsdir=resultsdir, config=config)
 
         skim_list = [ap for ap in self.plotList if isinstance(ap, Skim)]
 
@@ -197,7 +168,8 @@ class btagReweighting(_base):
             eras = list(config["eras"].keys())
 
         # Initialize dictionaries for each era
-        sumW_perEra = {era: {"before": [0] * 11, "after": [0] * 11} for era in eras}
+        sumW_perEra = {era: {"before": [0] * 11,
+                             "after": [0] * 11} for era in eras}
 
         def accumulate_weights(tree, weight_branch, multiplicity_branch, accumulator):
             for entry in tree:
@@ -219,7 +191,8 @@ class btagReweighting(_base):
             sample_rootfile = _openFileAndGet(
                 os.path.join(resultsdir, f"{proc}.root"), "read"
             )
-            genEvents = self.readCounters(sample_rootfile)[smpCfg["generated-events"]]
+            genEvents = self.readCounters(sample_rootfile)[
+                smpCfg["generated-events"]]
             lumi = config["eras"][smpCfg["era"]]["luminosity"]
             Xsection = smpCfg["cross-section"]
             smpScale = lumi * Xsection / genEvents
@@ -236,7 +209,8 @@ class btagReweighting(_base):
                     )
                     continue
 
-                branch_names = [branch.GetName() for branch in tree.GetListOfBranches()]
+                branch_names = [branch.GetName()
+                                for branch in tree.GetListOfBranches()]
 
                 if "Sel_weight_after" in branch_names:
                     accumulate_weights(
@@ -336,7 +310,8 @@ class btagReweighting(_base):
             }
         )
 
-        correction_set = CorrectionSet(schema_version=VERSION, corrections=[corr])
+        correction_set = CorrectionSet(
+            schema_version=VERSION, corrections=[corr])
         output_file = os.path.join(data_dir, f"btagSF_reweight.json.gz")
         write(
             correction_set,

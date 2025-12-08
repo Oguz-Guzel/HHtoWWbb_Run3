@@ -432,7 +432,11 @@ def makeDLSelection(
             DL_VBF_boosted_mumu,
             DL_VBF_boosted_emu,
         ]
-        if not trigger_study:
+
+        # adding btagReweightStudy in the following if condition since btagReweighting.py file
+        # doesn't need DL_signal_region_selections and to avoid errors related to these missing
+        # selections
+        if not trigger_study and not btagReweightStudy:
             for sel in DL_signal_region_selections:
                 sel = scale_factors.dilepton_trg_sf(sel)
 
