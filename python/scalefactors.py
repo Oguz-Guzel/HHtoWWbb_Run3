@@ -253,7 +253,7 @@ class ScaleFactors:
             btvWeight = makeBtagWeightItFit(jets, btvSF)
             if not btagReweightStudy:
                 btag_corr = get_correction(
-                    f"{self.parent.git_project_dir}/data/{self.parent.era[:4]}_btagSF_reweight.json.gz",
+                    f"{self.parent.git_project_dir}/data/{self.parent.era[:4]}_btagSF_reweight.json",
                     "Ratio_btagSF_shape",
                     params={
                         "year": self.parent.era,
