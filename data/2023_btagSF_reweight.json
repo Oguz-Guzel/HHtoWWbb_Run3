@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "corrections": [
+    { "name": "Ratio_btagSF_shape",
+      "description": "Ratio correction for the b-tag SF shape",
+      "version": 1,
+      "inputs": [
+        { "name": "year", "type": "string", "description": "Year-based era" },
+        { "name": "jet_multiplicity",
+          "type": "real",
+          "description": "Jet Multiplicity"
+        }
+      ],
+      "output": {
+        "name": "ratio",
+        "type": "real",
+        "description": "Ratio to correct the b-tag SF shape"
+      },
+      "data": {
+        "nodetype": "category",
+        "input": "year",
+        "content": [
+          { "key": "2023",
+            "value": {
+              "nodetype": "binning",
+              "input": "jet_multiplicity",
+              "edges": [ -0.5, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5 ],
+              "content": [ 1.1751307087544915, 1.0445038540942435, 0.9884724077182839, 0.9761434728266118, 0.9648765839679418, 0.9496474742786206, 0.9367204014691338, 0.9362815732025487, 0.8994054886417013, 0.8802679998492199, 0.8608787443382198 ],
+              "flow": "clamp"
+            }
+          },
+          { "key": "2023BPix",
+            "value": {
+              "nodetype": "binning",
+              "input": "jet_multiplicity",
+              "edges": [ -0.5, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5 ],
+              "content": [ 1.0, 1.0032725815125425, 0.9698013041553624, 0.9498719305829673, 0.9310898867251296, 0.9179612373184786, 0.8856568707314693, 0.8912795608242652, 0.8673723402098313, 0.8223914723749289, 0.9058970835784317 ],
+              "flow": "clamp"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
