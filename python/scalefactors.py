@@ -711,7 +711,7 @@ class ScaleFactors:
     def V_Jets_Stitching(self, LHEBranch, sel, sample):
         """Apply V+Jets stitching for MC samples DY MLL > 50. pT binned, Jet multiplicity binned and inclusive."""
         if LHEBranch is not None:
-            logger.info("Applying V+Jets stitching for " + sel.name)
+            logger.info("Applying V+Jets stitching for " + sample)
             stitch_map_json = f"{self.parent.git_project_dir}/data/Run3NLOStitching.json"
 
             # Get the base sample name and corresponding sample number
@@ -739,7 +739,7 @@ class ScaleFactors:
                     LHE_NpNLO = LHEBranch.NpNLO
                     LHE_VpT = LHEBranch.Vpt
 
-                    # Define VpT bin edges and corresponding bin indices using op.multiSwitch
+                    # Define VpT bin edges and corresponding bin indices
                     def get_vpt_bin(vpt):
                         return op.multiSwitch(
                             (vpt <= 0, 0.0),
