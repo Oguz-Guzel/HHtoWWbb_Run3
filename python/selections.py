@@ -74,8 +74,8 @@ def makeDLSelection(
     sel = scale_factors.top_pT_reweight(genPartBranch, sel, sample)
 
     # V+Jets sample stitching, uncomment the following two lines to enable it
-    # LHEBranch = tree.LHE if (analysis.is_MC and sample.startswith("DY")) else None
-    # sel = scale_factors.V_Jets_Stitching(LHEBranch, sel, sample)
+    LHEBranch = tree.LHE if (analysis.is_MC and sample.startswith(("DYto2L", "WtoLNu", "Zto2Nu"))) else None
+    sel = scale_factors.V_Jets_Stitching(LHEBranch, sel, sample)
 
     # Noise filters
     sel = scale_factors.NoiseFilters(tree.Flag, sel)
