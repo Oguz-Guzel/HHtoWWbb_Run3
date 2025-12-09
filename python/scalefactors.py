@@ -51,7 +51,6 @@ JetVeto_JSONFiles = {
 
 sampleNumDict = {
     "WtoLNu-2Jets": 150,
-
     "WtoLNu-2Jets_PTLNu-40to100_1J": 151,
     "WtoLNu-2Jets_PTLNu-40to100_2J": 152,
     "WtoLNu-2Jets_PTLNu-100to200_1J": 153,
@@ -60,16 +59,13 @@ sampleNumDict = {
     "WtoLNu-2Jets_PTLNu-200to400_2J": 156,
     "WtoLNu-2Jets_PTLNu-400to600_1J": 157,
     "WtoLNu-2Jets_PTLNu-400to600_2J": 158,
-
     "WtoLNu-2Jets_PTLNu-600_1J": 159,
     "WtoLNu-2Jets_PTLNu-600_2J": 160,
-
     "WtoLNu-2Jets_0J": 161,
     "WtoLNu-2Jets_1J": 162,
     "WtoLNu-2Jets_2J": 163,
 
     "DYto2L-2Jets_MLL-50": 170,
-
     "DYto2L-2Jets_MLL-50_PTLL-40to100_1J": 171,
     "DYto2L-2Jets_MLL-50_PTLL-40to100_2J": 172,
     "DYto2L-2Jets_MLL-50_PTLL-100to200_1J": 173,
@@ -80,7 +76,6 @@ sampleNumDict = {
     "DYto2L-2Jets_MLL-50_PTLL-400to600_2J": 178,
     "DYto2L-2Jets_MLL-50_PTLL-600_1J": 179,
     "DYto2L-2Jets_MLL-50_PTLL-600_2J": 180,
-
     "DYto2L-2Jets_MLL-50_0J": 181,
     "DYto2L-2Jets_MLL-50_1J": 182,
     "DYto2L-2Jets_MLL-50_2J": 183,
@@ -95,7 +90,6 @@ sampleNumDict = {
     "Zto2Nu-2Jets_PTNuNu-400to600_2J": 198,
     "Zto2Nu-2Jets_PTNuNu-600_1J": 199,
     "Zto2Nu-2Jets_PTNuNu-600_2J": 200,
-
 }
 
 
