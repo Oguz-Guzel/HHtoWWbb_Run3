@@ -192,7 +192,7 @@ def makeDLSelection(
     mumu_SF_sel = scale_factors.mumuSF(mumu_sel)
     elmu_SF_sel = scale_factors.elmuSF(elmu_sel)
 
-    # DY Z pT reweighting
+    # DY Z pT and recoil correction
     elel_SF_sel = scale_factors.Z_pT_reweight(
         elel_SF_sel, sample, genPartBranch, pdgId=11
     )
@@ -433,10 +433,7 @@ def makeDLSelection(
             DL_VBF_boosted_emu,
         ]
 
-        # adding btagReweightStudy in the following if condition since btagReweighting.py file
-        # doesn't need DL_signal_region_selections and to avoid errors related to these missing
-        # selections
-        if not trigger_study and not btagReweightStudy:
+        if not trigger_study:
             for sel in DL_signal_region_selections:
                 sel = scale_factors.dilepton_trg_sf(sel)
 
@@ -461,7 +458,5 @@ def makeDLSelection(
         return pre_final_state_sels
     elif DYControlRegion:
         return Z_peak_selections
-    elif trigger_study:
-        return [elel_SF_sel, mumu_SF_sel, elmu_SF_sel]
     else:
         return DL_signal_region_selections
