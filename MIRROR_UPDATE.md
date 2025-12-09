@@ -133,7 +133,9 @@ git push upstream main
 
 ## Automated Mirroring (Optional)
 
-For automated mirroring, you can use GitHub Actions. Create `.github/workflows/mirror.yml`:
+For automated mirroring, you can use GitHub Actions. However, note that automated mirroring requires SSH key setup for accessing the GitLab CERN repository, which may not be feasible in all CI/CD environments. Manual updates are recommended for repositories behind institutional authentication.
+
+If you have the necessary SSH access configured, create `.github/workflows/mirror.yml`:
 
 ```yaml
 name: Mirror GitLab to GitHub
@@ -152,6 +154,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.GITLAB_SSH_KEY }}
           
       - name: Configure Git
         run: |
@@ -172,6 +179,8 @@ jobs:
           git push origin main
           git push origin --tags
 ```
+
+**Note**: You need to add a `GITLAB_SSH_KEY` secret to your GitHub repository settings containing a private SSH key that has access to the GitLab repository.
 
 ## Troubleshooting
 

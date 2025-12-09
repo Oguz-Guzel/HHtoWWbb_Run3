@@ -16,7 +16,11 @@ pip install correctionlib
 Finally, clone this repository in the parent directory containing the bamboo installation:
 
 ```sh
-git clone ssh://git@gitlab.cern.ch:7999/aguzel/HHtoWWbb_Run3.git && cd HHtoWWbb_Run3
+# Clone from GitHub (mirror)
+git clone https://github.com/Oguz-Guzel/HHtoWWbb_Run3.git && cd HHtoWWbb_Run3
+
+# OR clone from GitLab (primary repository, requires CERN access)
+# git clone ssh://git@gitlab.cern.ch:7999/aguzel/HHtoWWbb_Run3.git && cd HHtoWWbb_Run3
 ```
 
 Execute these each time you start from a clean shell on lxplus or any other machine with cvmfs:
