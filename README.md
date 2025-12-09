@@ -2,6 +2,8 @@
 
 # HH->WWbb Run-3 analysis
 
+> **Note**: This GitHub repository is a mirror of the primary GitLab repository at `ssh://git@gitlab.cern.ch:7999/aguzel/HHtoWWbb_Run3.git`. For instructions on how to update this mirror, see [MIRROR_UPDATE.md](MIRROR_UPDATE.md).
+
 This repository uses the **bamboo analysis framework**, you can install it via the instructions here: https://bamboo-hep.readthedocs.io/en/latest/install.html#fresh-install
 
 then install CMSJMECalculators and correctionlib
