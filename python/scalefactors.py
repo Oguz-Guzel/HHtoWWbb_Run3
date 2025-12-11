@@ -98,23 +98,19 @@ class ScaleFactors:
 
     def __init__(self, parent):
         self.parent = parent
-        self.di_lepton_trigger_JSONFiles = {
-            "2022": (
+        self.di_lepton_TRG_JSONFiles = {
+            "2022":
                 os.path.join(
                     self.parent.git_project_dir,
                     "data",
                     "2022_di_lepton_trigger_scale_factors.json",
                 ),
-                "trigger_scale_factors_2d",
-            ),
-            "2023": (
+            "2023":
                 os.path.join(
                     self.parent.git_project_dir,
                     "data",
                     "2023_di_lepton_trigger_scale_factors.json",
                 ),
-                "trigger_scale_factors_2d",
-            ),
         }
 
     def jet_veto_map(self, tree, sel):
@@ -251,12 +247,12 @@ class ScaleFactors:
                     "Ratio_btagSF_shape",
                     params={
                         "year": self.parent.era,
-                        # 1. to make it a float
+                        # 1. to make it float
                         "jet_multiplicity": 1.0 * op.rng_len(jets),
                     },
                     sel=sel,
                 )
-                # None since the object is already in the btag_corr i.e. self.ak4Jets
+                # None since the object is already in the btag_corr
                 btag_reweight = btag_corr(None)
             else:
                 btag_reweight = op.c_float(1.0)
@@ -599,7 +595,7 @@ class ScaleFactors:
         return sel
 
     def Z_pT_reweight(self, sel, sample, GenPartBranch, pdgId):
-        """Apply DY ptll and recoil corrections  for given lepton pair."""
+        """Apply DY ptll and recoil corrections for given lepton pair."""
         if self.parent.is_MC and sample.startswith("DY"):
             from bamboo.scalefactors import get_correction
 
@@ -656,50 +652,52 @@ class ScaleFactors:
         return sel
 
     def dilepton_trg_sf(self, sel):
-        if "mumu" in sel.name:
-            leading_lepton_pt = self.parent.tightMuons[0].pt
-            subleading_lepton_pt = self.parent.tightMuons[1].pt
-        elif "ee" in sel.name:
-            leading_lepton_pt = self.parent.tightElectrons[0].pt
-            subleading_lepton_pt = self.parent.tightElectrons[1].pt
-        elif "emu" in sel.name:
-            leading_lepton_pt = op.switch(
-                self.parent.tightElectrons[0].pt > self.parent.tightMuons[0].pt,
-                self.parent.tightElectrons[0].pt,
-                self.parent.tightMuons[0].pt,
+        if self.parent.is_MC:
+            from bamboo.scalefactors import get_correction
+            if "mumu" in sel.name:
+                leading_lepton_pt = self.parent.tightMuons[0].pt
+                subleading_lepton_pt = self.parent.tightMuons[1].pt
+            elif "ee" in sel.name:
+                leading_lepton_pt = self.parent.tightElectrons[0].pt
+                subleading_lepton_pt = self.parent.tightElectrons[1].pt
+            elif "emu" in sel.name:
+                leading_lepton_pt = op.switch(
+                    self.parent.tightElectrons[0].pt > self.parent.tightMuons[0].pt,
+                    self.parent.tightElectrons[0].pt,
+                    self.parent.tightMuons[0].pt,
+                )
+                subleading_lepton_pt = op.switch(
+                    self.parent.tightElectrons[0].pt > self.parent.tightMuons[0].pt,
+                    self.parent.tightMuons[0].pt,
+                    self.parent.tightElectrons[0].pt,
+                )
+            else:
+                raise RuntimeError(
+                    "Final state selection name must include one of these values: ee, mumu, emu."
+                )
+            di_lepton_TRG_SF = get_correction(
+                self.di_lepton_TRG_JSONFiles[self.parent.era[:4]],
+                "trigger_scale_factors_2d",
+                systParam="systematic",
+                systVariations={
+                    "diLTRG_SFup": "up",
+                    "diLTRG_SFdown": "down",
+                },
+                systNomName="nominal",
+                params={
+                    "channel": sel.name,
+                    "pt_leading": lambda l: leading_lepton_pt,
+                    "pt_subleading": lambda l: subleading_lepton_pt,
+                },
+                defineOnFirstUse=False,
+                sel=sel,
             )
-            subleading_lepton_pt = op.switch(
-                self.parent.tightElectrons[0].pt > self.parent.tightMuons[0].pt,
-                self.parent.tightMuons[0].pt,
-                self.parent.tightElectrons[0].pt,
+            sel = sel.refine(
+                sel.name+"_di_lepton_TRG_SF", weight=di_lepton_TRG_SF(None)
             )
         else:
-            raise RuntimeError(
-                "Selection name must include one of these values: ee, mumu, emu."
-            )
-        di_lepton_TRG_SF = get_correction(
-            self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][0],
-            self.di_lepton_trigger_JSONFiles[self.parent.era[:4]][1],
-            systParam="systematic",
-            systVariations={
-                "diTRG_up": "up",
-                "diTRG_down": "down",
-            },
-            systNomName="nominal",
-            params={
-                "channel": sel.name,
-                "pt_leading": leading_lepton_pt,
-                "pt_subleading": subleading_lepton_pt,
-            },
-            defineOnFirstUse=False,
-            sel=sel,
-        )
-
-        sel = sel.refine(
-            sel.name+"_di_lepton_TRG_SF", weight=di_lepton_TRG_SF(None)
-        )
+            sel = sel.refine(sel.name+"_di_lepton_TRG_SF", weight=op.float(1.))
         self.parent.yields.add(sel, "di-lepton TRG SF")
-
         return sel
 
     def V_Jets_Stitching(self, LHEBranch, sel, sample):
