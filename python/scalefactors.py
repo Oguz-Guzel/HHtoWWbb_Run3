@@ -696,7 +696,7 @@ class ScaleFactors:
                 sel.name+"_di_lepton_TRG_SF", weight=di_lepton_TRG_SF(None)
             )
         else:
-            sel = sel.refine(sel.name+"_di_lepton_TRG_SF", weight=op.float(1.))
+            sel = sel.refine(sel.name+"_di_lepton_TRG_SF", weight=op.c_float(1.))
         self.parent.yields.add(sel, "di-lepton TRG SF")
         return sel
 
