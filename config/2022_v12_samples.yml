@@ -932,7 +932,7 @@ WW_2022:
   db: das:/WW_TuneCP5_13p6TeV_pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
   type: mc
   group: "VV"
-  cross-section: 80.18
+  cross-section: 80.23
   generated-events: genEventSumw
   split: *nsplit
 
@@ -941,7 +941,7 @@ WW_2022EE:
   db: das:/WW_TuneCP5_13p6TeV_pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM
   type: mc
   group: "VV"
-  cross-section: 80.18
+  cross-section: 80.23
   generated-events: genEventSumw
   split: *nsplit
 
