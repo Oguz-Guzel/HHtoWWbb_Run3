@@ -7,7 +7,7 @@ Muon_Run2022C:
   db: das:/Muon/Run2022C-22Sep2023-v1/NANOAOD
   run_range: &runs_22C [355794, 357486]
   certified_lumi_file: &lumi_cert_22 https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions22/Cert_Collisions2022_355100_362760_Golden.json
-  split: &nsplit -20
+  split: &nsplit -10
 
 Muon_Run2022D:
   era: '2022'
@@ -149,7 +149,7 @@ TTto2L2Nu_2022:
   group: "TT"
   cross-section: 98.036113
   generated-events: genEventSumw
-  split: *nsplit
+  split: -1
 
 TTto2L2Nu_2022EE:
   era: '2022EE'
@@ -162,7 +162,7 @@ TTto2L2Nu_2022EE:
   group: "TT"
   cross-section: 98.036113
   generated-events: genEventSumw
-  split: *nsplit
+  split: -1
 
 DYto2L-2Jets_MLL-50_2022:
   era: '2022'

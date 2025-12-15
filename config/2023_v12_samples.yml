@@ -63,7 +63,7 @@ TTto2L2Nu_2023:
   group: "TT"
   cross-section: 98.036113
   generated-events: genEventSumw
-  split: *nsplit
+  split: -1
 
 TTto2L2Nu_2023BPix:
   era: '2023BPix'
@@ -72,7 +72,7 @@ TTto2L2Nu_2023BPix:
   group: "TT"
   cross-section: 98.036113
   generated-events: genEventSumw
-  split: *nsplit
+  split: -1
 
 DYto2L-2Jets_MLL-50_2023:
   era: '2023'
