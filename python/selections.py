@@ -432,10 +432,11 @@ def makeDLSelection(
             DL_VBF_boosted_mumu,
             DL_VBF_boosted_emu,
         ]
-
+        # the dilepton TRG SF correction need to be applied here
+        # since it's calculated at this stage. Check python/trigger_eff.py
         if not trigger_study:
-            for sel in DL_signal_region_selections:
-                sel = scale_factors.dilepton_trg_sf(sel)
+            for i, sel in enumerate(DL_signal_region_selections):
+                DL_signal_region_selections[i] = scale_factors.dilepton_trg_sf(sel)
 
         # cutflow reports for the final states
         analysis.yields.add(DL_boosted_ee, "DL boosted ee")

@@ -37,7 +37,7 @@
         "input": "channel",
         "content": [
           {
-            "key": "elel_leading_TRG_SF_ZpT",
+            "key": "elel",
             "value": {
               "nodetype": "category",
               "input": "systematic",
@@ -3145,7 +3145,7 @@
             }
           },
           {
-            "key": "mumu_leading_TRG_SF_ZpT",
+            "key": "mumu",
             "value": {
               "nodetype": "category",
               "input": "systematic",
@@ -6253,7 +6253,7 @@
             }
           },
           {
-            "key": "elmu_mu_TRG_SF",
+            "key": "elmu",
             "value": {
               "nodetype": "category",
               "input": "systematic",

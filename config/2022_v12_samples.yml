@@ -149,7 +149,7 @@ TTto2L2Nu_2022:
   group: "TT"
   cross-section: 98.036113
   generated-events: genEventSumw
-  split: *nsplit
+  split: -1
 
 TTto2L2Nu_2022EE:
   era: '2022EE'
@@ -162,7 +162,7 @@ TTto2L2Nu_2022EE:
   group: "TT"
   cross-section: 98.036113
   generated-events: genEventSumw
-  split: *nsplit
+  split: -1
 
 DYto2L-2Jets_MLL-50_2022:
   era: '2022'
@@ -453,7 +453,7 @@ WtoLNu-2Jets_2022:
 
 WtoLNu-2Jets_2022EE:
   era: '2022EE'
-  db: das:/WtoLNu-2Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RO/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
+  db: das:/WtoLNu-2Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
   type: mc
   group: "other"
   cross-section: 5.557e+04
@@ -932,7 +932,7 @@ WW_2022:
   db: das:/WW_TuneCP5_13p6TeV_pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
   type: mc
   group: "VV"
-  cross-section: 80.18
+  cross-section: 80.23
   generated-events: genEventSumw
   split: *nsplit
 
@@ -941,7 +941,7 @@ WW_2022EE:
   db: das:/WW_TuneCP5_13p6TeV_pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM
   type: mc
   group: "VV"
-  cross-section: 80.18
+  cross-section: 80.23
   generated-events: genEventSumw
   split: *nsplit
 
@@ -1042,7 +1042,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022:
   cross-section: 0.03413 # taken from https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHWGHH?redirectedfrom=LHCPhysics.LHCHXSWGHH#Current_recommendations_for_HH_c but 0.02964 from GenXSecAnalyzer and XSDB
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: &signal_split -5
+  split: *nsplit
   line-color: 4
   legend: 'HH_{ggf}^{\kappa_\lambda=1}\rightarrow bbWW'
 
@@ -1053,7 +1053,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022EE:
   cross-section: 0.03413
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *signal_split
+  split: *nsplit
   line-color: 4
   legend: 'HH_{ggf}^{\kappa_\lambda=1}\rightarrow bbWW'
 
@@ -1064,7 +1064,7 @@ VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2022:
   cross-section: 0.001898 # from XSDB
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *signal_split
+  split: *nsplit
   line-color: 2
   legend: 'HH_{vbf}^{SM}\rightarrow bbWW'
 
@@ -1075,7 +1075,7 @@ VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2022EE:
   cross-section: 0.001898
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *signal_split
+  split: *nsplit
   line-color: 2
   legend: 'HH_{vbf}^{SM}\rightarrow bbWW'
 
@@ -1087,7 +1087,7 @@ ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022:
   cross-section: 0.0653 # from XSDB
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *signal_split
+  split: *nsplit
   line-color: 3
   legend: 'HH_{ggf}^{\kappa_\lambda=0}\rightarrow bbWW'
 
@@ -1098,7 +1098,7 @@ ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022EE:
   cross-section: 0.0653 # from XSDB
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *signal_split
+  split: *nsplit
   line-color: 3
   legend: 'HH_{ggf}^{\kappa_\lambda=0}\rightarrow bbWW'
 
@@ -1109,7 +1109,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022:
   cross-section: 0.01285 # from GenXSecAnalyzer and XSDB
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *signal_split
+  split: *nsplit
   line-color: 8
   legend: 'HH_{ggf}^{\kappa_\lambda=2.45}\rightarrow bbWW'
 
@@ -1120,7 +1120,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022EE:
   cross-section: 0.01285
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *signal_split
+  split: *nsplit
   line-color: 8
   legend: 'HH_{ggf}^{\kappa_\lambda=2.45}\rightarrow bbWW'
 
@@ -1131,7 +1131,7 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022:
   cross-section: 0.08349 # from GenXSecAnalyzer and XSDB
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *signal_split
+  split: *nsplit
   line-color: 6
   legend: 'HH_{ggf}^{\kappa_\lambda=5}\rightarrow bbWW'
 
@@ -1142,6 +1142,6 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022EE:
   cross-section: 0.08349
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *signal_split
+  split: *nsplit
   line-color: 6
   legend: 'HH_{ggf}^{\kappa_\lambda=5}\rightarrow bbWW'
