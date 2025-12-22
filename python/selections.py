@@ -175,6 +175,15 @@ def makeDLSelection(
                 < (Zmass - 10.0)
             ],
         )
+        elmu_sel = elmu_sel.refine(
+            "emuHigMllSel",
+            cut=[
+                op.invariant_mass(
+                    analysis.tightElectrons[0].p4, analysis.tightMuons[0].p4
+                )
+                < 100.0 # educated cut
+            ],
+        )
 
     # lepton scale factors
     elel_SF_sel = scale_factors.elelSF(elel_sel)
