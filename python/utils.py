@@ -255,7 +255,7 @@ def ml_input_var_binning(var_name):
         N, mn, mx = 100, -1000, 1000
     elif "_Pz" in var_name:
         N, mn, mx = 200, -4000, 4000
-    elif "_E" in var_name:
+    elif "_E" in var_name or "di_lepton_dijet_met_mass" in var_name:
         N, mn, mx = 100, 0, 2500
     elif "_charge" in var_name:
         N, mn, mx = 5, -2.5, 2.5
@@ -263,7 +263,7 @@ def ml_input_var_binning(var_name):
         N, mn, mx = 50, 0, 1
     elif "_pdgId" in var_name:
         N, mn, mx = 30, -15, 15
-    elif "_pt" in var_name:
+    elif "_pt" in var_name or "di_bjet_mass" in var_name or "di_lepton_met_mass" in var_name:
         N, mn, mx = 100, 0, 1000
     elif "_eta" in var_name:
         N, mn, mx = 30, -3, 3
@@ -273,6 +273,18 @@ def ml_input_var_binning(var_name):
         N, mn, mx = 100, 0, 10
     elif "InvM_" in var_name:
         N, mn, mx = 100, 0, 1000
+    elif "_LD"  in var_name or "di_lepton_mass" in var_name:
+        N, mn, mx = 100, 0, 600
+    elif "abs_dphi_" in var_name:
+        N, mn, mx = 64, 0, 3.2
+    elif "_tau" in var_name or "_msoftdrop" in var_name:
+        N, mn, mx = 100, 0, 1
+    elif "_tag" in var_name:
+        N, mn, mx = 2, 0, 1
+    elif "HT" in var_name:
+        N, mn, mx = 100, 0, 2000
+    elif "run_year" in var_name:
+        N, mn, mx = 2, 2021.5, 2023.5
     return EqBin(N, mn, mx)
 
 
