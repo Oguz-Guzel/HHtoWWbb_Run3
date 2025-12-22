@@ -7,7 +7,7 @@ Muon_Run2022C:
   db: das:/Muon/Run2022C-22Sep2023-v1/NANOAOD
   run_range: &runs_22C [355794, 357486]
   certified_lumi_file: &lumi_cert_22 https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions22/Cert_Collisions2022_355100_362760_Golden.json
-  split: &nsplit -10
+  split: &nsplit_data -10
 
 Muon_Run2022D:
   era: '2022'
@@ -16,7 +16,7 @@ Muon_Run2022D:
   db: das:/Muon/Run2022D-22Sep2023-v1/NANOAOD
   run_range: &runs_22D [357487, 359021]
   certified_lumi_file: *lumi_cert_22
-  split: *nsplit
+  split: *nsplit_data
 
 Muon_Run2022E:
   era: '2022EE'
@@ -25,7 +25,7 @@ Muon_Run2022E:
   db: das:/Muon/Run2022E-22Sep2023-v1/NANOAOD
   run_range: &runs_22E [359022, 360331]
   certified_lumi_file: *lumi_cert_22
-  split: *nsplit
+  split: *nsplit_data
 
 Muon_Run2022F:
   era: '2022EE'
@@ -34,7 +34,7 @@ Muon_Run2022F:
   db: das:/Muon/Run2022F-22Sep2023-v2/NANOAOD
   run_range: &runs_22F [360332, 362180]
   certified_lumi_file: *lumi_cert_22
-  split: *nsplit
+  split: *nsplit_data
 
 Muon_Run2022G:
   era: '2022EE'
@@ -43,7 +43,7 @@ Muon_Run2022G:
   db: das:/Muon/Run2022G-22Sep2023-v1/NANOAOD
   run_range: &runs_22G [362350, 362760]
   certified_lumi_file: *lumi_cert_22
-  split: *nsplit
+  split: *nsplit_data
 
 EGamma_Run2022C:
   era: '2022'
@@ -52,7 +52,7 @@ EGamma_Run2022C:
   db: das:/EGamma/Run2022C-22Sep2023-v1/NANOAOD
   run_range: *runs_22C
   certified_lumi_file: *lumi_cert_22
-  split: *nsplit
+  split: *nsplit_data
 
 EGamma_Run2022D:
   era: '2022'
@@ -61,7 +61,7 @@ EGamma_Run2022D:
   db: das:/EGamma/Run2022D-22Sep2023-v1/NANOAOD
   run_range: *runs_22D
   certified_lumi_file: *lumi_cert_22
-  split: *nsplit
+  split: *nsplit_data
 
 EGamma_Run2022E:
   era: '2022EE'
@@ -70,7 +70,7 @@ EGamma_Run2022E:
   db: das:/EGamma/Run2022E-22Sep2023-v1/NANOAOD
   run_range: *runs_22E
   certified_lumi_file: *lumi_cert_22
-  split: *nsplit
+  split: *nsplit_data
 
 EGamma_Run2022F:
   era: '2022EE'
@@ -79,7 +79,7 @@ EGamma_Run2022F:
   db: das:/EGamma/Run2022F-22Sep2023-v1/NANOAOD
   run_range: *runs_22F
   certified_lumi_file: *lumi_cert_22
-  split: *nsplit
+  split: *nsplit_data
 
 EGamma_Run2022G:
   era: '2022EE'
@@ -88,7 +88,7 @@ EGamma_Run2022G:
   db: das:/EGamma/Run2022G-22Sep2023-v2/NANOAOD
   run_range: *runs_22G
   certified_lumi_file: *lumi_cert_22
-  split: *nsplit
+  split: *nsplit_data
 
 MuonEG_Run2022C:
   era: '2022'
@@ -97,7 +97,7 @@ MuonEG_Run2022C:
   db: das:/MuonEG/Run2022C-22Sep2023-v1/NANOAOD
   run_range: *runs_22C
   certified_lumi_file: *lumi_cert_22
-  split: *nsplit
+  split: *nsplit_data
 
 MuonEG_Run2022D:
   era: '2022'
@@ -106,7 +106,7 @@ MuonEG_Run2022D:
   db: das:/MuonEG/Run2022D-22Sep2023-v1/NANOAOD
   run_range: *runs_22D
   certified_lumi_file: *lumi_cert_22
-  split: *nsplit
+  split: *nsplit_data
 
 MuonEG_Run2022E:
   era: '2022EE'
@@ -115,7 +115,7 @@ MuonEG_Run2022E:
   db: das:/MuonEG/Run2022E-22Sep2023-v1/NANOAOD
   run_range: *runs_22E
   certified_lumi_file: *lumi_cert_22
-  split: *nsplit
+  split: *nsplit_data
 
 MuonEG_Run2022F:
   era: '2022EE'
@@ -124,7 +124,7 @@ MuonEG_Run2022F:
   db: das:/MuonEG/Run2022F-22Sep2023-v1/NANOAOD
   run_range: *runs_22F
   certified_lumi_file: *lumi_cert_22
-  split: *nsplit
+  split: *nsplit_data
 
 MuonEG_Run2022G:
   era: '2022EE'
@@ -133,7 +133,7 @@ MuonEG_Run2022G:
   db: das:/MuonEG/Run2022G-22Sep2023-v1/NANOAOD
   run_range: *runs_22G
   certified_lumi_file: *lumi_cert_22
-  split: *nsplit
+  split: *nsplit_data
 
 
 # ## MC ###
@@ -149,7 +149,7 @@ TTto2L2Nu_2022:
   group: "TT"
   cross-section: 98.036113
   generated-events: genEventSumw
-  split: -1
+  split: &n_split_TT -2
 
 TTto2L2Nu_2022EE:
   era: '2022EE'
@@ -162,7 +162,7 @@ TTto2L2Nu_2022EE:
   group: "TT"
   cross-section: 98.036113
   generated-events: genEventSumw
-  split: -1
+  split: *n_split_TT
 
 DYto2L-2Jets_MLL-50_2022:
   era: '2022'
@@ -175,7 +175,7 @@ DYto2L-2Jets_MLL-50_2022:
   group: "DY"
   cross-section: 6.735e+03
   generated-events: genEventSumw
-  split: *nsplit
+  split: &n_split_MC -3
 
 DYto2L-2Jets_MLL-50_2022EE:
   era: '2022EE'
@@ -188,7 +188,7 @@ DYto2L-2Jets_MLL-50_2022EE:
   group: "DY"
   cross-section: 6.735e+03
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-10to50_2022:
   era: '2022'
@@ -197,7 +197,7 @@ DYto2L-2Jets_MLL-10to50_2022:
   group: "DY"
   cross-section: 19982.5
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-10to50_2022EE:
   era: '2022EE'
@@ -206,7 +206,7 @@ DYto2L-2Jets_MLL-10to50_2022EE:
   group: "DY"
   cross-section: 19982.5
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_0J_2022:
   era: '2022'
@@ -215,7 +215,7 @@ DYto2L-2Jets_MLL-50_0J_2022:
   group: "DY"
   cross-section: 5034.65
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_0J_2022EE:
   era: '2022EE'
@@ -224,7 +224,7 @@ DYto2L-2Jets_MLL-50_0J_2022EE:
   group: "DY"
   cross-section: 5034.65
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_1J_2022:
   era: '2022'
@@ -233,7 +233,7 @@ DYto2L-2Jets_MLL-50_1J_2022:
   group: "DY"
   cross-section: 952.29
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_1J_2022EE:
   era: '2022EE'
@@ -242,7 +242,7 @@ DYto2L-2Jets_MLL-50_1J_2022EE:
   group: "DY"
   cross-section: 952.29
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_2J_2022:
   era: '2022'
@@ -251,7 +251,7 @@ DYto2L-2Jets_MLL-50_2J_2022:
   group: "DY"
   cross-section: 359.05
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_2J_2022EE:
   era: '2022EE'
@@ -260,7 +260,7 @@ DYto2L-2Jets_MLL-50_2J_2022EE:
   group: "DY"
   cross-section: 359.05
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-100to200_1J_2022:
   era: '2022'
@@ -269,7 +269,7 @@ DYto2L-2Jets_MLL-50_PTLL-100to200_1J_2022:
   group: "DY"
   cross-section: 45.42
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-100to200_1J_2022EE:
   era: '2022EE'
@@ -278,7 +278,7 @@ DYto2L-2Jets_MLL-50_PTLL-100to200_1J_2022EE:
   group: "DY"
   cross-section: 45.42
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-100to200_2J_2022:
   era: '2022'
@@ -287,7 +287,7 @@ DYto2L-2Jets_MLL-50_PTLL-100to200_2J_2022:
   group: "DY"
   cross-section: 51.68
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-100to200_2J_2022EE:
   era: '2022EE'
@@ -296,7 +296,7 @@ DYto2L-2Jets_MLL-50_PTLL-100to200_2J_2022EE:
   group: "DY"
   cross-section: 51.68
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-200to400_1J_2022:
   era: '2022'
@@ -305,7 +305,7 @@ DYto2L-2Jets_MLL-50_PTLL-200to400_1J_2022:
   group: "DY"
   cross-section: 3.382
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-200to400_1J_2022EE:
   era: '2022EE'
@@ -314,7 +314,7 @@ DYto2L-2Jets_MLL-50_PTLL-200to400_1J_2022EE:
   group: "DY"
   cross-section: 3.382
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-200to400_2J_2022:
   era: '2022'
@@ -323,7 +323,7 @@ DYto2L-2Jets_MLL-50_PTLL-200to400_2J_2022:
   group: "DY"
   cross-section: 7.159
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-200to400_2J_2022EE:
   era: '2022EE'
@@ -332,7 +332,7 @@ DYto2L-2Jets_MLL-50_PTLL-200to400_2J_2022EE:
   group: "DY"
   cross-section: 7.159
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-400to600_1J_2022:
   era: '2022'
@@ -341,7 +341,7 @@ DYto2L-2Jets_MLL-50_PTLL-400to600_1J_2022:
   group: "DY"
   cross-section: 0.1162
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-400to600_1J_2022EE:
   era: '2022EE'
@@ -350,7 +350,7 @@ DYto2L-2Jets_MLL-50_PTLL-400to600_1J_2022EE:
   group: "DY"
   cross-section: 0.1162
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-400to600_2J_2022:
   era: '2022'
@@ -359,7 +359,7 @@ DYto2L-2Jets_MLL-50_PTLL-400to600_2J_2022:
   group: "DY"
   cross-section: 0.4157
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-400to600_2J_2022EE:
   era: '2022EE'
@@ -368,7 +368,7 @@ DYto2L-2Jets_MLL-50_PTLL-400to600_2J_2022EE:
   group: "DY"
   cross-section: 0.4157
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-40to100_1J_2022:
   era: '2022'
@@ -377,7 +377,7 @@ DYto2L-2Jets_MLL-50_PTLL-40to100_1J_2022:
   group: "DY"
   cross-section: 475.3
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-40to100_1J_2022EE:
   era: '2022EE'
@@ -386,7 +386,7 @@ DYto2L-2Jets_MLL-50_PTLL-40to100_1J_2022EE:
   group: "DY"
   cross-section: 475.3
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-40to100_2J_2022:
   era: '2022'
@@ -395,7 +395,7 @@ DYto2L-2Jets_MLL-50_PTLL-40to100_2J_2022:
   group: "DY"
   cross-section: 179.3
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-40to100_2J_2022EE:
   era: '2022EE'
@@ -404,7 +404,7 @@ DYto2L-2Jets_MLL-50_PTLL-40to100_2J_2022EE:
   group: "DY"
   cross-section: 179.3
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-600_1J_2022:
   era: '2022'
@@ -413,7 +413,7 @@ DYto2L-2Jets_MLL-50_PTLL-600_1J_2022:
   group: "DY"
   cross-section: 0.01392
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-600_1J_2022EE:
   era: '2022EE'
@@ -422,7 +422,7 @@ DYto2L-2Jets_MLL-50_PTLL-600_1J_2022EE:
   group: "DY"
   cross-section: 0.01392
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-600_2J_2022:
   era: '2022'
@@ -431,7 +431,7 @@ DYto2L-2Jets_MLL-50_PTLL-600_2J_2022:
   group: "DY"
   cross-section: 0.07019
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 DYto2L-2Jets_MLL-50_PTLL-600_2J_2022EE:
   era: '2022EE'
@@ -440,7 +440,7 @@ DYto2L-2Jets_MLL-50_PTLL-600_2J_2022EE:
   group: "DY"
   cross-section: 0.07019
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_2022:
   era: '2022'
@@ -449,7 +449,7 @@ WtoLNu-2Jets_2022:
   group: "other"
   cross-section: 5.557e+04
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_2022EE:
   era: '2022EE'
@@ -458,7 +458,7 @@ WtoLNu-2Jets_2022EE:
   group: "other"
   cross-section: 5.557e+04
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_0J_2022:
   era: '2022'
@@ -467,7 +467,7 @@ WtoLNu-2Jets_0J_2022:
   group: "other"
   cross-section: 55760
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_0J_2022EE:
   era: '2022EE'
@@ -476,7 +476,7 @@ WtoLNu-2Jets_0J_2022EE:
   group: "other"
   cross-section: 55760
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_1J_2022:
   era: '2022'
@@ -485,7 +485,7 @@ WtoLNu-2Jets_1J_2022:
   group: "other"
   cross-section: 9529
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_1J_2022EE:
   era: '2022EE'
@@ -494,7 +494,7 @@ WtoLNu-2Jets_1J_2022EE:
   group: "other"
   cross-section: 9529
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_2J_2022:
   era: '2022'
@@ -503,7 +503,7 @@ WtoLNu-2Jets_2J_2022:
   group: "other"
   cross-section: 3532
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_2J_2022EE:
   era: '2022EE'
@@ -512,7 +512,7 @@ WtoLNu-2Jets_2J_2022EE:
   group: "other"
   cross-section: 3532
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-40to100_1J_2022:
   era: '2022'
@@ -521,7 +521,7 @@ WtoLNu-2Jets_PTLNu-40to100_1J_2022:
   group: "other"
   cross-section: 4427
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-40to100_1J_2022EE:
   era: '2022EE'
@@ -530,7 +530,7 @@ WtoLNu-2Jets_PTLNu-40to100_1J_2022EE:
   group: "other"
   cross-section: 4427
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-40to100_2J_2022:
   era: '2022'
@@ -539,7 +539,7 @@ WtoLNu-2Jets_PTLNu-40to100_2J_2022:
   group: "other"
   cross-section: 1598
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-40to100_2J_2022EE:
   era: '2022EE'
@@ -548,7 +548,7 @@ WtoLNu-2Jets_PTLNu-40to100_2J_2022EE:
   group: "other"
   cross-section: 1598
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-100to200_1J_2022:
   era: '2022'
@@ -557,7 +557,7 @@ WtoLNu-2Jets_PTLNu-100to200_1J_2022:
   group: "other"
   cross-section: 368.2
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-100to200_1J_2022EE:
   era: '2022EE'
@@ -566,7 +566,7 @@ WtoLNu-2Jets_PTLNu-100to200_1J_2022EE:
   group: "other"
   cross-section: 368.2
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-100to200_2J_2022:
   era: '2022'
@@ -575,7 +575,7 @@ WtoLNu-2Jets_PTLNu-100to200_2J_2022:
   group: "other"
   cross-section: 421.9
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-100to200_2J_2022EE:
   era: '2022EE'
@@ -584,7 +584,7 @@ WtoLNu-2Jets_PTLNu-100to200_2J_2022EE:
   group: "other"
   cross-section: 421.9
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-200to400_1J_2022:
   era: '2022'
@@ -596,7 +596,7 @@ WtoLNu-2Jets_PTLNu-200to400_1J_2022:
   group: "other"
   cross-section: 25.6
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-200to400_1J_2022EE:
   era: '2022EE'
@@ -608,7 +608,7 @@ WtoLNu-2Jets_PTLNu-200to400_1J_2022EE:
   group: "other"
   cross-section: 25.6
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 
 WtoLNu-2Jets_PTLNu-200to400_2J_2022:
@@ -621,7 +621,7 @@ WtoLNu-2Jets_PTLNu-200to400_2J_2022:
   group: "other"
   cross-section: 54.77
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-200to400_2J_2022EE:
   era: '2022EE'
@@ -633,7 +633,7 @@ WtoLNu-2Jets_PTLNu-200to400_2J_2022EE:
   group: "other"
   cross-section: 54.77
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-400to600_1J_2022:
   era: '2022'
@@ -645,7 +645,7 @@ WtoLNu-2Jets_PTLNu-400to600_1J_2022:
   group: "other"
   cross-section: 0.8785
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-400to600_1J_2022EE:
   era: '2022EE'
@@ -657,7 +657,7 @@ WtoLNu-2Jets_PTLNu-400to600_1J_2022EE:
   group: "other"
   cross-section: 0.8785
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-400to600_2J_2022:
   era: '2022'
@@ -669,7 +669,7 @@ WtoLNu-2Jets_PTLNu-400to600_2J_2022:
   group: "other"
   cross-section: 3.119
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-400to600_2J_2022EE:
   era: '2022EE'
@@ -681,7 +681,7 @@ WtoLNu-2Jets_PTLNu-400to600_2J_2022EE:
   group: "other"
   cross-section: 3.119
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 
 WtoLNu-2Jets_PTLNu-600_1J_2022:
@@ -694,7 +694,7 @@ WtoLNu-2Jets_PTLNu-600_1J_2022:
   group: "other"
   cross-section: 0.1053
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-600_1J_2022EE:
   era: '2022EE'
@@ -706,7 +706,7 @@ WtoLNu-2Jets_PTLNu-600_1J_2022EE:
   group: "other"
   cross-section: 0.1053
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-600_2J_2022:
   era: '2022'
@@ -718,7 +718,7 @@ WtoLNu-2Jets_PTLNu-600_2J_2022:
   group: "other"
   cross-section: 0.5261
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WtoLNu-2Jets_PTLNu-600_2J_2022EE:
   era: '2022EE'
@@ -730,7 +730,7 @@ WtoLNu-2Jets_PTLNu-600_2J_2022EE:
   group: "other"
   cross-section: 0.5261
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-40to100_1J_2022:
   era: '2022'
@@ -739,7 +739,7 @@ Zto2Nu-2Jets_PTNuNu-40to100_1J_2022:
   group: "other"
   cross-section: 929.8
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-40to100_1J_2022EE:
   era: '2022EE'
@@ -748,7 +748,7 @@ Zto2Nu-2Jets_PTNuNu-40to100_1J_2022EE:
   group: "other"
   cross-section: 929.8
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-40to100_2J_2022:
   era: '2022'
@@ -757,7 +757,7 @@ Zto2Nu-2Jets_PTNuNu-40to100_2J_2022:
   group: "other"
   cross-section: 335.5
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-40to100_2J_2022EE:
   era: '2022EE'
@@ -766,7 +766,7 @@ Zto2Nu-2Jets_PTNuNu-40to100_2J_2022EE:
   group: "other"
   cross-section: 335.5
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-100to200_1J_2022:
   era: '2022'
@@ -775,7 +775,7 @@ Zto2Nu-2Jets_PTNuNu-100to200_1J_2022:
   group: "other"
   cross-section: 86.38
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-100to200_1J_2022EE:
   era: '2022EE'
@@ -784,7 +784,7 @@ Zto2Nu-2Jets_PTNuNu-100to200_1J_2022EE:
   group: "other"
   cross-section: 86.38
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-100to200_2J_2022:
   era: '2022'
@@ -793,7 +793,7 @@ Zto2Nu-2Jets_PTNuNu-100to200_2J_2022:
   group: "other"
   cross-section: 100.4
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-100to200_2J_2022EE:
   era: '2022EE'
@@ -802,7 +802,7 @@ Zto2Nu-2Jets_PTNuNu-100to200_2J_2022EE:
   group: "other"
   cross-section: 100.4
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-200to400_1J_2022:
   era: '2022'
@@ -814,7 +814,7 @@ Zto2Nu-2Jets_PTNuNu-200to400_1J_2022:
   group: "other"
   cross-section: 6.354
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-200to400_1J_2022EE:
   era: '2022EE'
@@ -823,7 +823,7 @@ Zto2Nu-2Jets_PTNuNu-200to400_1J_2022EE:
   group: "other"
   cross-section: 6.354
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-200to400_2J_2022:
   era: '2022'
@@ -832,7 +832,7 @@ Zto2Nu-2Jets_PTNuNu-200to400_2J_2022:
   group: "other"
   cross-section: 13.86
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-200to400_2J_2022EE:
   era: '2022EE'
@@ -841,7 +841,7 @@ Zto2Nu-2Jets_PTNuNu-200to400_2J_2022EE:
   group: "other"
   cross-section: 13.86
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-400to600_1J_2022:
   era: '2022'
@@ -850,7 +850,7 @@ Zto2Nu-2Jets_PTNuNu-400to600_1J_2022:
   group: "other"
   cross-section: 0.2188
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-400to600_1J_2022EE:
   era: '2022EE'
@@ -862,7 +862,7 @@ Zto2Nu-2Jets_PTNuNu-400to600_1J_2022EE:
   group: "other"
   cross-section: 0.2188
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-400to600_2J_2022:
   era: '2022'
@@ -871,7 +871,7 @@ Zto2Nu-2Jets_PTNuNu-400to600_2J_2022:
   group: "other"
   cross-section: 0.7816
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-400to600_2J_2022EE:
   era: '2022EE'
@@ -883,7 +883,7 @@ Zto2Nu-2Jets_PTNuNu-400to600_2J_2022EE:
   group: "other"
   cross-section: 0.7816
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-600_1J_2022:
   era: '2022'
@@ -892,7 +892,7 @@ Zto2Nu-2Jets_PTNuNu-600_1J_2022:
   group: "other"
   cross-section: 0.02583
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-600_1J_2022EE:
   era: '2022EE'
@@ -901,7 +901,7 @@ Zto2Nu-2Jets_PTNuNu-600_1J_2022EE:
   group: "other"
   cross-section: 0.02583
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-600_2J_2022:
   era: '2022'
@@ -913,7 +913,7 @@ Zto2Nu-2Jets_PTNuNu-600_2J_2022:
   group: "other"
   cross-section: 0.1311
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 Zto2Nu-2Jets_PTNuNu-600_2J_2022EE:
   era: '2022EE'
@@ -925,7 +925,7 @@ Zto2Nu-2Jets_PTNuNu-600_2J_2022EE:
   group: "other"
   cross-section: 0.1311
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WW_2022:
   era: '2022'
@@ -934,7 +934,7 @@ WW_2022:
   group: "VV"
   cross-section: 80.23
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WW_2022EE:
   era: '2022EE'
@@ -943,7 +943,7 @@ WW_2022EE:
   group: "VV"
   cross-section: 80.23
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WZ_2022:
   era: '2022'
@@ -952,7 +952,7 @@ WZ_2022:
   group: "VV"
   cross-section: 29.1
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 WZ_2022EE:
   era: '2022EE'
@@ -961,7 +961,7 @@ WZ_2022EE:
   group: "VV"
   cross-section: 29.1
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 ZZ_2022:
   era: '2022'
@@ -970,7 +970,7 @@ ZZ_2022:
   group: "VV"
   cross-section: 12.75
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 ZZ_2022EE:
   era: '2022EE'
@@ -979,7 +979,7 @@ ZZ_2022EE:
   group: "VV"
   cross-section: 12.75
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 # TW cross section from: https://cms-talk.web.cern.ch/t/new-jecs-for-run3-prompt-fg-eras/26529
 TbarWplusto2L2Nu_2022:
@@ -993,7 +993,7 @@ TbarWplusto2L2Nu_2022:
   group: "ST"
   cross-section: 4.6651009 # xsec(TW) / 2 (since t and tbar is included) x BR(W->l nu)^2 x 2 (since there are two W bosons) = 87.9 / 2 x 0.3259^2 x 2
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 TbarWplusto2L2Nu_2022EE:
   era: '2022EE'
@@ -1005,7 +1005,7 @@ TbarWplusto2L2Nu_2022EE:
   group: "ST"
   cross-section: 4.6651009 # xsec(TW) / 2 (since t and tbar is included) x BR(W->l nu)^2 x 2 (since there are two W bosons) = 87.9 / 2 x 0.3259^2 x 2
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 TWminusto2L2Nu_2022:
   era: '2022'
@@ -1018,7 +1018,7 @@ TWminusto2L2Nu_2022:
   group: "ST"
   cross-section: 4.6651009
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 TWminusto2L2Nu_2022EE:
   era: '2022EE'
@@ -1031,7 +1031,7 @@ TWminusto2L2Nu_2022EE:
   group: "ST"
   cross-section: 4.6651009
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_MC
 
 ### SIGNAL ###
 
@@ -1042,7 +1042,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022:
   cross-section: 0.03413 # taken from https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHWGHH?redirectedfrom=LHCPhysics.LHCHXSWGHH#Current_recommendations_for_HH_c but 0.02964 from GenXSecAnalyzer and XSDB
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *nsplit
+  split: &n_split_signal -1
   line-color: 4
   legend: 'HH_{ggf}^{\kappa_\lambda=1}\rightarrow bbWW'
 
@@ -1053,7 +1053,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022EE:
   cross-section: 0.03413
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_signal
   line-color: 4
   legend: 'HH_{ggf}^{\kappa_\lambda=1}\rightarrow bbWW'
 
@@ -1064,7 +1064,7 @@ VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2022:
   cross-section: 0.001898 # from XSDB
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_signal
   line-color: 2
   legend: 'HH_{vbf}^{SM}\rightarrow bbWW'
 
@@ -1075,7 +1075,7 @@ VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2022EE:
   cross-section: 0.001898
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_signal
   line-color: 2
   legend: 'HH_{vbf}^{SM}\rightarrow bbWW'
 
@@ -1087,7 +1087,7 @@ ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022:
   cross-section: 0.0653 # from XSDB
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_signal
   line-color: 3
   legend: 'HH_{ggf}^{\kappa_\lambda=0}\rightarrow bbWW'
 
@@ -1098,7 +1098,7 @@ ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022EE:
   cross-section: 0.0653 # from XSDB
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_signal
   line-color: 3
   legend: 'HH_{ggf}^{\kappa_\lambda=0}\rightarrow bbWW'
 
@@ -1109,7 +1109,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022:
   cross-section: 0.01285 # from GenXSecAnalyzer and XSDB
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_signal
   line-color: 8
   legend: 'HH_{ggf}^{\kappa_\lambda=2.45}\rightarrow bbWW'
 
@@ -1120,7 +1120,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022EE:
   cross-section: 0.01285
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_signal
   line-color: 8
   legend: 'HH_{ggf}^{\kappa_\lambda=2.45}\rightarrow bbWW'
 
@@ -1131,7 +1131,7 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022:
   cross-section: 0.08349 # from GenXSecAnalyzer and XSDB
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_signal
   line-color: 6
   legend: 'HH_{ggf}^{\kappa_\lambda=5}\rightarrow bbWW'
 
@@ -1142,6 +1142,6 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022EE:
   cross-section: 0.08349
   branching-ratio: 0.027669886574221
   generated-events: genEventSumw
-  split: *nsplit
+  split: *n_split_signal
   line-color: 6
   legend: 'HH_{ggf}^{\kappa_\lambda=5}\rightarrow bbWW'
