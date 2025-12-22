@@ -496,7 +496,7 @@ class ScaleFactors:
                 "elel_leading_TRG_SF",
                 weight=[
                     op.switch(
-                        self.parent.tightElectrons[0].pt >= 25,
+                        self.parent.tightElectrons[0].pt >= 30, # 30 since Ele30_WPTight_Gsf HTL path
                         self.elel_single_TRG_SF(self.parent.tightElectrons[0]),
                         op.c_float(1.0),
                     )
@@ -533,7 +533,7 @@ class ScaleFactors:
                 "elmu_el_TRG_SF",
                 weight=[
                     op.switch(
-                        self.parent.tightElectrons[0].pt >= 25,
+                        self.parent.tightElectrons[0].pt >= 30, # 30 since Ele30_WPTight_Gsf HTL path
                         self.elel_single_TRG_SF(self.parent.tightElectrons[0]),
                         op.c_float(1.0),
                     )
