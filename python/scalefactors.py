@@ -99,18 +99,24 @@ class ScaleFactors:
     def __init__(self, parent):
         self.parent = parent
         self.di_lepton_TRG_JSONFiles = {
-            "2022":
-                os.path.join(
-                    self.parent.git_project_dir,
-                    "data",
-                    "2022_di_lepton_trigger_scale_factors.json",
-                ),
-            "2023":
-                os.path.join(
-                    self.parent.git_project_dir,
-                    "data",
-                    "2023_di_lepton_trigger_scale_factors.json",
-                ),
+            "ee":
+            os.path.join(
+                self.parent.git_project_dir,
+                "data",
+                "sf_ee_trg_lepton0_pt-trg_lepton1_pt-trig_idsV4_syst.json",
+            ),
+            "mixed":
+            os.path.join(
+                self.parent.git_project_dir,
+                "data",
+                "sf_mixed_trg_lepton0_pt-trg_lepton1_pt-trig_idsV4_syst.json",
+            ),
+            "mm":
+            os.path.join(
+                self.parent.git_project_dir,
+                "data",
+                "sf_mm_trg_lepton0_pt-trg_lepton1_pt-trig_idsV4_syst.json",
+            ),
         }
 
     def jet_veto_map(self, tree, sel):
@@ -655,12 +661,15 @@ class ScaleFactors:
         if self.parent.is_MC:
             from bamboo.scalefactors import get_correction
             if "mumu" in sel.name:
+                channel = "mm"
                 leading_lepton_pt = self.parent.tightMuons[0].pt
                 subleading_lepton_pt = self.parent.tightMuons[1].pt
-            elif "ee" in sel.name:
+            elif "elel" in sel.name:
+                channel = "ee"
                 leading_lepton_pt = self.parent.tightElectrons[0].pt
                 subleading_lepton_pt = self.parent.tightElectrons[1].pt
-            elif "emu" in sel.name:
+            elif "elmu" in sel.name:
+                channel = "mixed"
                 leading_lepton_pt = op.switch(
                     self.parent.tightElectrons[0].pt > self.parent.tightMuons[0].pt,
                     self.parent.tightElectrons[0].pt,
@@ -672,23 +681,24 @@ class ScaleFactors:
                     self.parent.tightElectrons[0].pt,
                 )
             else:
+                logger.warning(f"Selection name provided: {sel.name}")
                 raise RuntimeError(
                     "Final state selection name must include one of these values: ee, mumu, emu."
                 )
+            systVariations = {
+                "dileptonTRGSFup": "up",
+                "dileptonTRGSFdown": "down",
+            }
             di_lepton_TRG_SF = get_correction(
-                self.di_lepton_TRG_JSONFiles[self.parent.era[:4]],
-                "trigger_scale_factors_2d",
-                systParam="systematic",
-                systVariations={
-                    "diLTRG_SFup": "up",
-                    "diLTRG_SFdown": "down",
+                self.di_lepton_TRG_JSONFiles[channel],
+                f"sf_{channel}_trg_lepton0_pt-trg_lepton1_pt-trig_ids",
+                params={
+                    "trg_lepton0_pt": lambda l: leading_lepton_pt,
+                    "trg_lepton1_pt": lambda l: subleading_lepton_pt,
                 },
                 systNomName="nominal",
-                params={
-                    "channel": sel.name,
-                    "pt_leading": lambda l: leading_lepton_pt,
-                    "pt_subleading": lambda l: subleading_lepton_pt,
-                },
+                systVariations=systVariations,
+                systParam="systematic",
                 defineOnFirstUse=False,
                 sel=sel,
             )
@@ -696,7 +706,8 @@ class ScaleFactors:
                 sel.name+"_di_lepton_TRG_SF", weight=di_lepton_TRG_SF(None)
             )
         else:
-            sel = sel.refine(sel.name+"_di_lepton_TRG_SF", weight=op.c_float(1.))
+            sel = sel.refine(sel.name+"_di_lepton_TRG_SF",
+                             weight=op.c_float(1.))
         self.parent.yields.add(sel, "di-lepton TRG SF")
         return sel
 

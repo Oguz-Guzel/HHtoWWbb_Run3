@@ -192,6 +192,11 @@ def makeDLSelection(
     mumu_SF_sel = scale_factors.mumuSF(mumu_sel)
     elmu_SF_sel = scale_factors.elmuSF(elmu_sel)
 
+    # dilepton trigger scale factors
+    elel_SF_sel = scale_factors.dilepton_trg_sf(elel_SF_sel)
+    mumu_SF_sel = scale_factors.dilepton_trg_sf(mumu_SF_sel)
+    elmu_SF_sel = scale_factors.dilepton_trg_sf(elmu_SF_sel)
+
     # DY Z pT and recoil correction
     elel_SF_sel = scale_factors.Z_pT_reweight(
         elel_SF_sel, sample, genPartBranch, pdgId=11
