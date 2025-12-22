@@ -180,7 +180,7 @@ def ak8jetDef(jets):
         lambda jet: op.AND(
             jet.pt >= 200.0,
             op.abs(jet.eta) <= 2.4,
-            (jet.jetId >> 1 & 0x1) == 1,
+            (jet.jetId >> 1 & 0x1) == 1, # tight jet ID
             (jet.jetId >> 2 & 0x1) == 1,
             jet.subJet1.isValid,
             jet.subJet2.isValid,

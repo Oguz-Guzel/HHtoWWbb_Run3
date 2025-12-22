@@ -3,20 +3,9 @@ from bamboo import treefunctions as op
 import definitions as defs
 from scalefactors import ScaleFactors
 
-Zmass = 91.1876  # GeV
-
-
-def lowMllCut(lepton_collection) -> bool:
-    "Minimum dilepton invariant mass cut of 12 GeV."
-    return op.NOT(
-        op.invariant_mass(
-            lepton_collection[0].p4, lepton_collection[1].p4) < 12.0
-    )
-
+Zmass = 90 # it's actually 91.1876 GeV but 90 GeV is used 
 
 # lepton Pt cuts : leading above 25 GeV and sub-leading above 15 GeV
-
-
 def ptCutSameFlavourPair(lepton_collection) -> bool:
     """Minimum pT cut for the same flavour leptons.
     Leading lepton pT > 25 GeV and sub-leading lepton pT > 15 GeV.
@@ -437,11 +426,6 @@ def makeDLSelection(
             DL_VBF_boosted_mumu,
             DL_VBF_boosted_emu,
         ]
-        # the dilepton TRG SF correction need to be applied here
-        # since it's calculated at this stage. Check python/trigger_eff.py
-        if not trigger_study:
-            for i, sel in enumerate(DL_signal_region_selections):
-                DL_signal_region_selections[i] = scale_factors.dilepton_trg_sf(sel)
 
         # cutflow reports for the final states
         analysis.yields.add(DL_boosted_ee, "DL boosted ee")

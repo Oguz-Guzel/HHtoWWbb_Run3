@@ -291,7 +291,6 @@ class ScaleFactors:
                         "eta": lambda mu: op.abs(mu.eta)},
                 systParam="scale_factors",
                 systNomName="nominal",
-                systName=systName,
                 defineOnFirstUse=False,
                 sel=sel,
             )
@@ -311,7 +310,6 @@ class ScaleFactors:
                 },
                 systParam="scale_factors",
                 systNomName="nominal",
-                systName=systName,
                 defineOnFirstUse=False,
                 sel=sel,
             )
@@ -328,7 +326,6 @@ class ScaleFactors:
                         "eta": lambda mu: op.abs(mu.eta)},
                 systParam="scale_factors",
                 systNomName="nominal",
-                systName=systName,
                 defineOnFirstUse=False,
                 sel=sel,
             )
