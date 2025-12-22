@@ -95,6 +95,7 @@ def muonTightSel(muons):
     return op.select(
         muons,
         lambda mu: op.AND(
+            mu.pt > 25.0,
             mu.mediumPromptId,  # this run3 replacement along with mediumId, for mu.mvaTTH >= 0.50
             mu.mediumId,
         ),
@@ -153,7 +154,10 @@ def elFakeSel(electrons, era):
 
 def elTightSel(electrons):
     """Electron tight selection"""
-    return op.select(electrons, lambda el: el.mvaIso_WP90)
+    return op.select(electrons, lambda el: op.AND(
+        el.mvaIso_WP90,
+        el.pt >= 33,)
+        )
 
 
 def ak4jetDef(jets):
