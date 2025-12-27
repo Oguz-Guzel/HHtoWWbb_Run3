@@ -63,7 +63,7 @@ TTto2L2Nu_2023:
   group: "TT"
   cross-section: 98.036113
   generated-events: genEventSumw
-  split: &n_split_TT -1
+  split: &n_split_TT -2
 
 TTto2L2Nu_2023BPix:
   era: '2023BPix'
@@ -81,7 +81,7 @@ DYto2L-2Jets_MLL-50_2023:
   group: "DY"
   cross-section: 6688.0
   generated-events: genEventSumw
-  split: &n_split_MC -3
+  split: &n_split_MC -4
 
 DYto2L-2Jets_MLL-50_2023BPix:
   era: '2023BPix'
@@ -384,16 +384,16 @@ WtoLNu-2Jets_2023:
   era: '2023'
   db: das:/WtoLNu-2Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v2/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 67710.0
   generated-events: genEventSumw
-  split: &n_split_WJets -1
+  split: &n_split_WJets -3
 
 WtoLNu-2Jets_2023BPix:
   era: '2023BPix'
   db: das:/WtoLNu-2Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 67710.0
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -402,7 +402,7 @@ WtoLNu-2Jets_0J_2023:
   era: '2023'
   db: das:/WtoLNu-2Jets_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 55760
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -411,7 +411,7 @@ WtoLNu-2Jets_0J_2023BPix:
   era: '2023BPix'
   db: das:/WtoLNu-2Jets_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 55760
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -420,7 +420,7 @@ WtoLNu-2Jets_1J_2023:
   era: '2023'
   db: das:/WtoLNu-2Jets_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v2/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 9529
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -429,7 +429,7 @@ WtoLNu-2Jets_1J_2023BPix:
   era: '2023BPix'
   db: das:/WtoLNu-2Jets_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 9529
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -438,7 +438,7 @@ WtoLNu-2Jets_2J_2023:
   era: '2023'
   db: das:/WtoLNu-2Jets_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v2/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 3532
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -447,7 +447,7 @@ WtoLNu-2Jets_2J_2023BPix:
   era: '2023BPix'
   db: das:/WtoLNu-2Jets_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 3532
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -456,7 +456,7 @@ WtoLNu-2Jets_PTLNu-40to100_1J_2023:
   era: '2023'
   db: das:/WtoLNu-2Jets_PTLNu-40to100_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 4427
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -465,7 +465,7 @@ WtoLNu-2Jets_PTLNu-40to100_1J_2023BPix:
   era: '2023BPix'
   db: das:/WtoLNu-2Jets_PTLNu-40to100_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 4427
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -474,7 +474,7 @@ WtoLNu-2Jets_PTLNu-40to100_2J_2023:
   era: '2023'
   db: das:/WtoLNu-2Jets_PTLNu-40to100_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 1598
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -483,7 +483,7 @@ WtoLNu-2Jets_PTLNu-40to100_2J_2023BPix:
   era: '2023BPix'
   db: das:/WtoLNu-2Jets_PTLNu-40to100_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 1598
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -492,7 +492,7 @@ WtoLNu-2Jets_PTLNu-100to200_1J_2023:
   era: '2023'
   db: das:/WtoLNu-2Jets_PTLNu-100to200_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 368.2
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -501,7 +501,7 @@ WtoLNu-2Jets_PTLNu-100to200_1J_2023BPix:
   era: '2023BPix'
   db: das:/WtoLNu-2Jets_PTLNu-100to200_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 368.2
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -510,7 +510,7 @@ WtoLNu-2Jets_PTLNu-100to200_2J_2023:
   era: '2023'
   db: das:/WtoLNu-2Jets_PTLNu-100to200_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 421.9
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -519,7 +519,7 @@ WtoLNu-2Jets_PTLNu-100to200_2J_2023BPix:
   era: '2023BPix'
   db: das:/WtoLNu-2Jets_PTLNu-100to200_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 421.9
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -531,7 +531,7 @@ WtoLNu-2Jets_PTLNu-200to400_1J_2023:
     # das:/WtoLNu-2Jets_PTLNu-200to400_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 25.6
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -543,7 +543,7 @@ WtoLNu-2Jets_PTLNu-200to400_1J_2023BPix:
     # das:/WtoLNu-2Jets_PTLNu-200to400_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 25.6
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -556,7 +556,7 @@ WtoLNu-2Jets_PTLNu-200to400_2J_2023:
     # das:/WtoLNu-2Jets_PTLNu-200to400_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 54.77
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -568,7 +568,7 @@ WtoLNu-2Jets_PTLNu-200to400_2J_2023BPix:
     # das:/WtoLNu-2Jets_PTLNu-200to400_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 54.77
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -580,7 +580,7 @@ WtoLNu-2Jets_PTLNu-400to600_1J_2023:
     # das:/WtoLNu-2Jets_PTLNu-400to600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 0.8785
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -592,7 +592,7 @@ WtoLNu-2Jets_PTLNu-400to600_1J_2023BPix:
     # das:/WtoLNu-2Jets_PTLNu-400to600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 0.8785
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -604,7 +604,7 @@ WtoLNu-2Jets_PTLNu-400to600_2J_2023:
     # das:/WtoLNu-2Jets_PTLNu-400to600_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 3.119
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -616,7 +616,7 @@ WtoLNu-2Jets_PTLNu-400to600_2J_2023BPix:
     # das:/WtoLNu-2Jets_PTLNu-400to600_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 3.119
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -629,7 +629,7 @@ WtoLNu-2Jets_PTLNu-600_1J_2023:
     # das:/WtoLNu-2Jets_PTLNu-600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 0.1053
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -641,7 +641,7 @@ WtoLNu-2Jets_PTLNu-600_1J_2023BPix:
     # das:/WtoLNu-2Jets_PTLNu-600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 0.1053
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -653,7 +653,7 @@ WtoLNu-2Jets_PTLNu-600_2J_2023:
     # das:/WtoLNu-2Jets_PTLNu-600_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 0.5261
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -665,7 +665,7 @@ WtoLNu-2Jets_PTLNu-600_2J_2023BPix:
     # das:/WtoLNu-2Jets_PTLNu-600_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 0.5261
   generated-events: genEventSumw
   split: *n_split_WJets
@@ -674,7 +674,7 @@ Zto2Nu-2Jets_PTNuNu-40to100_1J_2023:
   era: '2023'
   db: das:/Zto2Nu-2Jets_PTNuNu-40to100_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 929.8
   generated-events: genEventSumw
   split: *n_split_MC
@@ -683,7 +683,7 @@ Zto2Nu-2Jets_PTNuNu-40to100_1J_2023BPix:
   era: '2023BPix'
   db: das:/Zto2Nu-2Jets_PTNuNu-40to100_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 929.8
   generated-events: genEventSumw
   split: *n_split_MC
@@ -692,7 +692,7 @@ Zto2Nu-2Jets_PTNuNu-40to100_2J_2023:
   era: '2023'
   db: das:/Zto2Nu-2Jets_PTNuNu-40to100_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 335.5
   generated-events: genEventSumw
   split: *n_split_MC
@@ -701,7 +701,7 @@ Zto2Nu-2Jets_PTNuNu-40to100_2J_2023BPix:
   era: '2023BPix'
   db: das:/Zto2Nu-2Jets_PTNuNu-40to100_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 335.5
   generated-events: genEventSumw
   split: *n_split_MC
@@ -710,7 +710,7 @@ Zto2Nu-2Jets_PTNuNu-100to200_1J_2023:
   era: '2023'
   db: das:/Zto2Nu-2Jets_PTNuNu-100to200_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 86.38
   generated-events: genEventSumw
   split: *n_split_MC
@@ -719,7 +719,7 @@ Zto2Nu-2Jets_PTNuNu-100to200_1J_2023BPix:
   era: '2023BPix'
   db: das:/Zto2Nu-2Jets_PTNuNu-100to200_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 86.38
   generated-events: genEventSumw
   split: *n_split_MC
@@ -728,7 +728,7 @@ Zto2Nu-2Jets_PTNuNu-100to200_2J_2023:
   era: '2023'
   db: das:/Zto2Nu-2Jets_PTNuNu-100to200_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 100.4
   generated-events: genEventSumw
   split: *n_split_MC
@@ -737,7 +737,7 @@ Zto2Nu-2Jets_PTNuNu-100to200_2J_2023BPix:
   era: '2023BPix'
   db: das:/Zto2Nu-2Jets_PTNuNu-100to200_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v3/NANOAODSIM
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 100.4
   generated-events: genEventSumw
   split: *n_split_MC
@@ -749,7 +749,7 @@ Zto2Nu-2Jets_PTNuNu-200to400_1J_2023:
     # das:/Zto2Nu-2Jets_PTNuNu-200to400_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 6.354
   generated-events: genEventSumw
   split: *n_split_MC
@@ -761,7 +761,7 @@ Zto2Nu-2Jets_PTNuNu-200to400_1J_2023BPix:
     # das:/Zto2Nu-2Jets_PTNuNu-200to400_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 6.354
   generated-events: genEventSumw
   split: *n_split_MC
@@ -773,7 +773,7 @@ Zto2Nu-2Jets_PTNuNu-200to400_2J_2023:
     # das:/Zto2Nu-2Jets_PTNuNu-200to400_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 13.86
   generated-events: genEventSumw
   split: *n_split_MC
@@ -785,7 +785,7 @@ Zto2Nu-2Jets_PTNuNu-200to400_2J_2023BPix:
     # das:/Zto2Nu-2Jets_PTNuNu-200to400_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 13.86
   generated-events: genEventSumw
   split: *n_split_MC
@@ -797,7 +797,7 @@ Zto2Nu-2Jets_PTNuNu-400to600_1J_2023:
     # das:/Zto2Nu-2Jets_PTNuNu-400to600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 0.2188
   generated-events: genEventSumw
   split: *n_split_MC
@@ -809,7 +809,7 @@ Zto2Nu-2Jets_PTNuNu-400to600_1J_2023BPix:
     # das:/Zto2Nu-2Jets_PTNuNu-400to600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 0.2188
   generated-events: genEventSumw
   split: *n_split_MC
@@ -821,7 +821,7 @@ Zto2Nu-2Jets_PTNuNu-400to600_2J_2023:
     # das:/Zto2Nu-2Jets_PTNuNu-400to600_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 0.7816
   generated-events: genEventSumw
   split: *n_split_MC
@@ -833,7 +833,7 @@ Zto2Nu-2Jets_PTNuNu-400to600_2J_2023BPix:
     # das:/Zto2Nu-2Jets_PTNuNu-400to600_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 0.7816
   generated-events: genEventSumw
   split: *n_split_MC
@@ -845,7 +845,7 @@ Zto2Nu-2Jets_PTNuNu-600_1J_2023:
     # das:/Zto2Nu-2Jets_PTNuNu-600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 0.02583
   generated-events: genEventSumw
   split: *n_split_MC
@@ -857,7 +857,7 @@ Zto2Nu-2Jets_PTNuNu-600_1J_2023BPix:
     # das:/Zto2Nu-2Jets_PTNuNu-600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 0.02583
   generated-events: genEventSumw
   split: *n_split_MC
@@ -869,7 +869,7 @@ Zto2Nu-2Jets_PTNuNu-600_2J_2023:
     # das:/Zto2Nu-2Jets_PTNuNu-600_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15_ext1-v2/NANOAODSIM
     ]
   type: mc  
-  group: "other"
+  group: "VJets"
   cross-section: 0.1311
   generated-events: genEventSumw
   split: *n_split_MC
@@ -881,7 +881,7 @@ Zto2Nu-2Jets_PTNuNu-600_2J_2023BPix:
     # das:/Zto2Nu-2Jets_PTNuNu-600_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6_ext1-v2/NANOAODSIM
   ]
   type: mc
-  group: "other"
+  group: "VJets"
   cross-section: 0.1311
   generated-events: genEventSumw
   split: *n_split_MC

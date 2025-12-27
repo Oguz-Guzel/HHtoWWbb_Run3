@@ -54,8 +54,8 @@ plotIt:
     VV:
       legend: "VV"
       fill-color: "#92dadd"
-    other:
-      legend: "other"
+    VJets:
+      legend: "V+Jets"
       fill-color: "#94a4a2"
   plotdefaults:
     # y-axis-range: [0.00001, 50000000]
