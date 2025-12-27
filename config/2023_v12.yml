@@ -91,6 +91,7 @@ plotIt:
     - jer3
     - jer4
     - jer5
+    - topPtRW
     - elIdSF
     - elTrgSF
     - muonIdSF
@@ -107,3 +108,4 @@ plotIt:
     - ZpT8
     - ZpT9
     - ZpT10
+    - dileptonTRGSF
