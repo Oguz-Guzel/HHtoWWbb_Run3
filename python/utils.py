@@ -73,11 +73,11 @@ def custom_Plotit(
         mergedHists = {}
 
         file_to_copy = os.path.join(outDir, f"{smp}.root")
+        logger.info(f"Copying samples to {outDir}")
         if smpCfg.get("group") in _gp:
             keep_cfg[smp] = smpCfg
             if os.path.isfile(file_to_copy):
                 continue
-            logger.info(f"Copying {smp}.root to {outDir}")
             shutil.copyfile(
                 os.path.join(inDir, f"{smp}.root"), os.path.join(outDir, f"{smp}.root")
             )
@@ -226,7 +226,7 @@ def custom_Plotit(
         logger.error("Failed to run {0}".format(" ".join(plotitCmd)))
 
 
-def runPDF(workdir, channel, era=None, plotsDir="plots"):
+def runPDF(workdir, channel="DL", era=None, plotsDir="plots"):
     import os
 
     plots_dir = [os.path.join(workdir, plotsDir)]
