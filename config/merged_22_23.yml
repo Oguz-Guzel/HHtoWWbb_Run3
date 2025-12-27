@@ -1,0 +1,115 @@
+### Analysis configuration file ###
+
+tree: Events
+
+eras:
+  '2022':
+    luminosity: 7980.4 # pb^-1
+  '2022EE':
+    luminosity: 26671.7
+  '2023':
+    luminosity: 18063.
+  '2023BPix':
+    luminosity: 9693.
+
+dbcache: dascache
+
+samples:
+  !include merged_samples.yml
+
+plotIt:
+  configuration:
+    width: 800
+    height: 800
+    margin-left: 0.125
+    margin-right: 0.03
+    margin-top: 0.05
+    margin-bottom: 0.1
+    luminosity-label: '%1$.2f fb^{-1} (13.6 TeV)'
+    experiment: " "
+    extra-label: Private work (CMS simulation)
+    luminosity-error: 0.014 # https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun3
+    show-overflow: true
+    error-fill-style: 3154
+    error-fill-color: "#ee556270"
+    ratio-fit-error-fill-style: 1001
+    ratio-fit-error-fill-color: "#aa556270"
+    ratio-fit-line-color: "#0B486B"
+    y-axis-format: "%1% / %2$.2f"
+    blinded-range-fill-style: 1001
+    blinded-range-fill-color: "#29556270"
+    yields-table-align: v
+    yields-table-text-align: l
+    book-keeping-file: plots.root
+  legend:
+    position: [0.5, 0.65, 0.92, 0.9]
+  groups:
+    data:
+      legend: "Data"
+    TT:
+      legend: "t#bar{t}"
+      fill-color: "#bd1f01"
+    DY:
+      legend: "DY"
+      fill-color: "#e76300"
+    ST:
+      legend: "ST"
+      fill-color: "#ffa90e"
+    VV:
+      legend: "VV"
+      fill-color: "#92dadd"
+    VJets:
+      legend: "V+Jets"
+      fill-color: "#94a4a2"
+  plotdefaults:
+    # y-axis-range: [0.00001, 50000000]
+    normalized: False
+    y-axis: "Events"
+    log-y: both
+    y-axis-show-zero: True
+    save-extensions: [png]
+    show-ratio: True
+    sort-by-yields: True
+    legend-columns: 4
+    ratio-y-axis: "Data / MC"
+    ratio-y-axis-range: [0.5, 1.5]
+
+  systematics:
+    - btagSF_shape_cferr1
+    - btagSF_shape_lfstats1_2022
+    - btagSF_shape_lfstats1_2022EE
+    - pileup
+    - btagSF_shape_hfstats2_2022
+    - btagSF_shape_hfstats2_2022EE
+    - btagSF_shape_lfstats2_2022
+    - btagSF_shape_cferr2
+    - btagSF_shape_lfstats2_2022EE
+    - jesTotal
+    - btagSF_shape_hfstats1_2022
+    - btagSF_shape_hfstats1_2022EE
+    - btagSF_shape_hf
+    - btagSF_shape_lf
+    - jer0
+    - jer1
+    - jer2
+    - jer3
+    - jer4
+    - jer5
+    - topPtRW
+    - elIdSF
+    - elTrgSF
+    - muonIdSF
+    - muonIsoSF
+    - muonTrgSF
+    - pileup
+    - ZpT1
+    - ZpT2
+    - ZpT3
+    - ZpT4
+    - ZpT5
+    - ZpT6
+    - ZpT7
+    - ZpT8
+    - ZpT9
+    - ZpT10
+    - dileptonTRGSF
