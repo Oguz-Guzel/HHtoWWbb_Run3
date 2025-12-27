@@ -502,7 +502,7 @@ def ml_input_features(self):
         "l1_E": get_lepton_callable("E", 0),
         "l1_pdgId": get_lepton_tree_var("pdgId", 0),
         "l1_charge": get_lepton_tree_var("charge", 0),
-        "leading_lepton_pt": op.multiSwitch(
+        "l1_pT": op.multiSwitch(
             (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[0].pt),
             (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].pt),
             op.switch(
@@ -517,7 +517,7 @@ def ml_input_features(self):
         "l2_E": get_lepton_callable("E", 1),
         "l2_pdgId": get_lepton_tree_var("pdgId", 1),
         "l2_charge": get_lepton_tree_var("charge", 1),
-        "subleading_lepton_pt": op.multiSwitch(
+        "l2_pT": op.multiSwitch(
             (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[1].pt),
             (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].pt),
             op.switch(

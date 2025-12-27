@@ -263,7 +263,7 @@ def ml_input_var_binning(var_name):
         N, mn, mx = 50, 0, 1
     elif "_pdgId" in var_name:
         N, mn, mx = 30, -15, 15
-    elif "_pt" in var_name or "di_bjet_mass" in var_name or "di_lepton_met_mass" in var_name:
+    elif "_pT" in var_name or "di_bjet_mass" in var_name or "di_lepton_met_mass" in var_name:
         N, mn, mx = 100, 0, 1000
     elif "_eta" in var_name:
         N, mn, mx = 30, -3, 3
