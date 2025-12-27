@@ -597,13 +597,83 @@ class ScaleFactors:
 
         return sel
 
-    def Z_pT_reweight(self, sel, sample, GenPartBranch, pdgId):
+
+    def dilepton_trg_sf(self, sel):
+        channel = "mumu" if "mumu" in sel.name else "elel" if "elel" in sel.name else "elmu" if "elmu" in sel.name else None
+        if channel is None:
+            logger.warning(f"Selection name provided: {sel.name}")
+            raise RuntimeError(
+                "Final state selection name must include one of these values: ee, mumu, emu."
+            )
+        if self.parent.is_MC:
+            if channel == "mumu":
+                ch = "mm"
+                leading_lepton_pt = self.parent.tightMuons[0].pt
+                subleading_lepton_pt = self.parent.tightMuons[1].pt
+            elif channel == "elel":
+                ch = "ee"
+                leading_lepton_pt = self.parent.tightElectrons[0].pt
+                subleading_lepton_pt = self.parent.tightElectrons[1].pt
+            elif "elmu" in sel.name:
+                ch = "mixed"
+                leading_lepton_pt = op.switch(
+                    self.parent.tightElectrons[0].pt > self.parent.tightMuons[0].pt,
+                    self.parent.tightElectrons[0].pt,
+                    self.parent.tightMuons[0].pt,
+                )
+                subleading_lepton_pt = op.switch(
+                    self.parent.tightElectrons[0].pt > self.parent.tightMuons[0].pt,
+                    self.parent.tightMuons[0].pt,
+                    self.parent.tightElectrons[0].pt,
+                )
+            else:
+                logger.warning(f"Selection name provided: {sel.name}")
+                raise RuntimeError(
+                    "Final state selection name must include one of these values: ee, mumu, emu."
+                )
+            systVariations = {
+                "dileptonTRGSFup": "up",
+                "dileptonTRGSFdown": "down",
+            }
+            di_lepton_TRG_SF = get_correction(
+                self.di_lepton_TRG_JSONFiles[ch],
+                f"sf_{ch}_trg_lepton0_pt-trg_lepton1_pt-trig_ids",
+                params={
+                    "trg_lepton0_pt": lambda l: leading_lepton_pt,
+                    "trg_lepton1_pt": lambda l: subleading_lepton_pt,
+                },
+                systNomName="nominal",
+                systVariations=systVariations,
+                systParam="systematic",
+                defineOnFirstUse=False,
+                sel=sel,
+            )
+            sel = sel.refine(
+                channel+"_di_lepton_TRG_SF", weight=di_lepton_TRG_SF(None)
+            )
+        else:
+            sel = sel.refine(channel+"_di_lepton_TRG_SF",
+                             weight=op.c_float(1.))
+        self.parent.yields.add(sel, channel + " di-lepton TRG SF")
+        return sel
+
+    def Z_pT_reweight(self, sel, sample, GenPartBranch):
         """Apply DY ptll and recoil corrections for given lepton pair."""
+        if "mumu" in sel.name:
+            pdgId = 13
+            ch = "MuMu"
+        elif "elel" in sel.name:
+            pdgId = 11
+            ch = "ElEl"
+        else:
+            logger.warning(f"Selection name provided: {sel.name}")
+            raise RuntimeError(
+                "Final state selection name must include one of these values: elel, mumu."
+            )
         if self.parent.is_MC and sample.startswith("DY"):
-            from bamboo.scalefactors import get_correction
 
             logger.info(
-                "Applying DY ptll and recoil corrections for " + sel.name)
+                "Applying DY ptll and recoil corrections for " + ch + " channel")
 
             DY_and_Recoil_path = (
                 self.parent.git_project_dir + "/data/hleprare/DYandRecoilCorrlib/"
@@ -644,74 +714,20 @@ class ScaleFactors:
                     lambda p: -p.pt,
                 )
                 return gen_leptons
-
+            
             sel = sel.refine(
-                sel.name + "_ZpT",
+                ch + "_ZpT",
                 weight=get_Z_pT_corr(get_gen_parts(GenPartBranch, pdgId)),
             )
         else:
-            sel = sel.refine(sel.name + "_ZpT", weight=op.c_float(1.0))
-        self.parent.yields.add(sel, sel.name)
-        return sel
-
-    def dilepton_trg_sf(self, sel):
-        if self.parent.is_MC:
-            from bamboo.scalefactors import get_correction
-            if "mumu" in sel.name:
-                channel = "mm"
-                leading_lepton_pt = self.parent.tightMuons[0].pt
-                subleading_lepton_pt = self.parent.tightMuons[1].pt
-            elif "elel" in sel.name:
-                channel = "ee"
-                leading_lepton_pt = self.parent.tightElectrons[0].pt
-                subleading_lepton_pt = self.parent.tightElectrons[1].pt
-            elif "elmu" in sel.name:
-                channel = "mixed"
-                leading_lepton_pt = op.switch(
-                    self.parent.tightElectrons[0].pt > self.parent.tightMuons[0].pt,
-                    self.parent.tightElectrons[0].pt,
-                    self.parent.tightMuons[0].pt,
-                )
-                subleading_lepton_pt = op.switch(
-                    self.parent.tightElectrons[0].pt > self.parent.tightMuons[0].pt,
-                    self.parent.tightMuons[0].pt,
-                    self.parent.tightElectrons[0].pt,
-                )
-            else:
-                logger.warning(f"Selection name provided: {sel.name}")
-                raise RuntimeError(
-                    "Final state selection name must include one of these values: ee, mumu, emu."
-                )
-            systVariations = {
-                "dileptonTRGSFup": "up",
-                "dileptonTRGSFdown": "down",
-            }
-            di_lepton_TRG_SF = get_correction(
-                self.di_lepton_TRG_JSONFiles[channel],
-                f"sf_{channel}_trg_lepton0_pt-trg_lepton1_pt-trig_ids",
-                params={
-                    "trg_lepton0_pt": lambda l: leading_lepton_pt,
-                    "trg_lepton1_pt": lambda l: subleading_lepton_pt,
-                },
-                systNomName="nominal",
-                systVariations=systVariations,
-                systParam="systematic",
-                defineOnFirstUse=False,
-                sel=sel,
-            )
-            sel = sel.refine(
-                sel.name+"_di_lepton_TRG_SF", weight=di_lepton_TRG_SF(None)
-            )
-        else:
-            sel = sel.refine(sel.name+"_di_lepton_TRG_SF",
-                             weight=op.c_float(1.))
-        self.parent.yields.add(sel, "di-lepton TRG SF")
+            sel = sel.refine(ch + "_ZpT", weight=op.c_float(1.0))
+        self.parent.yields.add(sel, ch + " Z pT reweighting")
         return sel
 
     def V_Jets_Stitching(self, LHEBranch, sel, sample):
         """Apply V+Jets stitching for MC samples DY MLL > 50. pT binned, Jet multiplicity binned and inclusive."""
         if LHEBranch is not None:
-            logger.info("Applying V+Jets stitching for " + sample)
+            logger.info("Applying V+Jets stitching")
             stitch_map_json = f"{self.parent.git_project_dir}/data/Run3NLOStitching.json"
 
             # Get the base sample name and corresponding sample number
