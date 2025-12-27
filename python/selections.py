@@ -69,7 +69,7 @@ def makeDLSelection(
     # Noise filters
     sel = scale_factors.NoiseFilters(tree.Flag, sel)
 
-    # final states
+    # lepton selections
     elel_sel = sel.refine(
         "eePairSel",
         cut=[
@@ -114,6 +114,10 @@ def makeDLSelection(
         ],
     )
 
+    analysis.yields.add(elel_sel, "EE lepton sel")
+    analysis.yields.add(mumu_sel, "MuMu lepton sel")
+    analysis.yields.add(elmu_sel, "EMu lepton sel")
+
     if DYControlRegion:
         elel_sel = elel_sel.refine(
             "eePairZpeakSel",
@@ -139,6 +143,8 @@ def makeDLSelection(
                 <= 10.0
             ],
         )
+        analysis.yields.add(elel_sel, "EE DY peak sel")
+        analysis.yields.add(mumu_sel, "MuMu DY peak sel")
     elif TTbarControlRegion:
         elel_sel = elel_sel.refine(
             "eePairZpeakSel",
@@ -157,6 +163,8 @@ def makeDLSelection(
                 > (Zmass + 10.0)
             ],
         )
+        analysis.yields.add(elel_sel, "EE above DY peak sel")
+        analysis.yields.add(mumu_sel, "MuMu above DY peak sel")
     else:
         elel_sel = elel_sel.refine(
             "eePairZpeakSel",
@@ -184,6 +192,9 @@ def makeDLSelection(
                 < 100.0 # educated cut
             ],
         )
+        analysis.yields.add(elel_sel, "EE below DY peak sel")
+        analysis.yields.add(mumu_sel, "MuMu below DY peak sel")
+        analysis.yields.add(elmu_sel, "EMu mll below 100 sel")
 
     # lepton scale factors
     elel_SF_sel = scale_factors.elelSF(elel_sel)
@@ -197,10 +208,10 @@ def makeDLSelection(
 
     # DY Z pT and recoil correction
     elel_SF_sel = scale_factors.Z_pT_reweight(
-        elel_SF_sel, sample, genPartBranch, pdgId=11
+        elel_SF_sel, sample, genPartBranch
     )
     mumu_SF_sel = scale_factors.Z_pT_reweight(
-        mumu_SF_sel, sample, genPartBranch, pdgId=13
+        mumu_SF_sel, sample, genPartBranch
     )
 
     # boosted pre-final state selections for btag reweighting
