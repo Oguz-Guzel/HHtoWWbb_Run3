@@ -1,24 +1,22 @@
-import os
 import logging
 
-from bamboo.plots import Plot, SummedPlot, Skim
+from bamboo.plots import Plot, SummedPlot
 from bamboo.plots import EquidistantBinning as EqBin
 from bamboo import treefunctions as op
 
 from definitions import ml_input_features
 from baseAnalysis import NanoBaseHHWWbb
 from selections import makeDLSelection
-from utils import labeler, ml_input_var_binning
+from utils import labeler
 
 logger = logging.getLogger(__name__)
 
 
 class mvaEvaluator(NanoBaseHHWWbb):
-    """Class to create control plots, cutflow reports and skims"""
+    """Class to create MVA distribution plots"""
 
     def __init__(self, args):
         super().__init__(args)
-        self.channel = self.args.channel
         self.mvaModel = self.args.mvaModel
 
     def definePlots(self, tree, noSel, sample=None, sampleCfg=None):
@@ -66,29 +64,6 @@ class mvaEvaluator(NanoBaseHHWWbb):
         ml_evaluator = op.mvaEvaluator(model_file, otherArgs="probabilities")
 
         ml_output = ml_evaluator(inputs)
-
-
-        # # The following code is an example of how to print stuff to the terminal
-        # # It is not necessary for the functionality of the code, but it can be useful for
-        # # debugging or logging purposes.
-        # # It uses the bamboo ROOT library to declare a function that prints the entry number,
-        # # event number, and the ML output to the terminal.
-
-        # from bamboo.root import gbl
-        # from bamboo.analysisutils import addPrintout
-
-        # gbl.gInterpreter.Declare("""
-        #     bool bamboo_printEntry(long entry, long event, const std::vector<float>& ml_output) {
-        #         std::cout << "Processing entry #" << entry << ": event " << event << " ml score [";
-        #         for (size_t i = 0; i < ml_output.size(); ++i) {
-        #             std::cout << ml_output[i];
-        #             if (i < ml_output.size() - 1) std::cout << ", ";
-        #         }
-        #         std::cout << "]" << std::endl;
-        #         return true;
-        #     }
-        # """)
-        # addPrintout(DL_resolved_1b_ee, "bamboo_printEntry", op.extVar("ULong_t", "rdfentry_"), tree.event, ml_output)
 
         # get the ML scores
         signal_node = ml_output[1]
@@ -337,70 +312,6 @@ class mvaEvaluator(NanoBaseHHWWbb):
                 ml_score_VBF_resolved,
                 ml_score_VBF_boosted,
                 ml_score_DL,
-            ]
-        )
-
-        event_selections = [
-            DL_boosted_ee,
-            DL_boosted_mumu,
-            DL_boosted_emu,
-            DL_resolved_1b_ee,
-            DL_resolved_1b_mumu,
-            DL_resolved_1b_emu,
-            DL_resolved_2b_ee,
-            DL_resolved_2b_mumu,
-            DL_resolved_2b_emu,
-            DL_VBF_resolved_ee,
-            DL_VBF_resolved_mumu,
-            DL_VBF_resolved_emu,
-            DL_VBF_boosted_ee,
-            DL_VBF_boosted_mumu,
-            DL_VBF_boosted_emu,
-        ]
-
-        # add skims that hold variables for the ML
-        for sel in event_selections:
-            plots.append(Skim(sel.name + "_ml_vars", ml_vars, sel))
-
-        # # Following is the code to plot the input features for the ML model.
-        # # It takes some time to run, so it's commented out.
-        # # We're not interested in the following two variables' match between data and MC.
-        # # Hence they're not included in the input feature plots.
-        # ml_vars.pop('event_no')
-        # ml_vars.pop('weight')
-
-        # for name, var in ml_vars.items():
-        #     ml_plots = []
-        #     for selection in event_selections:
-        #         ml_plots.append(
-        #             Plot.make1D(name+"_"+selection.name, var, selection,
-        #                         ml_input_var_binning(name), title=name, xTitle=name)
-        #         )
-        #     plots.extend(ml_plots)
-        #     plots.append(
-        #         SummedPlot(
-        #             name+"_summed", [plt for plt in ml_plots if plt.name.startswith(name)], title=name+"_summed")
-        #     )
-
-        # need to add at least one plot to the list of plots
-        plots.extend(
-            [
-                Plot.make1D(
-                    "DL_resolved_1b_leadingJet_eta_ee",
-                    self.ak4BJets[0].eta,
-                    DL_resolved_1b_ee,
-                    EqBin(30, -3, 3),
-                    title="eta(j1)",
-                    xTitle="Leading jet \eta",
-                ),
-                Plot.make1D(
-                    "event_mod_2",
-                    (tree.event % 2),
-                    noSel,
-                    EqBin(2, 0, 2),
-                    title="event mod 2",
-                    xTitle="event mod 2",
-                ),
             ]
         )
 
