@@ -431,20 +431,30 @@ def ml_input_features(self):
                 op.rng_len(self.tightElectrons) == 2,
                 getattr(self.tightElectrons[idx].p4, var)(),
             ),
-            (op.rng_len(self.tightMuons) == 2, getattr(self.tightMuons[idx].p4, var)()),
             (
+                op.rng_len(self.tightMuons) == 2,
+                getattr(self.tightMuons[idx].p4, var)(),
+            ),
+            (
+                # Mixed channel: only idx=0 is valid for each lepton type
                 op.switch(
-                    self.tightElectrons[0].pt > self.tightMuons[0].pt,
-                    getattr(self.tightElectrons[idx].p4, var)(),
-                    getattr(self.tightMuons[idx].p4, var)(),
+                    op.c_bool(idx == 0),
+                    op.switch(
+                        self.tightElectrons[0].pt > self.tightMuons[0].pt,
+                        getattr(self.tightElectrons[0].p4, var)(),
+                        getattr(self.tightMuons[0].p4, var)(),
+                    ),
+                    op.switch(
+                        self.tightElectrons[0].pt > self.tightMuons[0].pt,
+                        getattr(self.tightMuons[0].p4, var)(),
+                        getattr(self.tightElectrons[0].p4, var)()
+                    ),
                 )
             ),
         )
-
+    
     def get_lepton_tree_var(var, idx):
-        """Get lepton tree variable based on the topology.
-        Unlike get_lepton_callable, this function implements
-        conversion to float since charge and pdgId are integers."""
+        """Get lepton tree variable based on the topology."""
         return op.multiSwitch(
             (
                 op.rng_len(self.tightElectrons) == 2,
@@ -456,9 +466,17 @@ def ml_input_features(self):
             ),
             (
                 op.switch(
-                    self.tightElectrons[0].pt > self.tightMuons[0].pt,
-                    op.static_cast("float", getattr(self.tightElectrons[idx], var)),
-                    op.static_cast("float", getattr(self.tightMuons[idx], var)),
+                    op.c_bool(idx == 0),
+                    op.switch(
+                        self.tightElectrons[0].pt > self.tightMuons[0].pt,
+                        op.static_cast("float", getattr(self.tightElectrons[0], var)),
+                        op.static_cast("float", getattr(self.tightMuons[0], var)),
+                    ),
+                    op.switch(
+                        self.tightElectrons[0].pt > self.tightMuons[0].pt,
+                        op.static_cast("float", getattr(self.tightMuons[0], var)),
+                        op.static_cast("float", getattr(self.tightElectrons[0], var)),
+                    )
                 )
             ),
         )
