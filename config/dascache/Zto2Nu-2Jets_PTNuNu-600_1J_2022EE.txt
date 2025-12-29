@@ -1,0 +1,7 @@
+# das:/Zto2Nu-2Jets_PTNuNu-600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v3/NANOAODSIM
+root://cms-xrd-global.cern.ch///store/mc/Run3Summer22EENanoAODv12/Zto2Nu-2Jets_PTNuNu-600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_postEE_v6-v3/80000/4555495e-223d-42ec-a756-2457f500d856.root
+root://cms-xrd-global.cern.ch///store/mc/Run3Summer22EENanoAODv12/Zto2Nu-2Jets_PTNuNu-600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_postEE_v6-v3/80000/25aa4c52-5122-4938-9f5b-7927d6d63876.root
+root://cms-xrd-global.cern.ch///store/mc/Run3Summer22EENanoAODv12/Zto2Nu-2Jets_PTNuNu-600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_postEE_v6-v3/80000/45f32c40-ee23-437e-87f8-7f505d426420.root
+root://cms-xrd-global.cern.ch///store/mc/Run3Summer22EENanoAODv12/Zto2Nu-2Jets_PTNuNu-600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_postEE_v6-v3/80000/a3144dbd-5473-4a81-bc14-09c2cc339931.root
+root://cms-xrd-global.cern.ch///store/mc/Run3Summer22EENanoAODv12/Zto2Nu-2Jets_PTNuNu-600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_postEE_v6-v3/80000/20ce4401-fb2f-4dd5-b0a4-fe3e66636dfe.root
+root://cms-xrd-global.cern.ch///store/mc/Run3Summer22EENanoAODv12/Zto2Nu-2Jets_PTNuNu-600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_postEE_v6-v3/80000/722f452e-5af5-4e7f-892c-cdb87d2ea40c.root

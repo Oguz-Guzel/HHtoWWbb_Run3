@@ -1,0 +1,2 @@
+# das:/VBFHHto2B2Vto2L2Nu_CV_1_C2V_1_C3_1_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer23BPixNanoAODv13-133X_mcRun3_2023_realistic_postBPix_ForNanov13_v2-v2/NANOAODSIM
+root://cms-xrd-global.cern.ch///store/mc/Run3Summer23BPixNanoAODv13/VBFHHto2B2Vto2L2Nu_CV_1_C2V_1_C3_1_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/133X_mcRun3_2023_realistic_postBPix_ForNanov13_v2-v2/70000/ad1c4458-e0ed-49f2-b323-f6a61059d3f0.root
