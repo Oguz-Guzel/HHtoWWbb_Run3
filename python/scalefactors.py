@@ -736,7 +736,10 @@ class ScaleFactors:
 
             _weight = op.c_float(1.)
             if sampleNum is None:
-                logger.warning(
+                if "10to50" in base_sample:
+                    pass
+                else:
+                    logger.warning(
                     f"Warning! Sample {base_sample} not found in sampleNumDict for stitching")
             else:
                 # Use get_correction for the stitching weights
