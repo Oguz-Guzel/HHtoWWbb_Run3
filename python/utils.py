@@ -63,6 +63,7 @@ def custom_Plotit(
         _gp.remove("signal")
 
     lumiCFG = {}
+    logger.info(f"Copying samples to {outDir}")
     for smp, smpCfg in config["samples"].items():
 
         era = smpCfg["era"]
@@ -73,7 +74,6 @@ def custom_Plotit(
         mergedHists = {}
 
         file_to_copy = os.path.join(outDir, f"{smp}.root")
-        logger.info(f"Copying samples to {outDir}")
         if smpCfg.get("group") in _gp:
             keep_cfg[smp] = smpCfg
             if os.path.isfile(file_to_copy):
