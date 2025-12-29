@@ -2,7 +2,6 @@
 output*
 
 # ignore some others
-config/dascache/*
 __pycache__/
 *.cc
 texput.log
