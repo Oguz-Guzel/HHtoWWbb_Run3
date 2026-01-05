@@ -137,8 +137,8 @@ def custom_Plotit(
                 outf.write(f"  - {era}\n")
             outf.write("  error-fill-color: '#ee556270'\n")
             outf.write("  error-fill-style: 3154\n")
-            outf.write("  experiment: ' '\n")
-            outf.write("  extra-label: Private work (CMS simulation)\n")
+            outf.write("  experiment: 'CMS'\n")
+            outf.write("  extra-label: Work in progress\n")
             outf.write("  height: 800\n")
             outf.write("  luminosity:\n")
             for era, lumi in lumiCFG.items():
