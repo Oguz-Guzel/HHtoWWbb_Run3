@@ -369,13 +369,13 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
                 plotDefaults=self.plotDefaults,
                 vetoFileAttributes=self.__class__.CustomSampleAttributes,
             )
-            runPlotIt(
-                cfgName,
-                workdir=workdir,
-                plotIt=self.args.plotIt,
-                eras=(eraMode, eras),
-                verbose=self.args.verbose,
-            )
+            # runPlotIt(
+            #     cfgName,
+            #     workdir=workdir,
+            #     plotIt=self.args.plotIt,
+            #     eras=(eraMode, eras),
+            #     verbose=self.args.verbose,
+            # )
             # hadd signal files and create another plots.yml called plots_full.yml
             plotsDir = "plots_full"
             import os
@@ -392,7 +392,7 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
                 self.readCounters,
                 config,
                 plotIt=self.args.plotIt,
-                verbose=self.args.verbose,
+                verbose=True,
             )
             # end of merging signal samples and plotting
 
