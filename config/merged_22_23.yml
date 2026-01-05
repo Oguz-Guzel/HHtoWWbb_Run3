@@ -26,8 +26,8 @@ plotIt:
     margin-top: 0.05
     margin-bottom: 0.1
     luminosity-label: '%1$.2f fb^{-1} (13.6 TeV)'
-    experiment: " "
-    extra-label: Private work (CMS simulation)
+    experiment: "CMS"
+    extra-label: Work in progress
     luminosity-error: 0.014 # https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun3
     show-overflow: true
     error-fill-style: 3154
@@ -42,7 +42,7 @@ plotIt:
     yields-table-text-align: l
     book-keeping-file: plots.root
   legend:
-    position: [0.5, 0.65, 0.92, 0.9]
+    position: [0.35, 0.75, 0.92, 0.9]
   groups:
     data:
       legend: "Data"
@@ -62,15 +62,15 @@ plotIt:
       legend: "V+Jets"
       fill-color: "#94a4a2"
   plotdefaults:
-    # y-axis-range: [0.00001, 50000000]
+    y-axis-range: [0.00001, 90000000]
     normalized: False
     y-axis: "Events"
     log-y: both
     y-axis-show-zero: True
-    save-extensions: [png]
+    save-extensions: [pdf]
     show-ratio: True
     sort-by-yields: True
-    legend-columns: 4
+    legend-columns: 6
     ratio-y-axis: "Data / MC"
     ratio-y-axis-range: [0.5, 1.5]
 
