@@ -711,7 +711,7 @@ TTto2L2Nu_2022:
   era: '2022'
   generated-events: genEventSumw
   group: TT
-  split: -2
+  split: -4
   type: mc
 TTto2L2Nu_2022EE:
   cross-section: 98.036113
@@ -720,7 +720,7 @@ TTto2L2Nu_2022EE:
   era: 2022EE
   generated-events: genEventSumw
   group: TT
-  split: -2
+  split: -4
   type: mc
 TTto2L2Nu_2023:
   cross-section: 98.036113
@@ -728,7 +728,7 @@ TTto2L2Nu_2023:
   era: '2023'
   generated-events: genEventSumw
   group: TT
-  split: -2
+  split: -4
   type: mc
 TTto2L2Nu_2023BPix:
   cross-section: 98.036113
@@ -736,7 +736,7 @@ TTto2L2Nu_2023BPix:
   era: 2023BPix
   generated-events: genEventSumw
   group: TT
-  split: -2
+  split: -4
   type: mc
 TWminusto2L2Nu_2022:
   cross-section: 4.6651009
@@ -812,7 +812,7 @@ VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2022:
   db: das:/VBFHHto2B2Vto2L2Nu_CV_1_C2V_1_C3_1_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
   era: '2022'
   generated-events: genEventSumw
-  legend: HH_{vbf}^{SM}\rightarrow bbWW
+  legend: HH_{ VBF}\rightarrow bbWW (DL)
   line-color: 2
   split: -1
   type: signal
@@ -822,7 +822,7 @@ VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2022EE:
   db: das:/VBFHHto2B2Vto2L2Nu_CV_1_C2V_1_C3_1_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v1/NANOAODSIM
   era: 2022EE
   generated-events: genEventSumw
-  legend: HH_{vbf}^{SM}\rightarrow bbWW
+  legend: HH_{ VBF}\rightarrow bbWW (DL)
   line-color: 2
   split: -1
   type: signal
@@ -832,7 +832,7 @@ VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2023:
   db: das:/VBFHHto2B2Vto2L2Nu_CV_1_C2V_1_C3_1_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer23NanoAODv13-133X_mcRun3_2023_realistic_ForNanov13_v1-v2/NANOAODSIM
   era: '2023'
   generated-events: genEventSumw
-  legend: HH_{vbf}^{SM}\rightarrow bbWW
+  legend: HH_{ VBF}\rightarrow bbWW (DL)
   line-color: 3
   split: -1
   type: signal
@@ -842,7 +842,7 @@ VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2023BPix:
   db: das:/VBFHHto2B2Vto2L2Nu_CV_1_C2V_1_C3_1_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer23BPixNanoAODv13-133X_mcRun3_2023_realistic_postBPix_ForNanov13_v2-v2/NANOAODSIM
   era: 2023BPix
   generated-events: genEventSumw
-  legend: HH_{vbf}^{SM}\rightarrow bbWW
+  legend: HH_{ VBF}\rightarrow bbWW (DL)
   line-color: 3
   split: -1
   type: signal
@@ -1757,7 +1757,7 @@ ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022:
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-0p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv13-133X_mcRun3_2022_realistic_ForNanov13_v1-v2/NANOAODSIM
   era: '2022'
   generated-events: genEventSumw
-  legend: HH_{ggf}^{\kappa_\lambda=0}\rightarrow bbWW
+  legend: HH_{ GGF}^{\kappa_\lambda=0}\rightarrow bbWW (DL)
   line-color: 3
   split: -1
   type: signal
@@ -1767,7 +1767,7 @@ ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022EE:
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-0p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv13-133X_mcRun3_2022_realistic_postEE_ForNanov13_v1-v1/NANOAODSIM
   era: 2022EE
   generated-events: genEventSumw
-  legend: HH_{ggf}^{\kappa_\lambda=0}\rightarrow bbWW
+  legend: HH_{ GGF}^{\kappa_\lambda=0}\rightarrow bbWW (DL)
   line-color: 3
   split: -1
   type: signal
@@ -1777,7 +1777,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022:
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-1p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v1/NANOAODSIM
   era: '2022'
   generated-events: genEventSumw
-  legend: HH_{ggf}^{\kappa_\lambda=1}\rightarrow bbWW
+  legend: HH_{ GGF}\rightarrow bbWW (DL)
   line-color: 4
   split: -1
   type: signal
@@ -1787,7 +1787,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022EE:
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-1p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM
   era: 2022EE
   generated-events: genEventSumw
-  legend: HH_{ggf}^{\kappa_\lambda=1}\rightarrow bbWW
+  legend: HH_{ GGF}\rightarrow bbWW (DL)
   line-color: 4
   split: -1
   type: signal
@@ -1797,7 +1797,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2023:
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-1p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23BPixNanoAODv13-133X_mcRun3_2023_realistic_postBPix_ForNanov13_v2-v2/NANOAODSIM
   era: '2023'
   generated-events: genEventSumw
-  legend: HH_{ggf}^{\kappa_\lambda=1}\rightarrow bbWW
+  legend: HH_{ GGF}\rightarrow bbWW (DL)
   line-color: 2
   split: -1
   type: signal
@@ -1807,7 +1807,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2023BPix:
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-1p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23NanoAODv13-133X_mcRun3_2023_realistic_ForNanov13_v1-v1/NANOAODSIM
   era: 2023BPix
   generated-events: genEventSumw
-  legend: HH_{ggf}^{\kappa_\lambda=1}\rightarrow bbWW
+  legend: HH_{ GGF}\rightarrow bbWW (DL)
   line-color: 2
   split: -1
   type: signal
@@ -1817,7 +1817,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022:
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-2p45_kt-1p00_c2-0p00_LHEweights_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
   era: '2022'
   generated-events: genEventSumw
-  legend: HH_{ggf}^{\kappa_\lambda=2.45}\rightarrow bbWW
+  legend: HH_{ GGF}^{\kappa_\lambda=2.45}\rightarrow bbWW (DL)
   line-color: 8
   split: -1
   type: signal
@@ -1827,7 +1827,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022EE:
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-2p45_kt-1p00_c2-0p00_LHEweights_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM
   era: 2022EE
   generated-events: genEventSumw
-  legend: HH_{ggf}^{\kappa_\lambda=2.45}\rightarrow bbWW
+  legend: HH_{ GGF}^{\kappa_\lambda=2.45}\rightarrow bbWW (DL)
   line-color: 8
   split: -1
   type: signal
@@ -1857,7 +1857,7 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022:
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-5p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv13-133X_mcRun3_2022_realistic_ForNanov13_v1-v2/NANOAODSIM
   era: '2022'
   generated-events: genEventSumw
-  legend: HH_{ggf}^{\kappa_\lambda=5}\rightarrow bbWW
+  legend: HH_{ GGF}^{\kappa_\lambda=5}\rightarrow bbWW (DL)
   line-color: 6
   split: -1
   type: signal
@@ -1867,7 +1867,7 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022EE:
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-5p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv13-133X_mcRun3_2022_realistic_postEE_ForNanov13_v1-v2/NANOAODSIM
   era: 2022EE
   generated-events: genEventSumw
-  legend: HH_{ggf}^{\kappa_\lambda=5}\rightarrow bbWW
+  legend: HH_{ GGF}^{\kappa_\lambda=5}\rightarrow bbWW (DL)
   line-color: 6
   split: -1
   type: signal
