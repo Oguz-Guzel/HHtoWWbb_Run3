@@ -277,14 +277,16 @@ def ml_input_var_binning(var_name):
         N, mn, mx = 100, 0, 600
     elif "abs_dphi_" in var_name:
         N, mn, mx = 64, 0, 3.2
-    elif "_tau" in var_name or "_msoftdrop" in var_name:
+    elif "_tau" in var_name:
         N, mn, mx = 100, 0, 1
     elif "_tag" in var_name:
-        N, mn, mx = 2, 0, 1
+        N, mn, mx = 2, -0.5, 1.5
     elif "HT" in var_name:
         N, mn, mx = 100, 0, 2000
     elif "run_year" in var_name:
         N, mn, mx = 2, 2021.5, 2023.5
+    elif "_msoftdrop" in var_name:
+        N, mn, mx = 100, 0, 200
     return EqBin(N, mn, mx)
 
 
