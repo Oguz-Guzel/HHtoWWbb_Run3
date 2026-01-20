@@ -200,10 +200,12 @@ class ScaleFactors:
             w = getTopPtWeight(GenPartBranch)
 
             # nominal, up, down definitions
-            # Systematics are symmetric in log-weight space; also makes the full effect the 1\sigma.
-            w_nom = op.c_float(1.0)
-            w_up = w
-            w_down = 1.0 / w
+            # Recommendation: evaluate uncertainty by comparing with/without reweighting.
+            # Do NOT apply the reweighting in the opposite direction.
+            w_nom = w
+            # the variations represent the no-reweighting case
+            w_up = op.c_float(1.0)
+            w_down = op.c_float(1.0)
 
             sel = sel.refine(
                 "topPt",
