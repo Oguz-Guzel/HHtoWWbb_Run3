@@ -274,6 +274,9 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
             noSel = noSel.refine("puWeight", weight=op.c_float(1.0))
         self.yields.add(noSel, "puWeight")
 
+        # Inclusive cross-section uncertainties (rate-only)
+        noSel = self._apply_inclusive_xs_uncertainties(noSel, sample, sampleCfg)
+
         # Triggers
         self.triggers_per_PD = {}
 
@@ -316,6 +319,135 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
         self.yields.add(noSel, "triggers")
 
         return tree, noSel, be, lumiArgs
+
+    def _apply_inclusive_xs_uncertainties(self, sel, sample, sampleCfg):
+        """Apply inclusive cross-section uncertainties as rate-only systematics.
+
+        These are intended for use in the final fit as correlated rate uncertainties.
+        TTbar and DY are excluded (free-floating normalizations).
+        """
+        if not sampleCfg:
+            return sel
+
+        if sampleCfg.get("type") == "data":
+            return sel
+
+        if sampleCfg.get("group") in {"TT", "DY"}:
+            return sel
+
+        # HH signal samples are not covered by the tables; skip by default
+        if sampleCfg.get("type") == "signal":
+            return sel
+
+        smp_name = sample or ""
+        smp_lower = smp_name.lower()
+
+        def has_any(*tokens):
+            return any(tok in smp_lower for tok in tokens)
+
+        def add_rate_uncertainty(sel_in, syst_name, up_frac, down_frac):
+            return sel_in.refine(
+                f"{syst_name}__xsrate",
+                weight=op.systematic(
+                    op.c_float(1.0),
+                    syst_name,
+                    up=op.c_float(1.0 + up_frac),
+                    down=op.c_float(1.0 - down_frac),
+                ),
+            )
+
+        # Process matching helpers
+        is_tW = has_any("twminus", "tbarwplus")
+        is_st_tchannel = has_any("TBbarto", "TbarBto")
+        is_st_schannel = has_any("TBbarQ", "TbarBQ")
+        is_ttv = has_any("ttll")
+        is_ttZ = has_any("ttz")
+        is_tttt = has_any("tttt")
+        is_Wjets = sampleCfg.get("group") == "VJets"
+        is_WW = has_any("ww_")
+        is_WZ = has_any("wz_")
+        is_ZZ = has_any("zz_")
+
+        # Single-H backgrounds
+        is_Hggf = has_any("glugluhto")
+        is_Hvbf = has_any("vbfhto")
+        is_WH = has_any("wplush_")
+        is_ttH = has_any("tth_")
+        is_ZH = has_any("zh_")
+        is_tHq = has_any("thq_")
+        is_tHW = has_any("thw")
+
+        # QCD scale uncertainties (asymmetric)
+        if is_st_tchannel:
+            sel = add_rate_uncertainty(sel, "QCDscale_ttbar", 0.011, 0.008)
+        if is_st_schannel:
+            sel = add_rate_uncertainty(sel, "QCDscale_ttbar", 0.005, 0.004)
+        if is_tW:
+            sel = add_rate_uncertainty(sel, "QCDscale_ttbar", 0.023, 0.022)
+        if is_ttW:
+            sel = add_rate_uncertainty(sel, "QCDscale_ttbar", 0.261, 0.162)
+        if is_ttZ:
+            sel = add_rate_uncertainty(sel, "QCDscale_ttbar", 0.086, 0.095)
+        if is_tttt:
+            sel = add_rate_uncertainty(sel, "QCDscale_ttbar", 0.082, 0.175)
+
+        if is_Wjets:
+            sel = add_rate_uncertainty(sel, "QCDscale_V", 0.012, 0.013)
+
+        if is_WW:
+            sel = add_rate_uncertainty(sel, "QCDscale_VV", 0.025, 0.022)
+        if is_WZ:
+            sel = add_rate_uncertainty(sel, "QCDscale_VV", 0.041, 0.032)
+        if is_ZZ:
+            sel = add_rate_uncertainty(sel, "QCDscale_VV", 0.029, 0.027)
+
+        if is_Hggf:
+            sel = add_rate_uncertainty(sel, "QCDscale_ggH", 0.046, 0.067)
+        if is_Hvbf:
+            sel = add_rate_uncertainty(sel, "QCDscale_qqH", 0.005, 0.003)
+        if is_WH:
+            sel = add_rate_uncertainty(sel, "QCDscale_VH", 0.004, 0.007)
+        if is_ZH:
+            sel = add_rate_uncertainty(sel, "QCDscale_VH", 0.037, 0.032)
+        if is_ttH:
+            sel = add_rate_uncertainty(sel, "QCDscale_ttH", 0.060, 0.093)
+        if is_tHq:
+            sel = add_rate_uncertainty(sel, "QCDscale_ttH", 0.065, 0.148)
+        if is_tHW:
+            sel = add_rate_uncertainty(sel, "QCDscale_ttH", 0.050, 0.068)
+
+        # PDF+alphaS uncertainties (symmetric unless noted)
+        if is_tW:
+            sel = add_rate_uncertainty(sel, "PDFalphaS_gq", 0.027, 0.027)
+        if is_tttt:
+            sel = add_rate_uncertainty(sel, "PDFalphaS_gg", 0.067, 0.067)
+        # NOTE: ttZ appears in multiple initial-state groupings in the table.
+        # Here we keep it in the qq-group (adjust if you prefer gg).
+        if is_ttZ:
+            sel = add_rate_uncertainty(sel, "PDFalphaS_qq", 0.023, 0.023)
+        if is_st_tchannel:
+            sel = add_rate_uncertainty(sel, "PDFalphaS_qq", 0.015, 0.009)
+        if is_Wjets:
+            sel = add_rate_uncertainty(sel, "PDFalphaS_qq", 0.007, 0.007)
+        if is_ttW:
+            sel = add_rate_uncertainty(sel, "PDFalphaS_qq", 0.021, 0.021)
+
+        if is_Hggf:
+            sel = add_rate_uncertainty(sel, "PDFalphaS_ggH", 0.032, 0.032)
+        if is_Hvbf:
+            sel = add_rate_uncertainty(sel, "PDFalphaS_qqH", 0.021, 0.021)
+        if is_WH:
+            sel = add_rate_uncertainty(sel, "PDFalphaS_VH", 0.018, 0.018)
+        if is_ZH:
+            sel = add_rate_uncertainty(sel, "PDFalphaS_VH", 0.016, 0.016)
+        if is_ttH:
+            sel = add_rate_uncertainty(sel, "PDFalphaS_ttH", 0.035, 0.035)
+        if is_tHq:
+            sel = add_rate_uncertainty(sel, "PDFalphaS_ttH", 0.037, 0.037)
+        if is_tHW:
+            sel = add_rate_uncertainty(sel, "PDFalphaS_ttH", 0.063, 0.063)
+
+        return sel
 
     def postProcess(self, taskList, config=None, workdir=None, resultsdir=None):
         """Postprocess: run plotIt

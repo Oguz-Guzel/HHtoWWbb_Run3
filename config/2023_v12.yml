@@ -109,3 +109,17 @@ plotIt:
     - ZpT9
     - ZpT10
     - dileptonTRGSF
+    - QCDscale_ttbar
+    - QCDscale_V
+    - QCDscale_VV
+    - QCDscale_ggH
+    - QCDscale_qqH
+    - QCDscale_VH
+    - QCDscale_ttH
+    - PDFalphaS_gq
+    - PDFalphaS_gg
+    - PDFalphaS_qq
+    - PDFalphaS_ggH
+    - PDFalphaS_qqH
+    - PDFalphaS_VH
+    - PDFalphaS_ttH
