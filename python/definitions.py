@@ -502,7 +502,7 @@ def ml_input_features(self):
         "l1_E": get_lepton_callable("E", 0),
         "l1_pdgId": get_lepton_tree_var("pdgId", 0),
         "l1_charge": get_lepton_tree_var("charge", 0),
-        "l1_pT": op.multiSwitch(
+        "l1_pt": op.multiSwitch(
             (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[0].pt),
             (op.rng_len(self.tightMuons) == 2, self.tightMuons[0].pt),
             op.switch(
@@ -517,7 +517,7 @@ def ml_input_features(self):
         "l2_E": get_lepton_callable("E", 1),
         "l2_pdgId": get_lepton_tree_var("pdgId", 1),
         "l2_charge": get_lepton_tree_var("charge", 1),
-        "l2_pT": op.multiSwitch(
+        "l2_pt": op.multiSwitch(
             (op.rng_len(self.tightElectrons) == 2, self.tightElectrons[1].pt),
             (op.rng_len(self.tightMuons) == 2, self.tightMuons[1].pt),
             op.switch(
@@ -558,11 +558,11 @@ def ml_input_features(self):
         "j8_tau4": get_jet_tree_var("tau4", 0, self.ak8Jets),
         "j8_msoftdrop": get_jet_tree_var("msoftdrop", 0, self.ak8Jets),
         # met
-        "met_Px": op.product(self.met.pt, op.cos(self.met.phi)),
-        "met_Py": op.product(self.met.pt, op.sin(self.met.phi)),
+        # "met_Px": op.product(self.met.pt, op.cos(self.met.phi)),
+        # "met_Py": op.product(self.met.pt, op.sin(self.met.phi)),
         "met_E": self.met.pt,
         "HT": HT,
-        "met_LD": op.product(0.6, self.met.pt) + op.product(0.4, HT),
+        # "met_LD": op.product(0.6, self.met.pt) + op.product(0.4, HT),
     }
 
     def zero_p4():
@@ -809,7 +809,7 @@ def ml_input_features(self):
                 ),
                 (op.invariant_mass(self.tightElectrons[0].p4, self.tightMuons[0].p4)),
             ),
-            "di_lepton_met_mass": op.invariant_mass(dilepton, self.met.p4),
+            # "di_lepton_met_mass": op.invariant_mass(dilepton, self.met.p4),
             "di_lepton_dijet_met_mass": op.invariant_mass(
                 dilepton + dijet, self.met.p4
             ),
