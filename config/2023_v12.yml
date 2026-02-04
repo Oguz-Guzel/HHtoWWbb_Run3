@@ -132,3 +132,12 @@ plotIt:
     - muRF_bbWW
     - muRF_bbZZ
     - muRF_bbtautau
+    - pdfShape_ttbar
+    - pdfShape_DY
+    - pdfShape_ST
+    - pdfShape_VV
+    - pdfShape_ttV
+    - pdfShape_singleH
+    - pdfShape_bbWW
+    - pdfShape_bbZZ
+    - pdfShape_bbtautau

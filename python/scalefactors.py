@@ -269,6 +269,72 @@ class ScaleFactors:
 
         return sel
 
+    def pdf_shape_weights(self, tree, sel, sample, sampleCfg):
+        """Apply PDF shape uncertainty from LHEPdfWeight with envelope.
+
+        The variation is shape-only; optional normalization factors can be
+        provided in sampleCfg["pdf_norm"] as {up: <val>, down: <val>} or
+        [up, down].
+        """
+        if not self.parent.is_MC:
+            return sel
+
+        if tree is None or not hasattr(tree, "LHEPdfWeight"):
+            return sel
+
+        syst_name = self._pdf_shape_syst_name(sample, sampleCfg)
+        if syst_name is None:
+            return sel
+
+        weights = tree.LHEPdfWeight
+
+        def _get_weight(idx):
+            return op.switch(
+                op.rng_len(weights) > idx,
+                weights[idx],
+                op.c_float(1.0),
+            )
+
+        # If weights are already normalized to nominal, the nominal is 1.
+        # Otherwise, assume the first weight is the nominal reference.
+        nominal = _get_weight(0)
+
+        def _safe_div(num, den):
+            return op.switch(den != 0, num / den, op.c_float(1.0))
+
+        # Use a fixed maximum number of PDF replicas (default 100) with guards
+        n_pdf_replicas = 100
+        ratios = [
+            _safe_div(_get_weight(i), nominal) for i in range(1, n_pdf_replicas + 1)
+        ]
+
+        up_ratio = ratios[0]
+        down_ratio = ratios[0]
+        for r in ratios[1:]:
+            up_ratio = op.max(up_ratio, r)
+            down_ratio = op.min(down_ratio, r)
+
+        norm_up = 1.0
+        norm_down = 1.0
+        if sampleCfg is not None:
+            norm_cfg = sampleCfg.get("pdf_norm")
+            if isinstance(norm_cfg, dict):
+                norm_up = norm_cfg.get("up", 1.0)
+                norm_down = norm_cfg.get("down", 1.0)
+            elif isinstance(norm_cfg, (list, tuple)) and len(norm_cfg) >= 2:
+                norm_up, norm_down = norm_cfg[0], norm_cfg[1]
+
+        sel = sel.refine(
+            f"{syst_name}",
+            weight=op.systematic(
+                op.c_float(1.0),
+                syst_name,
+                up=up_ratio * op.c_float(norm_up),
+                down=down_ratio * op.c_float(norm_down),
+            ),
+        )
+
+        return sel
 
     def jet_veto_map(self, tree, sel):
         # https://cms-jerc.web.cern.ch/Recommendations/#run-3

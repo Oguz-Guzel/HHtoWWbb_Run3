@@ -69,6 +69,9 @@ def makeDLSelection(
     # muR/muF scale uncertainty (envelope from generator weights)
     sel = scale_factors.muRF_scale_weights(tree, sel, sample, analysis.sampleCfg)
 
+    # PDF shape uncertainty (envelope from generator weights)
+    sel = scale_factors.pdf_shape_weights(tree, sel, sample, analysis.sampleCfg)
+
     # Noise filters
     sel = scale_factors.NoiseFilters(tree.Flag, sel)
 
