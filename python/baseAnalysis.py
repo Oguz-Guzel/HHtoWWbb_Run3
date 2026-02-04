@@ -127,8 +127,8 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
             "--mvaModel",
             dest="mvaModel",
             type=str,
-            default=None,
-            help="Path to XGBoost model.)",
+            default="data/model.onnx",
+            help="Path to XGBoost model.",
         )
         parser.add_argument(
             "--backend",
