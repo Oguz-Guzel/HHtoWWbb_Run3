@@ -148,6 +148,7 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
         )
         self.era = sampleCfg["era"] if sampleCfg else None
         self.is_MC = self.isMC(sample)
+        self.sampleCfg = sampleCfg
 
         from bamboo.plots import CutFlowReport
 

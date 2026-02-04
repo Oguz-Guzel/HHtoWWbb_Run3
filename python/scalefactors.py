@@ -119,6 +119,157 @@ class ScaleFactors:
             ),
         }
 
+    def _muRF_syst_name(self, sample, sampleCfg):
+        """Return the muRF systematic name for a given sample.
+
+        Uncertainties are treated as uncorrelated between processes.
+        """
+        if not sampleCfg or not sample:
+            return None
+
+        smp_lower = sample.lower()
+        group = sampleCfg.get("group")
+
+        def has_any(*tokens):
+            return any(tok in smp_lower for tok in tokens)
+
+        if has_any("ttw", "ttz", "ttv"):
+            return "muRF_ttV"
+        if group == "TT" or has_any("ttto", "tt_", "ttbar"):
+            return "muRF_ttbar"
+        if group == "DY" or has_any("dyto", "dy_", "dyjets"):
+            return "muRF_DY"
+        if group == "ST" or has_any("tw", "tbarw", "tchannel", "schannel"):
+            return "muRF_ST"
+        if group == "VV" or has_any("ww", "wz", "zz"):
+            return "muRF_VV"
+
+        # Single-H backgrounds
+        if has_any("ggh", "glugluhto", "vbfh", "wh", "zh", "tth", "thq", "thw"):
+            return "muRF_singleH"
+
+        # Signal processes
+        if has_any("bbww"):
+            return "muRF_bbWW"
+        if has_any("bbzz"):
+            return "muRF_bbZZ"
+        if has_any("bbtautau", "bbtt"):
+            return "muRF_bbtautau"
+
+        return None
+
+    def _pdf_shape_syst_name(self, sample, sampleCfg):
+        """Return the PDF shape systematic name for a given sample.
+
+        Uncertainties are treated as uncorrelated between processes.
+        """
+        if not sampleCfg or not sample:
+            return None
+
+        smp_lower = sample.lower()
+        group = sampleCfg.get("group")
+
+        def has_any(*tokens):
+            return any(tok in smp_lower for tok in tokens)
+
+        if has_any("ttw", "ttz", "ttv"):
+            return "pdfShape_ttV"
+        if group == "TT" or has_any("ttto", "tt_", "ttbar"):
+            return "pdfShape_ttbar"
+        if group == "DY" or has_any("dyto", "dy_", "dyjets"):
+            return "pdfShape_DY"
+        if group == "ST" or has_any("tw", "tbarw", "tchannel", "schannel"):
+            return "pdfShape_ST"
+        if group == "VV" or has_any("ww", "wz", "zz"):
+            return "pdfShape_VV"
+
+        # Single-H backgrounds
+        if has_any("ggh", "glugluhto", "vbfh", "wh", "zh", "tth", "thq", "thw"):
+            return "pdfShape_singleH"
+
+        # Signal processes
+        if has_any("bbww"):
+            return "pdfShape_bbWW"
+        if has_any("bbzz"):
+            return "pdfShape_bbZZ"
+        if has_any("bbtautau", "bbtt"):
+            return "pdfShape_bbtautau"
+
+        return None
+
+    def muRF_scale_weights(self, tree, sel, sample, sampleCfg):
+        """Apply muR/muF scale uncertainty from LHEScaleWeight with envelope.
+
+        The variation is shape-only; optional normalization factors can be
+        provided in sampleCfg["muRF_norm"] as {up: <val>, down: <val>} or
+        [up, down].
+        """
+        if not self.parent.is_MC:
+            return sel
+
+        if tree is None or not hasattr(tree, "LHEScaleWeight"):
+            return sel
+
+        syst_name = self._muRF_syst_name(sample, sampleCfg)
+        if syst_name is None:
+            return sel
+
+        weights = tree.LHEScaleWeight
+
+        def _get_weight(idx):
+            return op.switch(
+                op.rng_len(weights) > idx,
+                weights[idx],
+                op.c_float(1.0),
+            )
+
+        nominal = _get_weight(4)
+
+        def _safe_div(num, den):
+            return op.switch(den != 0, num / den, op.c_float(1.0))
+
+        ratios = [
+            _safe_div(_get_weight(i), nominal) for i in [0, 1, 2, 3, 5, 6, 7, 8]
+        ]
+
+        def _max_list(vals):
+            m = vals[0]
+            for v in vals[1:]:
+                m = op.max(m, v)
+            return m
+
+        def _min_list(vals):
+            m = vals[0]
+            for v in vals[1:]:
+                m = op.min(m, v)
+            return m
+
+        up_ratio = _max_list(ratios)
+        down_ratio = _min_list(ratios)
+
+        norm_up = 1.0
+        norm_down = 1.0
+        if sampleCfg is not None:
+            norm_cfg = sampleCfg.get("muRF_norm")
+            if isinstance(norm_cfg, dict):
+                norm_up = norm_cfg.get("up", 1.0)
+                norm_down = norm_cfg.get("down", 1.0)
+            elif isinstance(norm_cfg, (list, tuple)) and len(norm_cfg) >= 2:
+                norm_up, norm_down = norm_cfg[0], norm_cfg[1]
+
+        sel = sel.refine(
+            f"{syst_name}",
+            weight=op.systematic(
+                op.c_float(1.0),
+                syst_name,
+                up=up_ratio * op.c_float(norm_up),
+                down=down_ratio * op.c_float(norm_down),
+            ),
+        )
+
+        return sel
+
+
     def jet_veto_map(self, tree, sel):
         # https://cms-jerc.web.cern.ch/Recommendations/#run-3
         logger.info("Applying JetVeto")

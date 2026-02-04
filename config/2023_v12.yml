@@ -123,3 +123,12 @@ plotIt:
     - PDFalphaS_qqH
     - PDFalphaS_VH
     - PDFalphaS_ttH
+    - muRF_ttbar
+    - muRF_DY
+    - muRF_ST
+    - muRF_VV
+    - muRF_ttV
+    - muRF_singleH
+    - muRF_bbWW
+    - muRF_bbZZ
+    - muRF_bbtautau
