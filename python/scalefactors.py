@@ -197,6 +197,35 @@ class ScaleFactors:
 
         return None
 
+    def _ps_fsr_syst_name(self, sample, sampleCfg):
+        """Return the PS FSR systematic name for a given sample.
+
+        Uncertainties are treated as uncorrelated between processes.
+        """
+        if not sampleCfg or not sample:
+            return None
+
+        smp_lower = sample.lower()
+        group = sampleCfg.get("group")
+
+        def has_any(*tokens):
+            return any(tok in smp_lower for tok in tokens)
+
+        if has_any("ttw", "ttz", "ttv"):
+            return "psFSR_ttV"
+        if group == "TT" or has_any("ttto", "tt_", "ttbar"):
+            return "psFSR_ttbar"
+        if group == "DY" or has_any("dyto", "dy_", "dyjets"):
+            return "psFSR_DY"
+        if group == "ST" or has_any("tw", "tbarw", "tchannel", "schannel"):
+            return "psFSR_ST"
+        if group == "VV" or has_any("ww", "wz", "zz"):
+            return "psFSR_VV"
+        if has_any("ggh", "glugluhto", "vbfh", "wh", "zh", "tth", "thq", "thw"):
+            return "psFSR_singleH"
+
+        return None
+
     def muRF_scale_weights(self, tree, sel, sample, sampleCfg):
         """Apply muR/muF scale uncertainty from LHEScaleWeight with envelope.
 
@@ -333,6 +362,80 @@ class ScaleFactors:
                 down=down_ratio * op.c_float(norm_down),
             ),
         )
+
+        return sel
+
+    def ps_isr_fsr_weights(self, tree, sel, sample, sampleCfg):
+        """Apply PS ISR/FSR scale uncertainties from PSWeight.
+
+        ISR is treated as correlated among processes (single nuisance).
+        FSR is treated as uncorrelated between processes.
+        Optional normalization factors can be provided in sampleCfg:
+          psISR_norm / psFSR_norm as {up: <val>, down: <val>} or [up, down].
+        """
+        if not self.parent.is_MC:
+            return sel
+
+        if tree is None or not hasattr(tree, "PSWeight"):
+            return sel
+
+        weights = tree.PSWeight
+
+        def _get_weight(idx):
+            return op.switch(
+                op.rng_len(weights) > idx,
+                weights[idx],
+                op.c_float(1.0),
+            )
+
+        # NanoAOD default scheme: 0/1 = ISR down/up, 2/3 = FSR down/up
+        isr_down = _get_weight(0)
+        isr_up = _get_weight(1)
+        fsr_down = _get_weight(2)
+        fsr_up = _get_weight(3)
+
+        isr_norm_up = 1.0
+        isr_norm_down = 1.0
+        fsr_norm_up = 1.0
+        fsr_norm_down = 1.0
+        if sampleCfg is not None:
+            isr_norm_cfg = sampleCfg.get("psISR_norm")
+            if isinstance(isr_norm_cfg, dict):
+                isr_norm_up = isr_norm_cfg.get("up", 1.0)
+                isr_norm_down = isr_norm_cfg.get("down", 1.0)
+            elif isinstance(isr_norm_cfg, (list, tuple)) and len(isr_norm_cfg) >= 2:
+                isr_norm_up, isr_norm_down = isr_norm_cfg[0], isr_norm_cfg[1]
+
+            fsr_norm_cfg = sampleCfg.get("psFSR_norm")
+            if isinstance(fsr_norm_cfg, dict):
+                fsr_norm_up = fsr_norm_cfg.get("up", 1.0)
+                fsr_norm_down = fsr_norm_cfg.get("down", 1.0)
+            elif isinstance(fsr_norm_cfg, (list, tuple)) and len(fsr_norm_cfg) >= 2:
+                fsr_norm_up, fsr_norm_down = fsr_norm_cfg[0], fsr_norm_cfg[1]
+
+        # ISR: correlated among processes
+        sel = sel.refine(
+            "psISR",
+            weight=op.systematic(
+                op.c_float(1.0),
+                "psISR",
+                up=isr_up * op.c_float(isr_norm_up),
+                down=isr_down * op.c_float(isr_norm_down),
+            ),
+        )
+
+        # FSR: uncorrelated between processes
+        fsr_name = self._ps_fsr_syst_name(sample, sampleCfg)
+        if fsr_name is not None:
+            sel = sel.refine(
+                fsr_name,
+                weight=op.systematic(
+                    op.c_float(1.0),
+                    fsr_name,
+                    up=fsr_up * op.c_float(fsr_norm_up),
+                    down=fsr_down * op.c_float(fsr_norm_down),
+                ),
+            )
 
         return sel
 

@@ -141,3 +141,10 @@ plotIt:
     - pdfShape_bbWW
     - pdfShape_bbZZ
     - pdfShape_bbtautau
+    - psISR
+    - psFSR_ttbar
+    - psFSR_DY
+    - psFSR_ST
+    - psFSR_VV
+    - psFSR_ttV
+    - psFSR_singleH

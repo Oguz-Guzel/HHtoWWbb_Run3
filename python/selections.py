@@ -72,6 +72,9 @@ def makeDLSelection(
     # PDF shape uncertainty (envelope from generator weights)
     sel = scale_factors.pdf_shape_weights(tree, sel, sample, analysis.sampleCfg)
 
+    # PS ISR/FSR scale uncertainties (generator weights)
+    sel = scale_factors.ps_isr_fsr_weights(tree, sel, sample, analysis.sampleCfg)
+
     # Noise filters
     sel = scale_factors.NoiseFilters(tree.Flag, sel)
 
