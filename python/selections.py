@@ -259,6 +259,16 @@ def makeDLSelection(
         btagReweightStudy=btagReweightStudy,
     )
 
+    DL_boosted_pre_ee_btagSF = scale_factors.ak8_bbcc_sf(
+        DL_boosted_pre_ee_btagSF, analysis.ak8BJets
+    )
+    DL_boosted_pre_mumu_btagSF = scale_factors.ak8_bbcc_sf(
+        DL_boosted_pre_mumu_btagSF, analysis.ak8BJets
+    )
+    DL_boosted_pre_emu_btagSF = scale_factors.ak8_bbcc_sf(
+        DL_boosted_pre_emu_btagSF, analysis.ak8BJets
+    )
+
     if DYControlRegion:
         Z_peak_selections = []
         # no b-jets

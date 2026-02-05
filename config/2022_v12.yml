@@ -148,3 +148,6 @@ plotIt:
     - psFSR_VV
     - psFSR_ttV
     - psFSR_singleH
+    - ak8BBCC
+    - ak8BBCC_tau21
+    - ak8BBCC_msd

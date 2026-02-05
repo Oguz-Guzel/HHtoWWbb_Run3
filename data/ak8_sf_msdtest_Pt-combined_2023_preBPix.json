@@ -1,0 +1,289 @@
+{
+  "schema_version": 2,
+  "description": "HHbbww Run3 scale factors combined pT bins (300-350, 350-425, 425-Inf) for 2023_preBPix",
+  "corrections": [
+    {
+      "name": "HHbbww_2023_preBPix_SF_bb",
+      "description": "HHbbww Run3 scale factors | combined pT bins | 2023_preBPix | r",
+      "version": 1,
+      "inputs": [
+        {
+          "name": "pt",
+          "type": "real",
+          "description": "AK8 jet pT (GeV)"
+        },
+        {
+          "name": "systematic",
+          "type": "string",
+          "description": "nominal|up|down|tau21Up|tau21Down|msdUp|msdDown"
+        }
+      ],
+      "output": {
+        "name": "sf",
+        "type": "real",
+        "description": "scale factor"
+      },
+      "generic_formulas": null,
+      "data": {
+        "nodetype": "binning",
+        "input": "pt",
+        "edges": [
+          300.0,
+          350.0,
+          425.0,
+          20000.0
+        ],
+        "content": [
+          {
+            "nodetype": "category",
+            "input": "systematic",
+            "content": [
+              {
+                "key": "nominal",
+                "value": 0.9937429186664274
+              },
+              {
+                "key": "up",
+                "value": 1.0078719727943288
+              },
+              {
+                "key": "down",
+                "value": 0.979613864538526
+              },
+              {
+                "key": "tau21Up",
+                "value": 1.0218933675597373
+              },
+              {
+                "key": "tau21Down",
+                "value": 0.9655924697731175
+              },
+              {
+                "key": "msdUp",
+                "value": 1.0271172619875648
+              },
+              {
+                "key": "msdDown",
+                "value": 0.9930577615973841
+              }
+            ],
+            "default": null
+          },
+          {
+            "nodetype": "category",
+            "input": "systematic",
+            "content": [
+              {
+                "key": "nominal",
+                "value": 0.9786123405077182
+              },
+              {
+                "key": "up",
+                "value": 0.9922754523493467
+              },
+              {
+                "key": "down",
+                "value": 0.9649492286660897
+              },
+              {
+                "key": "tau21Up",
+                "value": 1.0208275567269212
+              },
+              {
+                "key": "tau21Down",
+                "value": 0.9363971242885152
+              },
+              {
+                "key": "msdUp",
+                "value": 1.0013251410618602
+              },
+              {
+                "key": "msdDown",
+                "value": 0.9771087812772691
+              }
+            ],
+            "default": null
+          },
+          {
+            "nodetype": "category",
+            "input": "systematic",
+            "content": [
+              {
+                "key": "nominal",
+                "value": 0.9329537789122869
+              },
+              {
+                "key": "up",
+                "value": 0.9465300483693
+              },
+              {
+                "key": "down",
+                "value": 0.9193775094552739
+              },
+              {
+                "key": "tau21Up",
+                "value": 0.9841293208559722
+              },
+              {
+                "key": "tau21Down",
+                "value": 0.8817782369686017
+              },
+              {
+                "key": "msdUp",
+                "value": 0.9511606735637185
+              },
+              {
+                "key": "msdDown",
+                "value": 0.9297739569523449
+              }
+            ],
+            "default": null
+          }
+        ],
+        "flow": "clamp"
+      }
+    },
+    {
+      "name": "HHbbww_2023_preBPix_SF_cc",
+      "description": "HHbbww Run3 scale factors | combined pT bins | 2023_preBPix | SF_c",
+      "version": 1,
+      "inputs": [
+        {
+          "name": "pt",
+          "type": "real",
+          "description": "AK8 jet pT (GeV)"
+        },
+        {
+          "name": "systematic",
+          "type": "string",
+          "description": "nominal|up|down|tau21Up|tau21Down|msdUp|msdDown"
+        }
+      ],
+      "output": {
+        "name": "sf",
+        "type": "real",
+        "description": "scale factor"
+      },
+      "generic_formulas": null,
+      "data": {
+        "nodetype": "binning",
+        "input": "pt",
+        "edges": [
+          300.0,
+          350.0,
+          425.0,
+          20000.0
+        ],
+        "content": [
+          {
+            "nodetype": "category",
+            "input": "systematic",
+            "content": [
+              {
+                "key": "nominal",
+                "value": 0.8642958622070186
+              },
+              {
+                "key": "up",
+                "value": 1.0295890882278123
+              },
+              {
+                "key": "down",
+                "value": 0.6990026361862249
+              },
+              {
+                "key": "tau21Up",
+                "value": 0.9892868469992233
+              },
+              {
+                "key": "tau21Down",
+                "value": 0.7393048774148139
+              },
+              {
+                "key": "msdUp",
+                "value": 1.448892640161636
+              },
+              {
+                "key": "msdDown",
+                "value": 0.8822197734414277
+              }
+            ],
+            "default": null
+          },
+          {
+            "nodetype": "category",
+            "input": "systematic",
+            "content": [
+              {
+                "key": "nominal",
+                "value": 0.9603395452118529
+              },
+              {
+                "key": "up",
+                "value": 1.124709406628048
+              },
+              {
+                "key": "down",
+                "value": 0.7959696837956579
+              },
+              {
+                "key": "tau21Up",
+                "value": 1.1184456085249335
+              },
+              {
+                "key": "tau21Down",
+                "value": 0.8022334818987724
+              },
+              {
+                "key": "msdUp",
+                "value": 1.4282053982451741
+              },
+              {
+                "key": "msdDown",
+                "value": 0.9667127342791405
+              }
+            ],
+            "default": null
+          },
+          {
+            "nodetype": "category",
+            "input": "systematic",
+            "content": [
+              {
+                "key": "nominal",
+                "value": 1.3502473916217994
+              },
+              {
+                "key": "up",
+                "value": 1.5895820046542697
+              },
+              {
+                "key": "down",
+                "value": 1.1109127785893291
+              },
+              {
+                "key": "tau21Up",
+                "value": 1.4651747615175115
+              },
+              {
+                "key": "tau21Down",
+                "value": 1.2353200217260873
+              },
+              {
+                "key": "msdUp",
+                "value": 1.582299367112679
+              },
+              {
+                "key": "msdDown",
+                "value": 1.3577959106121824
+              }
+            ],
+            "default": null
+          }
+        ],
+        "flow": "clamp"
+      }
+    }
+  ],
+  "compound_corrections": null
+}

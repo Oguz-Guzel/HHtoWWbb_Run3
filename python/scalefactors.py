@@ -49,6 +49,29 @@ JetVeto_JSONFiles = {
     "2023BPix": (jsonPathBase + "JME/2023_Summer23BPix/jetvetomaps.json.gz", "Summer23BPixPrompt23_RunD_V1"),
 }
 
+AK8_BBCC_SF_FILES = {
+    "2022": (
+        "ak8_sf_msdtest_Pt-combined_2022_preEE.json",
+        "HHbbww_2022_preEE_SF_bb",
+        "HHbbww_2022_preEE_SF_cc",
+    ),
+    "2022EE": (
+        "ak8_sf_msdtest_Pt-combined_2022_postEE.json",
+        "HHbbww_2022_postEE_SF_bb",
+        "HHbbww_2022_postEE_SF_cc",
+    ),
+    "2023": (
+        "ak8_sf_msdtest_Pt-combined_2023_preBPix.json",
+        "HHbbww_2023_preBPix_SF_bb",
+        "HHbbww_2023_preBPix_SF_cc",
+    ),
+    "2023BPix": (
+        "ak8_sf_msdtest_Pt-combined_2023_postBPix.json",
+        "HHbbww_2023_postBPix_SF_bb",
+        "HHbbww_2023_postBPix_SF_cc",
+    ),
+}
+
 sampleNumDict = {
     "WtoLNu-2Jets": 150,
     "WtoLNu-2Jets_PTLNu-40to100_1J": 151,
@@ -592,6 +615,83 @@ class ScaleFactors:
         self.parent.yields.add(sel, sel.name)
 
         sel = sel.refine(sel.name + "_btagRW", weight=btag_reweight)
+        self.parent.yields.add(sel, sel.name)
+
+        return sel
+
+    def ak8_bbcc_sf(self, sel, jets):
+        """Apply AK8 bb/cc corrections for boosted jets (with systematics)."""
+        if self.parent.is_MC:
+            sf_file, bb_name, cc_name = AK8_BBCC_SF_FILES[self.parent.era]
+            sf_path = os.path.join(self.parent.git_project_dir, "data", sf_file)
+
+            def _corrs(syst):
+                bb_corr = get_correction(
+                    sf_path,
+                    bb_name,
+                    params={"pt": lambda j: j.pt, "systematic": syst},
+                    sel=sel,
+                )
+                cc_corr = get_correction(
+                    sf_path,
+                    cc_name,
+                    params={"pt": lambda j: j.pt, "systematic": syst},
+                    sel=sel,
+                )
+                return bb_corr, cc_corr
+
+            def _weight_for(syst):
+                bb_corr, cc_corr = _corrs(syst)
+
+                def jet_sf(j):
+                    is_bb = j.nBHadrons >= 2
+                    is_cc = op.AND(j.nBHadrons < 2, j.nCHadrons >= 2)
+                    return op.switch(
+                        is_bb,
+                        bb_corr(j),
+                        op.switch(is_cc, cc_corr(j), op.c_float(1.0)),
+                    )
+
+                return op.rng_product(jets, jet_sf)
+
+            weight_nom = _weight_for("nominal")
+            weight_up = _weight_for("up")
+            weight_down = _weight_for("down")
+            weight_tau21_up = _weight_for("tau21Up")
+            weight_tau21_down = _weight_for("tau21Down")
+            weight_msd_up = _weight_for("msdUp")
+            weight_msd_down = _weight_for("msdDown")
+
+            sel = sel.refine(
+                sel.name + "_ak8BBCCSF",
+                weight=op.systematic(
+                    weight_nom,
+                    "ak8BBCC",
+                    up=weight_up,
+                    down=weight_down,
+                ),
+            )
+            sel = sel.refine(
+                sel.name + "_ak8BBCCSF_tau21",
+                weight=op.systematic(
+                    weight_nom,
+                    "ak8BBCC_tau21",
+                    up=weight_tau21_up,
+                    down=weight_tau21_down,
+                ),
+            )
+            sel = sel.refine(
+                sel.name + "_ak8BBCCSF_msd",
+                weight=op.systematic(
+                    weight_nom,
+                    "ak8BBCC_msd",
+                    up=weight_msd_up,
+                    down=weight_msd_down,
+                ),
+            )
+        else:
+            sel = sel.refine(sel.name + "_ak8BBCCSF", weight=op.c_float(1.0))
+
         self.parent.yields.add(sel, sel.name)
 
         return sel
