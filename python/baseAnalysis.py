@@ -361,7 +361,7 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
         is_tW = has_any("twminus", "tbarwplus")
         is_st_tchannel = has_any("TBbarto", "TbarBto")
         is_st_schannel = has_any("TBbarQ", "TbarBQ")
-        is_ttv = has_any("ttll")
+        is_ttW = has_any("ttll")
         is_ttZ = has_any("ttz")
         is_tttt = has_any("tttt")
         is_Wjets = sampleCfg.get("group") == "VJets"
