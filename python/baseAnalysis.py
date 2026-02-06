@@ -127,7 +127,7 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
             "--mvaModel",
             dest="mvaModel",
             type=str,
-            default="data/model.onnx",
+            default="/afs/cern.ch/work/a/aguzel/private/bamboo_105/HHtoWWbb_Run3/data/model.onnx",
             help="Path to XGBoost model.",
         )
         parser.add_argument(
