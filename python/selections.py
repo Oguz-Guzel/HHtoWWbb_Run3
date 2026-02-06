@@ -137,7 +137,7 @@ def makeDLSelection(
                     )
                     - Zmass
                 )
-                <= 10.0
+                <= 20.0
             ],
         )
         mumu_sel = mumu_sel.refine(
@@ -149,7 +149,7 @@ def makeDLSelection(
                     )
                     - Zmass
                 )
-                <= 10.0
+                <= 20.0
             ],
         )
         analysis.yields.add(elel_sel, "EE DY peak sel")
@@ -161,7 +161,7 @@ def makeDLSelection(
                 op.invariant_mass(
                     analysis.tightElectrons[0].p4, analysis.tightElectrons[1].p4
                 )
-                > (Zmass + 10.0)
+                > (Zmass + 20.0)
             ],
         )
         mumu_sel = mumu_sel.refine(
@@ -169,7 +169,7 @@ def makeDLSelection(
             cut=[
                 op.invariant_mass(
                     analysis.tightMuons[0].p4, analysis.tightMuons[1].p4)
-                > (Zmass + 10.0)
+                > (Zmass + 20.0)
             ],
         )
         analysis.yields.add(elel_sel, "EE above DY peak sel")
@@ -181,7 +181,7 @@ def makeDLSelection(
                 op.invariant_mass(
                     analysis.tightElectrons[0].p4, analysis.tightElectrons[1].p4
                 )
-                < (Zmass - 10.0)
+                < (Zmass - 20.0)
             ],
         )
         mumu_sel = mumu_sel.refine(
@@ -189,7 +189,7 @@ def makeDLSelection(
             cut=[
                 op.invariant_mass(
                     analysis.tightMuons[0].p4, analysis.tightMuons[1].p4)
-                < (Zmass - 10.0)
+                < (Zmass - 20.0)
             ],
         )
         elmu_sel = elmu_sel.refine(
