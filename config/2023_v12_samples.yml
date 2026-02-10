@@ -984,7 +984,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2023:
   era: '2023'
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-1p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23BPixNanoAODv13-133X_mcRun3_2023_realistic_postBPix_ForNanov13_v2-v2/NANOAODSIM
   cross-section: 0.03413
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: &nsplit_signal -1
   line-color: 2
@@ -995,7 +995,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2023BPix:
   era: '2023BPix'
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-1p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23NanoAODv13-133X_mcRun3_2023_realistic_ForNanov13_v1-v1/NANOAODSIM
   cross-section: 0.03413
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *nsplit_signal
   line-color: 2
@@ -1006,7 +1006,7 @@ VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2023:
   era: '2023'
   db: das:/VBFHHto2B2Vto2L2Nu_CV_1_C2V_1_C3_1_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer23NanoAODv13-133X_mcRun3_2023_realistic_ForNanov13_v1-v2/NANOAODSIM
   cross-section: 0.001898 # from XSDB
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *nsplit_signal
   line-color: 3
@@ -1017,7 +1017,7 @@ VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2023BPix:
   era: '2023BPix'
   db: das:/VBFHHto2B2Vto2L2Nu_CV_1_C2V_1_C3_1_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer23BPixNanoAODv13-133X_mcRun3_2023_realistic_postBPix_ForNanov13_v2-v2/NANOAODSIM
   cross-section: 0.001898
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *nsplit_signal
   line-color: 3
@@ -1029,7 +1029,7 @@ ggH_bbww_2l2Nu_kl-0p00_kt-1p00_c2-0p00_2023:
   era: '2023'
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-0p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23NanoAODv13-133X_mcRun3_2023_realistic_ForNanov13_v1-v1/NANOAODSIM
   cross-section: 0.0653
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *nsplit_signal
   line-color: 4
@@ -1040,7 +1040,7 @@ ggH_bbww_2l2Nu_kl-0p00_kt-1p00_c2-0p00_2023BPix:
   era: '2023BPix'
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-0p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23BPixNanoAODv13-133X_mcRun3_2023_realistic_postBPix_ForNanov13_v2-v2/NANOAODSIM
   cross-section: 0.0653
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *nsplit_signal
   line-color: 4
@@ -1051,7 +1051,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2023:
   era: '2023'
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-2p45_kt-1p00_c2-0p00_LHEweights_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v4/NANOAODSIM
   cross-section: 0.01285
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *nsplit_signal
   line-color: 5
@@ -1062,7 +1062,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2023BPix:
   era: '2023BPix'
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-2p45_kt-1p00_c2-0p00_LHEweights_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2/NANOAODSIM
   cross-section: 0.01285
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *nsplit_signal
   line-color: 5
@@ -1073,7 +1073,7 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2023:
   era: '2023'
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-5p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23NanoAODv13-133X_mcRun3_2023_realistic_ForNanov13_v1-v2/NANOAODSIM
   cross-section: 0.08349
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *nsplit_signal
   line-color: 6
@@ -1084,7 +1084,7 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2023BPix:
   era: '2023BPix'
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-5p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23BPixNanoAODv13-133X_mcRun3_2023_realistic_postBPix_ForNanov13_v2-v2/NANOAODSIM
   cross-section: 0.08349
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *nsplit_signal
   line-color: 6

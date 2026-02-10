@@ -1040,7 +1040,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022:
   era: '2022'
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-1p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v1/NANOAODSIM
   cross-section: 0.03413 # taken from https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHWGHH?redirectedfrom=LHCPhysics.LHCHXSWGHH#Current_recommendations_for_HH_c but 0.02964 from GenXSecAnalyzer and XSDB
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: &n_split_signal -1
   line-color: 4
@@ -1051,7 +1051,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022EE:
   era: '2022EE'
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-1p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM
   cross-section: 0.03413
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *n_split_signal
   line-color: 4
@@ -1062,7 +1062,7 @@ VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2022:
   era: '2022'
   db: das:/VBFHHto2B2Vto2L2Nu_CV_1_C2V_1_C3_1_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
   cross-section: 0.001898 # from XSDB
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *n_split_signal
   line-color: 2
@@ -1073,7 +1073,7 @@ VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2022EE:
   era: '2022EE'
   db: das:/VBFHHto2B2Vto2L2Nu_CV_1_C2V_1_C3_1_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v1/NANOAODSIM
   cross-section: 0.001898
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *n_split_signal
   line-color: 2
@@ -1085,7 +1085,7 @@ ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022:
   era: '2022'
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-0p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv13-133X_mcRun3_2022_realistic_ForNanov13_v1-v2/NANOAODSIM
   cross-section: 0.0653 # from XSDB
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *n_split_signal
   line-color: 3
@@ -1096,7 +1096,7 @@ ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022EE:
   era: '2022EE'
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-0p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv13-133X_mcRun3_2022_realistic_postEE_ForNanov13_v1-v1/NANOAODSIM
   cross-section: 0.0653 # from XSDB
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *n_split_signal
   line-color: 3
@@ -1107,7 +1107,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022:
   era: '2022'
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-2p45_kt-1p00_c2-0p00_LHEweights_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
   cross-section: 0.01285 # from GenXSecAnalyzer and XSDB
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *n_split_signal
   line-color: 8
@@ -1118,7 +1118,7 @@ ggH_bbww_2L2Nu_kl-2p45_kt-1p00_c2-0p00_2022EE:
   era: '2022EE'
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-2p45_kt-1p00_c2-0p00_LHEweights_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM
   cross-section: 0.01285
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *n_split_signal
   line-color: 8
@@ -1129,7 +1129,7 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022:
   era: '2022'
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-5p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv13-133X_mcRun3_2022_realistic_ForNanov13_v1-v2/NANOAODSIM
   cross-section: 0.08349 # from GenXSecAnalyzer and XSDB
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *n_split_signal
   line-color: 6
@@ -1140,7 +1140,7 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2022EE:
   era: '2022EE'
   db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-5p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv13-133X_mcRun3_2022_realistic_postEE_ForNanov13_v1-v2/NANOAODSIM
   cross-section: 0.08349
-  branching-ratio: 0.027669886574221
+  branching-ratio: 0.02767
   generated-events: genEventSumw
   split: *n_split_signal
   line-color: 6
