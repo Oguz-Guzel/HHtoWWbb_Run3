@@ -1044,7 +1044,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022:
   generated-events: genEventSumw
   split: &n_split_signal -1
   line-color: 4
-  legend: 'HH_{ggf}^{\kappa_\lambda=1}\rightarrow bbWW'
+  legend: 'HH_{ggf}^{SM}\rightarrow bbWW'
 
 ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022EE:
   type: signal
@@ -1055,7 +1055,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022EE:
   generated-events: genEventSumw
   split: *n_split_signal
   line-color: 4
-  legend: 'HH_{ggf}^{\kappa_\lambda=1}\rightarrow bbWW'
+  legend: 'HH_{ggf}^{SM}\rightarrow bbWW'
 
 VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2022:
   type: signal

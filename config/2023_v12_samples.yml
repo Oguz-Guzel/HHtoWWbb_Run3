@@ -988,7 +988,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2023:
   generated-events: genEventSumw
   split: &nsplit_signal -1
   line-color: 2
-  legend: 'HH_{ggf}^{\kappa_\lambda=1}\rightarrow bbWW'
+  legend: 'HH_{ggf}^{SM}\rightarrow bbWW'
 
 ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2023BPix:
   type: signal
@@ -999,7 +999,7 @@ ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2023BPix:
   generated-events: genEventSumw
   split: *nsplit_signal
   line-color: 2
-  legend: 'HH_{ggf}^{\kappa_\lambda=1}\rightarrow bbWW'
+  legend: 'HH_{ggf}^{SM}\rightarrow bbWW'
 
 VBF_bbww_2L2Nu_CV_1_C2V_1_C3_1_2023:
   type: signal
