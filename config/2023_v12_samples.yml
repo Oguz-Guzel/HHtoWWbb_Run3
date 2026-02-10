@@ -1092,7 +1092,7 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2023BPix:
 
 
 # s-channel
-TBbartoLplusNuBbar-s-channel_2023:
+TBbar_2023:
   era: '2023'
   db: das:/TBbartoLplusNuBbar-s-channel-4FS_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v2/NANOAODSIM
   type: mc
@@ -1101,7 +1101,7 @@ TBbartoLplusNuBbar-s-channel_2023:
   generated-events: genEventSumw
   split: *n_split_MC
 
-TBbartoLplusNuBbar-s-channel_2023BPix:
+TBbar_2023BPix:
   era: '2023BPix'
   db: das:/TBbartoLplusNuBbar-s-channel-4FS_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2/NANOAODSIM
   type: mc
