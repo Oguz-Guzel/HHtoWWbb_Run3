@@ -181,6 +181,7 @@ def makeDLSelection(
                 )
                 > 100.0 # orthogonal cut to the SR. only in the ttbar since DY doesn't produce emu final states
             ],
+        )
         analysis.yields.add(elel_sel, "EE above DY peak sel")
         analysis.yields.add(mumu_sel, "MuMu above DY peak sel")
     else:
