@@ -26,7 +26,7 @@ class DYestimation(NanoBaseHHWWbb):
 
         # get DL selections
         [DL_boosted_ee, DL_boosted_mumu, DL_boosted_emu, DL_resolved_ee, DL_resolved_mumu, DL_resolved_emu] = makeDLSelection(
-            self, noSel, tree, sample, DYControlRegion=True)
+            self, noSel, tree, sample, DYdataDriven=True)
 
         Z_peak_selections = [DL_boosted_ee, DL_boosted_mumu,
                              DL_boosted_emu, DL_resolved_ee, DL_resolved_mumu, DL_resolved_emu]

@@ -38,6 +38,7 @@ def makeDLSelection(
     btagReweightStudy=False,
     trigger_study=False,
     DYControlRegion=False,
+    DYdataDriven=False,
     TTbarControlRegion=False,
 ):
     """Creates a list of selection objects for the Dilepton final state.
@@ -269,7 +270,7 @@ def makeDLSelection(
         DL_boosted_pre_emu_btagSF, analysis.ak8BJets
     )
 
-    if DYControlRegion:
+    if DYdataDriven:
         Z_peak_selections = []
         # no b-jets
         DL_boosted_ee = DL_boosted_pre_ee_btagSF.refine(
@@ -322,7 +323,7 @@ def makeDLSelection(
         DL_resolved_pre_emu, analysis.ak4Jets, btagReweightStudy=btagReweightStudy
     )
 
-    if DYControlRegion:
+    if DYdataDriven:
         # no b-jets
         DL_resolved_ee = DL_resolved_pre_ee_btagSF.refine(
             "DL_resolved_ee",
@@ -485,7 +486,7 @@ def makeDLSelection(
 
     if btagReweightStudy:
         return pre_final_state_sels
-    elif DYControlRegion:
+    elif DYdataDriven:
         return Z_peak_selections
     else:
         return DL_signal_region_selections
