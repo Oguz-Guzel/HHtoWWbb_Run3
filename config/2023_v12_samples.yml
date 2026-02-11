@@ -1103,7 +1103,7 @@ VBF_bbww_2L2Nu_CV_1p74_C2V_1p37_C3_14p4_2023:
   line-color: 7
   legend: 'HH_{vbf}^{BSM}\rightarrow bbWW'
 
-VBF_bbww_2L2Nu_CV_m0p962_C2V_m0p959_C3_m1p43_2023:
+VBF_bbww_2L2Nu_CV_m0p962_C2V_0p959_C3_m1p43_2023:
   type: signal
   era: '2023'
   db: das:/VBFHHto2B2Vto2L2Nu_CV_m0p962_C2V_0p959_C3_m1p43_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer23NanoAODv13-133X_mcRun3_2023_realistic_ForNanov13_v1-v2/NANOAODSIM
@@ -1125,7 +1125,7 @@ VBF_bbww_2L2Nu_CV_m0p758_C2V_1p44_C3_m19p3_2023:
   line-color: 9
   legend: 'HH_{vbf}^{BSM}\rightarrow bbWW (CV=-0.758)'
 
-VBF_bbww_2L2Nu_CV_m1p60_C2V_m2p72_C3_m1p36_2023:
+VBF_bbww_2L2Nu_CV_m1p60_C2V_2p72_C3_m1p36_2023:
   type: signal
   era: '2023'
   db: das:/VBFHHto2B2Vto2L2Nu_CV_m1p60_C2V_2p72_C3_m1p36_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer23NanoAODv13-133X_mcRun3_2023_realistic_ForNanov13_v1-v2/NANOAODSIM
@@ -1136,7 +1136,7 @@ VBF_bbww_2L2Nu_CV_m1p60_C2V_m2p72_C3_m1p36_2023:
   line-color: 10
   legend: 'HH_{vbf}^{BSM}\rightarrow bbWW (CV=-1.6)'
 
-VBF_bbww_2L2Nu_CV_m0p012_C2V_m0p030_C3_m10p2_2023:
+VBF_bbww_2L2Nu_CV_m0p012_C2V_m0p030_C3_10p2_2023:
   type: signal
   era: '2023'
   db: das:/VBFHHto2B2Vto2L2Nu_CV_m0p012_C2V_0p030_C3_10p2_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer23NanoAODv13-133X_mcRun3_2023_realistic_ForNanov13_v1-v2/NANOAODSIM
@@ -1147,7 +1147,7 @@ VBF_bbww_2L2Nu_CV_m0p012_C2V_m0p030_C3_m10p2_2023:
   line-color: 11
   legend: 'HH_{vbf}^{BSM}\rightarrow bbWW (C3=-10.2)'
 
-VBF_bbww_2L2Nu_CV_m1p21_C2V_m1p94_C3_m0p94_2023:
+VBF_bbww_2L2Nu_CV_m1p21_C2V_1p94_C3_m0p94_2023:
   type: signal
   era: '2023'
   db: das:/VBFHHto2B2Vto2L2Nu_CV_m1p21_C2V_1p94_C3_m0p94_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer23NanoAODv13-133X_mcRun3_2023_realistic_ForNanov13_v1-v2/NANOAODSIM
@@ -1158,7 +1158,7 @@ VBF_bbww_2L2Nu_CV_m1p21_C2V_m1p94_C3_m0p94_2023:
   line-color: 12
   legend: 'HH_{vbf}^{BSM}\rightarrow bbWW (CV=-1.21, C2V=-1.94, C3=-0.94)'
 
-VBF_bbww_2L2Nu_CV_m1p83_C2V_m3p57_C3_m3p39_2023:
+VBF_bbww_2L2Nu_CV_m1p83_C2V_3p57_C3_m3p39_2023:
   type: signal
   era: '2023'
   db: das:/VBFHHto2B2Vto2L2Nu_CV_m1p83_C2V_3p57_C3_m3p39_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer23NanoAODv13-133X_mcRun3_2023_realistic_ForNanov13_v1-v2/NANOAODSIM
@@ -1169,7 +1169,7 @@ VBF_bbww_2L2Nu_CV_m1p83_C2V_m3p57_C3_m3p39_2023:
   line-color: 13
   legend: 'HH_{vbf}^{BSM}\rightarrow bbWW (CV=-1.83, C2V=-3.57, C3=-3.39)'
 
-VBF_bbww_2L2Nu_CV_m2p12_C2V_m3p87_C3_m5p96_2023:
+VBF_bbww_2L2Nu_CV_m2p12_C2V_3p87_C3_m5p96_2023:
   type: signal
   era: '2023'
   db: das:/VBFHHto2B2Vto2L2Nu_CV_m2p12_C2V_3p87_C3_m5p96_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer23NanoAODv13-133X_mcRun3_2023_realistic_ForNanov13_v1-v2/NANOAODSIM
