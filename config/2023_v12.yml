@@ -23,7 +23,7 @@ plotIt:
     margin-bottom: 0.1
     luminosity-label: '%1$.2f fb^{-1} (13.6 TeV)'
     experiment: " "
-    extra-label: Private work (CMS simulation)
+    extra-label: Private work (CMS data/simulation)
     luminosity-error: 0.013 # https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun3
     show-overflow: true
     error-fill-style: 3154
