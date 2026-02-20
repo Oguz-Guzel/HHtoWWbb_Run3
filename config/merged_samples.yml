@@ -1771,6 +1771,26 @@ ggH_bbww_2L2Nu_kl-0p00_kt-1p00_c2-0p00_2022EE:
   line-color: 3
   split: -1
   type: signal
+ggH_bbww_2l2Nu_kl-0p00_kt-1p00_c2-0p00_2023:
+  branching-ratio: 0.027669886574221
+  cross-section: 0.0653
+  db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-0p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23NanoAODv13-133X_mcRun3_2023_realistic_ForNanov13_v1-v1/NANOAODSIM
+  era: '2023'
+  generated-events: genEventSumw
+  legend: HH\rightarrow bbll\nu\nu kl 0p00
+  line-color: 4
+  split: -1
+  type: signal
+ggH_bbww_2l2Nu_kl-0p00_kt-1p00_c2-0p00_2023BPix:
+  branching-ratio: 0.027669886574221
+  cross-section: 0.0653
+  db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-0p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23BPixNanoAODv13-133X_mcRun3_2023_realistic_postBPix_ForNanov13_v2-v2/NANOAODSIM
+  era: 2023BPix
+  generated-events: genEventSumw
+  legend: HH\rightarrow bbll\nu\nu kl 0p00
+  line-color: 4
+  split: -1
+  type: signal
 ggH_bbww_2L2Nu_kl-1p00_kt-1p00_c2-0p00_2022:
   branching-ratio: 0.027669886574221
   cross-section: 0.03413
@@ -1889,26 +1909,6 @@ ggH_bbww_2L2Nu_kl-5p00_kt-1p00_c2-0p00_2023BPix:
   generated-events: genEventSumw
   legend: HH\rightarrow bbll\nu\nu kl 5p00
   line-color: 6
-  split: -1
-  type: signal
-ggH_bbww_2l2Nu_kl-0p00_kt-1p00_c2-0p00_2023:
-  branching-ratio: 0.027669886574221
-  cross-section: 0.0653
-  db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-0p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23NanoAODv13-133X_mcRun3_2023_realistic_ForNanov13_v1-v1/NANOAODSIM
-  era: '2023'
-  generated-events: genEventSumw
-  legend: HH\rightarrow bbll\nu\nu kl 0p00
-  line-color: 4
-  split: -1
-  type: signal
-ggH_bbww_2l2Nu_kl-0p00_kt-1p00_c2-0p00_2023BPix:
-  branching-ratio: 0.027669886574221
-  cross-section: 0.0653
-  db: das:/GluGlutoHHto2B2Vto2L2Nu_kl-0p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23BPixNanoAODv13-133X_mcRun3_2023_realistic_postBPix_ForNanov13_v2-v2/NANOAODSIM
-  era: 2023BPix
-  generated-events: genEventSumw
-  legend: HH\rightarrow bbll\nu\nu kl 0p00
-  line-color: 4
   split: -1
   type: signal
 
