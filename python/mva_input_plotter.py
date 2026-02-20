@@ -36,7 +36,7 @@ class mvaInputPlotter(NanoBaseHHWWbb):
         ]
 
         # Following is the code to plot the input features for the ML model.
-        # It takes some time to run, so it's commented out.
+        # It may take some time to run.
         ml_vars = ml_input_features(self)
         for name, var in ml_vars.items():
             ml_plots = []
