@@ -1224,17 +1224,6 @@ VBF_bbww_2L2Nu_CV_m1p83_C2V_3p57_C3_m3p39_2022:
   line-color: 13
   legend: 'HH_{vbf}^{BSM}\rightarrow bbWW (CV=-1.83, C2V=-3.57, C3=-3.39)'
 
-VBF_bbww_2L2Nu_CV_m2p12_C2V_3p87_C3_m5p96_2022:
-  type: signal
-  era: '2022'
-  db: das:/VBFHHto2B2Vto2L2Nu_CV-m2p12_C2V-3p87_C3-m5p96_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM
-  cross-section: 0.6721 # from XSDB
-  branching-ratio: 0.02767
-  generated-events: genEventSumw
-  split: *n_split_signal
-  line-color: 14
-  legend: 'HH_{vbf}^{BSM}\rightarrow bbWW (CV=-2.12, C2V=-3.87, C3=-5.96)'
-
 # VBF 2022EE
 
 VBF_bbww_2L2Nu_CV_1p74_C2V_1p37_C3_14p4_2022EE:
@@ -1313,18 +1302,6 @@ VBF_bbww_2L2Nu_CV_m1p83_C2V_m3p57_C3_m3p39_2022EE:
   split: *n_split_signal
   line-color: 13
   legend: 'HH_{vbf}^{BSM}\rightarrow bbWW (CV=-1.83, C2V=-3.57, C3=-3.39)'
-
-VBF_bbww_2L2Nu_CV_m2p12_C2V_m3p87_C3_m5p96_2022EE:
-  type: signal
-  era: '2022EE'
-  db: das:/VBFHHto2B2Vto2L2Nu_CV-m2p12_C2V-3p87_C3-m5p96_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM
-  cross-section: 0.6721 # from XSDB
-  branching-ratio: 0.02767
-  generated-events: genEventSumw
-  split: *n_split_signal
-  line-color: 14
-  legend: 'HH_{vbf}^{BSM}\rightarrow bbWW (CV=-2.12, C2V=-3.87, C3=-5.96)'
-
 
 # other backgrounds
 # s-channel
