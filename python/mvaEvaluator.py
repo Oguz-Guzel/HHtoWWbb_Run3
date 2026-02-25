@@ -71,28 +71,28 @@ class mvaEvaluator(NanoBaseHHWWbb):
         # prepare the labels
         DL_label = {"blinded-range": [0.25, 0.999]}
         DL_ee_label = {
-            **labeler("DL ML score EE - blinded"),
-            "blinded-range": [0.25, 0.999],
+            **labeler("DL ML score EE"),
+            # "blinded-range": [0.25, 0.999],
         }
         DL_mumu_label = {
-            **labeler("DL ML score MuMu - blinded"),
-            "blinded-range": [0.25, 0.999],
+            **labeler("DL ML score MuMu"),
+            # "blinded-range": [0.25, 0.999],
         }
         DL_emu_label = {
-            **labeler("DL ML score EMu - blinded"),
-            "blinded-range": [0.25, 0.999],
+            **labeler("DL ML score EMu"),
+            # "blinded-range": [0.25, 0.999],
         }
         DL_boosted_label = {
-            **labeler("DL Boosted ML score - blinded"),
-            "blinded-range": [0.25, 0.999],
+            **labeler("DL Boosted ML score"),
+            # "blinded-range": [0.25, 0.999],
         }
         DL_resolved1b_label = {
-            **labeler("DL Resolved 1b ML score - blinded"),
-            "blinded-range": [0.25, 0.999],
+            **labeler("DL Resolved 1b ML score"),
+            # "blinded-range": [0.25, 0.999],
         }
         DL_resolved2b_label = {
-            **labeler("DL Resolved 2b ML score - blinded"),
-            "blinded-range": [0.25, 0.999],
+            **labeler("DL Resolved 2b ML score"),
+            # "blinded-range": [0.25, 0.999],
         }
 
         # create the plots
@@ -157,7 +157,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             EqBin(50, 0, 1.0),
             title="ML",
             xTitle="ML Score boosted ee",
-            plotopts=DL_label,
+            # plotopts=DL_label,
         )
         ml_score_boosted_emu = Plot.make1D(
             "ml_score_boosted_emu",
@@ -166,7 +166,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             EqBin(50, 0, 1.0),
             title="ML",
             xTitle="ML Score bossted emu",
-            plotopts=DL_label,
+            # plotopts=DL_label,
         )
         ml_score_boosted_mumu = Plot.make1D(
             "ml_score_boosted_mumu",
@@ -175,7 +175,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             EqBin(50, 0, 1.0),
             title="ML",
             xTitle="ML Score bossted mumu",
-            plotopts=DL_label,
+            # plotopts=DL_label,
         )
         ml_score_VBF_resolved_ee = Plot.make1D(
             "ml_score_VBF_resolved_ee",
@@ -278,13 +278,13 @@ class mvaEvaluator(NanoBaseHHWWbb):
             "DL_VBF_resolved_ml_score",
             [*VBF_resolved_ml_score_plots],
             title="DL ML score",
-            plotopts=DL_label,
+            # plotopts=DL_label,
         )
         ml_score_VBF_boosted = SummedPlot(
             "DL_VBF_boosted_ml_score",
             [*VBF_boosted_ml_score_plots],
             title="DL ML score",
-            plotopts=DL_label,
+            # plotopts=DL_label,
         )
         ml_score_DL = SummedPlot(
             "DL_ml_score",
