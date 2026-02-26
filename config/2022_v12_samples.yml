@@ -1237,7 +1237,7 @@ VBF_bbww_2L2Nu_CV_1p74_C2V_1p37_C3_14p4_2022EE:
   line-color: 7
   legend: 'HH_{vbf}^{BSM}\rightarrow bbWW'
 
-VBF_bbww_2L2Nu_CV_m0p962_C2V_m0p959_C3_m1p43_2022EE:
+VBF_bbww_2L2Nu_CV_m0p962_C2V_0p959_C3_m1p43_2022EE:
   type: signal
   era: '2022EE'
   db: das:/VBFHHto2B2Vto2L2Nu_CV-m0p962_C2V-0p959_C3-m1p43_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM
@@ -1259,7 +1259,7 @@ VBF_bbww_2L2Nu_CV_m0p758_C2V_1p44_C3_m19p3_2022EE:
   line-color: 9
   legend: 'HH_{vbf}^{BSM}\rightarrow bbWW (CV=-0.758)'
 
-VBF_bbww_2L2Nu_CV_m1p60_C2V_m2p72_C3_m1p36_2022EE:
+VBF_bbww_2L2Nu_CV_m1p60_C2V_2p72_C3_m1p36_2022EE:
   type: signal
   era: '2022EE'
   db: das:/VBFHHto2B2Vto2L2Nu_CV-m1p60_C2V-2p72_C3-m1p36_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM
@@ -1270,7 +1270,7 @@ VBF_bbww_2L2Nu_CV_m1p60_C2V_m2p72_C3_m1p36_2022EE:
   line-color: 10
   legend: 'HH_{vbf}^{BSM}\rightarrow bbWW (CV=-1.6)'
 
-VBF_bbww_2L2Nu_CV_m0p012_C2V_m0p030_C3_m10p2_2022EE:
+VBF_bbww_2L2Nu_CV_m0p012_C2V_0p030_C3_10p2_2022EE:
   type: signal
   era: '2022EE'
   db: das:/VBFHHto2B2Vto2L2Nu_CV-m0p012_C2V-0p030_C3-10p2_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM
@@ -1281,7 +1281,7 @@ VBF_bbww_2L2Nu_CV_m0p012_C2V_m0p030_C3_m10p2_2022EE:
   line-color: 11
   legend: 'HH_{vbf}^{BSM}\rightarrow bbWW (C3=-10.2)'
 
-VBF_bbww_2L2Nu_CV_m1p21_C2V_m1p94_C3_m0p94_2022EE:
+VBF_bbww_2L2Nu_CV_m1p21_C2V_1p94_C3_m0p94_2022EE:
   type: signal
   era: '2022EE'
   db: das:/VBFHHto2B2Vto2L2Nu_CV-m1p21_C2V-1p94_C3-m0p94_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM
@@ -1292,7 +1292,7 @@ VBF_bbww_2L2Nu_CV_m1p21_C2V_m1p94_C3_m0p94_2022EE:
   line-color: 12
   legend: 'HH_{vbf}^{BSM}\rightarrow bbWW (CV=-1.21, C2V=-1.94, C3=-0.94)'
 
-VBF_bbww_2L2Nu_CV_m1p83_C2V_m3p57_C3_m3p39_2022EE:
+VBF_bbww_2L2Nu_CV_m1p83_C2V_3p57_C3_m3p39_2022EE:
   type: signal
   era: '2022EE'
   db: das:/VBFHHto2B2Vto2L2Nu_CV-m1p83_C2V-3p57_C3-m3p39_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM

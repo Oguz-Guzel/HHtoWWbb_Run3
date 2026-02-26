@@ -1136,7 +1136,7 @@ VBF_bbww_2L2Nu_CV_m1p60_C2V_2p72_C3_m1p36_2023:
   line-color: 10
   legend: 'HH_{vbf}^{BSM}\rightarrow bbWW (CV=-1.6)'
 
-VBF_bbww_2L2Nu_CV_m0p012_C2V_m0p030_C3_10p2_2023:
+VBF_bbww_2L2Nu_CV_m0p012_C2V_0p030_C3_10p2_2023:
   type: signal
   era: '2023'
   db: das:/VBFHHto2B2Vto2L2Nu_CV_m0p012_C2V_0p030_C3_10p2_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer23NanoAODv13-133X_mcRun3_2023_realistic_ForNanov13_v1-v2/NANOAODSIM
