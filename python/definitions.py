@@ -551,7 +551,7 @@ def ml_input_features(self):
         "j8_Py": get_jet_callable("Py", 0, self.ak8Jets),
         "j8_Pz": get_jet_callable("Pz", 0, self.ak8Jets),
         "j8_E": get_jet_callable("E", 0, self.ak8Jets),
-        "j8_btag": get_jet_tree_var("particleNet_XbbVsQCD", 0, self.ak8Jets),
+        # "j8_btag": get_jet_tree_var("particleNet_XbbVsQCD", 0, self.ak8Jets),
         "j8_tau1": get_jet_tree_var("tau1", 0, self.ak8Jets),
         "j8_tau2": get_jet_tree_var("tau2", 0, self.ak8Jets),
         "j8_tau3": get_jet_tree_var("tau3", 0, self.ak8Jets),
