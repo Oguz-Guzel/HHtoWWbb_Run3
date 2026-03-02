@@ -181,6 +181,67 @@ class ScaleFactors:
 
         return None
 
+    def _muRF_norm_factors(self, sample, sampleCfg, envelope_idx=(0, 1, 2, 3, 5, 6, 7, 8)):
+        """Return normalisation factors to keep muR/muF variations shape-only.
+
+        Priority:
+        1) Explicit numbers in sampleCfg["muRF_norm"] (dict or iterable).
+        2) Inclusive LHEScale sum of weights (sampleCfg["LHEScaleSumw"], length >= 9).
+           The envelope is built from the sums and inverted to re-normalise.
+        Falls back to (1.0, 1.0) if nothing is available.
+        """
+        norm_up = 1.0
+        norm_down = 1.0
+
+        if sampleCfg is None or not sample:
+            logger.warning(
+                "muRF_norm_factors: sampleCfg missing; falling back to no normalisation (may leak yield)."
+            )
+            return norm_up, norm_down
+
+        # Load per-sample sums for muRF scale variations from YAML when not provided inline.
+        if "LHEScaleSumw" not in sampleCfg:
+            import yaml
+
+            sumw_path = os.path.join(
+                self.parent.git_project_dir, "data", f"LHEScaleSumw_{self.parent.era}.yaml"
+            )
+            try:
+                with open(sumw_path) as handle:
+                    sumw_map = yaml.safe_load(handle).get("LHEScaleSumw", {})
+                if sample in sumw_map:
+                    sampleCfg["LHEScaleSumw"] = sumw_map[sample]
+            except FileNotFoundError:
+                logger.warning("muRF_norm_factors: missing %s; skipping LHEScaleSumw injection", sumw_path)
+            except Exception as exc:
+                logger.warning("muRF_norm_factors: failed to load %s (%s)", sumw_path, exc)
+
+        norm_cfg = sampleCfg.get("muRF_norm")
+        if isinstance(norm_cfg, dict):
+            return norm_cfg.get("up", 1.0), norm_cfg.get("down", 1.0)
+        if isinstance(norm_cfg, (list, tuple)) and len(norm_cfg) >= 2:
+            return norm_cfg[0], norm_cfg[1]
+
+        sumw = sampleCfg.get("LHEScaleSumw")
+        if isinstance(sumw, (list, tuple)) and len(sumw) >= 9:
+            nom = sumw[4]
+            if nom != 0:
+                ratios = [sumw[i] / nom for i in envelope_idx]
+                max_ratio = max(ratios)
+                min_ratio = min(ratios)
+                norm_up = 1.0 / max_ratio if max_ratio != 0 else 1.0
+                norm_down = 1.0 / min_ratio if min_ratio != 0 else 1.0
+            else:
+                logger.warning("LHEScaleSumw nominal is zero; skipping muRF normalisation")
+
+        # Warn if normalisation is missing; keep running to avoid job failure.
+        if norm_up == 1.0 and norm_down == 1.0:
+            logger.warning(
+                "muRF shape-only: no muRF_norm or LHEScaleSumw found; variations will include normalisation effects."
+            )
+
+        return norm_up, norm_down
+
     def _pdf_shape_syst_name(self, sample, sampleCfg):
         """Return the PDF shape systematic name for a given sample.
 
@@ -252,9 +313,12 @@ class ScaleFactors:
     def muRF_scale_weights(self, tree, sel, sample, sampleCfg):
         """Apply muR/muF scale uncertainty from LHEScaleWeight with envelope.
 
-        The variation is shape-only; optional normalization factors can be
-        provided in sampleCfg["muRF_norm"] as {up: <val>, down: <val>} or
-        [up, down].
+        The variation is kept shape-only by normalising to the inclusive
+        phase-space yield. Normalisation factors are taken from
+        sampleCfg["muRF_norm"] if provided, otherwise derived from
+        sampleCfg["LHEScaleSumw"] (required, len >= 9) to rescale the envelope.
+        Missing inputs raise to avoid leaking normalisation effects into the
+        shape nuisance.
         """
         if not self.parent.is_MC:
             return sel
@@ -265,6 +329,9 @@ class ScaleFactors:
         syst_name = self._muRF_syst_name(sample, sampleCfg)
         if syst_name is None:
             return sel
+
+        # Retrieve normalization inputs; warns (not raises) if missing to keep jobs running.
+        norm_up, norm_down = self._muRF_norm_factors(sample, sampleCfg)
 
         weights = tree.LHEScaleWeight
 
@@ -298,16 +365,6 @@ class ScaleFactors:
 
         up_ratio = _max_list(ratios)
         down_ratio = _min_list(ratios)
-
-        norm_up = 1.0
-        norm_down = 1.0
-        if sampleCfg is not None:
-            norm_cfg = sampleCfg.get("muRF_norm")
-            if isinstance(norm_cfg, dict):
-                norm_up = norm_cfg.get("up", 1.0)
-                norm_down = norm_cfg.get("down", 1.0)
-            elif isinstance(norm_cfg, (list, tuple)) and len(norm_cfg) >= 2:
-                norm_up, norm_down = norm_cfg[0], norm_cfg[1]
 
         sel = sel.refine(
             f"{syst_name}",
