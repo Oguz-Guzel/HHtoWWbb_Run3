@@ -234,17 +234,17 @@ class ScaleFactors:
         def has_any(*tokens):
             return any(tok in smp_lower for tok in tokens)
 
-        if has_any("ttw", "ttz", "ttv"):
-            return "psFSR_ttV"
-        if group == "TT" or has_any("ttto", "tt_", "ttbar"):
+        if group == "TT":
             return "psFSR_ttbar"
-        if group == "DY" or has_any("dyto", "dy_", "dyjets"):
+        if group == "DY":
             return "psFSR_DY"
-        if group == "ST" or has_any("tw", "tbarw", "tchannel", "schannel"):
+        if group == "ST":
             return "psFSR_ST"
-        if group == "VV" or has_any("ww", "wz", "zz"):
+        if group == "VV":
             return "psFSR_VV"
-        if has_any("ggh", "glugluhto", "vbfh", "wh", "zh", "tth", "thq", "thw"):
+        if has_any("ttll", "ttz", "ttv"):
+            return "psFSR_ttV"
+        if has_any("glugluhto", "vbfhto", "wplush", "zh", "tth", "thq", "thw"):
             return "psFSR_singleH"
 
         return None
