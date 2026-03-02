@@ -231,6 +231,7 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
                 "jetAlgoSubjet": "AK4PFPuppi",
                 "jecSubjet": jecTag,
                 "jsonFileSubjet": JEC_JSONFiles[self.era]["AK4"],
+                "genMatchDR" : 0.4,
             }
         )
         configureJets(tree._FatJet, jetType="AK8PFPuppi", **jecArgs)
