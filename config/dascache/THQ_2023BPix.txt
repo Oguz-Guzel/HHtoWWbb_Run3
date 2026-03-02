@@ -10,9 +10,9 @@
 /eos/cms/store/mc/Run3Summer23BPixNanoAODv12/THQ_ctcvcp_HIncl_M-125_4FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2023_realistic_postBPix_v6-v4/120000/355d85c1-0efc-4622-b162-15bd924ed6ad.root
 /eos/cms/store/mc/Run3Summer23BPixNanoAODv12/THQ_ctcvcp_HIncl_M-125_4FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2023_realistic_postBPix_v6-v4/120000/cccedb6d-da8b-4f17-901a-6a138dfb3933.root
 /eos/cms/store/mc/Run3Summer23BPixNanoAODv12/THQ_ctcvcp_HIncl_M-125_4FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2023_realistic_postBPix_v6-v4/120000/790bec2d-08b8-473a-8317-63fad7daa329.root
-/eos/cms/store/mc/Run3Summer23BPixNanoAODv12/THQ_ctcvcp_HIncl_M-125_4FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2023_realistic_postBPix_v6-v4/120000/fccd6072-de4c-4786-b2b4-e3ee9b73580c.root
 /eos/cms/store/mc/Run3Summer23BPixNanoAODv12/THQ_ctcvcp_HIncl_M-125_4FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2023_realistic_postBPix_v6-v4/120000/1c7bba1a-a2b1-45a2-b9b5-93a121715692.root
 /eos/cms/store/mc/Run3Summer23BPixNanoAODv12/THQ_ctcvcp_HIncl_M-125_4FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2023_realistic_postBPix_v6-v4/120000/ac0afeb0-acdb-445e-8a65-49aaf8967953.root
 /eos/cms/store/mc/Run3Summer23BPixNanoAODv12/THQ_ctcvcp_HIncl_M-125_4FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2023_realistic_postBPix_v6-v4/120000/27102790-9aa9-4505-be3c-d70a8579e64e.root
 /eos/cms/store/mc/Run3Summer23BPixNanoAODv12/THQ_ctcvcp_HIncl_M-125_4FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2023_realistic_postBPix_v6-v4/120000/7e03ff46-66e3-4c99-bcfa-a277e90354ad.root
 /eos/cms/store/mc/Run3Summer23BPixNanoAODv12/THQ_ctcvcp_HIncl_M-125_4FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2023_realistic_postBPix_v6-v4/120000/1c3cbf1a-f85f-40c4-8e1e-40753c971545.root
+/eos/cms/store/mc/Run3Summer23BPixNanoAODv12/THQ_ctcvcp_HIncl_M-125_4FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2023_realistic_postBPix_v6-v4/120000/fccd6072-de4c-4786-b2b4-e3ee9b73580c.root

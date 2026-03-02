@@ -18,10 +18,10 @@
 /eos/cms/store/mc/Run3Summer22NanoAODv12/THW_ctcvcp_HIncl_M-125_5FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_v5-v3/130000/355d0c9e-6aa7-4892-90b4-ee011ea82645.root
 /eos/cms/store/mc/Run3Summer22NanoAODv12/THW_ctcvcp_HIncl_M-125_5FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_v5-v3/130000/93705d8e-f519-4024-8226-eff316e9f1b5.root
 /eos/cms/store/mc/Run3Summer22NanoAODv12/THW_ctcvcp_HIncl_M-125_5FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_v5-v3/130000/bbd2325e-382b-415f-b65e-fd2eeb948a33.root
-/eos/cms/store/mc/Run3Summer22NanoAODv12/THW_ctcvcp_HIncl_M-125_5FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_v5-v3/130000/e0ec71fe-1885-4084-a36d-9fc72b897445.root
 /eos/cms/store/mc/Run3Summer22NanoAODv12/THW_ctcvcp_HIncl_M-125_5FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_v5-v3/130000/3d0d6b46-69c9-4f18-a1ba-c0e21304d22a.root
 /eos/cms/store/mc/Run3Summer22NanoAODv12/THW_ctcvcp_HIncl_M-125_5FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_v5-v3/130000/5487906b-b7a0-40ea-9a85-2f064ed04dd7.root
 /eos/cms/store/mc/Run3Summer22NanoAODv12/THW_ctcvcp_HIncl_M-125_5FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_v5-v3/130000/74cc3cd3-1ca0-4135-9a1c-ecad85f99b1b.root
+/eos/cms/store/mc/Run3Summer22NanoAODv12/THW_ctcvcp_HIncl_M-125_5FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_v5-v3/130000/e0ec71fe-1885-4084-a36d-9fc72b897445.root
 /eos/cms/store/mc/Run3Summer22NanoAODv12/THW_ctcvcp_HIncl_M-125_5FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_v5-v3/130000/5a956a64-1a49-4728-9b34-0eb0de10a37e.root
 /eos/cms/store/mc/Run3Summer22NanoAODv12/THW_ctcvcp_HIncl_M-125_5FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_v5-v3/130000/fda69bf7-4291-4ece-bb1b-c39930827da9.root
 /eos/cms/store/mc/Run3Summer22NanoAODv12/THW_ctcvcp_HIncl_M-125_5FS_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_v5-v3/130000/5eb22303-1c78-4900-91b8-27931609b805.root

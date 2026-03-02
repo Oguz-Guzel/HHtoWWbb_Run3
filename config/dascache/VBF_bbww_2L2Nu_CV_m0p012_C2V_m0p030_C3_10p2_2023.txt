@@ -1,4 +1,0 @@
-# das:/VBFHHto2B2Vto2L2Nu_CV_m0p012_C2V_0p030_C3_10p2_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer23NanoAODv13-133X_mcRun3_2023_realistic_ForNanov13_v1-v2/NANOAODSIM
-root://cms-xrd-global.cern.ch///store/mc/Run3Summer23NanoAODv13/VBFHHto2B2Vto2L2Nu_CV_m0p012_C2V_0p030_C3_10p2_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/133X_mcRun3_2023_realistic_ForNanov13_v1-v2/70000/6cf3e44f-0f8f-4353-ac17-ccca7b143e6a.root
-root://cms-xrd-global.cern.ch///store/mc/Run3Summer23NanoAODv13/VBFHHto2B2Vto2L2Nu_CV_m0p012_C2V_0p030_C3_10p2_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/133X_mcRun3_2023_realistic_ForNanov13_v1-v2/70000/59575b50-e7c8-4165-896b-62e276bc030a.root
-root://cms-xrd-global.cern.ch///store/mc/Run3Summer23NanoAODv13/VBFHHto2B2Vto2L2Nu_CV_m0p012_C2V_0p030_C3_10p2_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/133X_mcRun3_2023_realistic_ForNanov13_v1-v2/70000/5e565e31-dd40-4274-94e1-7734f2b35daf.root
