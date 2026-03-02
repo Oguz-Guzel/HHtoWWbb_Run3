@@ -701,8 +701,9 @@ class ScaleFactors:
                 bb_corr, cc_corr = _corrs(syst)
 
                 def jet_sf(j):
-                    is_bb = j.nBHadrons >= 2
-                    is_cc = op.AND(j.nBHadrons < 2, j.nCHadrons >= 2)
+                    pnet_pass = j.particleNetWithMass_HbbvsQCD >= 0.92
+                    is_bb = op.AND(j.hadronFlavour == 5, pnet_pass)
+                    is_cc = op.AND(j.hadronFlavour == 4, pnet_pass)
                     return op.switch(
                         is_bb,
                         bb_corr(j),
