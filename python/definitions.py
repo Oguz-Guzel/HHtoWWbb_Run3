@@ -190,7 +190,7 @@ def ak8jetDef(jets):
             op.abs(jet.subJet2.eta) <= 2.4,
             op.AND(jet.msoftdrop >= 30.0, jet.msoftdrop <= 210.0),
             jet.tau2 / jet.tau1 <= 0.75,
-            jet.particleNet_XbbVsQCD >= 0,
+            jet.particleNet_XbbVsQCD >= 0, # to avoid a bug
         ),
     )
 
@@ -215,7 +215,7 @@ def ak4TightBtagWP(era):
 def ak8Btag(fatjet):
     """Btagging for AK8 jets"""
     return op.AND(
-        fatjet.particleNet_XbbVsQCD > 0.4,
+        fatjet.particleNetWithMass_HbbvsQCD > 0.92,
         op.OR(fatjet.subJet1.pt >= 30, fatjet.subJet2.pt >= 30),
     )
 
