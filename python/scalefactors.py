@@ -748,6 +748,8 @@ class ScaleFactors:
             )
         else:
             sel = sel.refine(sel.name + "_ak8BBCCSF", weight=op.c_float(1.0))
+            sel = sel.refine(sel.name + "_ak8BBCCSF_tau21", weight=op.c_float(1.0))
+            sel = sel.refine(sel.name + "_ak8BBCCSF_msd", weight=op.c_float(1.0))
 
         self.parent.yields.add(sel, sel.name)
 
