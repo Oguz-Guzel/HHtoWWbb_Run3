@@ -69,7 +69,7 @@ def sum_lhe_scale_weights(urls: Iterable[str], entry_stop: Optional[int]) -> Tup
         if url.startswith("/eos/") and not os.path.exists(url):
             # Use triple-slash after host to avoid "relative path disallowed"
             xrd_url = "root://cms-xrd-global.cern.ch///" + url[len("/eos/cms/") :].lstrip("/")
-            logger.warning("File not found locally, trying xrootd: %s", xrd_url)
+            # logger.warning("File not found locally, trying xrootd: %s", xrd_url)
             file_spec = {xrd_url: "Events"}
         else:
             file_spec = {url: "Events"}
