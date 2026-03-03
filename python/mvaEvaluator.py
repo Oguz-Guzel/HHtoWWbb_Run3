@@ -42,7 +42,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             DL_VBF_boosted_ee,
             DL_VBF_boosted_mumu,
             DL_VBF_boosted_emu,
-        ] = makeDLSelection(self, noSel, tree, sample)
+        ] = makeDLSelection(self, noSel, tree, sample, DYControlRegion=self.DY_CR, TTbarControlRegion=self.TT_CR)
 
         ml_vars = ml_input_features(self)
         # ml_vars["event_no"] = tree.event
@@ -67,6 +67,13 @@ class mvaEvaluator(NanoBaseHHWWbb):
 
         # get the ML scores
         signal_node = ml_output[1]
+        binning = EqBin(200, 0., 1.)
+
+        # dummy single-bin variable for control regions
+        dummy_var = op.c_int(1)
+        if self.DY_CR or self.TT_CR:
+            signal_node = dummy_var
+            binning = EqBin(1, 0, 2)
 
         # prepare the labels
         DL_label = {"blinded-range": [0.25, 0.999]}
@@ -100,7 +107,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             "ml_score_1b_ee",
             signal_node,
             DL_resolved_1b_ee,
-            EqBin(200, 0., 1.),
+            binning,
             title="ML",
             xTitle="ML Score 1b ee",
             plotopts=DL_ee_label,
@@ -109,7 +116,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             "ml_score_2b_ee",
             signal_node,
             DL_resolved_2b_ee,
-            EqBin(200, 0., 1.),
+            binning,
             title="ML",
             xTitle="ML Score 2b ee",
             plotopts=DL_ee_label,
@@ -118,7 +125,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             "ml_score_1b_emu",
             signal_node,
             DL_resolved_1b_emu,
-            EqBin(200, 0., 1.),
+            binning,
             title="ML",
             xTitle="ML Score 1b emu",
             plotopts=DL_emu_label,
@@ -127,7 +134,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             "ml_score_2b_emu",
             signal_node,
             DL_resolved_2b_emu,
-            EqBin(200, 0., 1.),
+            binning,
             title="ML",
             xTitle="ML Score 1b emu",
             plotopts=DL_emu_label,
@@ -136,7 +143,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             "ml_score_1b_mumu",
             signal_node,
             DL_resolved_1b_mumu,
-            EqBin(200, 0., 1.),
+            binning,
             title="ML",
             xTitle="ML Score 1b mumu",
             plotopts=DL_mumu_label,
@@ -145,7 +152,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             "ml_score_2b_mumu",
             signal_node,
             DL_resolved_2b_mumu,
-            EqBin(200, 0., 1.),
+            binning,
             title="ML",
             xTitle="ML Score 2b mumu",
             plotopts=DL_mumu_label,
@@ -154,7 +161,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             "ml_score_boosted_ee",
             signal_node,
             DL_boosted_ee,
-            EqBin(200, 0., 1.),
+            binning,
             title="ML",
             xTitle="ML Score boosted ee",
             # plotopts=DL_label,
@@ -163,7 +170,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             "ml_score_boosted_emu",
             signal_node,
             DL_boosted_emu,
-            EqBin(200, 0., 1.),
+            binning,
             title="ML",
             xTitle="ML Score bossted emu",
             # plotopts=DL_label,
@@ -172,7 +179,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             "ml_score_boosted_mumu",
             signal_node,
             DL_boosted_mumu,
-            EqBin(200, 0., 1.),
+            binning,
             title="ML",
             xTitle="ML Score bossted mumu",
             # plotopts=DL_label,
@@ -181,7 +188,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             "ml_score_VBF_resolved_ee",
             signal_node,
             DL_VBF_resolved_ee,
-            EqBin(200, 0., 1.),
+            binning,
             title="ML",
             xTitle="ML Score VBF resolved ee",
             plotopts=DL_ee_label,
@@ -190,7 +197,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             "ml_score_VBF_resolved_emu",
             signal_node,
             DL_VBF_resolved_emu,
-            EqBin(200, 0., 1.),
+            binning,
             title="ML",
             xTitle="ML Score VBF resolved emu",
             plotopts=DL_emu_label,
@@ -199,7 +206,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             "ml_score_VBF_resolved_mumu",
             signal_node,
             DL_VBF_resolved_mumu,
-            EqBin(200, 0., 1.),
+            binning,
             title="ML",
             xTitle="ML Score VBF resolved mumu",
             plotopts=DL_mumu_label,
@@ -208,7 +215,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             "ml_score_VBF_boosted_ee",
             signal_node,
             DL_VBF_boosted_ee,
-            EqBin(200, 0., 1.),
+            binning,
             title="ML",
             xTitle="ML Score VBF boosted ee",
             plotopts=DL_ee_label,
@@ -217,7 +224,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             "ml_score_VBF_boosted_emu",
             signal_node,
             DL_VBF_boosted_emu,
-            EqBin(200, 0., 1.),
+            binning,
             title="ML",
             xTitle="ML Score VBF boosted emu",
             plotopts=DL_emu_label,
@@ -226,7 +233,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
             "ml_score_VBF_boosted_mumu",
             signal_node,
             DL_VBF_boosted_mumu,
-            EqBin(200, 0., 1.),
+            binning,
             title="ML",
             xTitle="ML Score VBF boosted mumu",
             plotopts=DL_mumu_label,

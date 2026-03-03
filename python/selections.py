@@ -3,6 +3,8 @@ from bamboo import treefunctions as op
 import definitions as defs
 from scalefactors import ScaleFactors
 
+import logging
+
 Zmass = 90 # it's actually 91.1876 GeV but 90 GeV is used 
 
 # lepton Pt cuts : leading above 25 GeV and sub-leading above 15 GeV
@@ -49,7 +51,7 @@ def makeDLSelection(
     Returns:
         A list of selection objects for the Dilepton analysis.
     """
-
+    logger = logging.getLogger(__name__)
     # call defined objects
     defs.defineObjects(analysis, tree)
 
@@ -129,6 +131,7 @@ def makeDLSelection(
     analysis.yields.add(elmu_sel, "EMu lepton sel")
 
     if DYControlRegion:
+        logger.info("Running DY control region.")
         elel_sel = elel_sel.refine(
             "eePairZpeakSel",
             cut=[
@@ -153,9 +156,12 @@ def makeDLSelection(
                 <= 20.0
             ],
         )
+        # Kill the emu channel in DY CR to prevent ttbar contamination since DY doesn't produce emu final states
+        elmu_sel = elmu_sel.refine("emuHigMllSel", cut=[op.c_bool(False)])
         analysis.yields.add(elel_sel, "EE DY peak sel")
         analysis.yields.add(mumu_sel, "MuMu DY peak sel")
     elif TTbarControlRegion:
+        logger.info("Running TT control region.")
         elel_sel = elel_sel.refine(
             "eePairZpeakSel",
             cut=[
@@ -185,6 +191,7 @@ def makeDLSelection(
         analysis.yields.add(elel_sel, "EE above DY peak sel")
         analysis.yields.add(mumu_sel, "MuMu above DY peak sel")
     else:
+        logger.info("Running signal region.")
         elel_sel = elel_sel.refine(
             "eePairZpeakSel",
             cut=[

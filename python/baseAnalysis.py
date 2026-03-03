@@ -139,6 +139,12 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
         parser.add_argument(
             "--sync", action="store_true", default=False, help="Run synchronisation"
         )
+        parser.add_argument(
+            "--DY_CR", action="store_true", default=False, help="Run DY CR"
+        )
+        parser.add_argument(
+            "--TT_CR", action="store_true", default=False, help="Run TT CR"
+        )
 
     def prepareTree(self, tree, sample=None, sampleCfg=None, backend=None):
 
@@ -149,6 +155,8 @@ class NanoBaseHHWWbb(NanoAODHistoModule):
         self.era = sampleCfg["era"] if sampleCfg else None
         self.is_MC = self.isMC(sample)
         self.sampleCfg = sampleCfg
+        self.DY_CR = self.args.DY_CR
+        self.TT_CR = self.args.TT_CR
 
         from bamboo.plots import CutFlowReport
 

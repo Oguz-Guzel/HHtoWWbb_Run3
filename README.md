@@ -49,7 +49,7 @@ using the skims in the root files that are in the results directory of bamboo ou
 ```sh
 bambooRun -m python/mvaEvaluator.py config/<2022 or 2023>_v12.yml -o ./outputDir/ --envConfig config/cern.ini  --distributed driver --mvaModel <path to your ML model in onnx format>
 ```
-where you get the ML model evaluated on the analysis.
+where you get the ML model evaluated on the analysis. Use `--DY_CR` or `--TT_CR` flags to get the ML evaluation in the DY or TT control regions, respectively.
 
 To produce sync skim for syncronization exercises, you can run the following command:
 ```sh
