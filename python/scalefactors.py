@@ -204,7 +204,7 @@ class ScaleFactors:
             import yaml
 
             sumw_path = os.path.join(
-                self.parent.git_project_dir, "data", f"LHEScaleSumw_{self.parent.era}.yaml"
+                self.parent.git_project_dir, "data", f"LHEScaleSumw_{self.parent.era[:4]}.yaml"
             )
             try:
                 with open(sumw_path) as handle:
@@ -720,12 +720,11 @@ class ScaleFactors:
             weight_msd_up = _weight_for("msdUp")
             weight_msd_down = _weight_for("msdDown")
 
-            era_suffix = f"_{self.parent.era}"
             sel = sel.refine(
                 sel.name + "_ak8BBCCSF",
                 weight=op.systematic(
                     weight_nom,
-                    f"ak8BBCC{era_suffix}",
+                    "ak8BBCC",
                     up=weight_up,
                     down=weight_down,
                 ),
@@ -734,7 +733,7 @@ class ScaleFactors:
                 sel.name + "_ak8BBCCSF_tau21",
                 weight=op.systematic(
                     weight_nom,
-                    f"ak8BBCC_tau21{era_suffix}",
+                    "ak8BBCC_tau21",
                     up=weight_tau21_up,
                     down=weight_tau21_down,
                 ),
@@ -743,7 +742,7 @@ class ScaleFactors:
                 sel.name + "_ak8BBCCSF_msd",
                 weight=op.systematic(
                     weight_nom,
-                    f"ak8BBCC_msd{era_suffix}",
+                    "ak8BBCC_msd",
                     up=weight_msd_up,
                     down=weight_msd_down,
                 ),
@@ -763,13 +762,12 @@ class ScaleFactors:
             logger.info("Applying Muon SF for " + sel.name)
             # Muon ID SF
             systName = "syst"
-            era_suffix = f"_{self.parent.era}"
             self.muon_ID_sf = get_correction(
                 MUON_SF_JSONFiles[self.parent.era],
                 "NUM_MediumID_DEN_TrackerMuons",  # NUM_MediumPromptID_DEN_TrackerMuons, too ?
                 systVariations={
-                    f"muonIdSFup{era_suffix}": f"{systName}up",
-                    f"muonIdSFdown{era_suffix}": f"{systName}down",
+                    "muonIdSFup": f"{systName}up",
+                    "muonIdSFdown": f"{systName}down",
                 },
                 params={"pt": lambda mu: mu.pt,
                         "eta": lambda mu: op.abs(mu.eta)},
@@ -785,8 +783,8 @@ class ScaleFactors:
                 # since muon iso is miniPFreliso and id is medium
                 "NUM_TightPFIso_DEN_MediumID",
                 systVariations={
-                    f"muonIsoSFup{era_suffix}": f"{systName}up",
-                    f"muonIsoSFdown{era_suffix}": f"{systName}down",
+                    f"muonIsoSFup": f"{systName}up",
+                    f"muonIsoSFdown": f"{systName}down",
                 },
                 params={
                     "pt": lambda mu: mu.pt,
@@ -803,8 +801,8 @@ class ScaleFactors:
                 MUON_SF_JSONFiles[self.parent.era],
                 "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",
                 systVariations={
-                    f"muonTrgSFup{era_suffix}": f"{systName}up",
-                    f"muonTrgSFdown{era_suffix}": f"{systName}down",
+                    "muonTrgSFup": f"{systName}up",
+                    "muonTrgSFdown": f"{systName}down",
                 },
                 params={"pt": lambda mu: mu.pt,
                         "eta": lambda mu: op.abs(mu.eta)},
@@ -905,7 +903,6 @@ class ScaleFactors:
         if self.parent.is_MC:
             logger.info("Applying Electron SF for " + sel.name)
 
-            era_suffix = f"_{self.parent.era}"
             params = {
                 "pt": lambda e: e.pt,
                 "eta": lambda e: e.eta,
@@ -923,8 +920,8 @@ class ScaleFactors:
                 EGamma_SF_JSONFiles[self.parent.era][0],
                 "Electron-ID-SF",
                 systVariations={
-                    f"elIdSFup{era_suffix}": f"{systNomName}up",
-                    f"elIdSFdown{era_suffix}": f"{systNomName}down",
+                    "elIdSFup": f"{systNomName}up",
+                    "elIdSFdown": f"{systNomName}down",
                 },
                 params=params,
                 systParam="ValType",
@@ -940,8 +937,8 @@ class ScaleFactors:
                 ),
                 "Electron-HLT-SF",
                 systVariations={
-                    f"elTrgSFup{era_suffix}": f"{systNomName}up",
-                    f"elTrgSFdown{era_suffix}": f"{systNomName}down",
+                    "elTrgSFup": f"{systNomName}up",
+                    "elTrgSFdown": f"{systNomName}down",
                 },
                 params={
                     "pt": lambda e: e.pt,
@@ -1116,10 +1113,9 @@ class ScaleFactors:
                 raise RuntimeError(
                     "Final state selection name must include one of these values: ee, mumu, emu."
                 )
-            era_suffix = f"_{self.parent.era}"
             systVariations = {
-                f"dileptonTRGSFup{era_suffix}": "up",
-                f"dileptonTRGSFdown{era_suffix}": "down",
+                "dileptonTRGSFup": "up",
+                "dileptonTRGSFdown": "down",
             }
             di_lepton_TRG_SF = get_correction(
                 self.di_lepton_TRG_JSONFiles[ch],
@@ -1169,9 +1165,9 @@ class ScaleFactors:
 
             N_unc = 10
 
-            systVariations = {f"ZpTup_{self.parent.era}": f"up{i}" for i in range(1, N_unc + 1)}
+            systVariations = {f"ZpT{i}up": f"up{i}" for i in range(1, N_unc + 1)}
             systVariations.update(
-                {f"ZpTdown_{self.parent.era}": f"down{i}" for i in range(1, N_unc + 1)}
+                {f"ZpT{i}down": f"down{i}" for i in range(1, N_unc + 1)}
             )
 
             get_Z_pT_corr = get_correction(
