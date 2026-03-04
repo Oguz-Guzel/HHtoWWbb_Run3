@@ -721,7 +721,7 @@ class ScaleFactors:
             weight_msd_down = _weight_for("msdDown")
 
             sel = sel.refine(
-                sel.name + "_ak8BBCCSF",
+                "ak8BBCCSF",
                 weight=op.systematic(
                     weight_nom,
                     "ak8BBCC",
@@ -730,7 +730,7 @@ class ScaleFactors:
                 ),
             )
             sel = sel.refine(
-                sel.name + "_ak8BBCCSF_tau21",
+                "ak8BBCCSF_tau21",
                 weight=op.systematic(
                     weight_nom,
                     "ak8BBCC_tau21",
@@ -739,7 +739,7 @@ class ScaleFactors:
                 ),
             )
             sel = sel.refine(
-                sel.name + "_ak8BBCCSF_msd",
+                "ak8BBCCSF_msd",
                 weight=op.systematic(
                     weight_nom,
                     "ak8BBCC_msd",
@@ -748,9 +748,9 @@ class ScaleFactors:
                 ),
             )
         else:
-            sel = sel.refine(sel.name + "_ak8BBCCSF", weight=op.c_float(1.0))
-            sel = sel.refine(sel.name + "_ak8BBCCSF_tau21", weight=op.c_float(1.0))
-            sel = sel.refine(sel.name + "_ak8BBCCSF_msd", weight=op.c_float(1.0))
+            sel = sel.refine("ak8BBCCSF", weight=op.c_float(1.0))
+            sel = sel.refine("ak8BBCCSF_tau21", weight=op.c_float(1.0))
+            sel = sel.refine("ak8BBCCSF_msd", weight=op.c_float(1.0))
 
         self.parent.yields.add(sel, sel.name)
 
