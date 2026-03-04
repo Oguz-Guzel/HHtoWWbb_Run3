@@ -69,3 +69,8 @@ or if you think that a similar effect may be present in the b-tagging scalefacto
 bambooRun -m python/btagReweighting.py config/<2022 or 2023>_v12.yml -o ./outputDir/
 ``` 
 and copy the produced b-tagging scale factor files from the output directory to `data/` folder.
+
+compute LHE weights for muRF variations with:
+```sh
+python scripts/compute_lhe_scale_sumw.py --years 2022 --max-files 3 --workers 16 --output data/LHEScaleSumw_2022.yaml 
+```
