@@ -569,16 +569,12 @@ class ScaleFactors:
 
     def top_pT_reweight(self, GenPartBranch, sel, sample):
         """Apply top p_T reweighting. Check for more
-        https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting#TOP_PAG_corrections_based_on_the"""
+        https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting#TOP_PAG_corrections_based_on_the
+        https://cms.cern.ch/iCMS/jsp/db_notes/noteInfo.jsp?cmsnoteid=CMS%20AN-2024/019"""
         if sample.startswith("TT"):
 
             def top_pt_weight(pt):
-                return op.exp(
-                    -2.02274e-01
-                    + 1.09734e-04 * pt
-                    + -1.30088e-07 * op.pow(pt, 2)
-                    + (5.83494e01 / (pt + 1.96252e02))
-                )
+                return op.product((0.103 * op.exp(-0.0118 * pt) - 0.000134 * pt + 0.973),(0.991 + 0.000075*pt) )
 
             def getTopPtWeight(GenPart):
                 lastCopy = op.select(
