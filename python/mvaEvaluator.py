@@ -67,7 +67,7 @@ class mvaEvaluator(NanoBaseHHWWbb):
 
         # get the ML scores
         signal_node = ml_output[1]
-        binning = EqBin(200, 0., 1.)
+        binning = EqBin(100, 0., 1.)
 
         # dummy single-bin variable for control regions
         dummy_var = op.c_int(1)
