@@ -436,7 +436,8 @@ def makeDLSelection(
             "DL_VBF_resolved_ee", cut=op.rng_len(analysis.VBFjetPairsResolved) >= 1
         )
 
-        DL_VBF_boosted_ee = DL_boosted_pre_ee.refine(
+
+        DL_VBF_boosted_ee = DL_boosted_pre_ee_btagSF.refine(
             "DL_VBF_boosted_ee", cut=op.rng_len(analysis.VBFjetPairsBoosted) >= 1
         )
 
@@ -444,7 +445,7 @@ def makeDLSelection(
             "DL_VBF_resolved_mumu", cut=op.rng_len(analysis.VBFjetPairsResolved) >= 1
         )
 
-        DL_VBF_boosted_mumu = DL_boosted_pre_mumu.refine(
+        DL_VBF_boosted_mumu = DL_boosted_pre_mumu_btagSF.refine(
             "DL_VBF_boosted_mumu", cut=op.rng_len(analysis.VBFjetPairsBoosted) >= 1
         )
 
@@ -452,7 +453,7 @@ def makeDLSelection(
             "DL_VBF_resolved_emu", cut=op.rng_len(analysis.VBFjetPairsResolved) >= 1
         )
 
-        DL_VBF_boosted_emu = DL_boosted_pre_emu.refine(
+        DL_VBF_boosted_emu = DL_boosted_pre_emu_btagSF.refine(
             "DL_VBF_boosted_emu", cut=op.rng_len(analysis.VBFjetPairsBoosted) >= 1
         )
 
